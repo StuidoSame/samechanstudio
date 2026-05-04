@@ -227,48 +227,122 @@
     .keyword-button.is-active { color: var(--text); border-color: var(--border-strong); box-shadow: 0 0 0 6px rgba(139,92,246,.10); }
 
     .hero-art { position: relative; min-height: 560px; display: grid; place-items: center; animation: floatIn .9s ease both .14s; }
-    .preview-stack { position: relative; width: min(100%, 490px); height: 530px; }
-    .preview-card {
+    .phone-preview {
+      position: relative;
+      width: min(100%, 490px);
+      height: 560px;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+    .iphone {
+      position: relative;
+      width: 292px;
+      height: 566px;
+      padding: 12px;
+      border-radius: 46px;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.18)),
+        linear-gradient(145deg,#18151f,#3b3158);
+      border: 1px solid rgba(255,255,255,.42);
+      box-shadow: 0 32px 90px rgba(79,70,229,.24), 0 18px 48px rgba(0,0,0,.20);
+      transition: transform .35s ease, box-shadow .35s ease;
+      overflow: hidden;
+      z-index: 2;
+    }
+    [data-theme="dark"] .iphone {
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04)),
+        linear-gradient(145deg,#090811,#29213e);
+      box-shadow: 0 28px 80px rgba(0,0,0,.44), 0 0 58px rgba(109,93,247,.16);
+    }
+    .iphone:hover { transform: translateY(-5px) rotateX(1.5deg) rotateY(-2deg); box-shadow: 0 38px 100px rgba(109,93,247,.28), 0 22px 58px rgba(0,0,0,.24); }
+    .iphone::before {
+      content: "";
       position: absolute;
+      left: 50%;
+      top: 20px;
+      width: 94px;
+      height: 28px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(12,10,18,.86);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+      z-index: 4;
+    }
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 36px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.20);
+      background:
+        radial-gradient(circle at 26% 10%,rgba(168,85,247,.34),transparent 12rem),
+        radial-gradient(circle at 76% 28%,rgba(255,106,168,.20),transparent 12rem),
+        linear-gradient(180deg,rgba(255,255,255,.74),rgba(246,241,255,.42));
+    }
+    [data-theme="dark"] .phone-screen {
+      background:
+        radial-gradient(circle at 26% 10%,rgba(168,85,247,.24),transparent 12rem),
+        radial-gradient(circle at 76% 28%,rgba(255,106,168,.14),transparent 12rem),
+        linear-gradient(180deg,rgba(28,24,42,.86),rgba(15,13,22,.92));
+    }
+    .phone-status {
+      position: relative;
+      z-index: 3;
+      height: 58px;
+      padding: 18px 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text);
+      font-size: .78rem;
+      font-weight: 820;
+    }
+    .status-dots { display: flex; gap: 4px; }
+    .status-dots span { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .62; }
+    .phone-title {
+      position: relative;
+      z-index: 3;
+      padding: 0 20px 14px;
+    }
+    .phone-title strong { display: block; font-size: 1.16rem; }
+    .phone-title span { display: block; margin-top: 4px; color: var(--muted); font-size: .78rem; font-weight: 720; }
+    .feed-mask {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 106px;
+      bottom: 12px;
+      overflow: hidden;
+      border-radius: 28px;
+      -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 88%, transparent);
+      mask-image: linear-gradient(transparent, #000 10%, #000 88%, transparent);
+    }
+    .phone-feed {
+      display: grid;
+      gap: 12px;
+      animation: phoneFeed 18s linear infinite;
+    }
+    .phone-card {
+      position: relative;
       border: 1px solid rgba(255,255,255,.36);
-      border-radius: 34px;
+      border-radius: 24px;
       background: var(--card);
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 44px rgba(72,55,120,.13);
       overflow: hidden;
-      transition: transform .32s ease, box-shadow .32s ease, border-color .32s ease;
+      padding: 16px;
+      min-height: 116px;
+      transform-origin: center;
     }
-    .preview-main { inset: 26px 78px 138px 12px; padding: 24px; background: linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.28)), var(--card); }
-    [data-theme="dark"] .preview-main { background: linear-gradient(145deg,rgba(58,52,78,.72),rgba(30,28,39,.34)), var(--card); }
-    .preview-map { width: 236px; height: 238px; right: 0; top: 88px; transform: rotate(6deg); background: linear-gradient(145deg,rgba(98,111,255,.30),rgba(32,199,223,.18)); }
-    .preview-run { width: 230px; height: 172px; left: 18px; bottom: 40px; transform: rotate(-7deg); background: linear-gradient(145deg,rgba(255,116,130,.25),rgba(177,92,255,.18)); }
-    .preview-odow { width: 178px; height: 178px; right: 28px; bottom: 20px; transform: rotate(8deg); background: linear-gradient(145deg,rgba(217,70,239,.22),rgba(79,70,229,.18)); }
-    .hero-app-line { display: flex; align-items: center; gap: 12px; }
-    .mini-icon {
-      width: 54px;
-      height: 54px;
-      padding: 5px;
-      border-radius: 18px;
-      background: var(--icon-bg, var(--accent));
-      box-shadow: 0 12px 30px rgba(109,93,247,.22);
-      overflow: hidden;
-      flex: 0 0 auto;
-    }
-    .mini-icon img, .app-icon img, .orb-icon img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
-    .hero-app-name { font-size: 1.2rem; font-weight: 830; }
-    .preview-question {
-      margin-top: 24px;
-      min-height: 112px;
-      border-radius: 24px;
-      padding: 22px;
-      color: white;
-      background: var(--accent);
-      box-shadow: 0 18px 48px rgba(125,86,223,.25);
-      font-weight: 760;
-      line-height: 1.45;
-    }
-    .preview-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .phone-card::before { content: ""; position: absolute; inset: 0; background: var(--card-gradient, var(--accent)); opacity: .12; pointer-events: none; }
+    .phone-card > * { position: relative; }
+    .phone-label { display: block; color: var(--soft); font-size: .72rem; font-weight: 820; letter-spacing: .04em; text-transform: uppercase; }
+    .phone-copy { margin-top: 9px; color: var(--text); font-weight: 780; line-height: 1.45; word-break: keep-all; }
+    .phone-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
     .pill {
       height: 34px;
       padding: 0 13px;
@@ -281,15 +355,72 @@
       font-size: .84rem;
       font-weight: 700;
     }
-    .mini-map { position: absolute; inset: 24px; border-radius: 25px; background: linear-gradient(115deg,transparent 38%,rgba(255,255,255,.28) 39%,rgba(255,255,255,.28) 44%,transparent 45%), linear-gradient(25deg,transparent 48%,rgba(255,255,255,.20) 49%,rgba(255,255,255,.20) 54%,transparent 55%); }
-    .mini-map::after { content: ""; width: 34px; height: 34px; position: absolute; left: 48%; top: 42%; transform: translate(-50%,-50%) rotate(45deg); border-radius: 50% 50% 50% 8px; background: #7dd3fc; box-shadow: 0 10px 30px rgba(125,211,252,.34); }
-    .wave { position: absolute; left: 22px; right: 22px; top: 50%; height: 72px; transform: translateY(-50%); background: radial-gradient(circle at 8% 50%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 24% 36%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 40% 62%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 56% 32%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 72% 54%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 88% 40%,#fb7185 0 7px,transparent 8px); }
-    .orb-icon { position: absolute; inset: 38px; border-radius: 28px; padding: 10px; background: rgba(255,255,255,.22); }
+    .phone-pills .pill { height: 27px; padding: 0 9px; font-size: .72rem; background: rgba(255,255,255,.20); }
+    .mini-map-visual {
+      height: 78px;
+      border-radius: 18px;
+      margin-bottom: 12px;
+      background:
+        linear-gradient(115deg,transparent 36%,rgba(255,255,255,.32) 37%,rgba(255,255,255,.32) 43%,transparent 44%),
+        linear-gradient(25deg,transparent 48%,rgba(255,255,255,.22) 49%,rgba(255,255,255,.22) 55%,transparent 56%),
+        linear-gradient(135deg,rgba(59,130,246,.30),rgba(168,85,247,.20));
+      position: relative;
+    }
+    .mini-map-visual::after { content: ""; width: 18px; height: 18px; position: absolute; left: 54%; top: 46%; transform: translate(-50%,-50%) rotate(45deg); border-radius: 50% 50% 50% 5px; background: #ff6aa8; box-shadow: 0 8px 22px rgba(255,106,168,.34); }
+    .bpm-row { display: flex; align-items: center; gap: 14px; }
+    .bpm-ring {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: conic-gradient(#fb7185 0 72%, rgba(255,255,255,.18) 72% 100%);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 28px rgba(251,113,133,.20);
+    }
+    .bpm-ring::after { content: ""; width: 38px; height: 38px; border-radius: 50%; background: var(--card-strong); }
+    .wave-line {
+      height: 38px;
+      flex: 1;
+      background: radial-gradient(circle at 8% 50%,#fb7185 0 4px,transparent 5px), radial-gradient(circle at 25% 34%,#fb7185 0 4px,transparent 5px), radial-gradient(circle at 42% 65%,#fb7185 0 4px,transparent 5px), radial-gradient(circle at 60% 32%,#fb7185 0 4px,transparent 5px), radial-gradient(circle at 78% 56%,#fb7185 0 4px,transparent 5px), radial-gradient(circle at 94% 42%,#fb7185 0 4px,transparent 5px);
+    }
+    .place-row { display: flex; align-items: center; gap: 13px; }
+    .pin-symbol {
+      width: 42px;
+      height: 42px;
+      transform: rotate(45deg);
+      border-radius: 50% 50% 50% 10px;
+      background: linear-gradient(135deg,#3b82f6,#22d3ee);
+      box-shadow: 0 10px 26px rgba(59,130,246,.24);
+      flex: 0 0 auto;
+      position: relative;
+    }
+    .pin-symbol::after { content: ""; position: absolute; inset: 14px; border-radius: 50%; background: white; }
+    .floating-card {
+      position: absolute;
+      z-index: 1;
+      min-width: 112px;
+      min-height: 86px;
+      padding: 14px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      color: var(--text);
+      font-weight: 820;
+      opacity: .86;
+      animation: softFloat 7s ease-in-out infinite;
+    }
+    .floating-card small { display: block; margin-top: 8px; color: var(--muted); font-size: .76rem; }
+    .float-daily { left: 8px; top: 74px; transform: rotate(-8deg); }
+    .float-place { right: 0; top: 164px; transform: rotate(7deg); animation-delay: -1.8s; }
+    .float-rhythm { left: 12px; bottom: 88px; transform: rotate(5deg); animation-delay: -3.2s; }
 
-    body.intent-record .app-card[data-intent="record"], body.intent-record .preview-main,
-    body.intent-place .app-card[data-intent="place"], body.intent-place .preview-map,
-    body.intent-rhythm .app-card[data-intent="rhythm"], body.intent-rhythm .preview-run,
-    body.intent-focus .value-card[data-intent="focus"], body.intent-focus .contact-panel {
+    body.intent-record .app-card[data-intent="record"], body.intent-record .phone-card[data-intent="record"],
+    body.intent-place .app-card[data-intent="place"], body.intent-place .phone-card[data-intent="place"],
+    body.intent-rhythm .app-card[data-intent="rhythm"], body.intent-rhythm .phone-card[data-intent="rhythm"],
+    body.intent-focus .value-card[data-intent="focus"], body.intent-focus .contact-panel, body.intent-focus .iphone {
       border-color: var(--border-strong);
       box-shadow: var(--shadow-hover), 0 0 0 6px rgba(139,92,246,.08);
       transform: translateY(-4px);
@@ -440,6 +571,8 @@
     @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes floatIn { from { opacity: 0; transform: translateY(20px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
     @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
+    @keyframes phoneFeed { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+    @keyframes softFloat { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
     @media (max-width: 980px) {
       .desktop-menu { display: none; }
@@ -447,7 +580,8 @@
       .hero, .about-layout, .map-layout, .contact-panel { grid-template-columns: 1fr; }
       .hero { padding-top: 54px; gap: 28px; }
       .hero-art { min-height: 460px; }
-      .preview-stack { height: 440px; max-width: 430px; }
+      .phone-preview { height: 520px; max-width: 430px; }
+      .iphone { width: 270px; height: 520px; }
       .values-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
       .contact-panel .button { justify-self: start; }
     }
@@ -470,13 +604,16 @@
       .hero-copy { font-size: 1rem; }
       .hero-actions .button { flex: 1 1 150px; }
       .keyword-button { flex: 1 1 calc(50% - 8px); }
-      .hero-art { min-height: 380px; }
-      .preview-stack { height: 360px; }
-      .preview-main { inset: 16px 22px 112px 12px; padding: 18px; border-radius: 28px; }
-      .preview-map { width: 158px; height: 172px; right: 0; top: 70px; }
-      .preview-run { width: 170px; height: 122px; left: 8px; bottom: 40px; }
-      .preview-odow { width: 126px; height: 126px; right: 20px; bottom: 24px; }
-      .preview-question { min-height: 86px; padding: 16px; }
+      .hero-art { min-height: 450px; }
+      .phone-preview { height: 450px; }
+      .iphone { width: min(78vw, 244px); height: 450px; border-radius: 40px; }
+      .phone-screen { border-radius: 31px; }
+      .feed-mask { top: 100px; }
+      .phone-card { min-height: 104px; padding: 14px; }
+      .floating-card { min-width: 92px; min-height: 68px; padding: 11px; border-radius: 18px; font-size: .9rem; }
+      .float-daily { left: 0; top: 42px; }
+      .float-place { right: -2px; top: 136px; }
+      .float-rhythm { left: 0; bottom: 58px; }
       .section { padding: 62px 0; }
       .values-grid { grid-template-columns: 1fr; }
       .app-card { min-height: 440px; }
@@ -489,6 +626,8 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
       .reveal, .app-card, .value-card { opacity: 1; transform: none; }
+      .phone-feed { animation: none; }
+      .floating-card { animation: none; }
     }
   </style>
 </head>
@@ -546,18 +685,66 @@
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
-        <div class="preview-stack">
-          <div class="preview-card preview-map"><div class="mini-map"></div></div>
-          <div class="preview-card preview-run"><div class="wave"></div></div>
-          <div class="preview-card preview-odow"><div class="orb-icon"><img src="assets/icons/ODOW_icon.png" alt=""></div></div>
-          <div class="preview-card preview-main">
-            <div class="hero-app-line">
-              <div class="mini-icon" style="--icon-bg:linear-gradient(135deg,#b794f4,#6366f1,#38bdf8);"><img src="assets/icons/Mapary_icon.png" alt=""></div>
-              <div><div class="hero-app-name">Mapary</div><span class="pill">Memory Map</span></div>
-            </div>
-            <div class="preview-question">Small records, clearer days, quieter tools.</div>
-            <div class="preview-pills">
-              <span class="pill">record</span><span class="pill">place</span><span class="pill">rhythm</span><span class="pill">focus</span>
+        <div class="phone-preview">
+          <div class="floating-card float-daily">?<small>Daily</small></div>
+          <div class="floating-card float-place"><span class="pin-symbol"></span><small>Place</small></div>
+          <div class="floating-card float-rhythm"><span class="wave-line"></span><small>Rhythm</small></div>
+          <div class="iphone">
+            <div class="phone-screen">
+              <div class="phone-status"><span>9:41</span><span class="status-dots"><span></span><span></span><span></span></span></div>
+              <div class="phone-title"><strong>SAME apps</strong><span>record · place · rhythm</span></div>
+              <div class="feed-mask">
+                <div class="phone-feed">
+                  <div class="phone-card" data-intent="record" style="--card-gradient:linear-gradient(135deg,#7c3aed,#d946ef,#4f46e5);">
+                    <span class="phone-label">Today’s Question</span>
+                    <div class="phone-copy">오늘 가장 선명했던 순간은?</div>
+                    <div class="phone-pills"><span class="pill">reflection</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="record" style="--card-gradient:linear-gradient(135deg,#b794f4,#6366f1,#38bdf8);">
+                    <span class="phone-label">Mapary</span>
+                    <div class="phone-copy">퇴근길에 본 하늘이 오래 남았다.</div>
+                    <div class="phone-pills"><span class="pill">기록</span><span class="pill">감정</span><span class="pill">위치</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="place" style="--card-gradient:linear-gradient(135deg,#3b82f6,#7c3aed,#22d3ee);">
+                    <div class="mini-map-visual"></div>
+                    <span class="phone-label">Memory Map</span>
+                    <div class="phone-copy">Daejeon · May 2026</div>
+                  </div>
+                  <div class="phone-card" data-intent="rhythm" style="--card-gradient:linear-gradient(135deg,#fb7185,#ec4899,#8b5cf6);">
+                    <div class="bpm-row"><span class="bpm-ring"></span><span class="wave-line"></span></div>
+                    <div class="phone-copy">168 BPM</div>
+                    <div class="phone-pills"><span class="pill">rhythm</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="place" style="--card-gradient:linear-gradient(135deg,#3b82f6,#22d3ee,#a855f7);">
+                    <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">Spotcha</span><div class="phone-copy">Near your place</div></div></div>
+                    <div class="phone-pills"><span class="pill">reminder</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="record" style="--card-gradient:linear-gradient(135deg,#7c3aed,#d946ef,#4f46e5);">
+                    <span class="phone-label">Today’s Question</span>
+                    <div class="phone-copy">오늘 가장 선명했던 순간은?</div>
+                    <div class="phone-pills"><span class="pill">reflection</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="record" style="--card-gradient:linear-gradient(135deg,#b794f4,#6366f1,#38bdf8);">
+                    <span class="phone-label">Mapary</span>
+                    <div class="phone-copy">퇴근길에 본 하늘이 오래 남았다.</div>
+                    <div class="phone-pills"><span class="pill">기록</span><span class="pill">감정</span><span class="pill">위치</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="place" style="--card-gradient:linear-gradient(135deg,#3b82f6,#7c3aed,#22d3ee);">
+                    <div class="mini-map-visual"></div>
+                    <span class="phone-label">Memory Map</span>
+                    <div class="phone-copy">Daejeon · May 2026</div>
+                  </div>
+                  <div class="phone-card" data-intent="rhythm" style="--card-gradient:linear-gradient(135deg,#fb7185,#ec4899,#8b5cf6);">
+                    <div class="bpm-row"><span class="bpm-ring"></span><span class="wave-line"></span></div>
+                    <div class="phone-copy">168 BPM</div>
+                    <div class="phone-pills"><span class="pill">rhythm</span></div>
+                  </div>
+                  <div class="phone-card" data-intent="place" style="--card-gradient:linear-gradient(135deg,#3b82f6,#22d3ee,#a855f7);">
+                    <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">Spotcha</span><div class="phone-copy">Near your place</div></div></div>
+                    <div class="phone-pills"><span class="pill">reminder</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
