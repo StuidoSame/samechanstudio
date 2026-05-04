@@ -264,6 +264,7 @@
       border-radius: 22px;
       border: 1px solid var(--border-strong);
       background: linear-gradient(135deg,rgba(139,92,246,.10),rgba(255,106,168,.06));
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
     }
     .scope-card h2 { margin: 0 0 10px; font-size: 1.32rem; }
     .scope-card ul, .policy-section ul { margin: 12px 0 0; padding-left: 1.2rem; }
@@ -275,6 +276,19 @@
     .policy-section {
       border-radius: 22px;
       padding: clamp(20px,3vw,28px);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .scope-card:hover,
+      .policy-section:hover {
+        transform: translateY(-2px);
+        border-color: var(--border-strong);
+        background:
+          radial-gradient(circle at 12% 0%, rgba(168,85,247,.10), transparent 16rem),
+          radial-gradient(circle at 96% 24%, rgba(255,106,168,.08), transparent 14rem),
+          var(--card-strong);
+        box-shadow: var(--shadow), 0 0 0 1px rgba(168,85,247,.08), 0 18px 46px rgba(99,102,241,.12);
+      }
     }
     .policy-section h2 {
       margin: 0 0 12px;
@@ -360,6 +374,8 @@
       }
       body.is-transitioning .page-transition::before { animation: none; width: 100%; }
       body.is-transitioning main, body.is-transitioning .site-footer { opacity: 1; }
+      .scope-card:hover,
+      .policy-section:hover { transform: none; }
     }
   </style>
 </head>
@@ -485,7 +501,7 @@
             { title: "12. 보안", body: ["세임스튜디오는 사용자의 개인정보 보호를 중요하게 생각합니다.", "앱은 불필요한 서버 전송을 최소화하고, 가능한 경우 사용자의 기기 또는 개인 iCloud 환경에서 데이터를 처리하도록 설계됩니다.", "다만 사용자의 기기, Apple ID, iCloud 계정 보안은 사용자가 직접 관리해야 합니다."] },
             { title: "13. 개인정보처리방침의 변경", body: ["본 개인정보처리방침은 앱 기능, 서비스 구조, 관련 법령 또는 외부 서비스 사용 여부에 따라 변경될 수 있습니다.", "변경 사항은 본 페이지를 통해 고지합니다. 중요한 변경이 있는 경우 앱 내 공지 또는 별도 안내를 제공할 수 있습니다."] },
             { title: "14. 문의처", contact: [["사업자명", "세임스튜디오"], ["대표자", "김동찬"], ["이메일", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["웹사이트", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">samestudio.kr</a>"]] },
-            { title: "15. English Summary", list: ["SAME STUDIO minimizes the collection of personal data.", "Mapary does not collect or store users’ personal records on SAME STUDIO’s own servers.", "User-created records and location-related data may be stored on the user’s device or private iCloud account.", "SAME STUDIO does not sell users’ personal data.", "Users can manage app permissions and data through iOS settings, app settings, or iCloud settings.", "For privacy inquiries, contact contact@samestudio.kr."] }
+            { title: "15. 요약", list: ["SAME STUDIO는 사용자의 개인정보 처리를 최소화합니다.", "Mapary는 사용자의 개인 기록을 SAME STUDIO 자체 서버에 수집하거나 저장하지 않습니다.", "사용자가 작성한 기록, 메모, 위치 기반 데이터는 사용자의 기기 또는 개인 iCloud 계정에 저장될 수 있습니다.", "SAME STUDIO는 사용자의 개인 기록을 열람하지 않습니다.", "SAME STUDIO는 사용자의 개인정보 또는 개인 기록 데이터를 판매하지 않습니다.", "사용자는 iOS 설정, 앱 설정 또는 iCloud 설정을 통해 권한과 데이터를 관리할 수 있습니다.", "개인정보 관련 문의는 contact@samestudio.kr 로 연락해 주세요."] }
           ]
         },
         en: {
