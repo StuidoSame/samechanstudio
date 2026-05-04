@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SAME STUDIO는 기록, 위치, 리듬처럼 일상 속 작은 순간을 더 선명하게 만드는 독립 모바일 앱 스튜디오입니다.">
+  <meta name="description" content="SAME STUDIO는 기록, 장소, 리듬처럼 반복되는 순간들을 더 가볍게 다루기 위해 앱을 만드는 독립 모바일 앱 스튜디오입니다.">
   <title>SAME STUDIO | Small tools for thoughtful days.</title>
   <style>
     :root {
@@ -11,21 +11,20 @@
       --bg: #fbf8ff;
       --bg-deep: #f2ecff;
       --text: #18151f;
-      --muted: #676172;
-      --soft: #887f99;
+      --muted: #696173;
+      --soft: #8b819b;
       --card: rgba(255,255,255,.68);
-      --card-strong: rgba(255,255,255,.86);
+      --card-strong: rgba(255,255,255,.88);
       --border: rgba(86,64,122,.16);
-      --border-strong: rgba(128,88,205,.36);
+      --border-strong: rgba(128,88,205,.38);
       --shadow: 0 24px 70px rgba(75,55,120,.14);
       --shadow-hover: 0 30px 86px rgba(84,55,150,.22);
       --nav: rgba(251,248,255,.72);
-      --nav-strong: rgba(251,248,255,.9);
+      --nav-strong: rgba(251,248,255,.92);
       --accent: linear-gradient(135deg,#6d5df7 0%,#a855f7 45%,#ff6aa8 100%);
-      --accent-alt: linear-gradient(135deg,#18b6d9 0%,#6d5df7 55%,#b15cff 100%);
+      --accent-alt: linear-gradient(135deg,#20c7df 0%,#6d5df7 58%,#b15cff 100%);
       --radius-xl: 30px;
       --radius-lg: 22px;
-      --radius-md: 16px;
       --max: 1120px;
     }
 
@@ -35,15 +34,15 @@
       --bg-deep: #151222;
       --text: #f5f0ff;
       --muted: #bbb4ca;
-      --soft: #928aa5;
+      --soft: #948ba6;
       --card: rgba(30,28,39,.62);
-      --card-strong: rgba(38,35,49,.82);
+      --card-strong: rgba(38,35,49,.84);
       --border: rgba(255,255,255,.13);
       --border-strong: rgba(182,140,255,.32);
       --shadow: 0 24px 74px rgba(0,0,0,.34);
       --shadow-hover: 0 30px 88px rgba(0,0,0,.46);
       --nav: rgba(13,12,18,.72);
-      --nav-strong: rgba(13,12,18,.9);
+      --nav-strong: rgba(13,12,18,.92);
     }
 
     * { box-sizing: border-box; }
@@ -53,8 +52,8 @@
       min-height: 100vh;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at 18% 6%, rgba(168,85,247,.22), transparent 30rem),
-        radial-gradient(circle at 86% 12%, rgba(255,106,168,.17), transparent 28rem),
+        radial-gradient(circle at 16% 8%, rgba(168,85,247,.22), transparent 30rem),
+        radial-gradient(circle at 88% 10%, rgba(255,106,168,.17), transparent 28rem),
         radial-gradient(circle at 76% 74%, rgba(24,182,217,.12), transparent 32rem),
         linear-gradient(180deg,var(--bg),var(--bg-deep));
       color: var(--text);
@@ -69,7 +68,8 @@
       pointer-events: none;
       background:
         radial-gradient(circle at 26% 34%, rgba(109,93,247,.12), transparent 18rem),
-        radial-gradient(circle at 72% 46%, rgba(255,106,168,.10), transparent 20rem);
+        radial-gradient(circle at 72% 46%, rgba(255,106,168,.10), transparent 20rem),
+        radial-gradient(circle at 46% 78%, rgba(32,199,223,.09), transparent 18rem);
       filter: blur(28px);
       animation: ambient 18s ease-in-out infinite alternate;
       z-index: -1;
@@ -81,9 +81,7 @@
 
     .site-header {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      inset: 0 0 auto;
       z-index: 50;
       background: var(--nav);
       border-bottom: 1px solid transparent;
@@ -91,13 +89,7 @@
       -webkit-backdrop-filter: blur(18px);
       transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
     }
-
-    .site-header.is-scrolled {
-      background: var(--nav-strong);
-      border-color: var(--border);
-      box-shadow: 0 10px 34px rgba(0,0,0,.06);
-    }
-
+    .site-header.is-scrolled { background: var(--nav-strong); border-color: var(--border); box-shadow: 0 10px 34px rgba(0,0,0,.06); }
     .nav {
       width: min(100% - 32px, var(--max));
       height: 76px;
@@ -107,16 +99,7 @@
       justify-content: space-between;
       gap: 18px;
     }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      font-size: .95rem;
-    }
-
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .08em; font-size: .95rem; }
     .brand-mark {
       width: 32px;
       height: 32px;
@@ -125,21 +108,8 @@
       box-shadow: 0 12px 28px rgba(120,86,215,.28);
       position: relative;
     }
-
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 8px;
-      border: 1px solid rgba(255,255,255,.72);
-      border-radius: 8px;
-    }
-
-    .desktop-menu {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .brand-mark::after { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(255,255,255,.72); border-radius: 8px; }
+    .desktop-menu { display: flex; align-items: center; gap: 6px; }
     .desktop-menu a, .drawer a {
       color: var(--muted);
       font-size: .92rem;
@@ -148,10 +118,8 @@
       border-radius: 999px;
       transition: color .2s ease, background .2s ease;
     }
-
     .desktop-menu a:hover, .drawer a:hover { color: var(--text); background: rgba(141,101,214,.10); }
     .nav-actions { display: flex; align-items: center; gap: 10px; }
-
     .icon-button {
       width: 42px;
       height: 42px;
@@ -166,7 +134,6 @@
       -webkit-backdrop-filter: blur(14px);
       transition: transform .2s ease, border-color .2s ease, background .2s ease;
     }
-
     .icon-button:hover { transform: translateY(-1px); border-color: var(--border-strong); }
     .theme-icon::before { content: "☾"; font-size: 1.05rem; }
     [data-theme="dark"] .theme-icon::before { content: "☼"; }
@@ -186,6 +153,12 @@
     main { padding-top: 76px; }
     section { scroll-margin-top: 96px; }
     .container { width: min(100% - 32px, var(--max)); margin: 0 auto; }
+    .section { padding: 84px 0; }
+    .section-head { max-width: 760px; margin-bottom: 32px; }
+    .section-kicker { color: #8b5cf6; font-size: .82rem; font-weight: 820; letter-spacing: .1em; text-transform: uppercase; }
+    h1 { margin: 22px 0 0; font-size: clamp(4rem, 11vw, 8.7rem); line-height: .86; letter-spacing: 0; }
+    h2 { margin: 10px 0 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.08; letter-spacing: 0; }
+    .section-head p, .hero-copy { color: var(--muted); line-height: 1.75; word-break: keep-all; }
 
     .hero {
       min-height: calc(100vh - 76px);
@@ -193,9 +166,9 @@
       grid-template-columns: 1.02fr .98fr;
       gap: 54px;
       align-items: center;
-      padding: 80px 0 72px;
+      padding: 78px 0 72px;
     }
-
+    .hero-content { animation: fadeUp .8s ease both; }
     .eyebrow {
       display: inline-flex;
       align-items: center;
@@ -213,7 +186,6 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
-
     .eyebrow::before {
       content: "";
       width: 7px;
@@ -222,14 +194,6 @@
       background: #8b5cf6;
       box-shadow: 0 0 0 5px rgba(139,92,246,.13);
     }
-
-    h1 {
-      margin: 22px 0 0;
-      font-size: clamp(4rem, 11vw, 8.7rem);
-      line-height: .86;
-      letter-spacing: 0;
-    }
-
     .gradient-text {
       display: block;
       margin-top: 18px;
@@ -241,100 +205,61 @@
       background-clip: text;
       color: transparent;
     }
-
-    .hero-copy {
-      max-width: 620px;
-      margin: 24px 0 0;
-      color: var(--muted);
-      font-size: clamp(1.02rem, 2vw, 1.22rem);
-      line-height: 1.8;
-      word-break: keep-all;
-    }
-
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
-    .button {
+    .hero-copy { max-width: 620px; margin: 24px 0 0; font-size: clamp(1.02rem, 2vw, 1.22rem); }
+    .hero-actions, .keyword-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-actions { margin-top: 34px; }
+    .keyword-actions { margin-top: 22px; }
+    .button, .keyword-button, .app-action, .social-link {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 48px;
-      padding: 0 20px;
       border-radius: 999px;
       border: 1px solid var(--border);
       font-weight: 760;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease, color .2s ease;
     }
+    .button { min-height: 48px; padding: 0 20px; }
+    .button.primary, .app-action.store { color: white; background: var(--accent); box-shadow: 0 16px 34px rgba(125,86,223,.28); border-color: transparent; }
+    .button.secondary, .keyword-button, .app-action.soon, .social-link { background: var(--card); color: var(--text); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .button:hover, .keyword-button:hover, .app-action:hover, .social-link:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+    .button.primary:hover, .app-action.store:hover { box-shadow: 0 18px 46px rgba(158,83,224,.34); }
+    .keyword-button { min-height: 38px; padding: 0 14px; cursor: pointer; color: var(--muted); }
+    .keyword-button.is-active { color: var(--text); border-color: var(--border-strong); box-shadow: 0 0 0 6px rgba(139,92,246,.10); }
 
-    .button.primary {
-      color: white;
-      background: var(--accent);
-      box-shadow: 0 16px 34px rgba(125,86,223,.28);
-      border-color: transparent;
-    }
-
-    .button.secondary { background: var(--card); color: var(--text); backdrop-filter: blur(14px); }
-    .button:hover { transform: translateY(-2px); border-color: var(--border-strong); }
-    .button.primary:hover { box-shadow: 0 18px 46px rgba(158,83,224,.34); }
-
-    .hero-art {
-      position: relative;
-      min-height: 560px;
-      display: grid;
-      place-items: center;
-      animation: floatIn .9s ease both .14s;
-    }
-
-    .preview-stack {
-      position: relative;
-      width: min(100%, 470px);
-      height: 520px;
-    }
-
+    .hero-art { position: relative; min-height: 560px; display: grid; place-items: center; animation: floatIn .9s ease both .14s; }
+    .preview-stack { position: relative; width: min(100%, 490px); height: 530px; }
     .preview-card {
       position: absolute;
-      border: 1px solid rgba(255,255,255,.38);
+      border: 1px solid rgba(255,255,255,.36);
       border-radius: 34px;
       background: var(--card);
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
       box-shadow: var(--shadow);
       overflow: hidden;
+      transition: transform .32s ease, box-shadow .32s ease, border-color .32s ease;
     }
-
-    .preview-main {
-      inset: 30px 34px 28px 40px;
-      padding: 28px;
-      background:
-        linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.30)),
-        var(--card);
+    .preview-main { inset: 26px 78px 138px 12px; padding: 24px; background: linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.28)), var(--card); }
+    [data-theme="dark"] .preview-main { background: linear-gradient(145deg,rgba(58,52,78,.72),rgba(30,28,39,.34)), var(--card); }
+    .preview-map { width: 236px; height: 238px; right: 0; top: 88px; transform: rotate(6deg); background: linear-gradient(145deg,rgba(98,111,255,.30),rgba(32,199,223,.18)); }
+    .preview-run { width: 230px; height: 172px; left: 18px; bottom: 40px; transform: rotate(-7deg); background: linear-gradient(145deg,rgba(255,116,130,.25),rgba(177,92,255,.18)); }
+    .preview-odow { width: 178px; height: 178px; right: 28px; bottom: 20px; transform: rotate(8deg); background: linear-gradient(145deg,rgba(217,70,239,.22),rgba(79,70,229,.18)); }
+    .hero-app-line { display: flex; align-items: center; gap: 12px; }
+    .mini-icon {
+      width: 54px;
+      height: 54px;
+      padding: 5px;
+      border-radius: 18px;
+      background: var(--icon-bg, var(--accent));
+      box-shadow: 0 12px 30px rgba(109,93,247,.22);
+      overflow: hidden;
+      flex: 0 0 auto;
     }
-
-    [data-theme="dark"] .preview-main {
-      background: linear-gradient(145deg,rgba(58,52,78,.72),rgba(30,28,39,.34)), var(--card);
-    }
-
-    .preview-side {
-      width: 210px;
-      height: 240px;
-      right: -8px;
-      top: 74px;
-      transform: rotate(7deg);
-      background: linear-gradient(145deg,rgba(109,93,247,.32),rgba(255,106,168,.20));
-    }
-
-    .preview-small {
-      width: 220px;
-      height: 168px;
-      left: -8px;
-      bottom: 36px;
-      transform: rotate(-7deg);
-      background: linear-gradient(145deg,rgba(24,182,217,.25),rgba(177,92,255,.18));
-    }
-
-    .app-window-top { display: flex; gap: 7px; margin-bottom: 30px; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(128,88,205,.45); }
-    .preview-title { font-size: 1.35rem; font-weight: 830; margin-bottom: 18px; }
+    .mini-icon img, .app-icon img, .orb-icon img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+    .hero-app-name { font-size: 1.2rem; font-weight: 830; }
     .preview-question {
-      min-height: 120px;
+      margin-top: 24px;
+      min-height: 112px;
       border-radius: 24px;
       padding: 22px;
       color: white;
@@ -343,7 +268,7 @@
       font-weight: 760;
       line-height: 1.45;
     }
-    .preview-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .preview-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
     .pill {
       height: 34px;
       padding: 0 13px;
@@ -351,61 +276,27 @@
       align-items: center;
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: rgba(255,255,255,.30);
+      background: rgba(255,255,255,.28);
       color: var(--muted);
       font-size: .84rem;
       font-weight: 700;
     }
-    .mini-map {
-      position: absolute;
-      inset: 24px;
-      border-radius: 25px;
-      background:
-        linear-gradient(115deg,transparent 38%,rgba(255,255,255,.28) 39%,rgba(255,255,255,.28) 44%,transparent 45%),
-        linear-gradient(25deg,transparent 48%,rgba(255,255,255,.20) 49%,rgba(255,255,255,.20) 54%,transparent 55%);
-    }
-    .mini-map::after {
-      content: "";
-      width: 34px;
-      height: 34px;
-      position: absolute;
-      left: 48%;
-      top: 42%;
-      transform: translate(-50%,-50%) rotate(45deg);
-      border-radius: 50% 50% 50% 8px;
-      background: #ff7a98;
-      box-shadow: 0 10px 30px rgba(255,122,152,.34);
-    }
-    .wave {
-      position: absolute;
-      left: 22px;
-      right: 22px;
-      top: 50%;
-      height: 72px;
-      transform: translateY(-50%);
-      background:
-        radial-gradient(circle at 8% 50%,#55d6c9 0 7px,transparent 8px),
-        radial-gradient(circle at 24% 36%,#55d6c9 0 7px,transparent 8px),
-        radial-gradient(circle at 40% 62%,#55d6c9 0 7px,transparent 8px),
-        radial-gradient(circle at 56% 32%,#55d6c9 0 7px,transparent 8px),
-        radial-gradient(circle at 72% 54%,#55d6c9 0 7px,transparent 8px),
-        radial-gradient(circle at 88% 40%,#55d6c9 0 7px,transparent 8px);
+    .mini-map { position: absolute; inset: 24px; border-radius: 25px; background: linear-gradient(115deg,transparent 38%,rgba(255,255,255,.28) 39%,rgba(255,255,255,.28) 44%,transparent 45%), linear-gradient(25deg,transparent 48%,rgba(255,255,255,.20) 49%,rgba(255,255,255,.20) 54%,transparent 55%); }
+    .mini-map::after { content: ""; width: 34px; height: 34px; position: absolute; left: 48%; top: 42%; transform: translate(-50%,-50%) rotate(45deg); border-radius: 50% 50% 50% 8px; background: #7dd3fc; box-shadow: 0 10px 30px rgba(125,211,252,.34); }
+    .wave { position: absolute; left: 22px; right: 22px; top: 50%; height: 72px; transform: translateY(-50%); background: radial-gradient(circle at 8% 50%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 24% 36%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 40% 62%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 56% 32%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 72% 54%,#fb7185 0 7px,transparent 8px), radial-gradient(circle at 88% 40%,#fb7185 0 7px,transparent 8px); }
+    .orb-icon { position: absolute; inset: 38px; border-radius: 28px; padding: 10px; background: rgba(255,255,255,.22); }
+
+    body.intent-record .app-card[data-intent="record"], body.intent-record .preview-main,
+    body.intent-place .app-card[data-intent="place"], body.intent-place .preview-map,
+    body.intent-rhythm .app-card[data-intent="rhythm"], body.intent-rhythm .preview-run,
+    body.intent-focus .value-card[data-intent="focus"], body.intent-focus .contact-panel {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-hover), 0 0 0 6px rgba(139,92,246,.08);
+      transform: translateY(-4px);
     }
 
-    .hero-content { animation: fadeUp .8s ease both; }
-    .section { padding: 84px 0; }
-    .section-head { max-width: 720px; margin-bottom: 32px; }
-    .section-kicker { color: #8b5cf6; font-size: .82rem; font-weight: 820; letter-spacing: .1em; text-transform: uppercase; }
-    h2 { margin: 10px 0 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.08; letter-spacing: 0; }
-    .section-head p { margin: 16px 0 0; color: var(--muted); line-height: 1.75; font-size: 1.04rem; word-break: keep-all; }
-
-    .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 18px;
-    }
-
-    .app-card, .value-card, .contact-panel {
+    .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .app-card, .value-card, .contact-panel, .about-copy, .map-card, .social-panel {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--card);
@@ -413,9 +304,8 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
-
     .app-card {
-      min-height: 420px;
+      min-height: 470px;
       padding: 22px;
       display: flex;
       flex-direction: column;
@@ -425,74 +315,26 @@
       transform: translateY(18px);
       transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
     }
-
     .app-card.revealed { animation: fadeUp .7s ease both; }
     .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
-    .app-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--app-gradient);
-      opacity: .13;
-      pointer-events: none;
-    }
-
+    .app-card::before { content: ""; position: absolute; inset: 0; background: var(--app-gradient); opacity: .13; pointer-events: none; }
     .app-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; position: relative; }
-    .app-symbol {
+    .app-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .app-icon {
       width: 74px;
       height: 74px;
+      padding: 6px;
       border-radius: 24px;
       background: var(--app-gradient);
       box-shadow: 0 18px 34px var(--app-glow);
-      position: relative;
+      overflow: hidden;
       flex: 0 0 auto;
     }
-    .app-symbol.journal::before {
-      content: "?";
-      position: absolute;
-      inset: 12px;
-      border-radius: 16px;
-      border: 2px solid rgba(255,255,255,.70);
-      color: white;
-      display: grid;
-      place-items: center;
-      font-size: 1.55rem;
-      font-weight: 860;
-    }
-    .app-symbol.pin::before {
-      content: "";
-      position: absolute;
-      width: 34px;
-      height: 34px;
-      left: 20px;
-      top: 17px;
-      transform: rotate(45deg);
-      border-radius: 50% 50% 50% 8px;
-      background: rgba(255,255,255,.88);
-    }
-    .app-symbol.pin::after {
-      content: "";
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      left: 32px;
-      top: 29px;
-      border-radius: 50%;
-      background: #8c52ff;
-    }
-    .app-symbol.rhythm::before {
-      content: "";
-      position: absolute;
-      inset: 18px 14px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 10% 50%,white 0 4px,transparent 5px),
-        radial-gradient(circle at 30% 34%,white 0 4px,transparent 5px),
-        radial-gradient(circle at 50% 66%,white 0 4px,transparent 5px),
-        radial-gradient(circle at 70% 36%,white 0 4px,transparent 5px),
-        radial-gradient(circle at 90% 52%,white 0 4px,transparent 5px);
-    }
-    .status-pill {
+    .app-icon.spotcha { padding: 9px; background: linear-gradient(135deg,#3b82f6,#7c3aed 50%,#22d3ee); }
+    .app-icon.spotcha img { transform: scale(1.18); border-radius: 20px; clip-path: inset(7% round 18px); }
+    .app-name { min-width: 0; }
+    .app-card h3 { position: relative; margin: 0; font-size: 1.52rem; }
+    .status-pill, .category-pill {
       position: relative;
       padding: 8px 11px;
       border-radius: 999px;
@@ -501,38 +343,24 @@
       color: var(--soft);
       font-size: .78rem;
       font-weight: 760;
+      white-space: nowrap;
     }
-
-    .app-card h3 { position: relative; margin: 30px 0 0; font-size: 1.55rem; }
-    .app-card .ko { position: relative; margin: 14px 0 0; color: var(--text); line-height: 1.65; font-weight: 650; word-break: keep-all; }
+    .category-pill { display: inline-flex; margin-top: 8px; }
+    .app-card .ko { position: relative; margin: 24px 0 0; color: var(--text); line-height: 1.65; font-weight: 650; word-break: keep-all; }
     .app-card .en { position: relative; margin: 12px 0 0; color: var(--muted); line-height: 1.6; }
-    .tag-row { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 28px; }
-    .tag {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.25);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: .78rem;
-      font-weight: 700;
-    }
+    .tag-row { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .tag { padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.25); border: 1px solid var(--border); color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .app-actions { margin-top: auto; padding-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; position: relative; }
+    .app-action { min-height: 42px; padding: 0 15px; font-size: .9rem; }
+    .app-action.soon { color: var(--muted); cursor: default; }
 
-    .values-grid {
-      display: grid;
-      grid-template-columns: repeat(4,minmax(0,1fr));
-      gap: 14px;
-    }
-    .value-card { padding: 22px; opacity: 0; transform: translateY(16px); }
+    .values-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+    .value-card { padding: 22px; opacity: 0; transform: translateY(16px); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
     .value-card.revealed, .reveal.revealed { animation: fadeUp .7s ease both; }
     .value-card h3 { margin: 0; font-size: 1.05rem; }
     .value-card p { color: var(--muted); line-height: 1.65; margin: 10px 0 0; word-break: keep-all; }
 
-    .about-layout {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      gap: 24px;
-      align-items: stretch;
-    }
+    .about-layout, .map-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; align-items: stretch; }
     .about-stat {
       padding: 30px;
       border-radius: var(--radius-xl);
@@ -541,55 +369,50 @@
       box-shadow: 0 24px 70px rgba(125,86,223,.24);
     }
     .about-stat strong { display: block; font-size: clamp(2.8rem,6vw,5rem); line-height: .92; }
-    .about-stat span { display: block; margin-top: 18px; max-width: 340px; line-height: 1.65; font-weight: 650; }
-    .about-copy {
-      padding: 32px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
+    .about-stat span { display: block; margin-top: 18px; max-width: 360px; line-height: 1.65; font-weight: 650; }
+    .about-copy { padding: 32px; border-radius: var(--radius-xl); }
     .about-copy p { margin: 0 0 18px; color: var(--muted); line-height: 1.8; word-break: keep-all; }
     .about-copy p:last-child { margin-bottom: 0; }
 
-    .contact-panel {
-      padding: clamp(28px,5vw,48px);
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: center;
+    .map-card { padding: 28px; border-radius: var(--radius-xl); overflow: hidden; position: relative; }
+    .map-card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 58% 48%, rgba(168,85,247,.16), transparent 16rem); pointer-events: none; }
+    .korea-map { width: 100%; min-height: 360px; position: relative; display: grid; place-items: center; }
+    .korea-map svg { width: min(100%, 380px); height: auto; filter: drop-shadow(0 20px 42px rgba(109,93,247,.18)); position: relative; }
+    .daejeon-label {
+      position: absolute;
+      left: 48%;
+      top: 51%;
+      transform: translate(-50%,-50%);
+      padding: 10px 13px;
+      border-radius: 999px;
+      color: white;
+      background: var(--accent);
+      font-size: .82rem;
+      font-weight: 820;
+      box-shadow: 0 14px 38px rgba(168,85,247,.30);
     }
+    .map-copy { padding: 30px; border-radius: var(--radius-xl); background: linear-gradient(135deg,rgba(109,93,247,.86),rgba(32,199,223,.48)); color: white; box-shadow: 0 24px 70px rgba(80,70,190,.24); }
+    .map-copy h2 { color: white; }
+    .map-copy p { color: rgba(255,255,255,.82); line-height: 1.75; word-break: keep-all; }
+
+    .contact-panel { padding: clamp(28px,5vw,48px); display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
     .contact-panel p { color: var(--muted); line-height: 1.75; margin: 12px 0 0; word-break: keep-all; }
     .email-link { font-size: clamp(1.7rem,4vw,3.2rem); font-weight: 860; letter-spacing: 0; }
+    .email-link:hover { color: #8b5cf6; }
 
-    .site-footer {
-      padding: 42px 0;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-    }
-    .footer-grid {
-      width: min(100% - 32px, var(--max));
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: start;
-    }
+    .social-panel { margin-top: 18px; padding: 22px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+    .social-links, .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .social-link { min-height: 40px; padding: 0 14px; color: var(--muted); gap: 8px; }
+    .social-icon { width: 16px; height: 16px; display: inline-block; }
+    .social-icon svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+
+    .site-footer { padding: 42px 0; border-top: 1px solid var(--border); color: var(--muted); }
+    .footer-grid { width: min(100% - 32px, var(--max)); margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; }
     .footer-meta { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 12px; font-size: .9rem; }
-    .footer-links { display: flex; gap: 12px; font-weight: 720; }
-    .footer-links a:hover, .email-link:hover { color: #8b5cf6; }
+    .footer-links { font-weight: 720; }
+    .footer-links a:hover { color: #8b5cf6; }
 
-    .drawer-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 80;
-      background: rgba(12,10,18,.48);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s ease;
-    }
+    .drawer-overlay { position: fixed; inset: 0; z-index: 80; background: rgba(12,10,18,.48); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
     .drawer {
       position: fixed;
       inset: 0 auto 0 0;
@@ -612,32 +435,25 @@
     body.menu-open { overflow: hidden; }
     body.menu-open .drawer { transform: translateX(0); }
     body.menu-open .drawer-overlay { opacity: 1; pointer-events: auto; }
-
     .reveal { opacity: 0; transform: translateY(18px); }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes floatIn {
-      from { opacity: 0; transform: translateY(20px) scale(.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes ambient {
-      from { transform: translate3d(-1%,0,0) scale(1); }
-      to { transform: translate3d(1.5%,1%,0) scale(1.04); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes floatIn { from { opacity: 0; transform: translateY(20px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
 
     @media (max-width: 980px) {
       .desktop-menu { display: none; }
       .menu-button { display: inline-grid; }
-      .hero { grid-template-columns: 1fr; padding-top: 54px; gap: 28px; }
+      .hero, .about-layout, .map-layout, .contact-panel { grid-template-columns: 1fr; }
+      .hero { padding-top: 54px; gap: 28px; }
       .hero-art { min-height: 460px; }
       .preview-stack { height: 440px; max-width: 430px; }
-      .apps-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
       .values-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-      .about-layout, .contact-panel { grid-template-columns: 1fr; }
       .contact-panel .button { justify-self: start; }
+    }
+
+    @media (max-width: 700px) {
+      .apps-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
@@ -653,27 +469,25 @@
       .gradient-text { font-size: clamp(1.75rem, 10vw, 3rem); }
       .hero-copy { font-size: 1rem; }
       .hero-actions .button { flex: 1 1 150px; }
-      .hero-art { min-height: 360px; }
-      .preview-stack { height: 350px; }
-      .preview-main { inset: 18px 18px 18px 22px; padding: 20px; border-radius: 28px; }
-      .preview-side { width: 156px; height: 190px; right: -4px; top: 58px; }
-      .preview-small { width: 168px; height: 128px; left: -4px; bottom: 28px; }
-      .preview-title { font-size: 1.1rem; }
-      .preview-question { min-height: 96px; padding: 18px; }
+      .keyword-button { flex: 1 1 calc(50% - 8px); }
+      .hero-art { min-height: 380px; }
+      .preview-stack { height: 360px; }
+      .preview-main { inset: 16px 22px 112px 12px; padding: 18px; border-radius: 28px; }
+      .preview-map { width: 158px; height: 172px; right: 0; top: 70px; }
+      .preview-run { width: 170px; height: 122px; left: 8px; bottom: 40px; }
+      .preview-odow { width: 126px; height: 126px; right: 20px; bottom: 24px; }
+      .preview-question { min-height: 86px; padding: 16px; }
       .section { padding: 62px 0; }
-      .apps-grid, .values-grid { grid-template-columns: 1fr; }
-      .app-card { min-height: 360px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .app-card { min-height: 440px; }
+      .app-top { flex-direction: column; }
+      .status-pill { align-self: flex-start; }
       .footer-grid { grid-template-columns: 1fr; }
-      .footer-links { flex-wrap: wrap; }
+      .korea-map { min-height: 300px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .001ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: .001ms !important;
-      }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
       .reveal, .app-card, .value-card { opacity: 1; transform: none; }
     }
   </style>
@@ -719,25 +533,31 @@
         <span class="eyebrow">Independent Mobile App Studio</span>
         <h1 id="hero-title">SAME<br>STUDIO</h1>
         <strong class="gradient-text">Small tools for thoughtful days.</strong>
-        <p class="hero-copy">기록, 위치, 리듬처럼 일상 속 작은 순간을 더 선명하게 만드는 모바일 앱을 만듭니다.</p>
+        <p class="hero-copy">기록, 장소, 리듬처럼 반복되는 순간들을 더 가볍게 다루기 위해 설계됩니다.</p>
         <div class="hero-actions">
           <a class="button primary" href="#apps">View Apps</a>
           <a class="button secondary" href="#contact">Contact</a>
         </div>
+        <div class="keyword-actions" aria-label="Studio keywords">
+          <button class="keyword-button" type="button" data-intent="record" aria-label="Animate record keyword">record</button>
+          <button class="keyword-button" type="button" data-intent="place" aria-label="Animate place keyword">place</button>
+          <button class="keyword-button" type="button" data-intent="rhythm" aria-label="Animate rhythm keyword">rhythm</button>
+          <button class="keyword-button" type="button" data-intent="focus" aria-label="Animate focus keyword">focus</button>
+        </div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="preview-stack">
-          <div class="preview-card preview-side"><div class="mini-map"></div></div>
-          <div class="preview-card preview-small"><div class="wave"></div></div>
+          <div class="preview-card preview-map"><div class="mini-map"></div></div>
+          <div class="preview-card preview-run"><div class="wave"></div></div>
+          <div class="preview-card preview-odow"><div class="orb-icon"><img src="assets/icons/ODOW_icon.png" alt=""></div></div>
           <div class="preview-card preview-main">
-            <div class="app-window-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-            <div class="preview-title">Today’s reflection</div>
-            <div class="preview-question">What made this day a little clearer?</div>
+            <div class="hero-app-line">
+              <div class="mini-icon" style="--icon-bg:linear-gradient(135deg,#b794f4,#6366f1,#38bdf8);"><img src="assets/icons/Mapary_icon.png" alt=""></div>
+              <div><div class="hero-app-name">Mapary</div><span class="pill">Memory Map</span></div>
+            </div>
+            <div class="preview-question">Small records, clearer days, quieter tools.</div>
             <div class="preview-pills">
-              <span class="pill">record</span>
-              <span class="pill">place</span>
-              <span class="pill">rhythm</span>
-              <span class="pill">focus</span>
+              <span class="pill">record</span><span class="pill">place</span><span class="pill">rhythm</span><span class="pill">focus</span>
             </div>
           </div>
         </div>
@@ -752,28 +572,48 @@
           <p>각 앱은 기록, 장소, 리듬처럼 반복되는 순간을 더 가볍게 다루기 위해 설계됩니다.</p>
         </div>
         <div class="apps-grid">
-          <article class="app-card" style="--app-gradient:linear-gradient(135deg,#7c3aed,#d946ef 52%,#4f46e5);--app-glow:rgba(124,58,237,.28);">
-            <div class="app-top"><div class="app-symbol journal" aria-hidden="true"></div><span class="status-pill">Reflection</span></div>
-            <h3>ODOW / Mapary</h3>
-            <p class="ko">하루 한 질문을 통해 생각과 감정을 기록하고, 날짜와 키워드로 돌아볼 수 있는 일상 성찰 앱.</p>
-            <p class="en">A daily question-based reflection app for recording thoughts and emotions, then revisiting them by date and keyword.</p>
-            <div class="tag-row"><span class="tag">daily question</span><span class="tag">journal</span><span class="tag">keyword</span></div>
+          <article class="app-card" data-intent="record" style="--app-gradient:linear-gradient(135deg,#7c3aed,#d946ef 52%,#4f46e5);--app-glow:rgba(124,58,237,.28);">
+            <div class="app-top">
+              <div class="app-identity"><div class="app-icon"><img src="assets/icons/ODOW_icon.png" alt="ODOW app icon"></div><div class="app-name"><h3>ODOW</h3><span class="category-pill">Daily Question</span></div></div>
+              <span class="status-pill">Coming Soon</span>
+            </div>
+            <p class="ko">하루 한 질문을 통해 나의 생각과 감정을 기록하고, 오늘의 감정을 조용히 돌아보는 일상 성찰 앱.</p>
+            <p class="en">A daily question-based reflection app for recording thoughts and emotions through one prompt a day.</p>
+            <div class="tag-row"><span class="tag">daily question</span><span class="tag">reflection</span><span class="tag">journal</span></div>
+            <div class="app-actions"><span class="app-action soon">출시 예정</span></div>
           </article>
 
-          <article class="app-card" style="--app-gradient:linear-gradient(135deg,#3b82f6,#a855f7 48%,#fb7185);--app-glow:rgba(59,130,246,.26);">
-            <div class="app-top"><div class="app-symbol pin" aria-hidden="true"></div><span class="status-pill">Location</span></div>
-            <h3>Spotcha</h3>
+          <article class="app-card" data-intent="record" style="--app-gradient:linear-gradient(135deg,#b794f4,#6366f1 48%,#38bdf8);--app-glow:rgba(99,102,241,.26);">
+            <div class="app-top">
+              <div class="app-identity"><div class="app-icon"><img src="assets/icons/Mapary_icon.png" alt="Mapary app icon"></div><div class="app-name"><h3>Mapary</h3><span class="category-pill">Memory Map</span></div></div>
+              <span class="status-pill">App Store</span>
+            </div>
+            <p class="ko">날짜와 키워드로 기록을 다시 찾아보고, 나의 생각이 지나온 흐름을 지도처럼 정리하는 기록 앱.</p>
+            <p class="en">A personal archive app for revisiting memories, thoughts, and records by date and keyword.</p>
+            <div class="tag-row"><span class="tag">memory</span><span class="tag">calendar</span><span class="tag">keyword</span></div>
+            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/mapary-%EC%A7%80%EB%8F%84-%EA%B8%B0%EB%B0%98-%EB%A9%94%EB%AA%A8%EC%95%B1/id6760998507" target="_blank" rel="noopener noreferrer">App Store에서 보기</a></div>
+          </article>
+
+          <article class="app-card" data-intent="place" style="--app-gradient:linear-gradient(135deg,#3b82f6,#7c3aed 48%,#22d3ee);--app-glow:rgba(59,130,246,.26);">
+            <div class="app-top">
+              <div class="app-identity"><div class="app-icon spotcha"><img src="assets/icons/Spotcha_icon.png" alt="Spotcha app icon"></div><div class="app-name"><h3>Spotcha</h3><span class="category-pill">Location Reminder</span></div></div>
+              <span class="status-pill">Coming Soon</span>
+            </div>
             <p class="ko">특정 장소에서 잊지 말아야 할 일을 알려주는 위치 기반 알림 앱.</p>
             <p class="en">Location-based reminders for the places where memory matters.</p>
             <div class="tag-row"><span class="tag">place</span><span class="tag">reminder</span><span class="tag">memory</span></div>
+            <div class="app-actions"><span class="app-action soon">출시 예정</span></div>
           </article>
 
-          <article class="app-card" style="--app-gradient:linear-gradient(135deg,#22c7c7,#6366f1 48%,#c084fc);--app-glow:rgba(34,199,199,.24);">
-            <div class="app-top"><div class="app-symbol rhythm" aria-hidden="true"></div><span class="status-pill">Rhythm</span></div>
-            <h3>Runtronome</h3>
+          <article class="app-card" data-intent="rhythm" style="--app-gradient:linear-gradient(135deg,#fb7185,#ec4899 48%,#8b5cf6);--app-glow:rgba(236,72,153,.24);">
+            <div class="app-top">
+              <div class="app-identity"><div class="app-icon"><img src="assets/icons/Runtronome_icon.png" alt="Runtronome app icon"></div><div class="app-name"><h3>Runtronome</h3><span class="category-pill">Rhythm Trainer</span></div></div>
+              <span class="status-pill">App Store</span>
+            </div>
             <p class="ko">러닝 리듬과 페이스 훈련을 위한 메트로놈 앱.</p>
             <p class="en">A metronome companion for runners who train with rhythm and pace.</p>
             <div class="tag-row"><span class="tag">running</span><span class="tag">pace</span><span class="tag">training</span></div>
+            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/runtronome/id6762429079" target="_blank" rel="noopener noreferrer">View on App Store</a></div>
           </article>
         </div>
       </div>
@@ -786,10 +626,10 @@
           <h2>작지만 오래 남는 사용성을 생각합니다.</h2>
         </div>
         <div class="values-grid">
-          <article class="value-card"><h3>Reflection</h3><p>하루를 지나치지 않고 다시 바라볼 수 있는 기록의 구조를 만듭니다.</p></article>
-          <article class="value-card"><h3>Location</h3><p>장소와 기억이 만나는 순간에 필요한 정보를 조용히 건넵니다.</p></article>
-          <article class="value-card"><h3>Rhythm</h3><p>반복과 템포가 더 나은 루틴으로 이어지도록 돕습니다.</p></article>
-          <article class="value-card"><h3>Focus</h3><p>기능을 크게 부풀리기보다 집중할 수 있는 흐름을 우선합니다.</p></article>
+          <article class="value-card" data-intent="record"><h3>Reflection</h3><p>하루를 지나치지 않고 다시 바라볼 수 있는 기록의 구조를 만듭니다.</p></article>
+          <article class="value-card" data-intent="place"><h3>Place</h3><p>장소와 기억이 만나는 순간에 필요한 정보를 조용히 건넵니다.</p></article>
+          <article class="value-card" data-intent="rhythm"><h3>Rhythm</h3><p>반복과 템포가 더 나은 루틴으로 이어지도록 돕습니다.</p></article>
+          <article class="value-card" data-intent="focus"><h3>Focus</h3><p>기능을 크게 부풀리기보다 집중할 수 있는 흐름을 우선합니다.</p></article>
         </div>
       </div>
     </section>
@@ -800,9 +640,38 @@
         <div class="about-copy reveal">
           <span class="section-kicker">About</span>
           <h2>SAME STUDIO는 독립 모바일 앱 스튜디오입니다.</h2>
-          <p>세임스튜디오는 기록, 위치, 리듬, 집중처럼 일상에서 반복되는 작은 문제들을 앱으로 해결합니다.</p>
+          <p>세임스튜디오는 기록, 장소, 리듬, 집중처럼 일상에서 반복되는 작은 문제들을 앱으로 해결합니다.</p>
           <p>제품의 첫인상은 부드럽게, 실제 사용 흐름은 단단하게 만드는 것을 중요하게 생각합니다. 과장된 약속보다 꾸준히 쓰이는 도구의 밀도를 추구합니다.</p>
           <p>운영 형태: 독립 모바일 앱 스튜디오<br>사업자명: 세임스튜디오<br>대표자: 김동찬</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="location">
+      <div class="container map-layout">
+        <div class="map-card reveal" aria-label="Korea and Daejeon studio location illustration">
+          <div class="korea-map">
+            <svg viewBox="0 0 320 420" role="img" aria-label="Korea outline with Daejeon highlight">
+              <defs>
+                <linearGradient id="koreaGrad" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#a855f7" stop-opacity=".82"/>
+                  <stop offset=".55" stop-color="#6366f1" stop-opacity=".72"/>
+                  <stop offset="1" stop-color="#22d3ee" stop-opacity=".66"/>
+                </linearGradient>
+              </defs>
+              <path d="M171 31c25 18 28 47 19 70 24 14 37 36 32 63 20 16 24 42 12 66 18 20 10 49-13 62-8 28-29 51-55 62-18 8-33 23-47 39-26-24-28-55-17-82-25-16-33-42-23-68-22-25-19-57 4-79-8-28 4-54 30-67 5-31 28-55 58-66z" fill="url(#koreaGrad)" stroke="rgba(255,255,255,.58)" stroke-width="3"/>
+              <path d="M188 102c-24 8-44 21-57 44M202 181c-32 10-66 18-98 17M191 266c-29-6-54-2-75 14" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="147" cy="224" r="15" fill="#ff6aa8" stroke="white" stroke-width="5"/>
+              <circle cx="147" cy="224" r="31" fill="none" stroke="#ff6aa8" stroke-opacity=".38" stroke-width="4"/>
+            </svg>
+            <span class="daejeon-label">Daejeon</span>
+          </div>
+        </div>
+        <div class="map-copy reveal">
+          <span class="section-kicker">Korea / Daejeon</span>
+          <h2>Based in Daejeon, Korea.</h2>
+          <p>Independent Mobile app studio based in Korea, building small tools for thoughtful days.</p>
+          <p>정확한 위치를 드러내기보다, 대한민국 대전에서 차분히 앱을 만들고 운영하는 스튜디오의 지역성을 담았습니다.</p>
         </div>
       </div>
     </section>
@@ -816,6 +685,14 @@
             <p>앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요. 필요한 내용을 확인한 뒤 순차적으로 답변드립니다.</p>
           </div>
           <a class="button primary" href="mailto:contact@samestudio.kr">Send Email</a>
+        </div>
+        <div class="social-panel reveal">
+          <strong>Social</strong>
+          <div class="social-links" aria-label="Social links">
+            <a class="social-link" href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="Open SAME STUDIO GitHub in a new tab"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z"/></svg></span>GitHub</a>
+            <a class="social-link" href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="Open SAME STUDIO X in a new tab"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z"/></svg></span>X</a>
+            <a class="social-link" href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="Open SAME STUDIO Instagram in a new tab"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg></span>Instagram</a>
+          </div>
         </div>
       </div>
     </section>
@@ -834,6 +711,9 @@
       <nav class="footer-links" aria-label="Footer navigation">
         <a href="support.html">Support</a>
         <a href="privacy.html">Privacy</a>
+        <a href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer">Instagram</a>
       </nav>
     </div>
   </footer>
@@ -850,10 +730,24 @@
       var closeButtons = document.querySelectorAll("[data-close-menu]");
       var drawerLinks = document.querySelectorAll(".drawer a");
       var themeButtons = document.querySelectorAll(".theme-toggle");
+      var intentButtons = document.querySelectorAll(".keyword-button");
+      var intentTimer;
 
       function setMenu(open) {
         document.body.classList.toggle("menu-open", open);
         if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      }
+
+      function setIntent(intent, button) {
+        ["record","place","rhythm","focus"].forEach(function (name) { document.body.classList.remove("intent-" + name); });
+        intentButtons.forEach(function (item) { item.classList.remove("is-active"); });
+        document.body.classList.add("intent-" + intent);
+        button.classList.add("is-active");
+        window.clearTimeout(intentTimer);
+        intentTimer = window.setTimeout(function () {
+          document.body.classList.remove("intent-" + intent);
+          button.classList.remove("is-active");
+        }, 1100);
       }
 
       themeButtons.forEach(function (button) {
@@ -864,14 +758,16 @@
         });
       });
 
+      intentButtons.forEach(function (button) {
+        button.addEventListener("click", function () { setIntent(button.getAttribute("data-intent"), button); });
+      });
+
       if (menuButton) menuButton.addEventListener("click", function () { setMenu(true); });
       closeButtons.forEach(function (button) { button.addEventListener("click", function () { setMenu(false); }); });
       drawerLinks.forEach(function (link) { link.addEventListener("click", function () { setMenu(false); }); });
       document.addEventListener("keydown", function (event) { if (event.key === "Escape") setMenu(false); });
 
-      function updateHeader() {
-        header.classList.toggle("is-scrolled", window.scrollY > 12);
-      }
+      function updateHeader() { header.classList.toggle("is-scrolled", window.scrollY > 12); }
       updateHeader();
       window.addEventListener("scroll", updateHeader, { passive: true });
 
