@@ -460,13 +460,14 @@
     .app-icon {
       width: 74px;
       height: 74px;
-      padding: 6px;
+      padding: 0;
       border-radius: 24px;
       background: var(--app-gradient);
       box-shadow: 0 18px 34px var(--app-glow);
       overflow: hidden;
       flex: 0 0 auto;
     }
+    .app-icon img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: inherit; }
     .app-icon.spotcha { padding: 9px; background: linear-gradient(135deg,#3b82f6,#7c3aed 50%,#22d3ee); }
     .app-icon.spotcha img { transform: scale(1.18); border-radius: 20px; clip-path: inset(7% round 18px); }
     .app-name { min-width: 0; }
@@ -482,6 +483,25 @@
       font-weight: 760;
       white-space: nowrap;
     }
+    .status-pill {
+      min-width: 46px;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 10px;
+      overflow: hidden;
+    }
+    .status-pill::before { content: ""; position: absolute; inset: 0; background: var(--app-gradient); opacity: .18; pointer-events: none; }
+    .status-short, .badge-icon, .store-badge-icon { position: relative; z-index: 1; }
+    .status-short { font-size: .76rem; color: var(--text); }
+    .badge-icon { width: 17px; height: 17px; color: var(--text); display: inline-grid; place-items: center; }
+    .badge-icon svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .store-badge-icon { width: 20px; height: 20px; object-fit: contain; display: block; filter: drop-shadow(0 5px 12px rgba(0,0,0,.16)); }
+    .store-fallback-icon { width: 19px; height: 19px; color: var(--text); }
+    .store-fallback-icon svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+    .store-badge-icon[hidden], .store-fallback-icon[hidden] { display: none; }
     .category-pill { display: inline-flex; margin-top: 8px; }
     .app-card .ko { position: relative; margin: 24px 0 0; color: var(--text); line-height: 1.65; font-weight: 650; word-break: keep-all; }
     .app-card.released .ko { margin-top: 18px; }
@@ -512,19 +532,53 @@
     .value-card h3 { margin: 0; font-size: 1.05rem; }
     .value-card p { color: var(--muted); line-height: 1.65; margin: 10px 0 0; word-break: keep-all; }
 
-    .about-layout, .map-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; align-items: stretch; }
-    .about-stat {
-      padding: 30px;
-      border-radius: var(--radius-xl);
-      background: linear-gradient(135deg,rgba(109,93,247,.88),rgba(255,106,168,.78));
-      color: white;
-      box-shadow: 0 24px 70px rgba(125,86,223,.24);
-    }
-    .about-stat strong { display: block; font-size: clamp(2.8rem,6vw,5rem); line-height: .92; }
-    .about-stat span { display: block; margin-top: 18px; max-width: 360px; line-height: 1.65; font-weight: 650; }
+    .about-layout, .map-layout { display: grid; grid-template-columns: 1.08fr .92fr; gap: 24px; align-items: stretch; }
     .about-copy { padding: 32px; border-radius: var(--radius-xl); }
     .about-copy p { margin: 0 0 18px; color: var(--muted); line-height: 1.8; word-break: keep-all; }
     .about-copy p:last-child { margin-bottom: 0; }
+    .about-meta { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 22px; }
+    .meta-pill { padding: 12px; border-radius: 16px; border: 1px solid var(--border); background: rgba(255,255,255,.18); }
+    .meta-pill span { display: block; color: var(--soft); font-size: .75rem; font-weight: 760; }
+    .meta-pill strong { display: block; margin-top: 5px; font-size: .88rem; }
+    .about-visual-card {
+      position: relative;
+      min-height: 430px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 24% 22%,rgba(168,85,247,.22),transparent 13rem),
+        radial-gradient(circle at 76% 70%,rgba(34,211,238,.12),transparent 13rem),
+        var(--card);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+    }
+    .about-visual-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139,92,246,.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,92,246,.10) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(circle at 50% 48%,#000,transparent 78%);
+      pointer-events: none;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .about-visual-card:hover { transform: translateY(-5px) rotateX(1deg) rotateY(-1deg) scale(1.01); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
+    }
+    .map-card-header { position: relative; z-index: 1; }
+    .map-card-header strong { display: block; margin-top: 10px; font-size: clamp(1.8rem,3.6vw,3rem); line-height: 1.05; }
+    .map-card-header p { margin: 12px 0 0; color: var(--muted); line-height: 1.65; }
+    .korea-map-visual { position: relative; z-index: 1; min-height: 220px; margin-top: 20px; display: grid; place-items: center; }
+    .korea-map-visual svg { width: min(82%, 270px); height: auto; filter: drop-shadow(0 18px 44px rgba(109,93,247,.20)); }
+    .daejeon-dot { position: absolute; left: 48%; top: 53%; width: 14px; height: 14px; border-radius: 50%; background: #ff6aa8; box-shadow: 0 0 0 8px rgba(255,106,168,.16), 0 0 32px rgba(255,106,168,.45); }
+    .about-visual-card .daejeon-label { position: absolute; left: calc(48% + 18px); top: calc(53% - 6px); transform: none; padding: 7px 10px; font-size: .78rem; }
+    .studio-pills { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .studio-pills span { padding: 8px 11px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,.20); color: var(--muted); font-size: .8rem; font-weight: 760; }
 
     .map-card { padding: 28px; border-radius: var(--radius-xl); overflow: hidden; position: relative; }
     .map-card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 58% 48%, rgba(168,85,247,.16), transparent 16rem); pointer-events: none; }
@@ -647,6 +701,9 @@
       .app-card { min-height: 440px; }
       .app-top { flex-direction: column; }
       .status-pill { align-self: flex-start; }
+      .about-meta { grid-template-columns: 1fr; }
+      .about-visual-card { min-height: 380px; padding: 22px; }
+      .korea-map-visual { min-height: 190px; }
       .footer-grid { grid-template-columns: 1fr; }
       .footer-social { justify-content: flex-start; }
       .korea-map { min-height: 300px; }
@@ -795,7 +852,10 @@
           <article class="app-card app-mapary released" data-intent="record" style="--app-gradient:linear-gradient(135deg,#b794f4,#6366f1 48%,#38bdf8);--app-glow:rgba(99,102,241,.26);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/Mapary_icon.png" alt="Mapary icon"></div><div class="app-name"><h3>Mapary</h3><span class="category-pill">Memory Map</span></div></div>
-              <span class="status-pill">Apple App Store</span>
+              <span class="status-pill store-status" aria-label="Available on Apple App Store">
+                <img src="assets/icons/appstore.png" alt="" class="store-badge-icon" aria-hidden="true" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+                <span class="store-fallback-icon" aria-hidden="true" hidden><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
+              </span>
             </div>
             <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/mapary-%EC%A7%80%EB%8F%84-%EA%B8%B0%EB%B0%98-%EB%A9%94%EB%AA%A8%EC%95%B1/id6760998507" target="_blank" rel="noopener noreferrer">Apple App Store에서 보기</a></div>
             <p class="ko">날짜와 키워드로 기록을 다시 찾아보고, 나의 생각이 지나온 흐름을 지도처럼 정리하는 기록 앱.</p>
@@ -806,7 +866,10 @@
           <article class="app-card app-runtronome released" data-intent="rhythm" style="--app-gradient:linear-gradient(135deg,#fb7185,#ec4899 48%,#8b5cf6);--app-glow:rgba(236,72,153,.24);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/Runtronome_icon.png" alt="Runtronome icon"></div><div class="app-name"><h3>Runtronome</h3><span class="category-pill">Rhythm Trainer</span></div></div>
-              <span class="status-pill">Apple App Store</span>
+              <span class="status-pill store-status" aria-label="Available on Apple App Store">
+                <img src="assets/icons/appstore.png" alt="" class="store-badge-icon" aria-hidden="true" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+                <span class="store-fallback-icon" aria-hidden="true" hidden><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
+              </span>
             </div>
             <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/runtronome/id6762429079" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
             <p class="ko">러닝 리듬과 페이스 훈련을 위한 메트로놈 앱.</p>
@@ -817,7 +880,7 @@
           <article class="app-card app-spotcha" data-intent="place" style="--app-gradient:linear-gradient(135deg,#3b82f6,#7c3aed 48%,#22d3ee);--app-glow:rgba(59,130,246,.26);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon spotcha"><img src="assets/icons/Spotcha_icon.png" alt="Spotcha icon"></div><div class="app-name"><h3>Spotcha</h3><span class="category-pill">Location Reminder</span></div></div>
-              <span class="status-pill">Coming Soon</span>
+              <span class="status-pill soon-status" aria-label="Coming Soon"><span class="badge-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="8"/></svg></span><span class="status-short">Soon</span></span>
             </div>
             <p class="ko">특정 장소에서 잊지 말아야 할 일을 알려주는 위치 기반 알림 앱.</p>
             <p class="en">Location-based reminders for the places where memory matters.</p>
@@ -828,7 +891,7 @@
           <article class="app-card app-odow" data-intent="record" style="--app-gradient:linear-gradient(135deg,#7c3aed,#d946ef 52%,#4f46e5);--app-glow:rgba(124,58,237,.28);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/ODOW_icon.png" alt="ODOW icon"></div><div class="app-name"><h3>ODOW</h3><span class="category-pill">Daily Question</span></div></div>
-              <span class="status-pill">Coming Soon</span>
+              <span class="status-pill soon-status" aria-label="Coming Soon"><span class="badge-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/></svg></span><span class="status-short">Soon</span></span>
             </div>
             <p class="ko">하루 한 질문을 통해 나의 생각과 감정을 기록하고, 오늘의 감정을 조용히 돌아보는 일상 성찰 앱.</p>
             <p class="en">A daily question-based reflection app for recording thoughts and emotions through one prompt a day.</p>
@@ -856,13 +919,39 @@
 
     <section class="section" id="about">
       <div class="container about-layout">
-        <div class="about-stat reveal"><strong>Independent</strong><span>Mobile app studio based in Korea, building small tools for thoughtful days.</span></div>
         <div class="about-copy reveal">
           <span class="section-kicker">About</span>
           <h2>SAME STUDIO는 독립 모바일 앱 스튜디오입니다.</h2>
           <p>세임스튜디오는 기록, 장소, 리듬, 집중처럼 일상에서 반복되는 작은 문제들을 앱으로 해결합니다.</p>
           <p>제품의 첫인상은 부드럽게, 실제 사용 흐름은 단단하게 만드는 것을 중요하게 생각합니다. 과장된 약속보다 꾸준히 쓰이는 도구의 밀도를 추구합니다.</p>
-          <p>운영 형태: 독립 모바일 앱 스튜디오<br>사업자명: 세임스튜디오<br>대표자: 김동찬</p>
+          <div class="about-meta" aria-label="Business information">
+            <div class="meta-pill"><span>운영 형태</span><strong>독립 모바일 앱 스튜디오</strong></div>
+            <div class="meta-pill"><span>사업자명</span><strong>세임스튜디오</strong></div>
+            <div class="meta-pill"><span>대표자</span><strong>김동찬</strong></div>
+          </div>
+        </div>
+        <div class="about-visual-card reveal" aria-label="SAME STUDIO is based in Daejeon, Korea">
+          <div class="map-card-header">
+            <span class="section-kicker">Independent</span>
+            <strong>Based in Daejeon, Korea</strong>
+            <p>Small tools for thoughtful days.</p>
+          </div>
+          <div class="korea-map-visual">
+            <svg viewBox="0 0 260 310" aria-hidden="true">
+              <defs>
+                <linearGradient id="aboutKoreaGrad" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#a855f7" stop-opacity=".86"/>
+                  <stop offset=".55" stop-color="#6366f1" stop-opacity=".72"/>
+                  <stop offset="1" stop-color="#22d3ee" stop-opacity=".58"/>
+                </linearGradient>
+              </defs>
+              <path d="M142 22c22 16 25 41 17 62 21 13 33 32 29 56 18 14 21 38 10 58 16 18 9 43-12 55-7 25-26 45-49 55-16 7-29 20-42 34-23-21-25-49-15-73-22-14-29-37-20-60-20-22-17-50 4-69-7-25 4-48 27-60 4-27 25-48 51-58Z" fill="url(#aboutKoreaGrad)" stroke="rgba(255,255,255,.58)" stroke-width="3"/>
+              <path d="M156 84c-22 8-39 19-51 39M169 153c-29 9-58 16-87 15M158 226c-26-5-48-2-67 12" fill="none" stroke="rgba(255,255,255,.36)" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <span class="daejeon-dot"></span>
+            <span class="daejeon-label">Daejeon</span>
+          </div>
+          <div class="studio-pills"><span>record</span><span>place</span><span>rhythm</span><span>focus</span></div>
         </div>
       </div>
     </section>
