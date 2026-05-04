@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO는 기록, 장소, 리듬처럼 반복되는 순간들을 더 가볍게 다루기 위해 앱을 만드는 독립 모바일 앱 스튜디오입니다.">
-  <title>SAME STUDIO</title>
+  <title>SAME STUDIO | Small tools for thoughtful days.</title>
   <style>
     :root {
       color-scheme: light;
@@ -427,7 +427,7 @@
     }
 
     .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
-    .app-card, .value-card, .contact-panel, .about-copy, .map-card, .social-panel {
+    .app-card, .value-card, .contact-panel, .about-copy, .map-card {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--card);
@@ -447,7 +447,9 @@
       transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
     }
     .app-card.revealed { animation: fadeUp .7s ease both; }
-    .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
+    @media (hover: hover) and (pointer: fine) {
+      .app-card:hover { transform: translateY(-6px) scale(1.015); box-shadow: var(--shadow-hover), 0 0 0 6px rgba(139,92,246,.07); border-color: var(--border-strong); }
+    }
     .app-card::before { content: ""; position: absolute; inset: 0; background: var(--app-gradient); opacity: .13; pointer-events: none; }
     .app-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; position: relative; }
     .app-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -478,10 +480,25 @@
     }
     .category-pill { display: inline-flex; margin-top: 8px; }
     .app-card .ko { position: relative; margin: 24px 0 0; color: var(--text); line-height: 1.65; font-weight: 650; word-break: keep-all; }
+    .app-card.released .ko { margin-top: 18px; }
     .app-card .en { position: relative; margin: 12px 0 0; color: var(--muted); line-height: 1.6; }
     .tag-row { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-    .tag { padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.25); border: 1px solid var(--border); color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .tag { padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.25); border: 1px solid var(--border); color: var(--muted); font-size: .78rem; font-weight: 760; }
+    .app-odow .tag:nth-child(1) { background: rgba(124,58,237,.16); color: #6d28d9; border-color: rgba(124,58,237,.24); }
+    .app-odow .tag:nth-child(2) { background: rgba(217,70,239,.15); color: #a21caf; border-color: rgba(217,70,239,.24); }
+    .app-odow .tag:nth-child(3) { background: rgba(79,70,229,.15); color: #4338ca; border-color: rgba(79,70,229,.24); }
+    .app-mapary .tag:nth-child(1) { background: rgba(99,102,241,.15); color: #4338ca; border-color: rgba(99,102,241,.25); }
+    .app-mapary .tag:nth-child(2) { background: rgba(56,189,248,.16); color: #0369a1; border-color: rgba(56,189,248,.25); }
+    .app-mapary .tag:nth-child(3) { background: rgba(167,139,250,.16); color: #6d28d9; border-color: rgba(167,139,250,.25); }
+    .app-spotcha .tag:nth-child(1) { background: rgba(59,130,246,.16); color: #1d4ed8; border-color: rgba(59,130,246,.25); }
+    .app-spotcha .tag:nth-child(2) { background: rgba(34,211,238,.16); color: #0e7490; border-color: rgba(34,211,238,.25); }
+    .app-spotcha .tag:nth-child(3) { background: rgba(124,58,237,.15); color: #6d28d9; border-color: rgba(124,58,237,.25); }
+    .app-runtronome .tag:nth-child(1) { background: rgba(251,113,133,.16); color: #be123c; border-color: rgba(251,113,133,.25); }
+    .app-runtronome .tag:nth-child(2) { background: rgba(236,72,153,.15); color: #be185d; border-color: rgba(236,72,153,.25); }
+    .app-runtronome .tag:nth-child(3) { background: rgba(139,92,246,.15); color: #6d28d9; border-color: rgba(139,92,246,.25); }
+    [data-theme="dark"] .tag { color: #ede7ff; }
     .app-actions { margin-top: auto; padding-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; position: relative; }
+    .app-card.released .app-actions { margin-top: 18px; padding-top: 0; }
     .app-action { min-height: 42px; padding: 0 15px; font-size: .9rem; }
     .app-action.soon { color: var(--muted); cursor: default; }
 
@@ -531,10 +548,11 @@
     .email-link { font-size: clamp(1.7rem,4vw,3.2rem); font-weight: 860; letter-spacing: 0; }
     .email-link:hover { color: #8b5cf6; }
 
-    .social-panel { margin-top: 18px; padding: 22px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
-    .social-links, .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
-    .social-link { min-height: 40px; padding: 0 14px; color: var(--muted); gap: 8px; }
-    .social-icon { width: 16px; height: 16px; display: inline-block; }
+    .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .footer-social { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 14px; }
+    .social-link { width: 42px; height: 42px; color: var(--muted); padding: 0; background: var(--card); border: 1px solid var(--border); border-radius: 999px; display: inline-grid; place-items: center; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform .2s ease, color .2s ease, border-color .2s ease; }
+    .social-link:hover { color: var(--text); border-color: var(--border-strong); transform: translateY(-2px); }
+    .social-icon { width: 17px; height: 17px; display: inline-block; }
     .social-icon svg { width: 100%; height: 100%; display: block; fill: currentColor; }
 
     .site-footer { padding: 42px 0; border-top: 1px solid var(--border); color: var(--muted); }
@@ -542,6 +560,11 @@
     .footer-meta { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 12px; font-size: .9rem; }
     .footer-links { font-weight: 720; }
     .footer-links a:hover { color: #8b5cf6; }
+    .page-transition { position: fixed; inset: 0; z-index: 120; pointer-events: none; opacity: 0; background: rgba(12,10,18,.10); transition: opacity .18s ease; }
+    .page-transition::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); box-shadow: 0 0 22px rgba(168,85,247,.45); }
+    body.is-transitioning .page-transition { opacity: 1; }
+    body.is-transitioning .page-transition::before { animation: pageLoad .38s ease forwards; }
+    body.is-transitioning main, body.is-transitioning .site-footer { opacity: .45; transition: opacity .22s ease; }
 
     .drawer-overlay { position: fixed; inset: 0; z-index: 80; background: rgba(12,10,18,.48); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
     .drawer {
@@ -573,6 +596,7 @@
     @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
     @keyframes phoneFeed { from { transform: translateY(0); } to { transform: translateY(-50%); } }
     @keyframes softFloat { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+    @keyframes pageLoad { from { width: 0; } to { width: 100%; } }
 
     @media (max-width: 980px) {
       .desktop-menu { display: none; }
@@ -620,6 +644,7 @@
       .app-top { flex-direction: column; }
       .status-pill { align-self: flex-start; }
       .footer-grid { grid-template-columns: 1fr; }
+      .footer-social { justify-content: flex-start; }
       .korea-map { min-height: 300px; }
     }
 
@@ -628,10 +653,13 @@
       .reveal, .app-card, .value-card { opacity: 1; transform: none; }
       .phone-feed { animation: none; }
       .floating-card { animation: none; }
+      body.is-transitioning .page-transition::before { animation: none; width: 100%; }
+      body.is-transitioning main, body.is-transitioning .site-footer { opacity: 1; }
     }
   </style>
 </head>
 <body>
+  <div class="page-transition" aria-hidden="true"></div>
   <header class="site-header" data-header>
     <div class="nav">
       <a class="brand" href="#top" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span>SAME STUDIO</span></a>
@@ -759,7 +787,7 @@
           <p>각 앱은 기록, 장소, 리듬처럼 반복되는 순간을 더 가볍게 다루기 위해 설계됩니다.</p>
         </div>
         <div class="apps-grid">
-          <article class="app-card" data-intent="record" style="--app-gradient:linear-gradient(135deg,#7c3aed,#d946ef 52%,#4f46e5);--app-glow:rgba(124,58,237,.28);">
+          <article class="app-card app-odow" data-intent="record" style="--app-gradient:linear-gradient(135deg,#7c3aed,#d946ef 52%,#4f46e5);--app-glow:rgba(124,58,237,.28);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/ODOW_icon.png" alt="ODOW app icon"></div><div class="app-name"><h3>ODOW</h3><span class="category-pill">Daily Question</span></div></div>
               <span class="status-pill">Coming Soon</span>
@@ -770,18 +798,18 @@
             <div class="app-actions"><span class="app-action soon">출시 예정</span></div>
           </article>
 
-          <article class="app-card" data-intent="record" style="--app-gradient:linear-gradient(135deg,#b794f4,#6366f1 48%,#38bdf8);--app-glow:rgba(99,102,241,.26);">
+          <article class="app-card app-mapary released" data-intent="record" style="--app-gradient:linear-gradient(135deg,#b794f4,#6366f1 48%,#38bdf8);--app-glow:rgba(99,102,241,.26);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/Mapary_icon.png" alt="Mapary app icon"></div><div class="app-name"><h3>Mapary</h3><span class="category-pill">Memory Map</span></div></div>
-              <span class="status-pill">App Store</span>
+              <span class="status-pill">Apple App Store</span>
             </div>
+            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/mapary-%EC%A7%80%EB%8F%84-%EA%B8%B0%EB%B0%98-%EB%A9%94%EB%AA%A8%EC%95%B1/id6760998507" target="_blank" rel="noopener noreferrer">Apple App Store에서 보기</a></div>
             <p class="ko">날짜와 키워드로 기록을 다시 찾아보고, 나의 생각이 지나온 흐름을 지도처럼 정리하는 기록 앱.</p>
             <p class="en">A personal archive app for revisiting memories, thoughts, and records by date and keyword.</p>
             <div class="tag-row"><span class="tag">memory</span><span class="tag">calendar</span><span class="tag">keyword</span></div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/mapary-%EC%A7%80%EB%8F%84-%EA%B8%B0%EB%B0%98-%EB%A9%94%EB%AA%A8%EC%95%B1/id6760998507" target="_blank" rel="noopener noreferrer">App Store에서 보기</a></div>
           </article>
 
-          <article class="app-card" data-intent="place" style="--app-gradient:linear-gradient(135deg,#3b82f6,#7c3aed 48%,#22d3ee);--app-glow:rgba(59,130,246,.26);">
+          <article class="app-card app-spotcha" data-intent="place" style="--app-gradient:linear-gradient(135deg,#3b82f6,#7c3aed 48%,#22d3ee);--app-glow:rgba(59,130,246,.26);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon spotcha"><img src="assets/icons/Spotcha_icon.png" alt="Spotcha app icon"></div><div class="app-name"><h3>Spotcha</h3><span class="category-pill">Location Reminder</span></div></div>
               <span class="status-pill">Coming Soon</span>
@@ -792,15 +820,15 @@
             <div class="app-actions"><span class="app-action soon">출시 예정</span></div>
           </article>
 
-          <article class="app-card" data-intent="rhythm" style="--app-gradient:linear-gradient(135deg,#fb7185,#ec4899 48%,#8b5cf6);--app-glow:rgba(236,72,153,.24);">
+          <article class="app-card app-runtronome released" data-intent="rhythm" style="--app-gradient:linear-gradient(135deg,#fb7185,#ec4899 48%,#8b5cf6);--app-glow:rgba(236,72,153,.24);">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/Runtronome_icon.png" alt="Runtronome app icon"></div><div class="app-name"><h3>Runtronome</h3><span class="category-pill">Rhythm Trainer</span></div></div>
-              <span class="status-pill">App Store</span>
+              <span class="status-pill">Apple App Store</span>
             </div>
+            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/runtronome/id6762429079" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
             <p class="ko">러닝 리듬과 페이스 훈련을 위한 메트로놈 앱.</p>
             <p class="en">A metronome companion for runners who train with rhythm and pace.</p>
             <div class="tag-row"><span class="tag">running</span><span class="tag">pace</span><span class="tag">training</span></div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/runtronome/id6762429079" target="_blank" rel="noopener noreferrer">View on App Store</a></div>
           </article>
         </div>
       </div>
@@ -873,14 +901,6 @@
           </div>
           <a class="button primary" href="mailto:contact@samestudio.kr">Send Email</a>
         </div>
-        <div class="social-panel reveal">
-          <strong>Social</strong>
-          <div class="social-links" aria-label="Social links">
-            <a class="social-link" href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="Open SAME STUDIO GitHub in a new tab"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z"/></svg></span>GitHub</a>
-            <a class="social-link" href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="Open SAME STUDIO X in a new tab"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z"/></svg></span>X</a>
-            <a class="social-link" href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="Open SAME STUDIO Instagram in a new tab"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg></span>Instagram</a>
-          </div>
-        </div>
       </div>
     </section>
   </main>
@@ -898,10 +918,12 @@
       <nav class="footer-links" aria-label="Footer navigation">
         <a href="support.html">Support</a>
         <a href="privacy.html">Privacy</a>
-        <a href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer">X</a>
-        <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer">Instagram</a>
       </nav>
+      <div class="footer-social" aria-label="Social links">
+        <a class="social-link" href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z"/></svg></span></a>
+        <a class="social-link" href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z"/></svg></span></a>
+        <a class="social-link" href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg></span></a>
+      </div>
     </div>
   </footer>
 
@@ -957,6 +979,19 @@
       function updateHeader() { header.classList.toggle("is-scrolled", window.scrollY > 12); }
       updateHeader();
       window.addEventListener("scroll", updateHeader, { passive: true });
+
+      document.addEventListener("click", function (event) {
+        var link = event.target.closest("a[href]");
+        if (!link) return;
+        var href = link.getAttribute("href");
+        if (!href || href.charAt(0) === "#" || href.indexOf("mailto:") === 0 || link.target === "_blank" || link.hasAttribute("download")) return;
+        var url = new URL(href, window.location.href);
+        var isInternalHtml = url.origin === window.location.origin && /\.html$/.test(url.pathname);
+        if (!isInternalHtml || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        document.body.classList.add("is-transitioning");
+        window.setTimeout(function () { window.location.href = url.href; }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
+      });
 
       var revealItems = document.querySelectorAll(".reveal, .app-card, .value-card");
       if ("IntersectionObserver" in window) {
