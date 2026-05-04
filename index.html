@@ -292,6 +292,114 @@
         radial-gradient(circle at 76% 28%,rgba(255,106,168,.14),transparent 12rem),
         linear-gradient(180deg,rgba(28,24,42,.86),rgba(15,13,22,.92));
     }
+    .phone-status, .phone-title, .feed-mask { transition: opacity .28s ease, transform .28s ease; }
+    .play-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      z-index: 5;
+      transform: translateX(-50%);
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(18,16,28,.46);
+      color: rgba(255,255,255,.82);
+      font-size: .72rem;
+      font-weight: 820;
+      letter-spacing: .02em;
+      box-shadow: 0 12px 28px rgba(109,93,247,.18);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: .68;
+      transition: opacity .2s ease, transform .2s ease;
+      pointer-events: none;
+    }
+    .iphone:hover .play-hint { opacity: 1; transform: translateX(-50%) translateY(-2px); }
+    .iphone.is-playing { cursor: crosshair; }
+    .iphone.is-playing .phone-status,
+    .iphone.is-playing .phone-title,
+    .iphone.is-playing .feed-mask,
+    .iphone.is-playing .play-hint {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+    }
+    .space-game-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 32% 12%,rgba(168,85,247,.34),transparent 9rem),
+        radial-gradient(circle at 80% 28%,rgba(236,72,153,.20),transparent 10rem),
+        linear-gradient(180deg,#090b1f,#15112a 52%,#221437);
+      transition: opacity .28s ease;
+    }
+    .iphone.is-playing .space-game-layer { opacity: 1; pointer-events: auto; }
+    .space-game-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+    .space-game-ui {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 54px;
+      z-index: 2;
+      display: grid;
+      gap: 8px;
+      color: white;
+      pointer-events: none;
+    }
+    .space-game-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: .72rem; font-weight: 850; text-transform: uppercase; letter-spacing: .05em; }
+    .space-game-progress { height: 7px; border-radius: 999px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.12); overflow: hidden; }
+    .space-game-progress span { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#22d3ee,#8b5cf6,#ff6aa8); box-shadow: 0 0 18px rgba(168,85,247,.45); }
+    .space-game-result {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(7,8,20,.48);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+    .space-game-result.is-visible { opacity: 1; pointer-events: auto; }
+    .space-game-dialog {
+      width: 100%;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.20);
+      background: rgba(24,20,40,.72);
+      box-shadow: 0 22px 54px rgba(0,0,0,.34), 0 0 34px rgba(168,85,247,.18);
+      color: white;
+      text-align: center;
+    }
+    .space-game-dialog h3 { margin: 0; font-size: 1.35rem; }
+    .space-game-dialog p { margin: 10px 0 0; color: rgba(255,255,255,.74); line-height: 1.55; font-size: .9rem; }
+    .space-game-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+    .space-game-button {
+      min-height: 38px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-weight: 820;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .space-game-button.primary { border-color: transparent; background: var(--accent); box-shadow: 0 12px 26px rgba(168,85,247,.26); }
+    .space-game-button:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(168,85,247,.24); }
     .phone-status {
       position: relative;
       z-index: 3;
@@ -854,6 +962,10 @@
       .iphone { width: min(78vw, 244px); height: 450px; border-radius: 40px; }
       .phone-screen { border-radius: 31px; }
       .feed-mask { top: 100px; }
+      .space-game-ui { top: 50px; left: 14px; right: 14px; }
+      .space-game-dialog { padding: 18px 14px; border-radius: 22px; }
+      .space-game-dialog h3 { font-size: 1.18rem; }
+      .space-game-button { min-height: 36px; padding: 0 11px; font-size: .82rem; }
       .phone-card { min-height: 104px; padding: 14px; }
       .floating-card { min-width: 92px; min-height: 68px; padding: 11px; border-radius: 18px; font-size: .9rem; }
       .float-daily { left: 0; top: 42px; }
@@ -879,6 +991,8 @@
       .phone-feed { animation: none; }
       .floating-card { animation: none; }
       .keyword-button:hover { transform: none; }
+      .phone-status, .phone-title, .feed-mask, .play-hint, .space-game-layer, .space-game-result { transition: none; }
+      .space-game-button:hover { transform: none; }
       .category-pill:hover,
       .category-pill:active { transform: none; }
       .meta-pill:hover,
@@ -946,16 +1060,16 @@
           <button class="keyword-button" type="button" data-intent="focus" aria-label="Animate focus keyword">focus</button>
         </div>
       </div>
-      <div class="hero-art" aria-hidden="true">
+      <div class="hero-art">
         <div class="phone-preview">
-          <div class="floating-card float-daily">?<small>Daily</small></div>
-          <div class="floating-card float-place"><span class="pin-symbol"></span><small>Place</small></div>
-          <div class="floating-card float-rhythm"><span class="wave-line"></span><small>Rhythm</small></div>
-          <div class="iphone">
+          <div class="floating-card float-daily" aria-hidden="true">?<small>Daily</small></div>
+          <div class="floating-card float-place" aria-hidden="true"><span class="pin-symbol"></span><small>Place</small></div>
+          <div class="floating-card float-rhythm" aria-hidden="true"><span class="wave-line"></span><small>Rhythm</small></div>
+          <div class="iphone" role="button" tabindex="0" aria-label="Play mini space game">
             <div class="phone-screen">
-              <div class="phone-status"><span>9:41</span><span class="status-dots"><span></span><span></span><span></span></span></div>
-              <div class="phone-title"><strong>SAME apps</strong><span>record · place · rhythm</span></div>
-              <div class="feed-mask">
+              <div class="phone-status" aria-hidden="true"><span>9:41</span><span class="status-dots"><span></span><span></span><span></span></span></div>
+              <div class="phone-title" aria-hidden="true"><strong>SAME apps</strong><span>record · place · rhythm</span></div>
+              <div class="feed-mask" aria-hidden="true">
                 <div class="phone-feed">
                   <div class="phone-card" data-intent="record" style="--card-gradient:linear-gradient(135deg,#7c3aed,#d946ef,#4f46e5);">
                     <span class="phone-label">Today’s Question</span>
@@ -1004,6 +1118,24 @@
                   <div class="phone-card" data-intent="place" style="--card-gradient:linear-gradient(135deg,#3b82f6,#22d3ee,#a855f7);">
                     <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">Spotcha</span><div class="phone-copy">Near your place</div></div></div>
                     <div class="phone-pills"><span class="pill">reminder</span></div>
+                  </div>
+                </div>
+              </div>
+              <span class="play-hint">Tap to play</span>
+              <div class="space-game-layer" aria-hidden="true">
+                <canvas class="space-game-canvas"></canvas>
+                <div class="space-game-ui">
+                  <div class="space-game-meta"><span>Space Drift</span><span data-game-time>60s</span></div>
+                  <div class="space-game-progress" aria-hidden="true"><span data-game-progress></span></div>
+                </div>
+                <div class="space-game-result" data-game-result>
+                  <div class="space-game-dialog">
+                    <h3 data-game-title>Game Over</h3>
+                    <p data-game-message>You drifted into a planet.</p>
+                    <div class="space-game-actions">
+                      <button class="space-game-button primary" type="button" data-game-restart>다시하기</button>
+                      <button class="space-game-button" type="button" data-game-exit>되돌아가기</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1236,7 +1368,7 @@
         window.addEventListener("mousemove", function (event) {
           targetX = event.clientX;
           targetY = event.clientY;
-          document.body.classList.toggle("is-hovering-interactive", Boolean(event.target.closest("a, button, .app-card, .value-card, .contact-panel, .meta-pill, .studio-pills span, .category-pill, .social-link")));
+          document.body.classList.toggle("is-hovering-interactive", Boolean(event.target.closest("a, button, .iphone, .app-card, .value-card, .contact-panel, .meta-pill, .studio-pills span, .category-pill, .social-link")));
           if (!glowVisible) {
             glowVisible = true;
             cursorGlow.classList.remove("is-hidden");
@@ -1252,6 +1384,280 @@
           cursorGlow.classList.remove("is-hidden");
         });
         animateCursorGlow();
+      }
+
+      var phone = document.querySelector(".iphone");
+      var gameLayer = document.querySelector(".space-game-layer");
+      var gameCanvas = document.querySelector(".space-game-canvas");
+      var gameTime = document.querySelector("[data-game-time]");
+      var gameProgress = document.querySelector("[data-game-progress]");
+      var gameResult = document.querySelector("[data-game-result]");
+      var gameTitle = document.querySelector("[data-game-title]");
+      var gameMessage = document.querySelector("[data-game-message]");
+      var gameRestart = document.querySelector("[data-game-restart]");
+      var gameExit = document.querySelector("[data-game-exit]");
+      var game = {
+        running: false,
+        ended: false,
+        raf: 0,
+        start: 0,
+        last: 0,
+        spawn: 0,
+        width: 0,
+        height: 0,
+        dpr: 1,
+        player: { x: 0, y: 0, targetX: 0, targetY: 0, radius: 11 },
+        planets: [],
+        stars: [],
+        keys: {}
+      };
+
+      function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+
+      function resizeGame() {
+        if (!gameCanvas) return;
+        var rect = gameCanvas.getBoundingClientRect();
+        game.dpr = Math.min(window.devicePixelRatio || 1, 2);
+        game.width = Math.max(1, rect.width);
+        game.height = Math.max(1, rect.height);
+        gameCanvas.width = Math.floor(game.width * game.dpr);
+        gameCanvas.height = Math.floor(game.height * game.dpr);
+        var ctx = gameCanvas.getContext("2d");
+        ctx.setTransform(game.dpr, 0, 0, game.dpr, 0, 0);
+      }
+
+      function resetGameState() {
+        resizeGame();
+        game.planets = [];
+        game.stars = Array.from({ length: 44 }, function () {
+          return { x: Math.random() * game.width, y: Math.random() * game.height, r: Math.random() * 1.5 + .4, speed: Math.random() * 18 + 8, alpha: Math.random() * .55 + .24 };
+        });
+        game.player.x = game.width / 2;
+        game.player.y = game.height * .78;
+        game.player.targetX = game.player.x;
+        game.player.targetY = game.player.y;
+        game.spawn = 0;
+        game.ended = false;
+        game.keys = {};
+        if (gameResult) gameResult.classList.remove("is-visible");
+        if (gameProgress) gameProgress.style.width = "0%";
+        if (gameTime) gameTime.textContent = "60s";
+      }
+
+      function startGame() {
+        if (!phone || !gameCanvas || game.running) return;
+        phone.classList.add("is-playing");
+        phone.setAttribute("aria-label", "Mini space game in progress");
+        if (gameLayer) gameLayer.setAttribute("aria-hidden", "false");
+        resetGameState();
+        game.running = true;
+        game.start = performance.now();
+        game.last = game.start;
+        game.raf = window.requestAnimationFrame(gameLoop);
+      }
+
+      function stopGame(showPreview) {
+        game.running = false;
+        window.cancelAnimationFrame(game.raf);
+        if (showPreview && phone) {
+          phone.classList.remove("is-playing");
+          phone.setAttribute("aria-label", "Play mini space game");
+          if (gameLayer) gameLayer.setAttribute("aria-hidden", "true");
+          if (gameResult) gameResult.classList.remove("is-visible");
+        }
+      }
+
+      function finishGame(won) {
+        if (!game.running) return;
+        game.running = false;
+        game.ended = true;
+        window.cancelAnimationFrame(game.raf);
+        if (gameTitle) gameTitle.textContent = won ? "Congratulations" : "Game Over";
+        if (gameMessage) gameMessage.textContent = won ? "You survived 60 seconds." : "You drifted into a planet.";
+        if (gameResult) gameResult.classList.add("is-visible");
+      }
+
+      function spawnPlanet(elapsed) {
+        var difficulty = clamp(elapsed / 60000, 0, 1);
+        var radius = 9 + Math.random() * (10 + difficulty * 9);
+        game.planets.push({
+          x: radius + Math.random() * Math.max(1, game.width - radius * 2),
+          y: -radius - 8,
+          radius: radius,
+          speed: 72 + difficulty * 118 + Math.random() * (46 + difficulty * 78),
+          drift: (Math.random() - .5) * (26 + difficulty * 42),
+          hue: Math.random()
+        });
+      }
+
+      function updateGame(dt, elapsed) {
+        var difficulty = clamp(elapsed / 60000, 0, 1);
+        var keySpeed = (170 + difficulty * 60) * dt;
+        if (game.keys.ArrowLeft || game.keys.a) game.player.targetX -= keySpeed;
+        if (game.keys.ArrowRight || game.keys.d) game.player.targetX += keySpeed;
+        if (game.keys.ArrowUp || game.keys.w) game.player.targetY -= keySpeed;
+        if (game.keys.ArrowDown || game.keys.s) game.player.targetY += keySpeed;
+        game.player.targetX = clamp(game.player.targetX, game.player.radius + 4, game.width - game.player.radius - 4);
+        game.player.targetY = clamp(game.player.targetY, 86, game.height - game.player.radius - 12);
+        game.player.x += (game.player.targetX - game.player.x) * .22;
+        game.player.y += (game.player.targetY - game.player.y) * .22;
+
+        game.spawn -= dt * 1000;
+        var interval = 820 - difficulty * 520;
+        if (elapsed > 15000) interval -= 80;
+        if (elapsed > 30000) interval -= 100;
+        if (game.spawn <= 0) {
+          spawnPlanet(elapsed);
+          if (difficulty > .58 && Math.random() < .34) spawnPlanet(elapsed);
+          game.spawn = Math.max(210, interval + Math.random() * 180);
+        }
+
+        game.stars.forEach(function (star) {
+          star.y += star.speed * dt;
+          if (star.y > game.height) {
+            star.y = -4;
+            star.x = Math.random() * game.width;
+          }
+        });
+
+        game.planets = game.planets.filter(function (planet) {
+          planet.y += planet.speed * dt;
+          planet.x += planet.drift * dt;
+          var dx = planet.x - game.player.x;
+          var dy = planet.y - game.player.y;
+          var hit = Math.sqrt(dx * dx + dy * dy) < planet.radius + game.player.radius - 5;
+          if (hit) finishGame(false);
+          return planet.y < game.height + planet.radius + 20 && !hit;
+        });
+      }
+
+      function drawGame(elapsed) {
+        var ctx = gameCanvas.getContext("2d");
+        ctx.clearRect(0, 0, game.width, game.height);
+        var bg = ctx.createRadialGradient(game.width * .5, game.height * .18, 12, game.width * .5, game.height * .5, game.height);
+        bg.addColorStop(0, "rgba(109,93,247,.28)");
+        bg.addColorStop(.45, "rgba(14,12,34,.92)");
+        bg.addColorStop(1, "rgba(6,8,24,1)");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, game.width, game.height);
+
+        game.stars.forEach(function (star) {
+          ctx.globalAlpha = star.alpha;
+          ctx.fillStyle = "white";
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        game.planets.forEach(function (planet) {
+          var gradient = ctx.createRadialGradient(planet.x - planet.radius * .35, planet.y - planet.radius * .35, 2, planet.x, planet.y, planet.radius * 1.5);
+          gradient.addColorStop(0, planet.hue > .66 ? "#22d3ee" : planet.hue > .33 ? "#ff6aa8" : "#8b5cf6");
+          gradient.addColorStop(1, "rgba(79,70,229,.20)");
+          ctx.shadowColor = planet.hue > .5 ? "rgba(255,106,168,.45)" : "rgba(34,211,238,.38)";
+          ctx.shadowBlur = 18;
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.shadowBlur = 0;
+
+        var p = game.player;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.shadowColor = "rgba(34,211,238,.78)";
+        ctx.shadowBlur = 18;
+        var ship = ctx.createLinearGradient(0, -18, 0, 16);
+        ship.addColorStop(0, "#f8f3ff");
+        ship.addColorStop(.58, "#22d3ee");
+        ship.addColorStop(1, "#ff6aa8");
+        ctx.fillStyle = ship;
+        ctx.beginPath();
+        ctx.moveTo(0, -17);
+        ctx.lineTo(13, 14);
+        ctx.lineTo(0, 8);
+        ctx.lineTo(-13, 14);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowColor = "rgba(255,106,168,.72)";
+        ctx.shadowBlur = 14;
+        ctx.fillStyle = "#ff6aa8";
+        ctx.beginPath();
+        ctx.moveTo(-5, 13);
+        ctx.lineTo(0, 25);
+        ctx.lineTo(5, 13);
+        ctx.fill();
+        ctx.restore();
+
+        var remaining = Math.max(0, 60 - elapsed / 1000);
+        if (gameTime) gameTime.textContent = Math.ceil(remaining) + "s";
+        if (gameProgress) gameProgress.style.width = clamp(elapsed / 60000, 0, 1) * 100 + "%";
+      }
+
+      function gameLoop(now) {
+        if (!game.running) return;
+        var dt = Math.min(.033, (now - game.last) / 1000);
+        var elapsed = now - game.start;
+        game.last = now;
+        if (elapsed >= 60000) {
+          drawGame(60000);
+          finishGame(true);
+          return;
+        }
+        updateGame(dt, elapsed);
+        drawGame(elapsed);
+        if (game.running) game.raf = window.requestAnimationFrame(gameLoop);
+      }
+
+      if (phone && gameCanvas) {
+        phone.addEventListener("click", function (event) {
+          if (event.target.closest(".space-game-button")) return;
+          if (!phone.classList.contains("is-playing")) startGame();
+        });
+        phone.addEventListener("keydown", function (event) {
+          if ((event.key === "Enter" || event.key === " ") && !phone.classList.contains("is-playing")) {
+            event.preventDefault();
+            startGame();
+          }
+        });
+        gameCanvas.addEventListener("pointermove", function (event) {
+          if (!game.running) return;
+          var rect = gameCanvas.getBoundingClientRect();
+          game.player.targetX = clamp(event.clientX - rect.left, game.player.radius + 4, game.width - game.player.radius - 4);
+          game.player.targetY = clamp(event.clientY - rect.top, 86, game.height - game.player.radius - 12);
+        }, { passive: true });
+        gameCanvas.addEventListener("pointerdown", function (event) {
+          if (!game.running) return;
+          gameCanvas.setPointerCapture(event.pointerId);
+        });
+        window.addEventListener("resize", function () {
+          if (!game.running) return;
+          var xRatio = game.width ? game.player.x / game.width : .5;
+          var yRatio = game.height ? game.player.y / game.height : .78;
+          resizeGame();
+          game.player.x = game.player.targetX = game.width * xRatio;
+          game.player.y = game.player.targetY = game.height * yRatio;
+        });
+        document.addEventListener("keydown", function (event) {
+          if (!game.running) return;
+          if (["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","w","a","s","d","W","A","S","D"].indexOf(event.key) === -1) return;
+          event.preventDefault();
+          game.keys[event.key.length === 1 ? event.key.toLowerCase() : event.key] = true;
+        });
+        document.addEventListener("keyup", function (event) {
+          game.keys[event.key.length === 1 ? event.key.toLowerCase() : event.key] = false;
+        });
+        if (gameRestart) gameRestart.addEventListener("click", function (event) {
+          event.stopPropagation();
+          stopGame(false);
+          startGame();
+        });
+        if (gameExit) gameExit.addEventListener("click", function (event) {
+          event.stopPropagation();
+          stopGame(true);
+        });
+        window.addEventListener("pagehide", function () { stopGame(false); });
       }
 
       document.addEventListener("click", function (event) {
