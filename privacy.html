@@ -3,76 +3,668 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SAME STUDIO 개인정보처리방침">
+  <meta name="description" content="SAME STUDIO Privacy Policy / 개인정보처리방침">
   <title>Privacy Policy / 개인정보처리방침 | SAME STUDIO</title>
   <style>
-    :root{color-scheme:light;--bg:#fbf8ff;--bg-deep:#f2ecff;--text:#18151f;--muted:#676172;--card:rgba(255,255,255,.72);--border:rgba(86,64,122,.16);--border-strong:rgba(128,88,205,.36);--nav:rgba(251,248,255,.76);--nav-strong:rgba(251,248,255,.92);--accent:linear-gradient(135deg,#6d5df7,#a855f7 48%,#ff6aa8);--shadow:0 24px 70px rgba(75,55,120,.13);--max:980px}
-    [data-theme="dark"]{color-scheme:dark;--bg:#0d0c12;--bg-deep:#151222;--text:#f5f0ff;--muted:#bbb4ca;--card:rgba(30,28,39,.68);--border:rgba(255,255,255,.13);--border-strong:rgba(182,140,255,.32);--nav:rgba(13,12,18,.76);--nav-strong:rgba(13,12,18,.92);--shadow:0 24px 74px rgba(0,0,0,.34)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 18% 8%,rgba(168,85,247,.22),transparent 30rem),radial-gradient(circle at 86% 10%,rgba(255,106,168,.14),transparent 28rem),linear-gradient(180deg,var(--bg),var(--bg-deep));color:var(--text);letter-spacing:0}a{color:inherit;text-decoration:none}button{font:inherit}:focus-visible{outline:3px solid rgba(168,85,247,.5);outline-offset:4px}
-    .site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--nav);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid transparent;transition:.25s}.site-header.is-scrolled{background:var(--nav-strong);border-color:var(--border);box-shadow:0 10px 34px rgba(0,0,0,.06)}
-    .nav{width:min(100% - 32px,var(--max));height:76px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.08em;font-size:.95rem}.brand-mark{width:32px;height:32px;border-radius:11px;background:var(--accent);box-shadow:0 12px 28px rgba(120,86,215,.28);position:relative}.brand-mark:after{content:"";position:absolute;inset:8px;border:1px solid rgba(255,255,255,.72);border-radius:8px}
-    .desktop-menu{display:flex;align-items:center;gap:6px}.desktop-menu a{color:var(--muted);font-size:.92rem;font-weight:650;padding:10px 12px;border-radius:999px}.desktop-menu a:hover{color:var(--text);background:rgba(141,101,214,.10)}.nav-actions{display:flex;gap:10px}.icon-button{width:42px;height:42px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--text);cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.icon-button:hover{border-color:var(--border-strong)}.theme-icon:before{content:"☾"}[data-theme="dark"] .theme-icon:before{content:"☼"}
-    main{padding:136px 0 72px}.doc{width:min(100% - 32px,var(--max));margin:0 auto}.doc-hero,.content{border:1px solid var(--border);border-radius:28px;background:var(--card);box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}.doc-hero{padding:34px}.eyebrow{color:#8b5cf6;font-size:.82rem;font-weight:820;letter-spacing:.1em;text-transform:uppercase}h1{margin:12px 0 0;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.04;letter-spacing:0}.lead{margin:18px 0 0;color:var(--muted);line-height:1.75;word-break:keep-all}.content{margin-top:24px;padding:34px}h2{margin:34px 0 10px;font-size:1.35rem}h2:first-child{margin-top:0}p,li{color:var(--muted);line-height:1.8;word-break:keep-all}ul{padding-left:1.2rem}.notice{padding:18px 20px;border:1px solid var(--border-strong);border-radius:18px;background:rgba(139,92,246,.08);color:var(--text)}.app-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0;list-style:none}.app-list li{padding:12px 14px;border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.18)}
-    .site-footer{padding:42px 0;border-top:1px solid var(--border);color:var(--muted)}.footer-grid{width:min(100% - 32px,var(--max));margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:24px}.footer-meta{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;font-size:.9rem}.footer-links{display:flex;gap:12px;flex-wrap:wrap;font-weight:720}.footer-links a:hover{color:#8b5cf6}
-    @media(max-width:720px){.desktop-menu{display:none}.nav{height:64px;width:min(100% - 24px,var(--max))}main{padding-top:104px}.doc,.footer-grid{width:min(100% - 24px,var(--max))}.doc-hero,.content{padding:24px;border-radius:22px}.app-list,.footer-grid{grid-template-columns:1fr}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+    :root {
+      color-scheme: light;
+      --bg: #fbf8ff;
+      --bg-deep: #f2ecff;
+      --text: #18151f;
+      --muted: #676172;
+      --soft: #887f99;
+      --card: rgba(255,255,255,.72);
+      --card-strong: rgba(255,255,255,.88);
+      --border: rgba(86,64,122,.16);
+      --border-strong: rgba(128,88,205,.36);
+      --nav: rgba(251,248,255,.76);
+      --nav-strong: rgba(251,248,255,.92);
+      --accent: linear-gradient(135deg,#6d5df7,#a855f7 48%,#ff6aa8);
+      --shadow: 0 24px 70px rgba(75,55,120,.13);
+      --max: 980px;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0c12;
+      --bg-deep: #151222;
+      --text: #f5f0ff;
+      --muted: #bbb4ca;
+      --soft: #928aa5;
+      --card: rgba(30,28,39,.68);
+      --card-strong: rgba(38,35,49,.86);
+      --border: rgba(255,255,255,.13);
+      --border-strong: rgba(182,140,255,.32);
+      --nav: rgba(13,12,18,.76);
+      --nav-strong: rgba(13,12,18,.92);
+      --shadow: 0 24px 74px rgba(0,0,0,.34);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(168,85,247,.22), transparent 30rem),
+        radial-gradient(circle at 86% 10%, rgba(255,106,168,.14), transparent 28rem),
+        linear-gradient(180deg,var(--bg),var(--bg-deep));
+      color: var(--text);
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 28% 36%, rgba(109,93,247,.12), transparent 18rem),
+        radial-gradient(circle at 76% 54%, rgba(255,106,168,.10), transparent 20rem);
+      filter: blur(28px);
+      animation: ambient 18s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    :focus-visible { outline: 3px solid rgba(168,85,247,.5); outline-offset: 4px; }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      background: var(--nav);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid transparent;
+      transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .site-header.is-scrolled {
+      background: var(--nav-strong);
+      border-color: var(--border);
+      box-shadow: 0 10px 34px rgba(0,0,0,.06);
+    }
+    .nav {
+      width: min(100% - 32px,var(--max));
+      height: 76px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      font-size: .95rem;
+    }
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 11px;
+      background: var(--accent);
+      box-shadow: 0 12px 28px rgba(120,86,215,.28);
+      position: relative;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: 8px;
+    }
+    .desktop-menu { display: flex; align-items: center; gap: 6px; }
+    .desktop-menu a, .drawer a {
+      color: var(--muted);
+      font-size: .92rem;
+      font-weight: 650;
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .desktop-menu a:hover, .drawer a:hover { color: var(--text); background: rgba(141,101,214,.10); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .icon-button:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+    .theme-icon::before { content: "☾"; font-size: 1.05rem; }
+    [data-theme="dark"] .theme-icon::before { content: "☼"; }
+    .menu-button { display: none; }
+    .menu-lines, .menu-lines::before, .menu-lines::after {
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      display: block;
+      content: "";
+      position: relative;
+    }
+    .menu-lines::before { position: absolute; top: -6px; }
+    .menu-lines::after { position: absolute; top: 6px; }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(12,10,18,.48);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .drawer {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 90;
+      width: min(84vw, 320px);
+      background: var(--nav-strong);
+      border-right: 1px solid var(--border);
+      box-shadow: 30px 0 80px rgba(0,0,0,.20);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      transform: translateX(-105%);
+      transition: transform .28s ease;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; }
+    .drawer nav { display: grid; gap: 4px; margin-top: 18px; }
+    body.menu-open { overflow: hidden; }
+    body.menu-open .drawer { transform: translateX(0); }
+    body.menu-open .drawer-overlay { opacity: 1; pointer-events: auto; }
+
+    main { padding: 136px 0 72px; }
+    .doc { width: min(100% - 32px,var(--max)); margin: 0 auto; }
+    .doc-hero, .policy-shell, .policy-section, .language-panel {
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .doc-hero {
+      border-radius: 30px;
+      padding: clamp(26px,5vw,42px);
+      animation: fadeUp .7s ease both;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #8b5cf6;
+      font-size: .82rem;
+      font-weight: 820;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      box-shadow: 0 0 0 5px rgba(139,92,246,.13);
+    }
+    h1 {
+      margin: 14px 0 0;
+      font-size: clamp(2.45rem,6vw,4.8rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+    .lead, .updated, .scope-card p, .policy-section p, .policy-section li {
+      color: var(--muted);
+      line-height: 1.82;
+      word-break: keep-all;
+    }
+    .lead { margin: 18px 0 0; font-size: 1.05rem; }
+    .updated { margin: 14px 0 0; font-weight: 720; }
+    .language-panel {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .language-label { color: var(--soft); font-size: .88rem; font-weight: 760; }
+    .language-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .language-button {
+      min-height: 38px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.18);
+      color: var(--muted);
+      font-weight: 760;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .language-button:hover { transform: translateY(-1px); border-color: var(--border-strong); color: var(--text); }
+    .language-button.is-active {
+      color: white;
+      border-color: transparent;
+      background: var(--accent);
+      box-shadow: 0 14px 32px rgba(139,92,246,.25);
+    }
+    .policy-shell {
+      margin-top: 24px;
+      padding: clamp(18px,3vw,28px);
+      border-radius: 30px;
+    }
+    .scope-card {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(135deg,rgba(139,92,246,.10),rgba(255,106,168,.06));
+    }
+    .scope-card h2 { margin: 0 0 10px; font-size: 1.32rem; }
+    .scope-card ul, .policy-section ul { margin: 12px 0 0; padding-left: 1.2rem; }
+    .policy-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .policy-section {
+      border-radius: 22px;
+      padding: clamp(20px,3vw,28px);
+    }
+    .policy-section h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.18rem,2vw,1.42rem);
+      line-height: 1.35;
+    }
+    .policy-section p { margin: 0 0 12px; }
+    .policy-section p:last-child { margin-bottom: 0; }
+    .policy-section strong { color: var(--text); }
+    .policy-section a, .scope-card a { color: #8b5cf6; font-weight: 760; border-bottom: 1px solid rgba(139,92,246,.32); }
+    .policy-section a:hover, .scope-card a:hover { border-color: currentColor; }
+    .contact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .contact-row span:first-child { color: var(--soft); font-weight: 760; }
+
+    .site-footer { padding: 42px 0; border-top: 1px solid var(--border); color: var(--muted); }
+    .footer-grid {
+      width: min(100% - 32px,var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+    }
+    .footer-meta { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 12px; font-size: .9rem; }
+    .footer-links { display: flex; gap: 12px; flex-wrap: wrap; font-weight: 720; }
+    .footer-links a:hover { color: #8b5cf6; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
+
+    @media (max-width: 860px) {
+      .desktop-menu { display: none; }
+      .menu-button { display: inline-grid; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { width: min(100% - 24px,var(--max)); height: 64px; }
+      .brand { font-size: .86rem; }
+      .brand-mark { width: 29px; height: 29px; border-radius: 10px; }
+      .icon-button { width: 39px; height: 39px; }
+      main { padding-top: 104px; }
+      .doc, .footer-grid { width: min(100% - 24px,var(--max)); }
+      .doc-hero, .policy-shell { border-radius: 24px; }
+      .language-panel { align-items: stretch; }
+      .language-buttons { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+      .language-button { flex: 0 0 auto; }
+      .policy-section, .scope-card { border-radius: 18px; }
+      .contact-row { grid-template-columns: 1fr; gap: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+    }
   </style>
 </head>
 <body>
   <header class="site-header" data-header>
     <div class="nav">
-      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span>SAME STUDIO</span></a>
-      <nav class="desktop-menu" aria-label="Primary navigation"><a href="index.html#apps">Apps</a><a href="index.html#philosophy">Philosophy</a><a href="index.html#about">About</a><a href="support.html">Support</a></nav>
-      <div class="nav-actions"><button class="icon-button theme-toggle" type="button" aria-label="Toggle light and dark theme"><span class="theme-icon" aria-hidden="true"></span></button></div>
+      <a class="brand" href="index.html" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span>SAME STUDIO</span></a>
+      <nav class="desktop-menu" aria-label="Primary navigation">
+        <a href="index.html#apps">Apps</a>
+        <a href="index.html#philosophy">Philosophy</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="support.html">Support</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button theme-toggle" type="button" aria-label="Toggle light and dark theme"><span class="theme-icon" aria-hidden="true"></span></button>
+        <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false"><span class="menu-lines" aria-hidden="true"></span></button>
+      </div>
     </div>
   </header>
+
+  <div class="drawer-overlay" data-close-menu></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span>SAME STUDIO</span></a>
+      <button class="icon-button" type="button" aria-label="Close menu" data-close-menu>×</button>
+    </div>
+    <nav>
+      <a href="index.html#apps">Apps</a>
+      <a href="index.html#philosophy">Philosophy</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </aside>
+
   <main>
     <article class="doc">
       <section class="doc-hero">
         <span class="eyebrow">Privacy</span>
-        <h1>Privacy Policy / 개인정보처리방침</h1>
-        <p class="lead">SAME STUDIO는 사용자의 일상 기록과 앱 사용 경험을 존중하며, 필요한 범위 안에서만 정보를 처리하는 것을 원칙으로 합니다.</p>
+        <h1 data-policy-title>Privacy Policy / 개인정보처리방침</h1>
+        <p class="updated" data-policy-updated>마지막 업데이트: 2026-05-04</p>
+        <p class="lead" data-policy-lead>SAME STUDIO는 사용자의 개인정보와 개인 기록을 최소한으로 처리하며, Mapary는 사용자의 개인 기록을 SAME STUDIO 자체 서버에 수집하거나 저장하지 않는 구조를 기준으로 운영됩니다.</p>
       </section>
-      <section class="content">
-        <p class="notice">이 문서는 앱 심사 및 사용자 안내를 위한 개인정보처리방침 초안입니다. 실제 앱별 수집 항목, SDK, 광고 식별자, 서버 저장 여부가 확정되면 반드시 최신 내용으로 수정해야 합니다.</p>
-        <h2>1. 기본 정보</h2>
-        <p>운영자: SAME STUDIO<br>사업자명: 세임스튜디오<br>대표자: 김동찬<br>문의 이메일: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a><br>도메인: https://samestudio.kr</p>
-        <h2>2. 적용 앱</h2>
-        <ul class="app-list"><li>ODOW</li><li>Mapary</li><li>Spotcha</li><li>Runtronome</li></ul>
-        <h2>3. 처리할 수 있는 정보</h2>
-        <p>앱의 기능과 버전에 따라 처리되는 정보는 달라질 수 있습니다. 예를 들어 ODOW, Mapary, Spotcha, Runtronome은 서로 다른 목적과 권한을 사용할 수 있습니다.</p>
-        <ul>
-          <li>기록 및 메모 내용: 사용자가 앱에 직접 입력한 텍스트, 날짜, 키워드 등</li>
-          <li>위치 정보: 장소 기반 알림 기능을 제공하기 위해 사용자가 허용한 위치 정보</li>
-          <li>알림 권한: 질문, 리마인더, 훈련 리듬 등 앱 기능 안내를 위한 푸시 또는 로컬 알림 권한</li>
-          <li>계정 정보: 향후 로그인 또는 동기화 기능이 제공되는 경우 이메일, 사용자 식별자 등</li>
-          <li>고객지원 정보: 이메일 문의 시 사용자가 제공하는 앱 이름, 기기 정보, OS 버전, 문의 내용, 스크린샷 등</li>
-          <li>광고 및 분석 관련 정보: 광고 또는 품질 개선 도구가 적용되는 경우 기기 식별자, 앱 사용 이벤트, 오류 로그 등</li>
-        </ul>
-        <h2>4. 이용 목적</h2>
-        <p>정보는 앱 기능 제공, 위치 기반 알림, 사용자 설정 유지, 오류 확인, 고객지원 응대, 서비스 품질 개선, 법령 또는 플랫폼 정책 준수를 위해 사용될 수 있습니다.</p>
-        <h2>5. 위치 정보와 알림 권한</h2>
-        <p>Spotcha와 같은 위치 기반 앱은 사용자가 명시적으로 권한을 허용한 경우에만 위치 정보를 사용할 수 있습니다. 사용자는 언제든지 기기 설정에서 위치 및 알림 권한을 변경하거나 철회할 수 있습니다.</p>
-        <h2>6. 제3자 서비스</h2>
-        <p>일부 앱은 광고, 분석, 오류 추적, 플랫폼 기능 제공을 위해 Apple, Google AdMob 등 제3자 서비스를 사용할 수 있습니다. 실제 적용되는 서비스가 확정되면 앱별 고지에 반영합니다.</p>
-        <h2>7. 보관 및 삭제</h2>
-        <p>사용자가 기기에 저장한 데이터는 앱 삭제 또는 앱 내 삭제 기능을 통해 제거될 수 있습니다. 고객지원 이메일은 문의 처리와 이력 확인을 위해 필요한 기간 동안 보관될 수 있습니다.</p>
-        <h2>8. 아동의 개인정보</h2>
-        <p>SAME STUDIO는 고의로 아동의 개인정보를 수집하지 않습니다. 관련 문의가 있는 경우 contact@samestudio.kr로 연락해 주세요.</p>
-        <h2>9. 변경 안내 및 문의</h2>
-        <p>개인정보처리방침은 앱 기능, 법령, 플랫폼 정책 변경에 따라 업데이트될 수 있습니다. 개인정보 관련 문의는 <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a>로 연락해 주세요.</p>
-        <p><strong>Last updated: 2026-05-04</strong></p>
+
+      <section class="language-panel" aria-label="Privacy policy language selection">
+        <span class="language-label" data-language-label>Language / 언어</span>
+        <div class="language-buttons">
+          <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
+          <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
+          <button class="language-button" type="button" data-lang="ja" aria-pressed="false">日本語</button>
+          <button class="language-button" type="button" data-lang="zh" aria-pressed="false">中文</button>
+        </div>
+      </section>
+
+      <section class="policy-shell">
+        <div class="scope-card">
+          <h2 data-scope-title>적용 대상</h2>
+          <div data-scope-body></div>
+        </div>
+        <div class="policy-grid" data-policy-content></div>
       </section>
     </article>
   </main>
+
   <footer class="site-footer">
     <div class="footer-grid">
-      <div><strong>© 2026 SAME STUDIO</strong><div class="footer-meta"><span>Business Name: 세임스튜디오</span><span>Representative: 김동찬</span><span>Email: contact@samestudio.kr</span></div></div>
-      <nav class="footer-links" aria-label="Footer navigation"><a href="support.html">Support</a><a href="index.html">Home</a><a href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer">X</a><a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer">Instagram</a></nav>
+      <div>
+        <strong>© 2026 SAME STUDIO</strong>
+        <div class="footer-meta">
+          <span>Business Name: 세임스튜디오</span>
+          <span>Representative: 김동찬</span>
+          <span>Email: contact@samestudio.kr</span>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="support.html">Support</a>
+        <a href="index.html">Home</a>
+        <a href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </nav>
     </div>
   </footer>
+
   <script>
-    (function(){var r=document.documentElement,s=localStorage.getItem("same-studio-theme"),m=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";r.setAttribute("data-theme",s||m);document.querySelectorAll(".theme-toggle").forEach(function(b){b.addEventListener("click",function(){var n=r.getAttribute("data-theme")==="dark"?"light":"dark";r.setAttribute("data-theme",n);localStorage.setItem("same-studio-theme",n);});});var h=document.querySelector("[data-header]");function u(){h.classList.toggle("is-scrolled",window.scrollY>12)}u();window.addEventListener("scroll",u,{passive:true});})();
+    (function () {
+      var root = document.documentElement;
+      var storedTheme = localStorage.getItem("same-studio-theme");
+      var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.setAttribute("data-theme", storedTheme || systemTheme);
+
+      var translations = {
+        ko: {
+          lang: "ko",
+          title: "Privacy Policy / 개인정보처리방침",
+          documentTitle: "Privacy Policy / 개인정보처리방침 | SAME STUDIO",
+          updated: "마지막 업데이트: 2026-05-04",
+          lead: "SAME STUDIO는 사용자의 개인정보와 개인 기록을 최소한으로 처리하며, Mapary는 사용자의 개인 기록을 SAME STUDIO 자체 서버에 수집하거나 저장하지 않는 구조를 기준으로 운영됩니다.",
+          languageLabel: "Language / 언어",
+          scopeTitle: "적용 대상",
+          scope: [
+            "본 개인정보처리방침은 세임스튜디오가 제공하는 Mapary, ODOW, Spotcha, Runtronome 및 관련 웹사이트에 적용됩니다.",
+            "단, 각 앱의 기능과 버전에 따라 실제 처리되는 데이터 항목은 달라질 수 있습니다.",
+            "현재 Mapary는 사용자의 데이터를 세임스튜디오 자체 서버에 수집하거나 저장하지 않는 구조를 기준으로 작성합니다."
+          ],
+          sections: [
+            { title: "1. 개인정보 처리 원칙", body: ["세임스튜디오는 사용자의 개인정보를 최소한으로 처리하는 것을 원칙으로 합니다. 사용자의 기록, 메모, 위치 기반 데이터, 일기 내용 등 개인적인 콘텐츠는 사용자의 소유입니다.", "<strong>세임스튜디오는 사용자의 개인 기록 내용을 자체 서버로 수집하거나 열람하지 않습니다.</strong> 사용자의 데이터는 사용자의 기기 또는 사용자의 개인 iCloud 계정 등 사용자가 관리하는 저장 공간에 보관될 수 있습니다."] },
+            { title: "2. 수집하지 않는 정보", body: ["Mapary는 세임스튜디오 자체 서버에 사용자의 이름, 이메일, 전화번호, 주소, 일기 내용, 메모 내용, 위치 기록을 직접 수집하거나 저장하지 않습니다.", "세임스튜디오는 사용자의 기록 내용을 분석하거나 판매하지 않으며, 사용자의 데이터를 광고주 또는 제3자에게 판매하지 않습니다."] },
+            { title: "3. 앱 내 데이터 저장 방식", body: ["사용자가 작성한 기록, 메모, 위치 기반 정보 등은 앱 기능 제공을 위해 사용자의 기기 또는 사용자의 개인 iCloud 계정에 저장될 수 있습니다.", "iCloud에 저장되는 데이터는 사용자의 Apple ID와 iCloud 설정에 따라 Apple의 시스템에서 관리됩니다. 세임스튜디오는 사용자의 개인 iCloud 계정에 직접 접근할 수 없습니다.", "iCloud 동기화, 백업, 복원 여부는 사용자의 기기 및 iCloud 설정에 따라 달라질 수 있습니다."] },
+            { title: "4. 위치 정보 처리", body: ["Mapary 또는 Spotcha와 같은 일부 앱은 지도, 위치 메모, 장소 기반 알림 등의 기능을 제공하기 위해 위치 권한을 요청할 수 있습니다.", "위치 정보는 사용자가 요청한 기능을 제공하기 위한 목적으로만 사용되며, 사용자의 동의 없이 세임스튜디오 자체 서버로 전송되지 않습니다.", "사용자는 언제든지 iOS 설정에서 위치 권한을 변경하거나 철회할 수 있습니다. 위치 권한을 거부하면 일부 위치 기반 기능이 제한될 수 있습니다."] },
+            { title: "5. 알림 권한", body: ["일부 앱은 기록 알림, 장소 기반 알림, 타이머 알림 등을 제공하기 위해 알림 권한을 요청할 수 있습니다.", "알림 권한은 사용자가 직접 허용한 경우에만 사용됩니다. 사용자는 언제든지 iOS 설정에서 알림 권한을 변경할 수 있습니다."] },
+            { title: "6. 제3자 제공 및 판매 금지", body: ["<strong>세임스튜디오는 사용자의 개인정보 또는 개인 기록 데이터를 제3자에게 판매하지 않습니다.</strong>", "세임스튜디오는 사용자의 개인 기록 내용을 광고 목적으로 제공하지 않습니다. 법령에 따라 요구되는 경우를 제외하고 사용자의 데이터를 외부에 제공하지 않습니다."] },
+            { title: "7. 제3자 서비스 및 플랫폼", body: ["앱 배포, 결제, 백업, 동기화, 알림, 광고 등의 기능 제공을 위해 Apple App Store, iCloud, iOS 시스템 기능 등이 사용될 수 있습니다.", "향후 일부 앱에서 Google AdMob, Supabase, Cloudflare 등 외부 서비스가 사용될 수 있으며, 이 경우 해당 앱의 기능과 정책에 따라 개인정보 처리 항목이 달라질 수 있습니다.", "외부 서비스가 추가되거나 개인정보 처리 방식이 변경되는 경우, 본 개인정보처리방침을 업데이트합니다."] },
+            { title: "8. 광고 및 분석", body: ["Mapary는 현재 세임스튜디오 자체 서버를 통한 사용자 추적 또는 맞춤형 광고 목적의 개인정보 수집을 하지 않습니다.", "향후 일부 앱에서 광고 SDK가 사용될 경우, 광고 식별자, 기기 정보, 앱 사용 정보 등이 광고 제공 및 성과 측정을 위해 처리될 수 있습니다.", "광고 SDK 사용 여부는 앱별 기능과 버전에 따라 달라질 수 있으며, 필요한 경우 별도로 고지합니다."] },
+            { title: "9. 데이터 보관 및 삭제", body: ["세임스튜디오가 자체 서버에 사용자의 데이터를 보관하지 않는 경우, 별도의 서버 보관 기간은 존재하지 않습니다.", "사용자는 앱 내 삭제 기능, 앱 삭제, iCloud 데이터 삭제, 기기 설정 변경을 통해 관련 데이터를 삭제하거나 처리를 중단할 수 있습니다.", "iCloud에 저장된 데이터는 사용자의 Apple ID 및 iCloud 설정에 따라 관리되므로, 삭제 방법은 Apple의 iCloud 설정을 따릅니다."] },
+            { title: "10. 이용자의 권리", body: ["사용자는 개인정보 처리와 관련하여 문의, 삭제 요청, 정정 요청, 처리 중단 요청을 할 수 있습니다.", "다만 세임스튜디오가 자체 서버에 보관하지 않는 데이터는 사용자의 기기 또는 iCloud 설정을 통해 직접 관리해야 할 수 있습니다.", "위치, 알림, 사진, 광고 추적 등 권한은 iOS 설정에서 언제든지 변경할 수 있습니다."] },
+            { title: "11. 아동의 개인정보", body: ["세임스튜디오의 앱은 원칙적으로 만 14세 미만 아동을 주요 대상으로 하지 않습니다.", "만 14세 미만 아동이 앱을 사용하는 경우, 보호자의 지도와 동의가 필요할 수 있습니다. 관련 법령상 필요한 경우 보호자 동의 절차를 따릅니다."] },
+            { title: "12. 보안", body: ["세임스튜디오는 사용자의 개인정보 보호를 중요하게 생각합니다.", "앱은 불필요한 서버 전송을 최소화하고, 가능한 경우 사용자의 기기 또는 개인 iCloud 환경에서 데이터를 처리하도록 설계됩니다.", "다만 사용자의 기기, Apple ID, iCloud 계정 보안은 사용자가 직접 관리해야 합니다."] },
+            { title: "13. 개인정보처리방침의 변경", body: ["본 개인정보처리방침은 앱 기능, 서비스 구조, 관련 법령 또는 외부 서비스 사용 여부에 따라 변경될 수 있습니다.", "변경 사항은 본 페이지를 통해 고지합니다. 중요한 변경이 있는 경우 앱 내 공지 또는 별도 안내를 제공할 수 있습니다."] },
+            { title: "14. 문의처", contact: [["사업자명", "세임스튜디오"], ["대표자", "김동찬"], ["이메일", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["웹사이트", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">samestudio.kr</a>"]] },
+            { title: "15. English Summary", list: ["SAME STUDIO minimizes the collection of personal data.", "Mapary does not collect or store users’ personal records on SAME STUDIO’s own servers.", "User-created records and location-related data may be stored on the user’s device or private iCloud account.", "SAME STUDIO does not sell users’ personal data.", "Users can manage app permissions and data through iOS settings, app settings, or iCloud settings.", "For privacy inquiries, contact contact@samestudio.kr."] }
+          ]
+        },
+        en: {
+          lang: "en",
+          title: "Privacy Policy",
+          documentTitle: "Privacy Policy | SAME STUDIO",
+          updated: "Last updated: 2026-05-04",
+          lead: "SAME STUDIO minimizes the handling of personal data and personal records. Mapary is designed on the basis that users’ personal records are not collected or stored on SAME STUDIO’s own servers.",
+          languageLabel: "Language",
+          scopeTitle: "Scope",
+          scope: ["This Privacy Policy applies to Mapary, ODOW, Spotcha, Runtronome, and related websites provided by 세임스튜디오.", "The actual data processed may vary depending on each app’s features and version.", "This policy currently describes Mapary based on a structure where user data is not collected or stored on SAME STUDIO’s own servers."],
+          sections: [
+            { title: "1. Privacy Principles", body: ["SAME STUDIO processes personal data only to the minimum extent necessary. Personal content such as records, notes, location-related data, and journal entries belongs to the user.", "<strong>SAME STUDIO does not collect users’ personal records on its own servers and cannot view the content of those records.</strong> User data may be stored on the user’s device or in storage controlled by the user, such as the user’s private iCloud account."] },
+            { title: "2. Information We Do Not Collect", body: ["Mapary does not directly collect or store users’ names, email addresses, phone numbers, addresses, journal entries, memo contents, or location history on SAME STUDIO’s own servers.", "SAME STUDIO does not analyze or sell users’ record contents, and does not sell user data to advertisers or third parties."] },
+            { title: "3. In-App Data Storage", body: ["Records, notes, and location-related information created by users may be stored on the user’s device or private iCloud account to provide app features.", "Data stored in iCloud is managed by Apple’s systems according to the user’s Apple ID and iCloud settings. SAME STUDIO cannot directly access the user’s private iCloud account.", "iCloud sync, backup, and restore behavior may vary depending on the user’s device and iCloud settings."] },
+            { title: "4. Location Data", body: ["Some apps, including Mapary or Spotcha, may request location permission to provide maps, location notes, or place-based reminders.", "Location data is used only to provide features requested by the user and is not transmitted to SAME STUDIO’s own servers without the user’s consent.", "Users can change or revoke location permission at any time in iOS settings. If location permission is denied, some location-based features may be limited."] },
+            { title: "5. Notification Permission", body: ["Some apps may request notification permission to provide record reminders, place-based reminders, timer alerts, or similar features.", "Notification permission is used only when the user explicitly allows it. Users can change notification permission at any time in iOS settings."] },
+            { title: "6. No Sale or Third-Party Disclosure", body: ["<strong>SAME STUDIO does not sell users’ personal data or personal record data to third parties.</strong>", "SAME STUDIO does not provide users’ personal records for advertising purposes. Except where required by law, user data is not disclosed externally."] },
+            { title: "7. Third-Party Services and Platforms", body: ["Apple App Store, iCloud, iOS system features, and similar Apple platform services may be used for app distribution, payments, backup, synchronization, notifications, advertising, or related functionality.", "In future versions or certain apps, external services such as Google AdMob, Supabase, or Cloudflare may be used. In that case, the data processed may differ depending on the app’s features and policies.", "If external services are added or the way personal data is processed changes, this Privacy Policy will be updated."] },
+            { title: "8. Advertising and Analytics", body: ["Mapary currently does not collect personal data through SAME STUDIO’s own servers for user tracking or personalized advertising purposes.", "If an advertising SDK is used in some apps in the future, advertising identifiers, device information, and app usage information may be processed for ad delivery and performance measurement.", "The use of advertising SDKs may vary by app and version, and additional notice will be provided where necessary."] },
+            { title: "9. Data Retention and Deletion", body: ["Where SAME STUDIO does not store user data on its own servers, there is no separate server-side retention period.", "Users may delete or stop the processing of related data through in-app deletion features, app deletion, iCloud data deletion, or device settings.", "Data stored in iCloud is managed according to the user’s Apple ID and iCloud settings, so deletion methods follow Apple’s iCloud settings."] },
+            { title: "10. User Rights", body: ["Users may contact SAME STUDIO to ask questions, request deletion, request correction, or request suspension of processing related to personal data.", "However, data that SAME STUDIO does not store on its own servers may need to be managed directly through the user’s device or iCloud settings.", "Permissions such as location, notifications, photos, and ad tracking can be changed at any time in iOS settings."] },
+            { title: "11. Children’s Privacy", body: ["SAME STUDIO’s apps are not primarily intended for children under the age of 14.", "If a child under 14 uses the apps, guidance and consent from a parent or guardian may be required. Where required by applicable law, parental consent procedures will be followed."] },
+            { title: "12. Security", body: ["SAME STUDIO takes the protection of users’ personal data seriously.", "The apps are designed to minimize unnecessary server transmission and, where possible, process data on the user’s device or within the user’s private iCloud environment.", "However, users are responsible for managing the security of their devices, Apple ID, and iCloud accounts."] },
+            { title: "13. Changes to This Privacy Policy", body: ["This Privacy Policy may change depending on app features, service structure, applicable laws, or the use of external services.", "Changes will be posted on this page. For significant changes, SAME STUDIO may provide in-app notices or other separate notifications."] },
+            { title: "14. Contact", contact: [["Business Name", "세임스튜디오"], ["Representative", "김동찬"], ["Email", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["Website", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">samestudio.kr</a>"]] },
+            { title: "15. Summary", list: ["SAME STUDIO minimizes the collection of personal data.", "Mapary does not collect or store users’ personal records on SAME STUDIO’s own servers.", "User-created records and location-related data may be stored on the user’s device or private iCloud account.", "SAME STUDIO does not sell users’ personal data.", "Users can manage app permissions and data through iOS settings, app settings, or iCloud settings.", "For privacy inquiries, contact contact@samestudio.kr."] }
+          ]
+        },
+        ja: {
+          lang: "ja",
+          title: "プライバシーポリシー",
+          documentTitle: "プライバシーポリシー | SAME STUDIO",
+          updated: "最終更新日：2026-05-04",
+          lead: "SAME STUDIOは、個人情報および個人的な記録の取り扱いを最小限に抑えます。Maparyは、ユーザーの個人的な記録をSAME STUDIO独自のサーバーに収集または保存しない設計を前提としています。",
+          languageLabel: "言語",
+          scopeTitle: "適用範囲",
+          scope: ["本プライバシーポリシーは、세임스튜디오が提供するMapary、ODOW、Spotcha、Runtronomeおよび関連ウェブサイトに適用されます。", "ただし、各アプリの機能およびバージョンによって、実際に処理されるデータ項目は異なる場合があります。", "現在のMaparyについては、ユーザーデータをSAME STUDIO独自のサーバーに収集または保存しない構造を前提として記載しています。"],
+          sections: [
+            { title: "1. プライバシーに関する基本方針", body: ["SAME STUDIOは、ユーザーの個人情報を必要最小限の範囲で取り扱うことを原則とします。記録、メモ、位置関連データ、日記の内容などの個人的なコンテンツはユーザーに帰属します。", "<strong>SAME STUDIOは、ユーザーの個人的な記録内容を独自のサーバーに収集せず、その内容を閲覧することもありません。</strong> ユーザーデータは、ユーザーの端末またはユーザー自身が管理する個人のiCloudアカウントなどに保存される場合があります。"] },
+            { title: "2. 収集しない情報", body: ["Maparyは、ユーザーの氏名、メールアドレス、電話番号、住所、日記の内容、メモの内容、位置履歴をSAME STUDIO独自のサーバーに直接収集または保存しません。", "SAME STUDIOは、ユーザーの記録内容を分析または販売せず、ユーザーデータを広告主または第三者に販売しません。"] },
+            { title: "3. アプリ内データの保存方法", body: ["ユーザーが作成した記録、メモ、位置関連情報などは、アプリ機能を提供するために、ユーザーの端末または個人のiCloudアカウントに保存される場合があります。", "iCloudに保存されるデータは、ユーザーのApple IDおよびiCloud設定に従ってAppleのシステムにより管理されます。SAME STUDIOは、ユーザーの個人iCloudアカウントに直接アクセスできません。", "iCloud同期、バックアップ、復元の有無は、ユーザーの端末およびiCloud設定によって異なる場合があります。"] },
+            { title: "4. 位置情報", body: ["MaparyまたはSpotchaなど一部のアプリは、地図、位置メモ、場所に基づく通知などの機能を提供するために、位置情報の許可を求める場合があります。", "位置情報は、ユーザーが要求した機能を提供する目的にのみ使用され、ユーザーの同意なくSAME STUDIO独自のサーバーへ送信されません。", "ユーザーは、iOS設定からいつでも位置情報の許可を変更または撤回できます。位置情報の許可を拒否した場合、一部の位置情報に基づく機能が制限されることがあります。"] },
+            { title: "5. 通知の許可", body: ["一部のアプリは、記録のリマインダー、場所に基づく通知、タイマー通知などを提供するために通知の許可を求める場合があります。", "通知の許可は、ユーザーが明示的に許可した場合にのみ使用されます。ユーザーは、iOS設定からいつでも通知の許可を変更できます。"] },
+            { title: "6. 第三者への販売または提供の禁止", body: ["<strong>SAME STUDIOは、ユーザーの個人情報または個人的な記録データを第三者に販売しません。</strong>", "SAME STUDIOは、ユーザーの個人的な記録内容を広告目的で提供しません。法令により要求される場合を除き、ユーザーデータを外部に提供しません。"] },
+            { title: "7. 第三者サービスおよびプラットフォーム", body: ["アプリの配布、決済、バックアップ、同期、通知、広告などの機能を提供するために、Apple App Store、iCloud、iOSシステム機能などが使用される場合があります。", "将来、一部のアプリでGoogle AdMob、Supabase、Cloudflareなどの外部サービスが使用される場合があります。その場合、アプリの機能およびポリシーに応じて処理される個人情報の項目が異なることがあります。", "外部サービスが追加された場合、または個人情報の処理方法が変更された場合、本プライバシーポリシーを更新します。"] },
+            { title: "8. 広告および分析", body: ["Maparyは現在、SAME STUDIO独自のサーバーを通じて、ユーザー追跡またはパーソナライズ広告を目的とした個人情報の収集を行っていません。", "将来、一部のアプリで広告SDKが使用される場合、広告識別子、端末情報、アプリ利用情報などが広告配信および効果測定のために処理されることがあります。", "広告SDKの使用有無は、アプリおよびバージョンによって異なる場合があり、必要に応じて別途通知します。"] },
+            { title: "9. データの保管および削除", body: ["SAME STUDIOが独自のサーバーにユーザーデータを保管しない場合、サーバー上の別途の保管期間は存在しません。", "ユーザーは、アプリ内の削除機能、アプリの削除、iCloudデータの削除、端末設定の変更を通じて、関連データを削除または処理を停止できます。", "iCloudに保存されたデータは、ユーザーのApple IDおよびiCloud設定に従って管理されるため、削除方法はAppleのiCloud設定に従います。"] },
+            { title: "10. ユーザーの権利", body: ["ユーザーは、個人情報の処理に関して、問い合わせ、削除、訂正、処理停止を求めることができます。", "ただし、SAME STUDIOが独自のサーバーに保管していないデータについては、ユーザーの端末またはiCloud設定を通じて直接管理する必要がある場合があります。", "位置情報、通知、写真、広告トラッキングなどの許可は、iOS設定からいつでも変更できます。"] },
+            { title: "11. 児童のプライバシー", body: ["SAME STUDIOのアプリは、原則として14歳未満の児童を主な対象としていません。", "14歳未満の児童がアプリを利用する場合、保護者の指導および同意が必要となる場合があります。関連法令上必要な場合、保護者同意の手続きに従います。"] },
+            { title: "12. セキュリティ", body: ["SAME STUDIOは、ユーザーの個人情報保護を重要視しています。", "アプリは不要なサーバー送信を最小限に抑え、可能な場合にはユーザーの端末または個人のiCloud環境でデータを処理するよう設計されています。", "ただし、ユーザーの端末、Apple ID、iCloudアカウントのセキュリティはユーザー自身が管理する必要があります。"] },
+            { title: "13. 本プライバシーポリシーの変更", body: ["本プライバシーポリシーは、アプリ機能、サービス構造、関連法令、外部サービスの利用有無に応じて変更される場合があります。", "変更内容は本ページで告知します。重要な変更がある場合、アプリ内通知または別途の案内を提供することがあります。"] },
+            { title: "14. お問い合わせ", contact: [["事業者名", "세임스튜디오"], ["代表者", "김동찬"], ["メール", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["ウェブサイト", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">samestudio.kr</a>"]] },
+            { title: "15. 要約", list: ["SAME STUDIOは個人情報の収集を最小限に抑えます。", "Maparyは、ユーザーの個人的な記録をSAME STUDIO独自のサーバーに収集または保存しません。", "ユーザーが作成した記録および位置関連データは、ユーザーの端末または個人のiCloudアカウントに保存される場合があります。", "SAME STUDIOはユーザーの個人情報を販売しません。", "ユーザーは、iOS設定、アプリ設定、iCloud設定を通じて権限およびデータを管理できます。", "プライバシーに関するお問い合わせは contact@samestudio.kr までご連絡ください。"] }
+          ]
+        },
+        zh: {
+          lang: "zh",
+          title: "隐私政策",
+          documentTitle: "隐私政策 | SAME STUDIO",
+          updated: "最后更新日期：2026-05-04",
+          lead: "SAME STUDIO 尽量减少对个人数据和个人记录的处理。Mapary 基于不将用户个人记录收集或存储到 SAME STUDIO 自有服务器的结构进行设计和运营。",
+          languageLabel: "语言",
+          scopeTitle: "适用范围",
+          scope: ["本隐私政策适用于 세임스튜디오 提供的 Mapary、ODOW、Spotcha、Runtronome 及相关网站。", "但是，根据各应用的功能和版本，实际处理的数据项目可能有所不同。", "目前，Mapary 以不将用户数据收集或存储到 SAME STUDIO 自有服务器的结构为基础编写本政策。"],
+          sections: [
+            { title: "1. 隐私处理原则", body: ["SAME STUDIO 以最小化处理用户个人信息为原则。用户的记录、备忘、位置相关数据、日记内容等个人内容归用户所有。", "<strong>SAME STUDIO 不会将用户的个人记录内容收集到自有服务器，也不会查看这些内容。</strong> 用户数据可能会保存在用户设备或用户管理的个人 iCloud 账户等存储空间中。"] },
+            { title: "2. 我们不收集的信息", body: ["Mapary 不会将用户姓名、电子邮件、电话号码、地址、日记内容、备忘内容、位置记录直接收集或存储到 SAME STUDIO 自有服务器。", "SAME STUDIO 不会分析或出售用户的记录内容，也不会将用户数据出售给广告主或第三方。"] },
+            { title: "3. 应用内数据存储方式", body: ["用户创建的记录、备忘、位置相关信息等，可能会为了提供应用功能而存储在用户设备或用户的个人 iCloud 账户中。", "存储在 iCloud 中的数据由 Apple 系统根据用户的 Apple ID 和 iCloud 设置进行管理。SAME STUDIO 无法直接访问用户的个人 iCloud 账户。", "iCloud 同步、备份和恢复是否启用，可能会根据用户的设备和 iCloud 设置而有所不同。"] },
+            { title: "4. 位置信息", body: ["Mapary 或 Spotcha 等部分应用可能会为了提供地图、位置备忘、基于地点的提醒等功能而请求位置权限。", "位置信息仅用于提供用户请求的功能，未经用户同意，不会传输到 SAME STUDIO 自有服务器。", "用户可以随时在 iOS 设置中更改或撤回位置权限。如果拒绝位置权限，部分基于位置的功能可能会受到限制。"] },
+            { title: "5. 通知权限", body: ["部分应用可能会为了提供记录提醒、基于地点的提醒、计时器提醒等功能而请求通知权限。", "通知权限仅在用户明确允许的情况下使用。用户可以随时在 iOS 设置中更改通知权限。"] },
+            { title: "6. 不出售或向第三方披露", body: ["<strong>SAME STUDIO 不会向第三方出售用户的个人信息或个人记录数据。</strong>", "SAME STUDIO 不会为了广告目的提供用户的个人记录内容。除法律法规要求的情况外，不会向外部提供用户数据。"] },
+            { title: "7. 第三方服务和平台", body: ["为了提供应用分发、支付、备份、同步、通知、广告等功能，可能会使用 Apple App Store、iCloud、iOS 系统功能等。", "未来部分应用可能会使用 Google AdMob、Supabase、Cloudflare 等外部服务。在这种情况下，个人信息处理项目可能会根据相应应用的功能和政策而有所不同。", "如果新增外部服务或个人信息处理方式发生变化，SAME STUDIO 将更新本隐私政策。"] },
+            { title: "8. 广告与分析", body: ["Mapary 目前不会通过 SAME STUDIO 自有服务器收集用于用户追踪或个性化广告目的的个人信息。", "如果未来部分应用使用广告 SDK，广告标识符、设备信息、应用使用信息等可能会为了广告投放和效果衡量而被处理。", "广告 SDK 的使用情况可能会根据应用和版本而有所不同，必要时将另行告知。"] },
+            { title: "9. 数据保留与删除", body: ["如果 SAME STUDIO 不在自有服务器上保存用户数据，则不存在单独的服务器保留期限。", "用户可以通过应用内删除功能、删除应用、删除 iCloud 数据或更改设备设置来删除相关数据或停止相关处理。", "存储在 iCloud 中的数据由用户的 Apple ID 和 iCloud 设置管理，因此删除方法遵循 Apple 的 iCloud 设置。"] },
+            { title: "10. 用户权利", body: ["用户可以就个人信息处理提出咨询、删除请求、更正请求或停止处理请求。", "但是，对于 SAME STUDIO 未保存在自有服务器上的数据，用户可能需要通过自己的设备或 iCloud 设置直接管理。", "位置、通知、照片、广告追踪等权限可以随时在 iOS 设置中更改。"] },
+            { title: "11. 儿童隐私", body: ["SAME STUDIO 的应用原则上并非主要面向 14 岁以下儿童。", "如果 14 岁以下儿童使用应用，可能需要监护人的指导和同意。在相关法律要求的情况下，将遵循监护人同意程序。"] },
+            { title: "12. 安全", body: ["SAME STUDIO 重视用户个人信息的保护。", "应用被设计为尽量减少不必要的服务器传输，并在可能的情况下在用户设备或个人 iCloud 环境中处理数据。", "但是，用户的设备、Apple ID 和 iCloud 账户安全需要由用户自行管理。"] },
+            { title: "13. 隐私政策的变更", body: ["本隐私政策可能会根据应用功能、服务结构、相关法律法规或外部服务使用情况而变更。", "变更内容将通过本页面公布。如有重大变更，SAME STUDIO 可能会通过应用内公告或其他方式另行通知。"] },
+            { title: "14. 联系方式", contact: [["企业名称", "세임스튜디오"], ["代表人", "김동찬"], ["电子邮件", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["网站", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">samestudio.kr</a>"]] },
+            { title: "15. 摘要", list: ["SAME STUDIO 尽量减少个人数据的收集。", "Mapary 不会将用户的个人记录收集或存储到 SAME STUDIO 自有服务器。", "用户创建的记录和位置相关数据可能会存储在用户设备或个人 iCloud 账户中。", "SAME STUDIO 不会出售用户的个人数据。", "用户可以通过 iOS 设置、应用设置或 iCloud 设置管理应用权限和数据。", "如有隐私相关问题，请联系 contact@samestudio.kr。"] }
+          ]
+        }
+      };
+
+      var header = document.querySelector("[data-header]");
+      var menuButton = document.querySelector(".menu-button");
+      var closeButtons = document.querySelectorAll("[data-close-menu]");
+      var drawerLinks = document.querySelectorAll(".drawer a");
+      var themeButtons = document.querySelectorAll(".theme-toggle");
+      var languageButtons = document.querySelectorAll(".language-button");
+      var titleEl = document.querySelector("[data-policy-title]");
+      var updatedEl = document.querySelector("[data-policy-updated]");
+      var leadEl = document.querySelector("[data-policy-lead]");
+      var languageLabelEl = document.querySelector("[data-language-label]");
+      var scopeTitleEl = document.querySelector("[data-scope-title]");
+      var scopeBodyEl = document.querySelector("[data-scope-body]");
+      var contentEl = document.querySelector("[data-policy-content]");
+
+      function setMenu(open) {
+        document.body.classList.toggle("menu-open", open);
+        if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      }
+
+      function detectLanguage() {
+        var stored = localStorage.getItem("same-studio-privacy-lang");
+        if (stored && translations[stored]) return stored;
+        var browser = (navigator.language || "ko").toLowerCase();
+        if (browser.indexOf("ko") === 0) return "ko";
+        if (browser.indexOf("en") === 0) return "en";
+        if (browser.indexOf("ja") === 0) return "ja";
+        if (browser.indexOf("zh") === 0) return "zh";
+        return "ko";
+      }
+
+      function paragraphHtml(items) {
+        return items.map(function (item) { return "<p>" + item + "</p>"; }).join("");
+      }
+
+      function listHtml(items) {
+        return "<ul>" + items.map(function (item) { return "<li>" + item + "</li>"; }).join("") + "</ul>";
+      }
+
+      function contactHtml(items) {
+        return "<div class=\"contact-list\">" + items.map(function (item) {
+          return "<div class=\"contact-row\"><span>" + item[0] + "</span><span>" + item[1] + "</span></div>";
+        }).join("") + "</div>";
+      }
+
+      function renderLanguage(lang) {
+        var data = translations[lang] || translations.ko;
+        root.setAttribute("lang", data.lang);
+        document.title = data.documentTitle;
+        titleEl.textContent = data.title;
+        updatedEl.textContent = data.updated;
+        leadEl.textContent = data.lead;
+        languageLabelEl.textContent = data.languageLabel;
+        scopeTitleEl.textContent = data.scopeTitle;
+        scopeBodyEl.innerHTML = paragraphHtml(data.scope);
+        contentEl.innerHTML = data.sections.map(function (section) {
+          var body = "";
+          if (section.body) body += paragraphHtml(section.body);
+          if (section.list) body += listHtml(section.list);
+          if (section.contact) body += contactHtml(section.contact);
+          return "<section class=\"policy-section\"><h2>" + section.title + "</h2>" + body + "</section>";
+        }).join("");
+
+        languageButtons.forEach(function (button) {
+          var isActive = button.getAttribute("data-lang") === lang;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+          if (isActive) button.setAttribute("aria-current", "true");
+          else button.removeAttribute("aria-current");
+        });
+        localStorage.setItem("same-studio-privacy-lang", lang);
+      }
+
+      themeButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("same-studio-theme", next);
+        });
+      });
+
+      languageButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          renderLanguage(button.getAttribute("data-lang"));
+        });
+      });
+
+      if (menuButton) menuButton.addEventListener("click", function () { setMenu(true); });
+      closeButtons.forEach(function (button) { button.addEventListener("click", function () { setMenu(false); }); });
+      drawerLinks.forEach(function (link) { link.addEventListener("click", function () { setMenu(false); }); });
+      document.addEventListener("keydown", function (event) { if (event.key === "Escape") setMenu(false); });
+
+      function updateHeader() {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+      updateHeader();
+      window.addEventListener("scroll", updateHeader, { passive: true });
+      renderLanguage(detectLanguage());
+    })();
   </script>
 </body>
 </html>
