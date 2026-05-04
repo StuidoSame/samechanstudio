@@ -105,21 +105,7 @@
       letter-spacing: .08em;
       font-size: .95rem;
     }
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 11px;
-      background: var(--accent);
-      box-shadow: 0 12px 28px rgba(120,86,215,.28);
-      position: relative;
-    }
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 8px;
-      border: 1px solid rgba(255,255,255,.72);
-      border-radius: 8px;
-    }
+    .brand-icon { width: 36px; height: 36px; border-radius: 12px; object-fit: cover; display: block; box-shadow: 0 12px 28px rgba(120,86,215,.24); }
     .desktop-menu { display: flex; align-items: center; gap: 6px; }
     .desktop-menu a, .drawer a {
       color: var(--muted);
@@ -353,7 +339,7 @@
     @media (max-width: 640px) {
       .nav { width: min(100% - 24px,var(--max)); height: 64px; }
       .brand { font-size: .86rem; }
-      .brand-mark { width: 29px; height: 29px; border-radius: 10px; }
+      .brand-icon { width: 31px; height: 31px; border-radius: 10px; }
       .icon-button { width: 39px; height: 39px; }
       main { padding-top: 104px; }
       .doc, .footer-grid { width: min(100% - 24px,var(--max)); }
@@ -381,7 +367,7 @@
   <div class="page-transition" aria-hidden="true"></div>
   <header class="site-header" data-header>
     <div class="nav">
-      <a class="brand" href="index.html" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span>SAME STUDIO</span></a>
+      <a class="brand" href="index.html" aria-label="SAME STUDIO home"><img src="assets/icons/icon.png" alt="SAME STUDIO logo" class="brand-icon"><span>SAME STUDIO</span></a>
       <nav class="desktop-menu" aria-label="Primary navigation">
         <a href="index.html#apps">Apps</a>
         <a href="index.html#philosophy">Philosophy</a>
@@ -399,7 +385,7 @@
   <div class="drawer-overlay" data-close-menu></div>
   <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation">
     <div class="drawer-head">
-      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span>SAME STUDIO</span></a>
+      <a class="brand" href="index.html"><img src="assets/icons/icon.png" alt="SAME STUDIO logo" class="brand-icon"><span>SAME STUDIO</span></a>
       <button class="icon-button" type="button" aria-label="Close menu" data-close-menu>×</button>
     </div>
     <nav>
