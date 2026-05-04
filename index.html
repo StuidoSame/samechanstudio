@@ -561,6 +561,8 @@
       position: relative;
       min-height: 430px;
       padding: 28px;
+      display: flex;
+      flex-direction: column;
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background:
@@ -600,11 +602,30 @@
     .map-card-header { position: relative; z-index: 1; }
     .map-card-header strong { display: block; margin-top: 10px; font-size: clamp(1.8rem,3.6vw,3rem); line-height: 1.05; }
     .map-card-header p { margin: 12px 0 0; color: var(--muted); line-height: 1.65; }
-    .korea-map-visual { position: relative; z-index: 1; min-height: 220px; margin-top: 20px; display: grid; place-items: center; }
-    .korea-map-visual svg { width: min(82%, 270px); height: auto; filter: drop-shadow(0 18px 44px rgba(109,93,247,.20)); }
+    .korea-map-visual {
+      position: relative;
+      z-index: 1;
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 250px;
+      margin: 18px 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+    .korea-map-visual svg {
+      display: block;
+      width: min(76%, 230px);
+      max-width: 100%;
+      max-height: 235px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 18px 44px rgba(109,93,247,.20));
+    }
     .daejeon-dot { position: absolute; left: 48%; top: 53%; width: 14px; height: 14px; border-radius: 50%; background: #ff6aa8; box-shadow: 0 0 0 8px rgba(255,106,168,.16), 0 0 32px rgba(255,106,168,.45); }
     .about-visual-card .daejeon-label { position: absolute; left: calc(48% + 18px); top: calc(53% - 6px); transform: none; padding: 7px 10px; font-size: .78rem; }
-    .studio-pills { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .studio-pills { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 4px; }
     .studio-pills span {
       padding: 8px 11px;
       border-radius: 999px;
@@ -749,8 +770,9 @@
       .app-top { flex-direction: column; }
       .status-pill { align-self: flex-start; }
       .about-meta { grid-template-columns: 1fr; }
-      .about-visual-card { min-height: 380px; padding: 22px; }
-      .korea-map-visual { min-height: 190px; }
+      .about-visual-card { min-height: 390px; padding: 22px; }
+      .korea-map-visual { min-height: 210px; margin: 16px 0 18px; }
+      .korea-map-visual svg { width: min(72%, 210px); max-height: 205px; }
       .footer-grid { grid-template-columns: 1fr; }
       .footer-social { justify-content: flex-start; }
       .korea-map { min-height: 300px; }
