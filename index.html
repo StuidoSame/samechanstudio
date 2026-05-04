@@ -762,27 +762,30 @@
       position: fixed;
       left: 50%;
       top: 50%;
-      width: 280px;
-      height: 280px;
+      width: 420px;
+      height: 420px;
       border-radius: 999px;
       pointer-events: none;
       z-index: 0;
       opacity: 0;
       background:
         radial-gradient(circle at center,
-          rgba(168,85,247,.45),
-          rgba(236,72,153,.22) 35%,
-          rgba(59,130,246,.14) 55%,
-          transparent 72%);
-      filter: blur(54px);
+          rgba(168,85,247,.72) 0%,
+          rgba(236,72,153,.44) 28%,
+          rgba(59,130,246,.30) 48%,
+          rgba(34,211,238,.14) 62%,
+          transparent 76%);
+      filter: blur(50px);
       mix-blend-mode: screen;
-      transform: translate3d(-50%,-50%,0);
-      transition: opacity .18s ease;
-      will-change: left, top, opacity;
+      transform: translate3d(-50%,-50%,0) scale(var(--cursor-glow-scale, 1));
+      transition: opacity .18s ease, transform .22s ease;
+      will-change: left, top, opacity, transform;
     }
-    [data-theme="dark"] .cursor-glow { opacity: .24; }
-    [data-theme="light"] .cursor-glow { opacity: .14; mix-blend-mode: normal; }
-    .cursor-glow.is-hidden { opacity: 0; }
+    [data-theme="dark"] .cursor-glow { opacity: .42; }
+    [data-theme="light"] .cursor-glow { opacity: .20; mix-blend-mode: normal; }
+    body.is-hovering-interactive .cursor-glow { --cursor-glow-scale: 1.22; opacity: .52; }
+    [data-theme="light"] body.is-hovering-interactive .cursor-glow { opacity: .26; }
+    .cursor-glow.is-hidden { opacity: 0 !important; }
 
     .drawer-overlay { position: fixed; inset: 0; z-index: 80; background: rgba(12,10,18,.48); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
     .drawer {
@@ -1233,6 +1236,7 @@
         window.addEventListener("mousemove", function (event) {
           targetX = event.clientX;
           targetY = event.clientY;
+          document.body.classList.toggle("is-hovering-interactive", Boolean(event.target.closest("a, button, .app-card, .value-card, .contact-panel, .meta-pill, .studio-pills span, .category-pill, .social-link")));
           if (!glowVisible) {
             glowVisible = true;
             cursorGlow.classList.remove("is-hidden");
@@ -1240,6 +1244,7 @@
         }, { passive: true });
         document.addEventListener("mouseleave", function () {
           glowVisible = false;
+          document.body.classList.remove("is-hovering-interactive");
           cursorGlow.classList.add("is-hidden");
         });
         document.addEventListener("mouseenter", function () {
