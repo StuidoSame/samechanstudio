@@ -691,6 +691,32 @@
     body.is-transitioning .page-transition { opacity: 1; }
     body.is-transitioning .page-transition::before { animation: pageLoad .38s ease forwards; }
     body.is-transitioning main, body.is-transitioning .site-footer { opacity: .45; transition: opacity .22s ease; }
+    main, .site-footer { position: relative; z-index: 1; }
+    .cursor-glow {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: 280px;
+      height: 280px;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      background:
+        radial-gradient(circle at center,
+          rgba(168,85,247,.45),
+          rgba(236,72,153,.22) 35%,
+          rgba(59,130,246,.14) 55%,
+          transparent 72%);
+      filter: blur(54px);
+      mix-blend-mode: screen;
+      transform: translate3d(-50%,-50%,0);
+      transition: opacity .18s ease;
+      will-change: left, top, opacity;
+    }
+    [data-theme="dark"] .cursor-glow { opacity: .24; }
+    [data-theme="light"] .cursor-glow { opacity: .14; mix-blend-mode: normal; }
+    .cursor-glow.is-hidden { opacity: 0; }
 
     .drawer-overlay { position: fixed; inset: 0; z-index: 80; background: rgba(12,10,18,.48); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
     .drawer {
@@ -790,11 +816,13 @@
       .studio-pills span:active { transform: none; }
       body.is-transitioning .page-transition::before { animation: none; width: 100%; }
       body.is-transitioning main, body.is-transitioning .site-footer { opacity: 1; }
+      .cursor-glow { display: none; }
     }
   </style>
 </head>
 <body>
   <div class="page-transition" aria-hidden="true"></div>
+  <div class="cursor-glow is-hidden" aria-hidden="true"></div>
   <header class="site-header" data-header>
     <div class="nav">
       <a class="brand" href="#top" aria-label="SAME STUDIO home"><img src="assets/icons/icon.png" alt="SAME STUDIO logo" class="brand-icon"><span>SAME STUDIO</span></a>
@@ -1117,6 +1145,41 @@
       function updateHeader() { header.classList.toggle("is-scrolled", window.scrollY > 12); }
       updateHeader();
       window.addEventListener("scroll", updateHeader, { passive: true });
+
+      var cursorGlow = document.querySelector(".cursor-glow");
+      var supportsCursorGlow = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (cursorGlow && supportsCursorGlow && !reduceMotion) {
+        var targetX = window.innerWidth / 2;
+        var targetY = window.innerHeight / 2;
+        var currentX = targetX;
+        var currentY = targetY;
+        var glowVisible = false;
+        function animateCursorGlow() {
+          currentX += (targetX - currentX) * .12;
+          currentY += (targetY - currentY) * .12;
+          cursorGlow.style.left = currentX + "px";
+          cursorGlow.style.top = currentY + "px";
+          window.requestAnimationFrame(animateCursorGlow);
+        }
+        window.addEventListener("mousemove", function (event) {
+          targetX = event.clientX;
+          targetY = event.clientY;
+          if (!glowVisible) {
+            glowVisible = true;
+            cursorGlow.classList.remove("is-hidden");
+          }
+        }, { passive: true });
+        document.addEventListener("mouseleave", function () {
+          glowVisible = false;
+          cursorGlow.classList.add("is-hidden");
+        });
+        document.addEventListener("mouseenter", function () {
+          glowVisible = true;
+          cursorGlow.classList.remove("is-hidden");
+        });
+        animateCursorGlow();
+      }
 
       document.addEventListener("click", function (event) {
         var link = event.target.closest("a[href]");
