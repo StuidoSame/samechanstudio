@@ -415,15 +415,15 @@
   <div class="cursor-glow is-hidden" aria-hidden="true"></div>
   <header class="site-header" data-header>
     <div class="nav">
-      <a class="brand" href="index.html" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
+      <a class="brand" href="/" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
       <nav class="desktop-menu" aria-label="Primary navigation">
-        <a href="index.html#apps">Apps</a>
-        <a href="index.html#philosophy">Philosophy</a>
-        <a href="index.html#about">About</a>
-        <a href="index.html#contact">Contact</a>
-        <a href="support.html">Support</a>
-        <a href="terms.html">Terms</a>
-        <a href="privacy.html">Privacy</a>
+        <a href="/#apps">Apps</a>
+        <a href="/#philosophy">Philosophy</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+        <a href="/support">Support</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
       </nav>
       <div class="nav-actions">
         <button class="icon-button theme-toggle" type="button" aria-label="Toggle light and dark theme"><span class="theme-icon" aria-hidden="true"></span></button>
@@ -435,17 +435,17 @@
   <div class="drawer-overlay" data-close-menu></div>
   <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation">
     <div class="drawer-head">
-      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
       <button class="icon-button" type="button" aria-label="Close menu" data-close-menu>×</button>
     </div>
     <nav>
-      <a href="index.html#apps">Apps</a>
-      <a href="index.html#philosophy">Philosophy</a>
-      <a href="index.html#about">About</a>
-      <a href="index.html#contact">Contact</a>
-      <a href="support.html">Support</a>
-      <a href="terms.html">Terms</a>
-      <a href="privacy.html">Privacy</a>
+      <a href="/#apps">Apps</a>
+      <a href="/#philosophy">Philosophy</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+      <a href="/support">Support</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
     </nav>
   </aside>
 
@@ -494,10 +494,10 @@
         </div>
       </div>
       <nav class="footer-links" aria-label="Footer navigation">
-        <a href="support.html">Support</a>
-        <a href="index.html">Home</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+        <a href="/support">Support</a>
+        <a href="/">Home</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
       </nav>
     </div>
   </footer>
@@ -763,12 +763,14 @@
         if (!link) return;
         var href = link.getAttribute("href");
         if (!href || href.charAt(0) === "#" || href.indexOf("mailto:") === 0 || link.target === "_blank" || link.hasAttribute("download")) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         var url = new URL(href, window.location.href);
-        var isInternalHtml = url.origin === window.location.origin && /\.html$/.test(url.pathname);
-        if (!isInternalHtml || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        var isInternal = url.origin === window.location.origin;
+        var isSamePage = url.pathname === window.location.pathname && url.hash === window.location.hash;
+        if (!isInternal || isSamePage) return;
         event.preventDefault();
         document.body.classList.add("is-transitioning");
-        window.setTimeout(function () { window.location.href = url.href; }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
+        window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
       });
       renderLanguage(detectLanguage());
     })();
