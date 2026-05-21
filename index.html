@@ -859,7 +859,7 @@
       box-shadow: var(--shadow-hover), 0 18px 48px var(--value-glow);
     }
 
-    .about-layout, .map-layout { display: grid; grid-template-columns: 1.08fr .92fr; gap: 24px; align-items: stretch; }
+    .about-layout, .map-layout { display: grid; grid-template-columns: minmax(0,1.08fr) minmax(0,.92fr); gap: 24px; align-items: stretch; }
     .about-copy { padding: 32px; border-radius: var(--radius-xl); }
     .about-copy p { margin: 0 0 18px; color: var(--muted); line-height: 1.8; word-break: keep-all; }
     .about-copy p:last-child { margin-bottom: 0; }
@@ -897,7 +897,7 @@
         radial-gradient(circle at 76% 70%,rgba(34,211,238,.12),transparent 13rem),
         var(--card);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow: visible;
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
@@ -944,24 +944,74 @@
       z-index: 1;
       flex: 1 1 auto;
       width: 100%;
-      min-height: 250px;
-      margin: 18px 0 20px;
+      min-height: 270px;
+      margin: 20px 0 22px;
+      padding: 18px 18px 26px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: visible;
     }
-    .korea-map-visual svg {
+    .daejeon-illustration {
       display: block;
-      width: min(76%, 230px);
+      width: min(88%, 300px);
       max-width: 100%;
-      max-height: 235px;
+      max-height: 280px;
       height: auto;
       object-fit: contain;
-      filter: drop-shadow(0 18px 44px rgba(109,93,247,.20));
+      overflow: visible;
+      filter: drop-shadow(0 22px 50px rgba(109,93,247,.24));
+      animation: daejeonFloat 5.8s ease-in-out infinite;
     }
-    .daejeon-dot { position: absolute; left: 48%; top: 53%; width: 14px; height: 14px; border-radius: 50%; background: #ff6aa8; box-shadow: 0 0 0 8px rgba(255,106,168,.16), 0 0 32px rgba(255,106,168,.45); }
-    .about-visual-card .daejeon-label { position: absolute; left: calc(48% + 18px); top: calc(53% - 6px); transform: none; padding: 7px 10px; font-size: .78rem; }
+    .daejeon-blob-outline { stroke: rgba(255,255,255,.58); stroke-width: 4; }
+    .daejeon-road {
+      fill: none;
+      stroke: rgba(255,255,255,.42);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .daejeon-orbit {
+      fill: none;
+      stroke: rgba(255,255,255,.22);
+      stroke-width: 3;
+      stroke-dasharray: 10 12;
+      stroke-linecap: round;
+    }
+    .daejeon-sparkle {
+      fill: rgba(255,255,255,.82);
+      filter: drop-shadow(0 0 10px rgba(255,255,255,.34));
+      animation: daejeonSparkle 4.8s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .daejeon-sparkle.mid { animation-delay: -1.4s; }
+    .daejeon-sparkle.low { animation-delay: -2.8s; }
+    .daejeon-dot {
+      position: absolute;
+      left: 54%;
+      top: 48%;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#ff7ab6,#a855f7);
+      border: 2px solid rgba(255,255,255,.86);
+      box-shadow: 0 0 0 8px rgba(255,106,168,.16), 0 0 32px rgba(255,106,168,.45);
+      z-index: 3;
+      animation: daejeonPulse 3.6s ease-in-out infinite;
+    }
+    .about-visual-card .daejeon-label {
+      position: absolute;
+      left: calc(54% + 17px);
+      top: calc(48% - 8px);
+      transform: none;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.24);
+      font-size: .78rem;
+      z-index: 3;
+      white-space: nowrap;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
     .studio-pills { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 4px; }
     .studio-pills span {
       padding: 8px 11px;
@@ -1090,6 +1140,9 @@
     @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
     @keyframes phoneFeed { from { transform: translateY(0); } to { transform: translateY(-50%); } }
     @keyframes softFloat { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+    @keyframes daejeonFloat { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-8px) rotate(1deg); } }
+    @keyframes daejeonPulse { 0%,100% { box-shadow: 0 0 0 8px rgba(255,106,168,.16), 0 0 32px rgba(255,106,168,.45); transform: scale(1); } 50% { box-shadow: 0 0 0 14px rgba(255,106,168,.08), 0 0 42px rgba(168,85,247,.50); transform: scale(1.08); } }
+    @keyframes daejeonSparkle { 0%,100% { opacity: .38; transform: scale(.82) rotate(0deg); } 45% { opacity: .95; transform: scale(1.08) rotate(8deg); } }
     @keyframes pageLoad { from { width: 0; } to { width: 100%; } }
 
     @media (max-width: 980px) {
@@ -1143,8 +1196,10 @@
       .status-pill { align-self: flex-start; }
       .about-meta { grid-template-columns: 1fr; }
       .about-visual-card { min-height: 390px; padding: 22px; }
-      .korea-map-visual { min-height: 210px; margin: 16px 0 18px; }
-      .korea-map-visual svg { width: min(72%, 210px); max-height: 205px; }
+      .korea-map-visual { min-height: 250px; margin: 18px 0 20px; padding: 14px 12px 24px; }
+      .daejeon-illustration { width: min(86%, 260px); max-height: 245px; }
+      .daejeon-dot { left: 52%; top: 49%; }
+      .about-visual-card .daejeon-label { left: calc(52% + 16px); top: calc(49% - 8px); }
       .footer-grid { align-items: center; }
       .footer-social { justify-content: center; }
       .korea-map { min-height: 300px; }
@@ -1155,6 +1210,9 @@
       .reveal, .app-card, .value-card { opacity: 1; transform: none; }
       .phone-feed { animation: none; }
       .floating-card { animation: none; }
+      .daejeon-illustration,
+      .daejeon-dot,
+      .daejeon-sparkle { animation: none; }
       .keyword-button:hover { transform: none; }
       .phone-status, .phone-title, .feed-mask, .play-hint, .space-game-layer, .space-game-result { transition: none; }
       .space-game-button:hover { transform: none; }
@@ -1420,16 +1478,42 @@
             <p>Small tools for thoughtful days.</p>
           </div>
           <div class="korea-map-visual">
-            <svg viewBox="0 0 260 310" aria-hidden="true">
+            <svg class="daejeon-illustration" viewBox="0 0 360 300" aria-hidden="true">
               <defs>
-                <linearGradient id="aboutKoreaGrad" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0" stop-color="#a855f7" stop-opacity=".86"/>
-                  <stop offset=".55" stop-color="#6366f1" stop-opacity=".72"/>
-                  <stop offset="1" stop-color="#22d3ee" stop-opacity=".58"/>
+                <linearGradient id="daejeonBlobGrad" x1="68" x2="292" y1="36" y2="260" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#c084fc" stop-opacity=".92"/>
+                  <stop offset=".48" stop-color="#6366f1" stop-opacity=".82"/>
+                  <stop offset="1" stop-color="#22d3ee" stop-opacity=".70"/>
                 </linearGradient>
+                <radialGradient id="daejeonSoftLight" cx="35%" cy="25%" r="72%">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity=".28"/>
+                  <stop offset=".55" stop-color="#ffffff" stop-opacity=".08"/>
+                  <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="daejeonBlobGlow" x="-25%" y="-25%" width="150%" height="150%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+                  <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.45 0 0 0 0 0.26 0 0 0 0 0.98 0 0 0 .42 0" result="glow"/>
+                  <feMerge>
+                    <feMergeNode in="glow"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
               </defs>
-              <path d="M142 22c22 16 25 41 17 62 21 13 33 32 29 56 18 14 21 38 10 58 16 18 9 43-12 55-7 25-26 45-49 55-16 7-29 20-42 34-23-21-25-49-15-73-22-14-29-37-20-60-20-22-17-50 4-69-7-25 4-48 27-60 4-27 25-48 51-58Z" fill="url(#aboutKoreaGrad)" stroke="rgba(255,255,255,.58)" stroke-width="3"/>
-              <path d="M156 84c-22 8-39 19-51 39M169 153c-29 9-58 16-87 15M158 226c-26-5-48-2-67 12" fill="none" stroke="rgba(255,255,255,.36)" stroke-width="4" stroke-linecap="round"/>
+              <ellipse cx="180" cy="154" rx="118" ry="96" fill="rgba(124,58,237,.12)"/>
+              <path class="daejeon-orbit" d="M78 160c31-62 91-95 155-76 54 16 74 57 48 101-28 47-93 63-153 43-45-15-69-39-50-68Z"/>
+              <g filter="url(#daejeonBlobGlow)">
+                <path class="daejeon-blob-outline" d="M184 42c31 2 43 27 43 52 36 2 65 23 69 55 4 31-19 55-48 64-1 34-25 57-58 57-22 0-39-13-51-30-31 5-61-8-75-34-14-27-5-58 18-76-12-27-2-57 23-72 24-15 52-8 79-16Z" fill="url(#daejeonBlobGrad)"/>
+                <path d="M184 42c31 2 43 27 43 52 36 2 65 23 69 55 4 31-19 55-48 64-1 34-25 57-58 57-22 0-39-13-51-30-31 5-61-8-75-34-14-27-5-58 18-76-12-27-2-57 23-72 24-15 52-8 79-16Z" fill="url(#daejeonSoftLight)"/>
+              </g>
+              <path class="daejeon-road" d="M122 105c33 9 58 24 80 48 16 18 34 29 56 33"/>
+              <path class="daejeon-road" d="M106 177c35-20 76-23 121-8"/>
+              <path class="daejeon-road" d="M169 77c-6 33-1 64 16 93"/>
+              <circle cx="124" cy="91" r="6" fill="rgba(255,255,255,.34)"/>
+              <circle cx="251" cy="145" r="5" fill="rgba(34,211,238,.34)"/>
+              <circle cx="202" cy="229" r="6" fill="rgba(236,72,153,.28)"/>
+              <path class="daejeon-sparkle high" d="M83 74l5 12 12 5-12 5-5 12-5-12-12-5 12-5 5-12Z"/>
+              <path class="daejeon-sparkle mid" d="M279 78l4 9 9 4-9 4-4 9-4-9-9-4 9-4 4-9Z"/>
+              <path class="daejeon-sparkle low" d="M285 226l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z"/>
             </svg>
             <span class="daejeon-dot"></span>
             <span class="daejeon-label">Daejeon</span>
