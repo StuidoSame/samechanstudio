@@ -483,9 +483,9 @@
     .phone-card::before { content: ""; position: absolute; inset: 0; background: var(--card-gradient, var(--accent)); opacity: .12; pointer-events: none; }
     .phone-card-odow { --card-gradient: linear-gradient(135deg,#7c3aed,#d946ef,#4f46e5); }
     .phone-card-mapary { --card-gradient: linear-gradient(135deg,#b794f4,#6366f1,#38bdf8); }
-    .phone-card-spotcha-map { --card-gradient: linear-gradient(135deg,#3b82f6,#7c3aed,#22d3ee); }
+    .phone-card-locaunt-map { --card-gradient: linear-gradient(135deg,#3b82f6,#7c3aed,#22d3ee); }
     .phone-card-runtronome { --card-gradient: linear-gradient(135deg,#fb7185,#ec4899,#8b5cf6); }
-    .phone-card-spotcha-place { --card-gradient: linear-gradient(135deg,#3b82f6,#22d3ee,#a855f7); }
+    .phone-card-locaunt-place { --card-gradient: linear-gradient(135deg,#3b82f6,#22d3ee,#a855f7); }
     .phone-card > * { position: relative; }
     .phone-label { display: block; color: var(--soft); font-size: .72rem; font-weight: 820; letter-spacing: .04em; text-transform: uppercase; }
     .phone-copy { margin-top: 9px; color: var(--text); font-weight: 780; line-height: 1.45; word-break: keep-all; }
@@ -612,7 +612,7 @@
       --app-gradient: linear-gradient(135deg,#fb7185,#ec4899 48%,#8b5cf6);
       --app-glow: rgba(236,72,153,.24);
     }
-    .app-spotcha {
+    .app-locaunt {
       --app-gradient: linear-gradient(135deg,#3b82f6,#7c3aed 48%,#22d3ee);
       --app-glow: rgba(59,130,246,.26);
     }
@@ -633,8 +633,8 @@
       flex: 0 0 auto;
     }
     .app-icon img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: inherit; }
-    .app-icon.spotcha { padding: 9px; background: linear-gradient(135deg,#3b82f6,#7c3aed 50%,#22d3ee); }
-    .app-icon.spotcha img { transform: scale(1.18); border-radius: 20px; clip-path: inset(7% round 18px); }
+    .app-icon.locaunt { padding: 9px; background: linear-gradient(135deg,#3b82f6,#7c3aed 50%,#22d3ee); }
+    .app-icon.locaunt img { transform: scale(1.18); border-radius: 20px; clip-path: inset(7% round 18px); }
     .app-name { min-width: 0; }
     .app-card h3 { position: relative; margin: 0; font-size: 1.52rem; }
     .status-pill, .category-pill {
@@ -701,7 +701,7 @@
       --category-glow: rgba(236,72,153,.12);
       --category-hover: linear-gradient(135deg,#fb7185,#ec4899,#8b5cf6);
     }
-    .app-spotcha .category-pill {
+    .app-locaunt .category-pill {
       --category-text: #075985;
       --category-bg-a: rgba(59,130,246,.22);
       --category-bg-b: rgba(34,211,238,.17);
@@ -745,9 +745,9 @@
     .app-mapary .tag:nth-child(1) { background: rgba(99,102,241,.15); color: #4338ca; border-color: rgba(99,102,241,.25); }
     .app-mapary .tag:nth-child(2) { background: rgba(56,189,248,.16); color: #0369a1; border-color: rgba(56,189,248,.25); }
     .app-mapary .tag:nth-child(3) { background: rgba(167,139,250,.16); color: #6d28d9; border-color: rgba(167,139,250,.25); }
-    .app-spotcha .tag:nth-child(1) { background: rgba(59,130,246,.16); color: #1d4ed8; border-color: rgba(59,130,246,.25); }
-    .app-spotcha .tag:nth-child(2) { background: rgba(34,211,238,.16); color: #0e7490; border-color: rgba(34,211,238,.25); }
-    .app-spotcha .tag:nth-child(3) { background: rgba(124,58,237,.15); color: #6d28d9; border-color: rgba(124,58,237,.25); }
+    .app-locaunt .tag:nth-child(1) { background: rgba(59,130,246,.16); color: #1d4ed8; border-color: rgba(59,130,246,.25); }
+    .app-locaunt .tag:nth-child(2) { background: rgba(34,211,238,.16); color: #0e7490; border-color: rgba(34,211,238,.25); }
+    .app-locaunt .tag:nth-child(3) { background: rgba(124,58,237,.15); color: #6d28d9; border-color: rgba(124,58,237,.25); }
     .app-runtronome .tag:nth-child(1) { background: rgba(251,113,133,.16); color: #be123c; border-color: rgba(251,113,133,.25); }
     .app-runtronome .tag:nth-child(2) { background: rgba(236,72,153,.15); color: #be185d; border-color: rgba(236,72,153,.25); }
     .app-runtronome .tag:nth-child(3) { background: rgba(139,92,246,.15); color: #6d28d9; border-color: rgba(139,92,246,.25); }
@@ -1318,7 +1318,7 @@
                     <div class="phone-copy">퇴근길에 본 하늘이 오래 남았다.</div>
                     <div class="phone-pills"><span class="pill">기록</span><span class="pill">감정</span><span class="pill">위치</span></div>
                   </div>
-                  <div class="phone-card phone-card-spotcha-map" data-intent="place">
+                  <div class="phone-card phone-card-locaunt-map" data-intent="place">
                     <div class="mini-map-visual"></div>
                     <span class="phone-label">Memory Map</span>
                     <div class="phone-copy">Daejeon · May 2026</div>
@@ -1328,8 +1328,8 @@
                     <div class="phone-copy">168 BPM</div>
                     <div class="phone-pills"><span class="pill">rhythm</span></div>
                   </div>
-                  <div class="phone-card phone-card-spotcha-place" data-intent="place">
-                    <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">Spotcha</span><div class="phone-copy">Near your place</div></div></div>
+                  <div class="phone-card phone-card-locaunt-place" data-intent="place">
+                    <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">LOCAUNT</span><div class="phone-copy">Near your place</div></div></div>
                     <div class="phone-pills"><span class="pill">reminder</span></div>
                   </div>
                   <div class="phone-card phone-card-odow" data-intent="record">
@@ -1342,7 +1342,7 @@
                     <div class="phone-copy">퇴근길에 본 하늘이 오래 남았다.</div>
                     <div class="phone-pills"><span class="pill">기록</span><span class="pill">감정</span><span class="pill">위치</span></div>
                   </div>
-                  <div class="phone-card phone-card-spotcha-map" data-intent="place">
+                  <div class="phone-card phone-card-locaunt-map" data-intent="place">
                     <div class="mini-map-visual"></div>
                     <span class="phone-label">Memory Map</span>
                     <div class="phone-copy">Daejeon · May 2026</div>
@@ -1352,8 +1352,8 @@
                     <div class="phone-copy">168 BPM</div>
                     <div class="phone-pills"><span class="pill">rhythm</span></div>
                   </div>
-                  <div class="phone-card phone-card-spotcha-place" data-intent="place">
-                    <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">Spotcha</span><div class="phone-copy">Near your place</div></div></div>
+                  <div class="phone-card phone-card-locaunt-place" data-intent="place">
+                    <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">LOCAUNT</span><div class="phone-copy">Near your place</div></div></div>
                     <div class="phone-pills"><span class="pill">reminder</span></div>
                   </div>
                 </div>
@@ -1416,15 +1416,17 @@
             <div class="tag-row"><span class="tag">running</span><span class="tag">pace</span><span class="tag">training</span></div>
           </article>
 
-          <article class="app-card app-spotcha" data-intent="place">
+          <article class="app-card app-locaunt released" data-intent="place">
             <div class="app-top">
-              <div class="app-identity"><div class="app-icon spotcha"><img src="assets/icons/Locaunt_icon.png" alt="Spotcha icon"></div><div class="app-name"><h3>Spotcha</h3><span class="category-pill">Location Reminder</span></div></div>
-              <span class="status-pill soon-status" aria-label="Coming Soon"><span class="badge-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="8"/></svg></span><span class="status-short">Soon</span></span>
+              <div class="app-identity"><div class="app-icon locaunt"><img src="assets/icons/Locaunt_icon.png" alt="LOCAUNT icon"></div><div class="app-name"><h3>LOCAUNT</h3><span class="category-pill">Location Reminder</span></div></div>
+              <span class="status-pill store-status" aria-label="Available on Apple App Store">
+                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
+              </span>
             </div>
+            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/locaunt-%EC%A7%80%EB%8F%84-%EC%9C%84%EC%97%90-%EB%82%A8%EA%B8%B0%EB%8A%94-%EB%82%98%EB%A7%8C%EC%9D%98-%EC%95%8C%EB%A6%BC/id6769651582" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
             <p class="ko">특정 장소에서 잊지 말아야 할 일을 알려주는 위치 기반 알림 앱.</p>
             <p class="en">Location-based reminders for the places where memory matters.</p>
             <div class="tag-row"><span class="tag">place</span><span class="tag">reminder</span><span class="tag">memory</span></div>
-            <div class="app-actions"><span class="app-action soon">출시 예정</span></div>
           </article>
 
           <article class="app-card app-odow released" data-intent="record">
