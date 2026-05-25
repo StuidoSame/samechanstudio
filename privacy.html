@@ -78,8 +78,8 @@
       inset: 0 0 auto;
       z-index: 50;
       background: var(--nav);
-      backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
       border-bottom: 1px solid transparent;
       transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
     }
@@ -126,8 +126,8 @@
       cursor: pointer;
       display: inline-grid;
       place-items: center;
-      backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
       transition: transform .2s ease, border-color .2s ease;
     }
     .icon-button:hover { transform: translateY(-1px); border-color: var(--border-strong); }
@@ -163,8 +163,8 @@
       background: var(--nav-strong);
       border-right: 1px solid var(--border);
       box-shadow: 30px 0 80px rgba(0,0,0,.20);
-      backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
       transform: translateX(-105%);
       transition: transform .28s ease;
       padding: 22px;
@@ -184,8 +184,8 @@
       border: 1px solid var(--border);
       background: var(--card);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
     }
     .doc-hero {
       border-radius: 30px;
@@ -330,7 +330,7 @@
     .footer-links { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-weight: 720; order: 3; }
     .footer-links a:hover { color: #8b5cf6; }
     .footer-social { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; order: 1; }
-    .social-link { width: 42px; height: 42px; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 999px; display: inline-grid; place-items: center; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform .2s ease, color .2s ease, border-color .2s ease; }
+    .social-link { width: 42px; height: 42px; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 999px; display: inline-grid; place-items: center; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: transform .2s ease, color .2s ease, border-color .2s ease; }
     .social-link:hover { color: var(--text); border-color: var(--border-strong); transform: translateY(-2px); }
     .social-icon { width: 17px; height: 17px; display: inline-block; }
     .social-icon svg { width: 100%; height: 100%; display: block; fill: currentColor; }
