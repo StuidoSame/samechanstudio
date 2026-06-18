@@ -610,7 +610,9 @@
       animation: appMarquee 28s linear infinite;
       will-change: transform;
     }
-    .app-selector.is-paused .app-selector-track { animation-play-state: paused; }
+    @media (hover: hover) and (pointer: fine) {
+      .app-selector:hover .app-selector-track { animation-play-state: paused; }
+    }
     .app-selector-group { padding: 16px 6px; display: flex; gap: 12px; }
     .app-selector-button {
       flex: 0 0 128px;
@@ -2337,60 +2339,11 @@
           return '<div class="app-selector-group"' + (isCopy ? ' data-marquee-copy="true" aria-hidden="true"' : '') + '>' + appButtonsMarkup(isCopy) + '</div>';
         }).join("");
 
-        var marqueeResumeTimer = 0;
-        var isPointerOverMarquee = false;
-        var isPointerActiveOnMarquee = false;
-        var isFocusWithinMarquee = false;
-
-        function pauseMarquee() {
-          window.clearTimeout(marqueeResumeTimer);
-          appSelector.classList.add("is-paused");
-        }
-
-        function scheduleMarqueeResume() {
-          window.clearTimeout(marqueeResumeTimer);
-          appSelector.classList.add("is-paused");
-          marqueeResumeTimer = window.setTimeout(function () {
-            if (!isPointerOverMarquee && !isPointerActiveOnMarquee && !isFocusWithinMarquee) appSelector.classList.remove("is-paused");
-          }, 2500);
-        }
-
-        appSelector.addEventListener("pointerenter", function (event) {
-          if (event.pointerType === "touch") return;
-          isPointerOverMarquee = true;
-          pauseMarquee();
-        });
-        appSelector.addEventListener("pointerleave", function (event) {
-          if (event.pointerType !== "touch") isPointerOverMarquee = false;
-          isPointerActiveOnMarquee = false;
-          scheduleMarqueeResume();
-        });
-        appSelector.addEventListener("pointerdown", function () {
-          isPointerActiveOnMarquee = true;
-          pauseMarquee();
-        });
-        function finishMarqueePointer() {
-          isPointerActiveOnMarquee = false;
-          scheduleMarqueeResume();
-        }
-        appSelector.addEventListener("pointerup", finishMarqueePointer);
-        appSelector.addEventListener("pointercancel", finishMarqueePointer);
-        appSelector.addEventListener("focusin", function () {
-          isFocusWithinMarquee = true;
-          pauseMarquee();
-        });
-        appSelector.addEventListener("focusout", function (event) {
-          if (event.relatedTarget && appSelector.contains(event.relatedTarget)) return;
-          isFocusWithinMarquee = false;
-          scheduleMarqueeResume();
-        });
         appSelector.addEventListener("click", function (event) {
           var button = event.target.closest(".app-selector-button");
           if (!button) return;
-          pauseMarquee();
           var app = apps.find(function (item) { return item.id === button.getAttribute("data-app-id"); });
           if (app) selectApp(app, button);
-          scheduleMarqueeResume();
         });
       }
       SameStudioLanguage.mount(applyIndexLanguage);
