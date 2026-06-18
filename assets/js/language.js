@@ -39,33 +39,44 @@
     return value;
   }
 
-  function adjustMainOffset() {
-    var main = document.querySelector("main");
-    var row = document.querySelector(".site-language-row");
-    if (!main || !row) return;
-    main.style.paddingTop = "";
-    var base = parseFloat(window.getComputedStyle(main).paddingTop) || 0;
-    main.style.paddingTop = base + row.offsetHeight + "px";
-  }
-
   function mount(onChange) {
-    var header = document.querySelector("[data-header]");
-    if (!header) return get();
-    var row = document.createElement("div");
-    row.className = "site-language-row";
-    row.setAttribute("aria-label", "Site language");
-    row.innerHTML = CODES.map(function (code) {
-      return '<button class="site-language-button" type="button" data-site-language="' + code + '" aria-pressed="false">' + LABELS[code] + '</button>';
-    }).join("");
-    header.appendChild(row);
-    row.addEventListener("click", function (event) {
+    var ariaLabels = {
+      ko: "Switch language to Korean", en: "Switch language to English", ja: "Switch language to Japanese",
+      "zh-CN": "Switch language to Simplified Chinese", "zh-TW": "Switch language to Traditional Chinese"
+    };
+    var overlay = document.createElement("div");
+    overlay.className = "site-language-overlay";
+    overlay.innerHTML =
+      '<button class="site-language-trigger" type="button" aria-label="Open language menu" aria-expanded="false" aria-controls="site-language-panel">文</button>' +
+      '<div class="site-language-panel" id="site-language-panel" role="group" aria-label="Site language"><span class="site-language-title" aria-hidden="true">LANG</span>' +
+      CODES.map(function (code) {
+        return '<button class="site-language-button" type="button" data-site-language="' + code + '" aria-label="' + ariaLabels[code] + '" aria-pressed="false">' + LABELS[code] + '</button>';
+      }).join("") + '</div>';
+    document.body.appendChild(overlay);
+    var trigger = overlay.querySelector(".site-language-trigger");
+    var panel = overlay.querySelector(".site-language-panel");
+    var compactQuery = window.matchMedia("(max-width: 1100px)");
+    function setOpen(open) {
+      var expanded = compactQuery.matches && open;
+      overlay.classList.toggle("is-open", expanded);
+      trigger.setAttribute("aria-expanded", String(expanded));
+      trigger.setAttribute("aria-label", expanded ? "Close language menu" : "Open language menu");
+      if (compactQuery.matches && !expanded) panel.setAttribute("aria-hidden", "true");
+      else panel.removeAttribute("aria-hidden");
+      panel.querySelectorAll("button").forEach(function (button) { button.tabIndex = compactQuery.matches && !expanded ? -1 : 0; });
+    }
+    trigger.addEventListener("click", function () { setOpen(!overlay.classList.contains("is-open")); });
+    overlay.addEventListener("click", function (event) {
       var button = event.target.closest("[data-site-language]");
       if (!button) return;
       set(button.getAttribute("data-site-language"));
+      setOpen(false);
     });
+    document.addEventListener("click", function (event) { if (!overlay.contains(event.target)) setOpen(false); });
+    document.addEventListener("keydown", function (event) { if (event.key === "Escape") setOpen(false); });
+    compactQuery.addEventListener("change", function () { setOpen(false); });
+    setOpen(false);
     window.addEventListener("sameStudioLanguageChange", function (event) { onChange(event.detail.language); });
-    window.addEventListener("resize", adjustMainOffset, { passive: true });
-    window.requestAnimationFrame(adjustMainOffset);
     var language = set(get());
     return language;
   }
