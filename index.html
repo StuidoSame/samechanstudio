@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO는 기록, 장소, 리듬처럼 반복되는 순간들을 더 가볍게 다루기 위해 앱을 만드는 독립 모바일 앱 스튜디오입니다.">
   <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/assets/css/language.css">
   <title>SAME STUDIO | Small tools for thoughtful days.</title>
   <style>
     :root {
@@ -575,20 +576,79 @@
     }
 
     .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
-    .app-selector {
+    .app-selector-shell {
+      --selector-edge-offset: 50px;
+      position: relative;
       display: grid;
-      grid-template-columns: repeat(6,minmax(0,1fr));
-      gap: 12px;
-      padding: 16px;
+      grid-template-columns: 42px minmax(0,1fr) 42px;
+      align-items: center;
+      gap: 4px;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--card);
       box-shadow: var(--shadow);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
+      overflow: hidden;
     }
-    .app-selector-button {
+    .app-selector-shell::before,
+    .app-selector-shell::after {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      top: 1px;
+      bottom: 1px;
+      width: 34px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+    .app-selector-shell::before { left: var(--selector-edge-offset); background: linear-gradient(90deg,var(--card-strong),transparent); }
+    .app-selector-shell::after { right: var(--selector-edge-offset); background: linear-gradient(270deg,var(--card-strong),transparent); }
+    .app-selector-shell.can-scroll-left::before,
+    .app-selector-shell.can-scroll-right::after { opacity: 1; }
+    .app-selector {
       min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      cursor: grab;
+    }
+    .app-selector::-webkit-scrollbar { display: none; }
+    .app-selector.is-dragging { cursor: grabbing; user-select: none; scroll-behavior: auto; }
+    .app-selector-track {
+      width: max-content;
+      min-width: 100%;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .app-selector-arrow {
+      position: relative;
+      z-index: 4;
+      width: 34px;
+      height: 34px;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255,255,255,.14);
+      font: inherit;
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform .2s ease,opacity .2s ease,border-color .2s ease,background .2s ease;
+    }
+    .app-selector-arrow:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--border-strong); background: rgba(139,92,246,.14); }
+    .app-selector-arrow:disabled { opacity: .28; cursor: default; }
+    .app-selector-button {
+      flex: 0 0 128px;
+      width: 128px;
       min-height: 116px;
       padding: 12px 8px 10px;
       display: flex;
@@ -1277,7 +1337,9 @@
 
     @media (max-width: 700px) {
       .apps-grid { grid-template-columns: 1fr; }
-      .app-selector { grid-template-columns: repeat(3,minmax(0,1fr)); }
+      .app-selector-shell { --selector-edge-offset: 0px; grid-template-columns: minmax(0,1fr); }
+      .app-selector-arrow { display: none; }
+      .app-selector-track { justify-content: flex-start; }
     }
 
     @media (max-width: 640px) {
@@ -1311,8 +1373,9 @@
       .section { padding: 62px 0; }
       .values-grid { grid-template-columns: 1fr; }
       .app-card { min-height: 440px; }
-      .app-selector { gap: 9px; padding: 11px; border-radius: 24px; }
-      .app-selector-button { min-height: 106px; padding: 10px 5px 8px; border-radius: 19px; font-size: .72rem; }
+      .app-selector-shell { border-radius: 24px; }
+      .app-selector-track { gap: 9px; padding: 11px; }
+      .app-selector-button { flex-basis: 112px; width: 112px; min-height: 106px; padding: 10px 5px 8px; border-radius: 19px; font-size: .72rem; }
       .app-selector-icon { width: 56px; height: 56px; border-radius: 17px; }
       .app-top { flex-direction: column; }
       .status-pill { align-self: flex-start; }
@@ -1516,7 +1579,13 @@
           <h2>일상을 또렷하게 만드는 작은 도구들.</h2>
           <p>각 앱은 기록, 장소, 리듬처럼 반복되는 순간을 더 가볍게 다루기 위해 설계됩니다.</p>
         </div>
-        <div class="app-selector" role="group" aria-label="Choose an app" id="app-selector"></div>
+        <div class="app-selector-shell" id="app-selector-shell">
+          <button class="app-selector-arrow app-selector-arrow-left" type="button" aria-label="Scroll apps left">‹</button>
+          <div class="app-selector" role="group" aria-label="Choose an app" id="app-selector">
+            <div class="app-selector-track" id="app-selector-track"></div>
+          </div>
+          <button class="app-selector-arrow app-selector-arrow-right" type="button" aria-label="Scroll apps right">›</button>
+        </div>
 
         <div class="app-detail-shell">
           <article class="app-card app-detail-card" id="app-detail" aria-live="polite">
@@ -1648,6 +1717,7 @@
     </div>
   </footer>
 
+  <script src="/assets/js/language.js"></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -2063,6 +2133,75 @@
         window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
       });
 
+      var indexTranslations = {
+        ko: {
+          nav: ["앱", "철학", "소개", "문의", "지원", "이용약관", "개인정보"], eyebrow: "독립 모바일 앱 스튜디오", tagline: "생각이 머무는 하루를 위한 작은 도구.", hero: "기록, 장소, 리듬처럼 반복되는 순간들을 더 가볍게 다루기 위해 설계됩니다.", viewApps: "앱 보기", contact: "문의",
+          appsTitle: "일상을 또렷하게 만드는 작은 도구들.", appsLead: "각 앱은 기록, 장소, 리듬처럼 반복되는 순간을 더 가볍게 다루기 위해 설계됩니다.", emptyTitle: "앱 아이콘을 선택해 주세요.", emptyLead: "SAME STUDIO 앱 컬렉션에서 보고 싶은 앱을 눌러보세요.",
+          philosophyTitle: "작지만 오래 남는 사용성을 생각합니다.", values: ["하루를 지나치지 않고 다시 바라볼 수 있는 기록의 구조를 만듭니다.", "장소와 기억이 만나는 순간에 필요한 정보를 조용히 건넵니다.", "반복과 템포가 더 나은 루틴으로 이어지도록 돕습니다.", "기능을 크게 부풀리기보다 집중할 수 있는 흐름을 우선합니다."],
+          aboutTitle: "SAME STUDIO는 독립 모바일 앱 스튜디오입니다.", about: ["세임스튜디오는 기록, 장소, 리듬, 집중처럼 일상에서 반복되는 작은 문제들을 앱으로 해결합니다.", "제품의 첫인상은 부드럽게, 실제 사용 흐름은 단단하게 만드는 것을 중요하게 생각합니다. 과장된 약속보다 꾸준히 쓰이는 도구의 밀도를 추구합니다."], contactLead: "앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요. 필요한 내용을 확인한 뒤 순차적으로 답변드립니다.", sendEmail: "이메일 보내기", home: "홈", comingSoon: "출시 예정", store: "Apple App Store에서 보기"
+        },
+        en: {
+          nav: ["Apps", "Philosophy", "About", "Contact", "Support", "Terms", "Privacy"], eyebrow: "Independent Mobile App Studio", tagline: "Small tools for thoughtful days.", hero: "Designed to make recurring moments—records, places, and rhythms—feel lighter.", viewApps: "View Apps", contact: "Contact",
+          appsTitle: "Small tools that bring everyday life into focus.", appsLead: "Each app makes recurring moments such as records, places, and rhythms easier to handle.", emptyTitle: "Select an app icon to view details.", emptyLead: "Choose an app from the SAME STUDIO collection above.",
+          philosophyTitle: "We design small experiences that stay useful.", values: ["We create structures that help you revisit a day instead of letting it pass unnoticed.", "We quietly surface useful information where place and memory meet.", "We help repetition and tempo become better routines.", "We prioritize focused flows over inflated feature sets."],
+          aboutTitle: "SAME STUDIO is an independent mobile app studio.", about: ["We solve small recurring problems around records, places, rhythm, and focus through apps.", "We care about gentle first impressions and dependable everyday flows, building tools meant to be used consistently."], contactLead: "For app support, partnerships, or bug reports, contact us by email. We will review your message and reply in order.", sendEmail: "Send Email", home: "Home", comingSoon: "Coming Soon", store: "View on Apple App Store"
+        },
+        ja: {
+          nav: ["アプリ", "理念", "紹介", "お問い合わせ", "サポート", "利用規約", "プライバシー"], eyebrow: "独立系モバイルアプリスタジオ", tagline: "考える日々のための、小さな道具。", hero: "記録、場所、リズムなど、繰り返す瞬間をより軽やかに扱えるよう設計しています。", viewApps: "アプリを見る", contact: "お問い合わせ",
+          appsTitle: "日常を鮮明にする小さな道具。", appsLead: "記録、場所、リズムといった繰り返す瞬間を、各アプリがより軽やかにします。", emptyTitle: "アプリアイコンを選択してください。", emptyLead: "上のSAME STUDIOコレクションからアプリを選んでください。",
+          philosophyTitle: "小さくても長く役立つ使い心地を考えます。", values: ["一日を見過ごさず、振り返るための記録の仕組みを作ります。", "場所と記憶が出会う瞬間に、必要な情報を静かに届けます。", "反復とテンポがより良い習慣につながるよう支えます。", "機能を増やしすぎず、集中できる流れを優先します。"],
+          aboutTitle: "SAME STUDIOは独立系モバイルアプリスタジオです。", about: ["記録、場所、リズム、集中など、日常で繰り返す小さな課題をアプリで解決します。", "柔らかな第一印象と確かな使用体験を大切にし、長く使える道具を目指します。"], contactLead: "アプリに関するお問い合わせ、提携、バグ報告はメールでご連絡ください。確認後、順次返信します。", sendEmail: "メールを送る", home: "ホーム", comingSoon: "近日公開", store: "Apple App Storeで見る"
+        },
+        "zh-CN": {
+          nav: ["应用", "理念", "关于", "联系", "支持", "服务条款", "隐私政策"], eyebrow: "独立移动应用工作室", tagline: "为用心生活打造的小工具。", hero: "让记录、地点和节奏等反复出现的时刻变得更轻松。", viewApps: "查看应用", contact: "联系",
+          appsTitle: "让日常更清晰的小工具。", appsLead: "每款应用都让记录、地点和节奏等日常时刻更容易处理。", emptyTitle: "请选择一个应用图标。", emptyLead: "请从上方的 SAME STUDIO 应用集合中选择。",
+          philosophyTitle: "我们重视小而持久的使用体验。", values: ["建立让你重新回望一天的记录结构。", "在地点与记忆相遇时，安静地提供所需信息。", "帮助重复与节奏形成更好的习惯。", "比起堆叠功能，我们更重视专注的使用流程。"],
+          aboutTitle: "SAME STUDIO 是一家独立移动应用工作室。", about: ["我们通过应用解决记录、地点、节奏和专注等日常小问题。", "我们重视柔和的第一印象与可靠的实际体验，致力于打造值得长期使用的工具。"], contactLead: "如有应用咨询、合作或错误反馈，请通过电子邮件联系我们。我们会依次确认并回复。", sendEmail: "发送邮件", home: "首页", comingSoon: "即将推出", store: "在 Apple App Store 查看"
+        }
+      };
+      indexTranslations["zh-TW"] = SameStudioLanguage.toTraditional(indexTranslations["zh-CN"]);
+      var currentSiteLanguage = SameStudioLanguage.get();
+
+      function setAllText(selector, values) {
+        document.querySelectorAll(selector).forEach(function (element, index) { if (values[index] !== undefined) element.textContent = values[index]; });
+      }
+
+      function renderEmptyState(copy) {
+        if (selectedAppId || !appDetail) return;
+        appDetail.innerHTML = '<div class="app-empty-state"><h3>' + copy.emptyTitle + '</h3><p>' + copy.emptyLead + '</p></div>';
+      }
+
+      function applyIndexLanguage(language) {
+        currentSiteLanguage = SameStudioLanguage.normalize(language);
+        var copy = indexTranslations[currentSiteLanguage] || indexTranslations.ko;
+        setAllText('.desktop-menu a, .drawer nav a', copy.nav.concat(copy.nav));
+        document.querySelector('.hero .eyebrow').textContent = copy.eyebrow;
+        document.querySelector('.gradient-text').textContent = copy.tagline;
+        document.querySelector('.hero-copy').textContent = copy.hero;
+        document.querySelector('.hero-actions .primary').textContent = copy.viewApps;
+        document.querySelector('.hero-actions .secondary').textContent = copy.contact;
+        document.querySelector('#apps .section-head h2').textContent = copy.appsTitle;
+        document.querySelector('#apps .section-head p').textContent = copy.appsLead;
+        document.querySelector('#philosophy .section-head h2').textContent = copy.philosophyTitle;
+        setAllText('#philosophy .value-card p', copy.values);
+        document.querySelector('#about .about-copy h2').textContent = copy.aboutTitle;
+        setAllText('#about .about-copy > p', copy.about);
+        document.querySelector('#contact .contact-panel p').textContent = copy.contactLead;
+        document.querySelector('#contact .button').textContent = copy.sendEmail;
+        document.querySelectorAll('.footer-links a').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (href === '/') link.textContent = copy.home;
+          if (href === '/support') link.textContent = copy.nav[4];
+          if (href === '/terms') link.textContent = copy.nav[5];
+          if (href === '/privacy') link.textContent = copy.nav[6];
+        });
+        renderEmptyState(copy);
+        if (selectedAppId) {
+          var selected = apps.find(function (app) { return app.id === selectedAppId; });
+          if (selected) renderAppDetail(selected);
+        }
+      }
+
       var apps = [
         {
           id: "mapary", name: "Mapary", icon: "assets/icons/Mapary_icon.png", category: "Memory Map", theme: "app-mapary", intent: "record",
@@ -2107,7 +2246,40 @@
           tags: ["memory", "keyword", "archive"]
         }
       ];
+      var appLocalizedDescriptions = {
+        mapary: {
+          ja: "日付とキーワードから記憶や思考、記録を振り返るためのパーソナルアーカイブアプリ。",
+          "zh-CN": "一款可按日期和关键词重温记忆、想法与记录的个人归档应用。"
+        },
+        runtronome: {
+          ja: "リズムとペースでトレーニングするランナーのためのメトロノームアプリ。",
+          "zh-CN": "为使用节奏和配速训练的跑者打造的节拍器应用。"
+        },
+        locaunt: {
+          ja: "大切な場所で忘れたくないことを知らせる位置情報リマインダー。",
+          "zh-CN": "在重要地点提醒你不要忘记事情的位置提醒应用。"
+        },
+        odow: {
+          ja: "一日一つの問いを通して、思考や感情を記録する日々の振り返りアプリ。",
+          "zh-CN": "通过每天一个问题记录想法与情绪的日常反思应用。"
+        },
+        pepesnap: {
+          ja: "毎日の図形ミッションを通して、小さな瞬間を写真に残すアプリ。",
+          "zh-CN": "通过每日图形任务和简单拍照提示，记录生活小瞬间的应用。"
+        },
+        waesseum: {
+          ja: "日付とキーワードから記憶、思考、記録を振り返るパーソナルアーカイブアプリ。",
+          "zh-CN": "按日期和关键词重温记忆、想法与记录的个人归档应用。"
+        }
+      };
+      Object.keys(appLocalizedDescriptions).forEach(function (id) {
+        appLocalizedDescriptions[id]["zh-TW"] = SameStudioLanguage.toTraditional(appLocalizedDescriptions[id]["zh-CN"]);
+      });
       var appSelector = document.getElementById("app-selector");
+      var appSelectorShell = document.getElementById("app-selector-shell");
+      var appSelectorTrack = document.getElementById("app-selector-track");
+      var appSelectorLeft = document.querySelector(".app-selector-arrow-left");
+      var appSelectorRight = document.querySelector(".app-selector-arrow-right");
       var appDetail = document.getElementById("app-detail");
       var reduceAppMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var selectedAppId = "";
@@ -2143,26 +2315,21 @@
         appDetail.classList.remove("released", "upcoming");
         appDetail.classList.add(app.theme, app.isComingSoon ? "upcoming" : "released");
         appDetail.setAttribute("data-intent", app.intent);
+        var pageCopy = indexTranslations[currentSiteLanguage] || indexTranslations.ko;
+        var localized = appLocalizedDescriptions[app.id] || {};
+        var description = currentSiteLanguage === "ko" ? app.koreanDescription : currentSiteLanguage === "en" ? app.englishDescription : (localized[currentSiteLanguage] || app.englishDescription);
         var action = app.appStoreUrl
-          ? '<a class="app-action store" href="' + app.appStoreUrl + '" target="_blank" rel="noopener noreferrer">View on Apple App Store</a>'
-          : '<button class="app-action soon" type="button" disabled aria-disabled="true">Coming Soon</button>';
+          ? '<a class="app-action store" href="' + app.appStoreUrl + '" target="_blank" rel="noopener noreferrer">' + pageCopy.store + '</a>'
+          : '<button class="app-action soon" type="button" disabled aria-disabled="true">' + pageCopy.comingSoon + '</button>';
         appDetail.innerHTML =
           '<div class="app-top">' +
             '<div class="app-identity"><div class="app-icon detail-icon-pop"><img src="' + app.icon + '" alt="' + app.name + ' icon"></div><div class="app-name"><h3>' + app.name + '</h3><span class="category-pill">' + app.category + '</span></div></div>' +
             '<span class="status-pill store-status" aria-label="' + (app.isComingSoon ? 'Apple App Store release coming soon' : 'Available on Apple App Store') + '">' + appleIcon + '</span>' +
           '</div>' +
           '<div class="app-actions">' + action + '</div>' +
-          '<p class="ko typing-line"><span class="sr-only">' + app.koreanDescription + '</span><span class="typing-text typing-ko" aria-hidden="true"></span></p>' +
-          '<p class="en typing-line"><span class="sr-only">' + app.englishDescription + '</span><span class="typing-text typing-en" aria-hidden="true"></span></p>' +
+          '<p class="ko typing-line"><span class="sr-only">' + description + '</span><span class="typing-text typing-ko" aria-hidden="true"></span></p>' +
           '<div class="tag-row">' + app.tags.map(function (tag) { return '<span class="tag">' + tag + '</span>'; }).join("") + '</div>';
-        typeText(appDetail.querySelector(".typing-ko"), app.koreanDescription, 18);
-        if (reduceAppMotion) {
-          typeText(appDetail.querySelector(".typing-en"), app.englishDescription, 14);
-        } else {
-          typingTimers.push(window.setTimeout(function () {
-            typeText(appDetail.querySelector(".typing-en"), app.englishDescription, 14);
-          }, 120));
-        }
+        typeText(appDetail.querySelector(".typing-ko"), description, currentSiteLanguage === "en" ? 14 : 18);
       }
 
       function selectApp(app, button) {
@@ -2195,17 +2362,78 @@
         selectedAppId = app.id;
       }
 
-      if (appSelector && appDetail) {
-        appSelector.innerHTML = apps.map(function (app) {
+      if (appSelector && appSelectorTrack && appDetail) {
+        appSelectorTrack.innerHTML = apps.map(function (app) {
           return '<button class="app-selector-button" type="button" aria-pressed="false" data-app-id="' + app.id + '"><img class="app-selector-icon" src="' + app.icon + '" alt="' + app.name + ' icon"><span>' + app.name + '</span></button>';
         }).join("");
+        var isDraggingApps = false;
+        var didDragApps = false;
+        var suppressAppClick = false;
+        var dragStartX = 0;
+        var dragStartScroll = 0;
+
+        function updateAppSelectorEdges() {
+          var maxScroll = Math.max(0, appSelector.scrollWidth - appSelector.clientWidth);
+          var canScrollLeft = appSelector.scrollLeft > 2;
+          var canScrollRight = appSelector.scrollLeft < maxScroll - 2;
+          appSelectorShell.classList.toggle("can-scroll-left", canScrollLeft);
+          appSelectorShell.classList.toggle("can-scroll-right", canScrollRight);
+          appSelectorLeft.disabled = !canScrollLeft;
+          appSelectorRight.disabled = !canScrollRight;
+        }
+
+        function finishAppDrag(event) {
+          if (!isDraggingApps) return;
+          isDraggingApps = false;
+          if (appSelector.hasPointerCapture(event.pointerId)) appSelector.releasePointerCapture(event.pointerId);
+          appSelector.classList.remove("is-dragging");
+          if (didDragApps) {
+            suppressAppClick = true;
+            window.setTimeout(function () { suppressAppClick = false; }, 0);
+          }
+        }
+
+        appSelector.addEventListener("pointerdown", function (event) {
+          if (event.pointerType !== "mouse" || event.button !== 0) return;
+          isDraggingApps = true;
+          didDragApps = false;
+          dragStartX = event.clientX;
+          dragStartScroll = appSelector.scrollLeft;
+          appSelector.setPointerCapture(event.pointerId);
+        });
+        appSelector.addEventListener("pointermove", function (event) {
+          if (!isDraggingApps) return;
+          var distance = event.clientX - dragStartX;
+          if (Math.abs(distance) > 5) {
+            didDragApps = true;
+            appSelector.classList.add("is-dragging");
+            appSelector.scrollLeft = dragStartScroll - distance;
+            event.preventDefault();
+          }
+        });
+        appSelector.addEventListener("pointerup", finishAppDrag);
+        appSelector.addEventListener("pointercancel", finishAppDrag);
+        appSelector.addEventListener("scroll", updateAppSelectorEdges, { passive: true });
+        window.addEventListener("resize", updateAppSelectorEdges, { passive: true });
+        appSelectorLeft.addEventListener("click", function () { appSelector.scrollBy({ left: -Math.max(280, appSelector.clientWidth * .72), behavior: "smooth" }); });
+        appSelectorRight.addEventListener("click", function () { appSelector.scrollBy({ left: Math.max(280, appSelector.clientWidth * .72), behavior: "smooth" }); });
+        appSelector.addEventListener("focusin", function (event) {
+          var button = event.target.closest(".app-selector-button");
+          if (button) button.scrollIntoView({ behavior: reduceAppMotion ? "auto" : "smooth", block: "nearest", inline: "nearest" });
+        });
         appSelector.addEventListener("click", function (event) {
+          if (suppressAppClick) {
+            event.preventDefault();
+            return;
+          }
           var button = event.target.closest(".app-selector-button");
           if (!button) return;
           var app = apps.find(function (item) { return item.id === button.getAttribute("data-app-id"); });
           if (app) selectApp(app, button);
         });
+        window.requestAnimationFrame(updateAppSelectorEdges);
       }
+      SameStudioLanguage.mount(applyIndexLanguage);
 
       var revealItems = document.querySelectorAll(".reveal, .app-card, .value-card");
       if ("IntersectionObserver" in window) {

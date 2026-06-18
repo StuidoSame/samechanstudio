@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO 고객지원 페이지">
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/assets/css/language.css">
   <title>Support / 고객지원 | SAME STUDIO</title>
   <style>
     :root{color-scheme:light;--bg:#fbf8ff;--bg-deep:#f2ecff;--text:#18151f;--muted:#676172;--card:rgba(255,255,255,.72);--border:rgba(86,64,122,.16);--border-strong:rgba(128,88,205,.36);--nav:rgba(251,248,255,.76);--nav-strong:rgba(251,248,255,.92);--accent:linear-gradient(135deg,#6d5df7,#a855f7 48%,#ff6aa8);--shadow:0 24px 70px rgba(75,55,120,.13);--max:980px}
@@ -70,8 +71,116 @@
       <nav class="footer-links" aria-label="Footer navigation"><a href="/support">Support</a><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
     </div>
   </footer>
+  <script src="/assets/js/language.js"></script>
   <script>
-    (function(){var r=document.documentElement,s=localStorage.getItem("same-studio-theme"),m=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";r.setAttribute("data-theme",s||m);document.querySelectorAll(".theme-toggle").forEach(function(b){b.addEventListener("click",function(){var n=r.getAttribute("data-theme")==="dark"?"light":"dark";r.setAttribute("data-theme",n);localStorage.setItem("same-studio-theme",n);});});var h=document.querySelector("[data-header]"),mb=document.querySelector(".menu-button"),cl=document.querySelectorAll("[data-close-menu]"),dl=document.querySelectorAll(".drawer a");function sm(o){document.body.classList.toggle("menu-open",o);if(mb)mb.setAttribute("aria-expanded",String(o))}if(mb)mb.addEventListener("click",function(){sm(true)});cl.forEach(function(b){b.addEventListener("click",function(){sm(false)})});dl.forEach(function(a){a.addEventListener("click",function(){sm(false)})});document.addEventListener("keydown",function(e){if(e.key==="Escape")sm(false)});function u(){h.classList.toggle("is-scrolled",window.scrollY>12)}u();window.addEventListener("scroll",u,{passive:true});var g=document.querySelector(".cursor-glow"),cg=window.matchMedia("(hover: hover) and (pointer: fine)").matches,rm=window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(g&&cg&&!rm){var tx=window.innerWidth/2,ty=window.innerHeight/2,cx=tx,cy=ty,gv=false;function ag(){cx+=(tx-cx)*.12;cy+=(ty-cy)*.12;g.style.left=cx+"px";g.style.top=cy+"px";window.requestAnimationFrame(ag)}window.addEventListener("mousemove",function(e){tx=e.clientX;ty=e.clientY;document.body.classList.toggle("is-hovering-interactive",Boolean(e.target.closest("a, button, .panel, .app-card, .note, .hero, .social-link")));if(!gv){gv=true;g.classList.remove("is-hidden")}},{passive:true});document.addEventListener("mouseleave",function(){gv=false;document.body.classList.remove("is-hovering-interactive");g.classList.add("is-hidden")});document.addEventListener("mouseenter",function(){gv=true;g.classList.remove("is-hidden")});ag()}document.addEventListener("click",function(e){var a=e.target.closest("a[href]");if(!a)return;var href=a.getAttribute("href");if(!href||href.charAt(0)==="#"||href.indexOf("mailto:")===0||a.target==="_blank"||a.hasAttribute("download"))return;if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var url=new URL(href,window.location.href);var ok=url.origin===window.location.origin,same=url.pathname===window.location.pathname&&url.hash===window.location.hash;if(!ok||same)return;e.preventDefault();document.body.classList.add("is-transitioning");window.setTimeout(function(){window.location.assign(url.href)},window.matchMedia("(prefers-reduced-motion: reduce)").matches?40:360)});})();
+    (function () {
+      var root = document.documentElement;
+      var storedTheme = localStorage.getItem("same-studio-theme");
+      var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.setAttribute("data-theme", storedTheme || systemTheme);
+
+      var translations = {
+        ko: {
+          nav: ["앱", "소개", "문의", "지원", "이용약관", "개인정보"], title: "Support / 고객지원",
+          lead: "SAME STUDIO 앱 사용 중 문제가 있거나 문의가 있다면 아래 이메일로 연락해주세요.", back: "홈으로 돌아가기",
+          contactTitle: "문의하기", contactHelp: "정확한 확인을 위해 아래 정보를 함께 보내주시면 도움이 됩니다.", items: ["앱 이름", "사용 기기", "OS 버전", "문제 상황", "스크린샷"], send: "이메일 보내기",
+          appsTitle: "지원 앱", appDescriptions: ["하루 한 질문 기반 일상 성찰 앱", "날짜와 키워드로 돌아보는 기록 앱", "장소 기반 알림 앱", "러닝 리듬과 페이스 훈련을 위한 메트로놈 앱"], note: "보통 영업일 기준 순차적으로 확인합니다. 문의 내용에 따라 답변까지 시간이 걸릴 수 있습니다.", home: "홈"
+        },
+        en: {
+          nav: ["Apps", "About", "Contact", "Support", "Terms", "Privacy"], title: "Support",
+          lead: "If you have any questions or need help with SAME STUDIO apps, please contact us by email.", back: "Back to Home",
+          contactTitle: "Contact Us", contactHelp: "Including the following details will help us investigate accurately.", items: ["App name", "Device", "OS version", "Issue details", "Screenshot"], send: "Send Email",
+          appsTitle: "Supported Apps", appDescriptions: ["A daily reflection app built around one question", "A personal archive organized by date and keyword", "A location-based reminder app", "A metronome for running rhythm and pace training"], note: "Messages are reviewed in order on business days. Some inquiries may require additional response time.", home: "Home"
+        },
+        ja: {
+          nav: ["アプリ", "紹介", "お問い合わせ", "サポート", "利用規約", "プライバシー"], title: "サポート",
+          lead: "SAME STUDIOアプリに関するご質問やサポートが必要な場合は、メールでお問い合わせください。", back: "ホームに戻る",
+          contactTitle: "お問い合わせ", contactHelp: "正確な確認のため、次の情報を添えてください。", items: ["アプリ名", "端末", "OSバージョン", "問題の内容", "スクリーンショット"], send: "メールを送る",
+          appsTitle: "対象アプリ", appDescriptions: ["一日一問の振り返りアプリ", "日付とキーワードで記録を振り返るアプリ", "位置情報リマインダーアプリ", "ランニングのリズムとペース練習用メトロノーム"], note: "通常は営業日に順次確認します。内容によっては返信に時間がかかる場合があります。", home: "ホーム"
+        },
+        "zh-CN": {
+          nav: ["应用", "关于", "联系", "支持", "服务条款", "隐私政策"], title: "支持",
+          lead: "如果您在使用 SAME STUDIO 应用时遇到问题或需要帮助，请通过电子邮件联系我们。", back: "返回首页",
+          contactTitle: "联系我们", contactHelp: "请附上以下信息，以便我们准确确认问题。", items: ["应用名称", "使用设备", "OS 版本", "问题详情", "截图"], send: "发送邮件",
+          appsTitle: "支持的应用", appDescriptions: ["每日一问的日常反思应用", "按日期和关键词回顾记录的应用", "基于地点的提醒应用", "用于跑步节奏与配速训练的节拍器"], note: "我们通常会在工作日依次处理。根据咨询内容，回复可能需要一些时间。", home: "首页"
+        }
+      };
+      translations["zh-TW"] = SameStudioLanguage.toTraditional(translations["zh-CN"]);
+
+      function setTexts(selector, values) {
+        document.querySelectorAll(selector).forEach(function (element, index) { if (values[index] !== undefined) element.textContent = values[index]; });
+      }
+
+      function renderLanguage(language) {
+        var copy = translations[language] || translations.ko;
+        document.title = copy.title + " | SAME STUDIO";
+        setTexts(".desktop-menu a, .drawer nav a", copy.nav.concat(copy.nav));
+        document.querySelector(".hero h1").textContent = copy.title;
+        document.querySelector(".hero .lead").textContent = copy.lead;
+        document.querySelector(".hero .button").textContent = copy.back;
+        var panels = document.querySelectorAll(".panel");
+        panels[0].querySelector("h2").textContent = copy.contactTitle;
+        panels[0].querySelector("p").textContent = copy.contactHelp;
+        setTexts(".info-list li", copy.items);
+        panels[0].querySelector(".button").textContent = copy.send;
+        panels[1].querySelector("h2").textContent = copy.appsTitle;
+        setTexts(".apps .app-card p", copy.appDescriptions);
+        document.querySelector(".note").textContent = copy.note;
+        document.querySelectorAll(".footer-links a").forEach(function (link) {
+          var href = link.getAttribute("href");
+          if (href === "/") link.textContent = copy.home;
+          if (href === "/support") link.textContent = copy.nav[3];
+          if (href === "/terms") link.textContent = copy.nav[4];
+          if (href === "/privacy") link.textContent = copy.nav[5];
+        });
+      }
+
+      document.querySelectorAll(".theme-toggle").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("same-studio-theme", next);
+        });
+      });
+
+      var header = document.querySelector("[data-header]");
+      var menuButton = document.querySelector(".menu-button");
+      var closeButtons = document.querySelectorAll("[data-close-menu]");
+      var drawerLinks = document.querySelectorAll(".drawer a");
+      function setMenu(open) {
+        document.body.classList.toggle("menu-open", open);
+        if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      }
+      if (menuButton) menuButton.addEventListener("click", function () { setMenu(true); });
+      closeButtons.forEach(function (button) { button.addEventListener("click", function () { setMenu(false); }); });
+      drawerLinks.forEach(function (link) { link.addEventListener("click", function () { setMenu(false); }); });
+      document.addEventListener("keydown", function (event) { if (event.key === "Escape") setMenu(false); });
+      function updateHeader() { header.classList.toggle("is-scrolled", window.scrollY > 12); }
+      updateHeader();
+      window.addEventListener("scroll", updateHeader, { passive: true });
+
+      var cursorGlow = document.querySelector(".cursor-glow");
+      var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (cursorGlow && finePointer && !reduceMotion) {
+        var targetX = innerWidth / 2, targetY = innerHeight / 2, glowX = targetX, glowY = targetY;
+        function animateGlow() { glowX += (targetX - glowX) * .12; glowY += (targetY - glowY) * .12; cursorGlow.style.left = glowX + "px"; cursorGlow.style.top = glowY + "px"; requestAnimationFrame(animateGlow); }
+        addEventListener("mousemove", function (event) { targetX = event.clientX; targetY = event.clientY; cursorGlow.classList.remove("is-hidden"); }, { passive: true });
+        document.addEventListener("mouseleave", function () { cursorGlow.classList.add("is-hidden"); });
+        animateGlow();
+      }
+      document.addEventListener("click", function (event) {
+        var link = event.target.closest("a[href]");
+        if (!link || link.target === "_blank" || link.getAttribute("href").indexOf("mailto:") === 0 || link.getAttribute("href").charAt(0) === "#") return;
+        var url = new URL(link.href, location.href);
+        if (url.origin !== location.origin || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        document.body.classList.add("is-transitioning");
+        setTimeout(function () { location.assign(url.href); }, reduceMotion ? 40 : 360);
+      });
+
+      SameStudioLanguage.mount(renderLanguage);
+    })();
   </script>
 </body>
 </html>

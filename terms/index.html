@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO 통합 이용약관">
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/assets/css/language.css">
   <title>SAME STUDIO 이용약관 | SAME STUDIO</title>
   <style>
     :root {
@@ -467,7 +468,8 @@
           <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
           <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
           <button class="language-button" type="button" data-lang="ja" aria-pressed="false">日本語</button>
-          <button class="language-button" type="button" data-lang="zh" aria-pressed="false">中文</button>
+          <button class="language-button" type="button" data-lang="zh-CN" aria-pressed="false">简体中文</button>
+          <button class="language-button" type="button" data-lang="zh-TW" aria-pressed="false">繁體中文</button>
         </div>
       </section>
 
@@ -505,6 +507,7 @@
     </div>
   </footer>
 
+  <script src="/assets/js/language.js"></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -597,8 +600,8 @@
             { title: "16. お問い合わせ", contact: [["事業者名", "세임스튜디오"], ["代表者", "김동찬"], ["メール", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["ウェブサイト", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
           ]
         },
-        zh: {
-          lang: "zh",
+        "zh-CN": {
+          lang: "zh-CN",
           title: "SAME STUDIO 服务条款",
           documentTitle: "SAME STUDIO 服务条款 | SAME STUDIO",
           updated: "最后更新日期：2026-05-05",
@@ -627,6 +630,16 @@
         }
       };
 
+      translations["zh-TW"] = SameStudioLanguage.toTraditional(translations["zh-CN"]);
+      translations["zh-TW"].lang = "zh-TW";
+      var navigationTranslations = {
+        ko: ["앱", "소개", "문의", "지원", "이용약관", "개인정보"],
+        en: ["Apps", "About", "Contact", "Support", "Terms", "Privacy"],
+        ja: ["アプリ", "紹介", "お問い合わせ", "サポート", "利用規約", "プライバシー"],
+        "zh-CN": ["应用", "关于", "联系", "支持", "服务条款", "隐私政策"]
+      };
+      navigationTranslations["zh-TW"] = SameStudioLanguage.toTraditional(navigationTranslations["zh-CN"]);
+
       var header = document.querySelector("[data-header]");
       var menuButton = document.querySelector(".menu-button");
       var closeButtons = document.querySelectorAll("[data-close-menu]");
@@ -647,14 +660,7 @@
       }
 
       function detectLanguage() {
-        var stored = localStorage.getItem("same-studio-terms-lang");
-        if (stored && translations[stored]) return stored;
-        var browser = (navigator.language || "ko").toLowerCase();
-        if (browser.indexOf("ko") === 0) return "ko";
-        if (browser.indexOf("en") === 0) return "en";
-        if (browser.indexOf("ja") === 0) return "ja";
-        if (browser.indexOf("zh") === 0) return "zh";
-        return "ko";
+        return SameStudioLanguage.get();
       }
 
       function paragraphHtml(items) {
@@ -673,6 +679,7 @@
 
       function renderLanguage(lang) {
         var data = translations[lang] || translations.ko;
+        var navigation = navigationTranslations[lang] || navigationTranslations.ko;
         root.setAttribute("lang", data.lang);
         document.title = data.documentTitle;
         titleEl.textContent = data.title;
@@ -688,6 +695,15 @@
           if (section.contact) body += contactHtml(section.contact);
           return "<section class=\"policy-section\"><h2>" + section.title + "</h2>" + body + "</section>";
         }).join("");
+        document.querySelectorAll(".desktop-menu a, .drawer nav a").forEach(function (link, index) { link.textContent = navigation[index % navigation.length]; });
+        document.querySelector(".home-link").textContent = lang === "ko" ? "홈으로 돌아가기" : lang === "ja" ? "ホームに戻る" : lang === "zh-CN" ? "返回首页" : lang === "zh-TW" ? "返回首頁" : "Back to Home";
+        document.querySelectorAll(".footer-links a").forEach(function (link) {
+          var href = link.getAttribute("href");
+          if (href === "/") link.textContent = lang === "ko" ? "홈" : lang === "ja" ? "ホーム" : lang.indexOf("zh-") === 0 ? (lang === "zh-TW" ? "首頁" : "首页") : "Home";
+          if (href === "/support") link.textContent = navigation[3];
+          if (href === "/terms") link.textContent = navigation[4];
+          if (href === "/privacy") link.textContent = navigation[5];
+        });
 
         languageButtons.forEach(function (button) {
           var isActive = button.getAttribute("data-lang") === lang;
@@ -696,7 +712,7 @@
           if (isActive) button.setAttribute("aria-current", "true");
           else button.removeAttribute("aria-current");
         });
-        localStorage.setItem("same-studio-terms-lang", lang);
+        localStorage.setItem("sameStudioLanguage", lang);
       }
 
       themeButtons.forEach(function (button) {
@@ -709,7 +725,7 @@
 
       languageButtons.forEach(function (button) {
         button.addEventListener("click", function () {
-          renderLanguage(button.getAttribute("data-lang"));
+          SameStudioLanguage.set(button.getAttribute("data-lang"));
         });
       });
 
@@ -775,7 +791,7 @@
         document.body.classList.add("is-transitioning");
         window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
       });
-      renderLanguage(detectLanguage());
+      SameStudioLanguage.mount(renderLanguage);
     })();
   </script>
 </body>
