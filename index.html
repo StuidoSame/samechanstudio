@@ -47,6 +47,7 @@
     }
 
     * { box-sizing: border-box; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
@@ -574,10 +575,92 @@
     }
 
     .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
-    .more-apps-grid { margin-top: 18px; }
-    .more-apps-grid[hidden] { display: none; }
-    .apps-toggle-wrap { display: flex; justify-content: center; margin-top: 24px; }
-    .apps-toggle { cursor: pointer; font: inherit; }
+    .app-selector {
+      display: grid;
+      grid-template-columns: repeat(6,minmax(0,1fr));
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+    .app-selector-button {
+      min-width: 0;
+      min-height: 116px;
+      padding: 12px 8px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      color: var(--muted);
+      background: rgba(255,255,255,.16);
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 780;
+      cursor: pointer;
+      transition: transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease,color .22s ease;
+    }
+    .app-selector-icon {
+      width: 62px;
+      height: 62px;
+      border-radius: 19px;
+      object-fit: cover;
+      box-shadow: 0 12px 26px rgba(20,16,38,.22);
+      transition: transform .22s ease,filter .22s ease;
+    }
+    .app-selector-button:hover { transform: translateY(-3px); color: var(--text); border-color: var(--border-strong); background: rgba(139,92,246,.10); }
+    .app-selector-button:hover .app-selector-icon { transform: scale(1.04); }
+    .app-selector-button.is-selected {
+      color: var(--text);
+      border-color: rgba(196,130,255,.58);
+      background: linear-gradient(135deg,rgba(109,93,247,.18),rgba(236,72,153,.12));
+      box-shadow: 0 0 0 4px rgba(139,92,246,.09),0 14px 34px rgba(109,40,217,.16);
+      transform: translateY(-3px) scale(1.02);
+    }
+    .app-selector-button.is-selected .app-selector-icon { transform: scale(1.07); filter: brightness(1.06); }
+    .app-selector-button.is-popping .app-selector-icon { animation: selectorPop .34s ease; }
+    .app-detail-shell { margin-top: 18px; perspective: 1200px; }
+    #app-detail {
+      min-height: 440px;
+      opacity: 1;
+      transform: none;
+      transform-style: preserve-3d;
+      transition: transform .2s ease,opacity .2s ease,box-shadow .25s ease,border-color .25s ease;
+    }
+    #app-detail:hover { transform: none; }
+    #app-detail.is-flipping { transform: rotateY(9deg) scale(.985); opacity: .3; }
+    #app-detail.is-entering { animation: detailEnter .42s ease both; }
+    .app-detail-card .detail-icon-pop { animation: detailIconPop .42s cubic-bezier(.2,.8,.2,1) both; }
+    .app-empty-state {
+      min-height: 394px;
+      position: relative;
+      display: grid;
+      place-content: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .app-empty-state::before {
+      content: "";
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 8px;
+      border-radius: 21px;
+      border: 1px solid rgba(196,130,255,.28);
+      background: linear-gradient(135deg,rgba(49,46,129,.42),rgba(126,34,206,.28),rgba(157,77,140,.20));
+      box-shadow: 0 18px 44px rgba(109,40,217,.16);
+    }
+    .app-empty-state h3 { margin: 0; font-size: clamp(1.45rem,3vw,2rem); }
+    .app-empty-state p { margin: 0; color: var(--muted); line-height: 1.65; }
+    .app-detail-card .typing-line { min-height: 3.3em; }
+    @keyframes selectorPop { 0%,100% { transform: scale(1.07) translateY(0); } 48% { transform: scale(1.16) translateY(-5px); } }
+    @keyframes detailEnter { from { opacity: .25; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
+    @keyframes detailIconPop { from { opacity: 0; transform: translateY(10px) scale(.82); } to { opacity: 1; transform: none; } }
     .app-card, .value-card, .contact-panel, .about-copy, .map-card {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
@@ -1194,6 +1277,7 @@
 
     @media (max-width: 700px) {
       .apps-grid { grid-template-columns: 1fr; }
+      .app-selector { grid-template-columns: repeat(3,minmax(0,1fr)); }
     }
 
     @media (max-width: 640px) {
@@ -1227,6 +1311,9 @@
       .section { padding: 62px 0; }
       .values-grid { grid-template-columns: 1fr; }
       .app-card { min-height: 440px; }
+      .app-selector { gap: 9px; padding: 11px; border-radius: 24px; }
+      .app-selector-button { min-height: 106px; padding: 10px 5px 8px; border-radius: 19px; font-size: .72rem; }
+      .app-selector-icon { width: 56px; height: 56px; border-radius: 17px; }
       .app-top { flex-direction: column; }
       .status-pill { align-self: flex-start; }
       .about-meta { grid-template-columns: 1fr; }
@@ -1253,6 +1340,11 @@
       .space-game-button:hover { transform: none; }
       .category-pill:hover,
       .category-pill:active { transform: none; }
+      .app-selector-button,
+      .app-selector-button:hover,
+      .app-selector-button.is-selected,
+      .app-detail-card,
+      .app-detail-card.is-flipping { transform: none; }
       .value-card,
       .value-card.revealed,
       .value-card:hover,
@@ -1424,89 +1516,15 @@
           <h2>일상을 또렷하게 만드는 작은 도구들.</h2>
           <p>각 앱은 기록, 장소, 리듬처럼 반복되는 순간을 더 가볍게 다루기 위해 설계됩니다.</p>
         </div>
-        <div class="apps-grid">
-          <article class="app-card app-mapary released" data-intent="record">
-            <div class="app-top">
-              <div class="app-identity"><div class="app-icon"><img src="assets/icons/Mapary_icon.png" alt="Mapary icon"></div><div class="app-name"><h3>Mapary</h3><span class="category-pill">Memory Map</span></div></div>
-              <span class="status-pill store-status" aria-label="Available on Apple App Store">
-                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
-              </span>
-            </div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/mapary-%EC%A7%80%EB%8F%84-%EA%B8%B0%EB%B0%98-%EB%A9%94%EB%AA%A8%EC%95%B1/id6760998507" target="_blank" rel="noopener noreferrer">Apple App Store에서 보기</a></div>
-            <p class="ko">날짜와 키워드로 기록을 다시 찾아보고, 나의 생각이 지나온 흐름을 지도처럼 정리하는 기록 앱.</p>
-            <p class="en">A personal archive app for revisiting memories, thoughts, and records by date and keyword.</p>
-            <div class="tag-row"><span class="tag">memory</span><span class="tag">calendar</span><span class="tag">keyword</span></div>
-          </article>
+        <div class="app-selector" role="group" aria-label="Choose an app" id="app-selector"></div>
 
-          <article class="app-card app-runtronome released" data-intent="rhythm">
-            <div class="app-top">
-              <div class="app-identity"><div class="app-icon"><img src="assets/icons/Runtronome_icon.png" alt="Runtronome icon"></div><div class="app-name"><h3>Runtronome</h3><span class="category-pill">Rhythm Trainer</span></div></div>
-              <span class="status-pill store-status" aria-label="Available on Apple App Store">
-                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
-              </span>
+        <div class="app-detail-shell">
+          <article class="app-card app-detail-card" id="app-detail" aria-live="polite">
+            <div class="app-empty-state">
+              <h3>앱 아이콘을 선택해 주세요.</h3>
+              <p>Select an app icon to view details.</p>
+              <p>SAME STUDIO 앱 컬렉션에서 보고 싶은 앱을 눌러보세요.<br>Choose an app from the SAME STUDIO collection above.</p>
             </div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/runtronome/id6762429079" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
-            <p class="ko">러닝 리듬과 페이스 훈련을 위한 메트로놈 앱.</p>
-            <p class="en">A metronome companion for runners who train with rhythm and pace.</p>
-            <div class="tag-row"><span class="tag">running</span><span class="tag">pace</span><span class="tag">training</span></div>
-          </article>
-
-          <article class="app-card app-locaunt released" data-intent="place">
-            <div class="app-top">
-              <div class="app-identity"><div class="app-icon locaunt"><img src="assets/icons/Locaunt_icon.png" alt="LOCAUNT icon"></div><div class="app-name"><h3>LOCAUNT</h3><span class="category-pill">Location Reminder</span></div></div>
-              <span class="status-pill store-status" aria-label="Available on Apple App Store">
-                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
-              </span>
-            </div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/locaunt-%EC%A7%80%EB%8F%84-%EC%9C%84%EC%97%90-%EB%82%A8%EA%B8%B0%EB%8A%94-%EB%82%98%EB%A7%8C%EC%9D%98-%EC%95%8C%EB%A6%BC/id6769651582" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
-            <p class="ko">특정 장소에서 잊지 말아야 할 일을 알려주는 위치 기반 알림 앱.</p>
-            <p class="en">Location-based reminders for the places where memory matters.</p>
-            <div class="tag-row"><span class="tag">place</span><span class="tag">reminder</span><span class="tag">memory</span></div>
-          </article>
-
-          <article class="app-card app-odow released" data-intent="record">
-            <div class="app-top">
-              <div class="app-identity"><div class="app-icon"><img src="assets/icons/ODOW_icon.png" alt="ODOW icon"></div><div class="app-name"><h3>ODOW</h3><span class="category-pill">Daily Question</span></div></div>
-              <span class="status-pill store-status" aria-label="Available on Apple App Store">
-                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
-              </span>
-            </div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/odow/id6766725193" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
-            <p class="ko">하루 한 질문을 통해 나의 생각과 감정을 기록하고, 오늘의 감정을 조용히 돌아보는 일상 성찰 앱.</p>
-            <p class="en">A daily question-based reflection app for recording thoughts and emotions through one prompt a day.</p>
-            <div class="tag-row"><span class="tag">daily question</span><span class="tag">reflection</span><span class="tag">journal</span></div>
-          </article>
-        </div>
-
-        <div class="apps-toggle-wrap">
-          <button class="button primary apps-toggle" type="button" aria-expanded="false" aria-controls="more-apps">View More Apps</button>
-        </div>
-
-        <div class="apps-grid more-apps-grid" id="more-apps" hidden>
-          <article class="app-card app-pepesnap released" data-intent="record">
-            <div class="app-top">
-              <div class="app-identity"><div class="app-icon"><img src="assets/icons/pepesnap_icon.png" alt="PEPESNAP icon"></div><div class="app-name"><h3>PEPESNAP</h3><span class="category-pill">Daily Shape Mission</span></div></div>
-              <span class="status-pill store-status" aria-label="Available on Apple App Store">
-                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
-              </span>
-            </div>
-            <div class="app-actions"><a class="app-action store" href="https://apps.apple.com/kr/app/pepesnap-%EC%98%A4%EB%8A%98%EC%9D%98-%EB%8F%84%ED%98%95-%EB%AF%B8%EC%85%98/id6781632351" target="_blank" rel="noopener noreferrer">View on Apple App Store</a></div>
-            <p class="ko">매일 주어지는 도형 미션을 따라 사진을 남기고, 오늘의 시선을 가볍게 기록하는 앱.</p>
-            <p class="en">A daily shape mission app for capturing small moments through simple photo prompts.</p>
-            <div class="tag-row"><span class="tag">photo</span><span class="tag">shape</span><span class="tag">daily mission</span></div>
-          </article>
-
-          <article class="app-card app-waesseum upcoming" data-intent="record">
-            <div class="app-top">
-              <div class="app-identity"><div class="app-icon"><img src="assets/icons/waesseum_icon.png" alt="WAESSEUM icon"></div><div class="app-name"><h3>WAESSEUM</h3><span class="category-pill">Personal Archive</span></div></div>
-              <span class="status-pill store-status" aria-label="Apple App Store release coming soon">
-                <span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>
-              </span>
-            </div>
-            <div class="app-actions"><button class="app-action soon" type="button" disabled aria-disabled="true">Coming Soon</button></div>
-            <p class="ko">날짜와 키워드로 기록을 다시 찾아보고, 지나온 생각의 흐름을 차분히 정리하는 기록 앱.</p>
-            <p class="en">A personal archive app for revisiting memories, thoughts, and records by date and keyword.</p>
-            <div class="tag-row"><span class="tag">memory</span><span class="tag">keyword</span><span class="tag">archive</span></div>
           </article>
         </div>
       </div>
@@ -2045,14 +2063,147 @@
         window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
       });
 
-      var appsToggle = document.querySelector(".apps-toggle");
-      var moreApps = document.getElementById("more-apps");
-      if (appsToggle && moreApps) {
-        appsToggle.addEventListener("click", function () {
-          var isExpanded = appsToggle.getAttribute("aria-expanded") === "true";
-          appsToggle.setAttribute("aria-expanded", String(!isExpanded));
-          appsToggle.textContent = isExpanded ? "View More Apps" : "Show Less";
-          moreApps.hidden = isExpanded;
+      var apps = [
+        {
+          id: "mapary", name: "Mapary", icon: "assets/icons/Mapary_icon.png", category: "Memory Map", theme: "app-mapary", intent: "record",
+          appStoreUrl: "https://apps.apple.com/kr/app/mapary-%EC%A7%80%EB%8F%84-%EA%B8%B0%EB%B0%98-%EB%A9%94%EB%AA%A8%EC%95%B1/id6760998507",
+          koreanDescription: "날짜와 키워드로 기록을 다시 찾아보고, 나의 생각이 지나온 흐름을 지도처럼 정리하는 기록 앱.",
+          englishDescription: "A personal archive app for revisiting memories, thoughts, and records by date and keyword.",
+          tags: ["memory", "calendar", "keyword"]
+        },
+        {
+          id: "runtronome", name: "Runtronome", icon: "assets/icons/Runtronome_icon.png", category: "Rhythm Trainer", theme: "app-runtronome", intent: "rhythm",
+          appStoreUrl: "https://apps.apple.com/kr/app/runtronome/id6762429079",
+          koreanDescription: "러닝 리듬과 페이스 훈련을 위한 메트로놈 앱.",
+          englishDescription: "A metronome companion for runners who train with rhythm and pace.",
+          tags: ["running", "pace", "training"]
+        },
+        {
+          id: "locaunt", name: "LOCAUNT", icon: "assets/icons/Locaunt_icon.png", category: "Location Reminder", theme: "app-locaunt", intent: "place",
+          appStoreUrl: "https://apps.apple.com/kr/app/locaunt-%EC%A7%80%EB%8F%84-%EC%9C%84%EC%97%90-%EB%82%A8%EA%B8%B0%EB%8A%94-%EB%82%98%EB%A7%8C%EC%9D%98-%EC%95%8C%EB%A6%BC/id6769651582",
+          koreanDescription: "특정 장소에서 잊지 말아야 할 일을 알려주는 위치 기반 알림 앱.",
+          englishDescription: "Location-based reminders for the places where memory matters.",
+          tags: ["place", "reminder", "memory"]
+        },
+        {
+          id: "odow", name: "ODOW", icon: "assets/icons/ODOW_icon.png", category: "Daily Question", theme: "app-odow", intent: "record",
+          appStoreUrl: "https://apps.apple.com/kr/app/odow/id6766725193",
+          koreanDescription: "하루 한 질문을 통해 나의 생각과 감정을 기록하고, 오늘의 감정을 조용히 돌아보는 일상 성찰 앱.",
+          englishDescription: "A daily question-based reflection app for recording thoughts and emotions through one prompt a day.",
+          tags: ["daily question", "reflection", "journal"]
+        },
+        {
+          id: "pepesnap", name: "PEPESNAP", icon: "assets/icons/pepesnap_icon.png", category: "Daily Shape Mission", theme: "app-pepesnap", intent: "record",
+          appStoreUrl: "https://apps.apple.com/kr/app/pepesnap-%EC%98%A4%EB%8A%98%EC%9D%98-%EB%8F%84%ED%98%95-%EB%AF%B8%EC%85%98/id6781632351",
+          koreanDescription: "매일 주어지는 도형 미션을 따라 사진을 남기고, 오늘의 시선을 가볍게 기록하는 앱.",
+          englishDescription: "A daily shape mission app for capturing small moments through simple photo prompts.",
+          tags: ["photo", "shape", "daily mission"]
+        },
+        {
+          id: "waesseum", name: "WAESSEUM", icon: "assets/icons/waesseum_icon.png", category: "Personal Archive", theme: "app-waesseum", intent: "record",
+          appStoreUrl: "", isComingSoon: true,
+          koreanDescription: "날짜와 키워드로 기록을 다시 찾아보고, 지나온 생각의 흐름을 차분히 정리하는 기록 앱.",
+          englishDescription: "A personal archive app for revisiting memories, thoughts, and records by date and keyword.",
+          tags: ["memory", "keyword", "archive"]
+        }
+      ];
+      var appSelector = document.getElementById("app-selector");
+      var appDetail = document.getElementById("app-detail");
+      var reduceAppMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var selectedAppId = "";
+      var flipTimer = 0;
+      var typingTimers = [];
+      var appThemeClasses = apps.map(function (app) { return app.theme; });
+      var appleIcon = '<span class="store-fallback-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.4 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.6-.2-3.2 1-4 1s-2-.9-3.3-.9c-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.5-1-2.5-3.7ZM14.8 4.5c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5Z"/></svg></span>';
+
+      function clearTyping() {
+        typingTimers.forEach(function (timer) { window.clearTimeout(timer); });
+        typingTimers = [];
+      }
+
+      function typeText(element, text, delay) {
+        if (!element) return;
+        if (reduceAppMotion) {
+          element.textContent = text;
+          return;
+        }
+        var characters = Array.from(text);
+        var index = 0;
+        function typeNext() {
+          element.textContent = characters.slice(0, index).join("");
+          index += 1;
+          if (index <= characters.length) typingTimers.push(window.setTimeout(typeNext, delay));
+        }
+        typeNext();
+      }
+
+      function renderAppDetail(app) {
+        clearTyping();
+        appThemeClasses.forEach(function (theme) { appDetail.classList.remove(theme); });
+        appDetail.classList.remove("released", "upcoming");
+        appDetail.classList.add(app.theme, app.isComingSoon ? "upcoming" : "released");
+        appDetail.setAttribute("data-intent", app.intent);
+        var action = app.appStoreUrl
+          ? '<a class="app-action store" href="' + app.appStoreUrl + '" target="_blank" rel="noopener noreferrer">View on Apple App Store</a>'
+          : '<button class="app-action soon" type="button" disabled aria-disabled="true">Coming Soon</button>';
+        appDetail.innerHTML =
+          '<div class="app-top">' +
+            '<div class="app-identity"><div class="app-icon detail-icon-pop"><img src="' + app.icon + '" alt="' + app.name + ' icon"></div><div class="app-name"><h3>' + app.name + '</h3><span class="category-pill">' + app.category + '</span></div></div>' +
+            '<span class="status-pill store-status" aria-label="' + (app.isComingSoon ? 'Apple App Store release coming soon' : 'Available on Apple App Store') + '">' + appleIcon + '</span>' +
+          '</div>' +
+          '<div class="app-actions">' + action + '</div>' +
+          '<p class="ko typing-line"><span class="sr-only">' + app.koreanDescription + '</span><span class="typing-text typing-ko" aria-hidden="true"></span></p>' +
+          '<p class="en typing-line"><span class="sr-only">' + app.englishDescription + '</span><span class="typing-text typing-en" aria-hidden="true"></span></p>' +
+          '<div class="tag-row">' + app.tags.map(function (tag) { return '<span class="tag">' + tag + '</span>'; }).join("") + '</div>';
+        typeText(appDetail.querySelector(".typing-ko"), app.koreanDescription, 18);
+        if (reduceAppMotion) {
+          typeText(appDetail.querySelector(".typing-en"), app.englishDescription, 14);
+        } else {
+          typingTimers.push(window.setTimeout(function () {
+            typeText(appDetail.querySelector(".typing-en"), app.englishDescription, 14);
+          }, 120));
+        }
+      }
+
+      function selectApp(app, button) {
+        if (selectedAppId === app.id) return;
+        clearTyping();
+        appSelector.querySelectorAll(".app-selector-button").forEach(function (item) {
+          var isSelected = item === button;
+          item.classList.toggle("is-selected", isSelected);
+          item.setAttribute("aria-pressed", String(isSelected));
+        });
+        button.classList.remove("is-popping");
+        void button.offsetWidth;
+        button.classList.add("is-popping");
+        window.setTimeout(function () { button.classList.remove("is-popping"); }, 360);
+        window.clearTimeout(flipTimer);
+        appDetail.classList.remove("is-entering", "is-flipping");
+        if (!selectedAppId || reduceAppMotion) {
+          renderAppDetail(app);
+          if (!reduceAppMotion) {
+            void appDetail.offsetWidth;
+            appDetail.classList.add("is-entering");
+          }
+        } else {
+          appDetail.classList.add("is-flipping");
+          flipTimer = window.setTimeout(function () {
+            renderAppDetail(app);
+            appDetail.classList.remove("is-flipping");
+          }, 190);
+        }
+        selectedAppId = app.id;
+      }
+
+      if (appSelector && appDetail) {
+        appSelector.innerHTML = apps.map(function (app) {
+          return '<button class="app-selector-button" type="button" aria-pressed="false" data-app-id="' + app.id + '"><img class="app-selector-icon" src="' + app.icon + '" alt="' + app.name + ' icon"><span>' + app.name + '</span></button>';
+        }).join("");
+        appSelector.addEventListener("click", function (event) {
+          var button = event.target.closest(".app-selector-button");
+          if (!button) return;
+          var app = apps.find(function (item) { return item.id === button.getAttribute("data-app-id"); });
+          if (app) selectApp(app, button);
         });
       }
 
