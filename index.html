@@ -577,12 +577,7 @@
 
     .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
     .app-selector-shell {
-      --selector-edge-offset: 50px;
       position: relative;
-      display: grid;
-      grid-template-columns: 42px minmax(0,1fr) 42px;
-      align-items: center;
-      gap: 4px;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--card);
@@ -600,52 +595,25 @@
       bottom: 1px;
       width: 34px;
       pointer-events: none;
-      opacity: 0;
-      transition: opacity .2s ease;
+      opacity: 1;
     }
-    .app-selector-shell::before { left: var(--selector-edge-offset); background: linear-gradient(90deg,var(--card-strong),transparent); }
-    .app-selector-shell::after { right: var(--selector-edge-offset); background: linear-gradient(270deg,var(--card-strong),transparent); }
-    .app-selector-shell.can-scroll-left::before,
-    .app-selector-shell.can-scroll-right::after { opacity: 1; }
+    .app-selector-shell::before { left: 0; background: linear-gradient(90deg,var(--card-strong),transparent); }
+    .app-selector-shell::after { right: 0; background: linear-gradient(270deg,var(--card-strong),transparent); }
     .app-selector {
       min-width: 0;
-      overflow-x: auto;
+      overflow-x: hidden;
       overflow-y: hidden;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      cursor: grab;
     }
-    .app-selector::-webkit-scrollbar { display: none; }
-    .app-selector.is-dragging { cursor: grabbing; user-select: none; scroll-behavior: auto; }
     .app-selector-track {
       width: max-content;
-      min-width: 100%;
-      padding: 16px;
       display: flex;
-      justify-content: center;
-      gap: 12px;
+      animation: appMarquee 28s linear infinite;
+      will-change: transform;
     }
-    .app-selector-arrow {
-      position: relative;
-      z-index: 4;
-      width: 34px;
-      height: 34px;
-      margin: 0 auto;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      color: var(--text);
-      background: rgba(255,255,255,.14);
-      font: inherit;
-      font-size: 1.2rem;
-      line-height: 1;
-      cursor: pointer;
-      transition: transform .2s ease,opacity .2s ease,border-color .2s ease,background .2s ease;
-    }
-    .app-selector-arrow:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--border-strong); background: rgba(139,92,246,.14); }
-    .app-selector-arrow:disabled { opacity: .28; cursor: default; }
+    .app-selector:hover .app-selector-track,
+    .app-selector:focus-within .app-selector-track,
+    .app-selector.is-paused .app-selector-track { animation-play-state: paused; }
+    .app-selector-group { padding: 16px 6px; display: flex; gap: 12px; }
     .app-selector-button {
       flex: 0 0 128px;
       width: 128px;
@@ -719,6 +687,7 @@
     .app-empty-state p { margin: 0; color: var(--muted); line-height: 1.65; }
     .app-detail-card .typing-line { min-height: 3.3em; }
     @keyframes selectorPop { 0%,100% { transform: scale(1.07) translateY(0); } 48% { transform: scale(1.16) translateY(-5px); } }
+    @keyframes appMarquee { from { transform: translateX(0); } to { transform: translateX(-33.333333%); } }
     @keyframes detailEnter { from { opacity: .25; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
     @keyframes detailIconPop { from { opacity: 0; transform: translateY(10px) scale(.82); } to { opacity: 1; transform: none; } }
     .app-card, .value-card, .contact-panel, .about-copy, .map-card {
@@ -1337,9 +1306,6 @@
 
     @media (max-width: 700px) {
       .apps-grid { grid-template-columns: 1fr; }
-      .app-selector-shell { --selector-edge-offset: 0px; grid-template-columns: minmax(0,1fr); }
-      .app-selector-arrow { display: none; }
-      .app-selector-track { justify-content: flex-start; }
     }
 
     @media (max-width: 640px) {
@@ -1374,7 +1340,7 @@
       .values-grid { grid-template-columns: 1fr; }
       .app-card { min-height: 440px; }
       .app-selector-shell { border-radius: 24px; }
-      .app-selector-track { gap: 9px; padding: 11px; }
+      .app-selector-group { gap: 9px; padding: 11px 4.5px; }
       .app-selector-button { flex-basis: 112px; width: 112px; min-height: 106px; padding: 10px 5px 8px; border-radius: 19px; font-size: .72rem; }
       .app-selector-icon { width: 56px; height: 56px; border-radius: 17px; }
       .app-top { flex-direction: column; }
@@ -1408,6 +1374,10 @@
       .app-selector-button.is-selected,
       .app-detail-card,
       .app-detail-card.is-flipping { transform: none; }
+      .app-selector { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .app-selector::-webkit-scrollbar { display: none; }
+      .app-selector-track { animation: none; }
+      .app-selector-group[data-marquee-copy="true"] { display: none; }
       .value-card,
       .value-card.revealed,
       .value-card:hover,
@@ -1580,11 +1550,9 @@
           <p>각 앱은 기록, 장소, 리듬처럼 반복되는 순간을 더 가볍게 다루기 위해 설계됩니다.</p>
         </div>
         <div class="app-selector-shell" id="app-selector-shell">
-          <button class="app-selector-arrow app-selector-arrow-left" type="button" aria-label="Scroll apps left">‹</button>
           <div class="app-selector" role="group" aria-label="Choose an app" id="app-selector">
             <div class="app-selector-track" id="app-selector-track"></div>
           </div>
-          <button class="app-selector-arrow app-selector-arrow-right" type="button" aria-label="Scroll apps right">›</button>
         </div>
 
         <div class="app-detail-shell">
@@ -2276,10 +2244,7 @@
         appLocalizedDescriptions[id]["zh-TW"] = SameStudioLanguage.toTraditional(appLocalizedDescriptions[id]["zh-CN"]);
       });
       var appSelector = document.getElementById("app-selector");
-      var appSelectorShell = document.getElementById("app-selector-shell");
       var appSelectorTrack = document.getElementById("app-selector-track");
-      var appSelectorLeft = document.querySelector(".app-selector-arrow-left");
-      var appSelectorRight = document.querySelector(".app-selector-arrow-right");
       var appDetail = document.getElementById("app-detail");
       var reduceAppMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var selectedAppId = "";
@@ -2336,7 +2301,7 @@
         if (selectedAppId === app.id) return;
         clearTyping();
         appSelector.querySelectorAll(".app-selector-button").forEach(function (item) {
-          var isSelected = item === button;
+          var isSelected = item.getAttribute("data-app-id") === app.id;
           item.classList.toggle("is-selected", isSelected);
           item.setAttribute("aria-pressed", String(isSelected));
         });
@@ -2363,75 +2328,34 @@
       }
 
       if (appSelector && appSelectorTrack && appDetail) {
-        appSelectorTrack.innerHTML = apps.map(function (app) {
-          return '<button class="app-selector-button" type="button" aria-pressed="false" data-app-id="' + app.id + '"><img class="app-selector-icon" src="' + app.icon + '" alt="' + app.name + ' icon"><span>' + app.name + '</span></button>';
+        function appButtonsMarkup(isCopy) {
+          return apps.map(function (app) {
+            return '<button class="app-selector-button" type="button" aria-pressed="false" data-app-id="' + app.id + '"' + (isCopy ? ' tabindex="-1"' : '') + '><img class="app-selector-icon" src="' + app.icon + '" alt="' + app.name + ' icon"><span>' + app.name + '</span></button>';
+          }).join("");
+        }
+
+        appSelectorTrack.innerHTML = [false, true, true].map(function (isCopy) {
+          return '<div class="app-selector-group"' + (isCopy ? ' data-marquee-copy="true" aria-hidden="true"' : '') + '>' + appButtonsMarkup(isCopy) + '</div>';
         }).join("");
-        var isDraggingApps = false;
-        var didDragApps = false;
-        var suppressAppClick = false;
-        var dragStartX = 0;
-        var dragStartScroll = 0;
 
-        function updateAppSelectorEdges() {
-          var maxScroll = Math.max(0, appSelector.scrollWidth - appSelector.clientWidth);
-          var canScrollLeft = appSelector.scrollLeft > 2;
-          var canScrollRight = appSelector.scrollLeft < maxScroll - 2;
-          appSelectorShell.classList.toggle("can-scroll-left", canScrollLeft);
-          appSelectorShell.classList.toggle("can-scroll-right", canScrollRight);
-          appSelectorLeft.disabled = !canScrollLeft;
-          appSelectorRight.disabled = !canScrollRight;
+        var marqueeResumeTimer = 0;
+        appSelector.addEventListener("pointerdown", function () {
+          window.clearTimeout(marqueeResumeTimer);
+          appSelector.classList.add("is-paused");
+        });
+        function resumeMarquee() {
+          window.clearTimeout(marqueeResumeTimer);
+          marqueeResumeTimer = window.setTimeout(function () { appSelector.classList.remove("is-paused"); }, 180);
         }
-
-        function finishAppDrag(event) {
-          if (!isDraggingApps) return;
-          isDraggingApps = false;
-          if (appSelector.hasPointerCapture(event.pointerId)) appSelector.releasePointerCapture(event.pointerId);
-          appSelector.classList.remove("is-dragging");
-          if (didDragApps) {
-            suppressAppClick = true;
-            window.setTimeout(function () { suppressAppClick = false; }, 0);
-          }
-        }
-
-        appSelector.addEventListener("pointerdown", function (event) {
-          if (event.pointerType !== "mouse" || event.button !== 0) return;
-          isDraggingApps = true;
-          didDragApps = false;
-          dragStartX = event.clientX;
-          dragStartScroll = appSelector.scrollLeft;
-          appSelector.setPointerCapture(event.pointerId);
-        });
-        appSelector.addEventListener("pointermove", function (event) {
-          if (!isDraggingApps) return;
-          var distance = event.clientX - dragStartX;
-          if (Math.abs(distance) > 5) {
-            didDragApps = true;
-            appSelector.classList.add("is-dragging");
-            appSelector.scrollLeft = dragStartScroll - distance;
-            event.preventDefault();
-          }
-        });
-        appSelector.addEventListener("pointerup", finishAppDrag);
-        appSelector.addEventListener("pointercancel", finishAppDrag);
-        appSelector.addEventListener("scroll", updateAppSelectorEdges, { passive: true });
-        window.addEventListener("resize", updateAppSelectorEdges, { passive: true });
-        appSelectorLeft.addEventListener("click", function () { appSelector.scrollBy({ left: -Math.max(280, appSelector.clientWidth * .72), behavior: "smooth" }); });
-        appSelectorRight.addEventListener("click", function () { appSelector.scrollBy({ left: Math.max(280, appSelector.clientWidth * .72), behavior: "smooth" }); });
-        appSelector.addEventListener("focusin", function (event) {
-          var button = event.target.closest(".app-selector-button");
-          if (button) button.scrollIntoView({ behavior: reduceAppMotion ? "auto" : "smooth", block: "nearest", inline: "nearest" });
-        });
+        appSelector.addEventListener("pointerup", resumeMarquee);
+        appSelector.addEventListener("pointercancel", resumeMarquee);
+        appSelector.addEventListener("pointerleave", resumeMarquee);
         appSelector.addEventListener("click", function (event) {
-          if (suppressAppClick) {
-            event.preventDefault();
-            return;
-          }
           var button = event.target.closest(".app-selector-button");
           if (!button) return;
           var app = apps.find(function (item) { return item.id === button.getAttribute("data-app-id"); });
           if (app) selectApp(app, button);
         });
-        window.requestAnimationFrame(updateAppSelectorEdges);
       }
       SameStudioLanguage.mount(applyIndexLanguage);
 
