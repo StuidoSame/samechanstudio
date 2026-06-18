@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SAME STUDIO 통합 개인정보처리방침">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <title>SAME STUDIO 개인정보처리방침 | SAME STUDIO</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fbf8ff;
+      --bg-deep: #f2ecff;
+      --text: #18151f;
+      --muted: #676172;
+      --soft: #887f99;
+      --card: rgba(255,255,255,.72);
+      --card-strong: rgba(255,255,255,.88);
+      --border: rgba(86,64,122,.16);
+      --border-strong: rgba(128,88,205,.36);
+      --nav: rgba(251,248,255,.76);
+      --nav-strong: rgba(251,248,255,.92);
+      --accent: linear-gradient(135deg,#6d5df7,#a855f7 48%,#ff6aa8);
+      --shadow: 0 24px 70px rgba(75,55,120,.13);
+      --max: 980px;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0c12;
+      --bg-deep: #151222;
+      --text: #f5f0ff;
+      --muted: #bbb4ca;
+      --soft: #928aa5;
+      --card: rgba(30,28,39,.68);
+      --card-strong: rgba(38,35,49,.86);
+      --border: rgba(255,255,255,.13);
+      --border-strong: rgba(182,140,255,.32);
+      --nav: rgba(13,12,18,.76);
+      --nav-strong: rgba(13,12,18,.92);
+      --shadow: 0 24px 74px rgba(0,0,0,.34);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(168,85,247,.22), transparent 30rem),
+        radial-gradient(circle at 86% 10%, rgba(255,106,168,.14), transparent 28rem),
+        linear-gradient(180deg,var(--bg),var(--bg-deep));
+      color: var(--text);
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 28% 36%, rgba(109,93,247,.12), transparent 18rem),
+        radial-gradient(circle at 76% 54%, rgba(255,106,168,.10), transparent 20rem);
+      filter: blur(28px);
+      animation: ambient 18s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    :focus-visible { outline: 3px solid rgba(168,85,247,.5); outline-offset: 4px; }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      background: var(--nav);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid transparent;
+      transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .site-header.is-scrolled {
+      background: var(--nav-strong);
+      border-color: var(--border);
+      box-shadow: 0 10px 34px rgba(0,0,0,.06);
+    }
+    .nav {
+      width: min(100% - 32px,var(--max));
+      height: 76px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand-mark { width: 12px; height: 12px; border-radius: 999px; background: linear-gradient(135deg, #7c5cff, #ec4899); box-shadow: 0 0 16px rgba(168, 85, 247, 0.55); flex: 0 0 auto; }
+    .brand-text { letter-spacing: 0.12em; font-weight: 800; color: var(--text); font-size: .95rem; }
+    .desktop-menu { display: flex; align-items: center; gap: 6px; }
+    .desktop-menu a, .drawer a {
+      color: var(--muted);
+      font-size: .92rem;
+      font-weight: 650;
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .desktop-menu a:hover, .drawer a:hover { color: var(--text); background: rgba(141,101,214,.10); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .icon-button:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+    .theme-icon::before { content: "☾"; font-size: 1.05rem; }
+    [data-theme="dark"] .theme-icon::before { content: "☼"; }
+    .menu-button { display: none; }
+    .menu-lines, .menu-lines::before, .menu-lines::after {
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      display: block;
+      content: "";
+      position: relative;
+    }
+    .menu-lines::before { position: absolute; top: -6px; }
+    .menu-lines::after { position: absolute; top: 6px; }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(12,10,18,.48);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .drawer {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 90;
+      width: min(84vw, 320px);
+      background: var(--nav-strong);
+      border-right: 1px solid var(--border);
+      box-shadow: 30px 0 80px rgba(0,0,0,.20);
+      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
+      transform: translateX(-105%);
+      transition: transform .28s ease;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; }
+    .drawer nav { display: grid; gap: 4px; margin-top: 18px; }
+    body.menu-open { overflow: hidden; }
+    body.menu-open .drawer { transform: translateX(0); }
+    body.menu-open .drawer-overlay { opacity: 1; pointer-events: auto; }
+
+    main { padding: 136px 0 72px; }
+    .doc { width: min(100% - 32px,var(--max)); margin: 0 auto; }
+    .doc-hero, .policy-shell, .policy-section, .language-panel {
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+    .doc-hero {
+      border-radius: 30px;
+      padding: clamp(26px,5vw,42px);
+      animation: fadeUp .7s ease both;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #8b5cf6;
+      font-size: .82rem;
+      font-weight: 820;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      box-shadow: 0 0 0 5px rgba(139,92,246,.13);
+    }
+    h1 {
+      margin: 14px 0 0;
+      font-size: clamp(2.45rem,6vw,4.8rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+    .lead, .updated, .scope-card p, .policy-section p, .policy-section li {
+      color: var(--muted);
+      line-height: 1.82;
+      word-break: keep-all;
+    }
+    .lead { margin: 18px 0 0; font-size: 1.05rem; }
+    .updated { margin: 14px 0 0; font-weight: 720; }
+    .home-link { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 20px; padding: 0 18px; border-radius: 999px; color: white; background: var(--accent); font-weight: 760; box-shadow: 0 16px 34px rgba(125,86,223,.28); transition: transform .2s ease,box-shadow .2s ease; }
+    .home-link:hover { transform: translateY(-2px); box-shadow: 0 18px 46px rgba(158,83,224,.34); }
+    .language-panel {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .language-label { color: var(--soft); font-size: .88rem; font-weight: 760; }
+    .language-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .language-button {
+      min-height: 38px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.18);
+      color: var(--muted);
+      font-weight: 760;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .language-button:hover { transform: translateY(-1px); border-color: var(--border-strong); color: var(--text); }
+    .language-button.is-active {
+      color: white;
+      border-color: transparent;
+      background: var(--accent);
+      box-shadow: 0 14px 32px rgba(139,92,246,.25);
+    }
+    .policy-shell {
+      margin-top: 24px;
+      padding: clamp(18px,3vw,28px);
+      border-radius: 30px;
+    }
+    .scope-card {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(135deg,rgba(139,92,246,.10),rgba(255,106,168,.06));
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+    .scope-card h2 { margin: 0 0 10px; font-size: 1.32rem; }
+    .scope-card ul, .policy-section ul { margin: 12px 0 0; padding-left: 1.2rem; }
+    .policy-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .policy-section {
+      border-radius: 22px;
+      padding: clamp(20px,3vw,28px);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .scope-card:hover,
+      .policy-section:hover {
+        transform: translateY(-2px);
+        border-color: var(--border-strong);
+        background:
+          radial-gradient(circle at 12% 0%, rgba(168,85,247,.10), transparent 16rem),
+          radial-gradient(circle at 96% 24%, rgba(255,106,168,.08), transparent 14rem),
+          var(--card-strong);
+        box-shadow: var(--shadow), 0 0 0 1px rgba(168,85,247,.08), 0 18px 46px rgba(99,102,241,.12);
+      }
+    }
+    .policy-section h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.18rem,2vw,1.42rem);
+      line-height: 1.35;
+    }
+    .policy-section p { margin: 0 0 12px; }
+    .policy-section p:last-child { margin-bottom: 0; }
+    .policy-section strong { color: var(--text); }
+    .policy-section a, .scope-card a { color: #8b5cf6; font-weight: 760; border-bottom: 1px solid rgba(139,92,246,.32); }
+    .policy-section a:hover, .scope-card a:hover { border-color: currentColor; }
+    .contact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .contact-row span:first-child { color: var(--soft); font-weight: 760; }
+
+    .site-footer { padding: 42px 0; border-top: 1px solid var(--border); color: var(--muted); }
+    .footer-grid {
+      width: min(100% - 32px,var(--max));
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+      text-align: center;
+    }
+    .footer-info { order: 2; }
+    .footer-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; margin-top: 12px; font-size: .9rem; }
+    .footer-links { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-weight: 720; order: 3; }
+    .footer-links a:hover { color: #8b5cf6; }
+    .footer-social { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; order: 1; }
+    .social-link { width: 42px; height: 42px; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 999px; display: inline-grid; place-items: center; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: transform .2s ease, color .2s ease, border-color .2s ease; }
+    .social-link:hover { color: var(--text); border-color: var(--border-strong); transform: translateY(-2px); }
+    .social-icon { width: 17px; height: 17px; display: inline-block; }
+    .social-icon svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+    .page-transition { position: fixed; inset: 0; z-index: 120; pointer-events: none; opacity: 0; background: rgba(12,10,18,.10); transition: opacity .18s ease; }
+    .page-transition::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); box-shadow: 0 0 22px rgba(168,85,247,.45); }
+    body.is-transitioning .page-transition { opacity: 1; }
+    body.is-transitioning .page-transition::before { animation: pageLoad .38s ease forwards; }
+    body.is-transitioning main, body.is-transitioning .site-footer { opacity: .45; transition: opacity .22s ease; }
+    main, .site-footer { position: relative; z-index: 1; }
+    .cursor-glow {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: 420px;
+      height: 420px;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      background:
+        radial-gradient(circle at center,
+          rgba(168,85,247,.72) 0%,
+          rgba(236,72,153,.44) 28%,
+          rgba(59,130,246,.30) 48%,
+          rgba(34,211,238,.14) 62%,
+          transparent 76%);
+      filter: blur(50px);
+      mix-blend-mode: screen;
+      transform: translate3d(-50%,-50%,0) scale(var(--cursor-glow-scale, 1));
+      transition: opacity .18s ease, transform .22s ease;
+      will-change: left, top, opacity, transform;
+    }
+    [data-theme="dark"] .cursor-glow { opacity: .42; }
+    [data-theme="light"] .cursor-glow { opacity: .20; mix-blend-mode: normal; }
+    body.is-hovering-interactive .cursor-glow { --cursor-glow-scale: 1.22; opacity: .52; }
+    [data-theme="light"] body.is-hovering-interactive .cursor-glow { opacity: .26; }
+    .cursor-glow.is-hidden { opacity: 0 !important; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
+    @keyframes pageLoad { from { width: 0; } to { width: 100%; } }
+
+    @media (max-width: 860px) {
+      .desktop-menu { display: none; }
+      .menu-button { display: inline-grid; }
+      .footer-grid { align-items: center; }
+      .footer-social { justify-content: center; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { width: min(100% - 24px,var(--max)); height: 64px; }
+      .brand-mark { width: 10px; height: 10px; }
+      .brand-text { font-size: .86rem; }
+      .icon-button { width: 39px; height: 39px; }
+      main { padding-top: 104px; }
+      .doc, .footer-grid { width: min(100% - 24px,var(--max)); }
+      .doc-hero, .policy-shell { border-radius: 24px; }
+      .language-panel { align-items: stretch; }
+      .language-buttons { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+      .language-button { flex: 0 0 auto; }
+      .policy-section, .scope-card { border-radius: 18px; }
+      .contact-row { grid-template-columns: 1fr; gap: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+      body.is-transitioning .page-transition::before { animation: none; width: 100%; }
+      body.is-transitioning main, body.is-transitioning .site-footer { opacity: 1; }
+      .scope-card:hover,
+      .policy-section:hover { transform: none; }
+      .cursor-glow { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-transition" aria-hidden="true"></div>
+  <div class="cursor-glow is-hidden" aria-hidden="true"></div>
+  <header class="site-header" data-header>
+    <div class="nav">
+      <a class="brand" href="/" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
+      <nav class="desktop-menu" aria-label="Primary navigation">
+        <a href="/#apps">Apps</a>
+        <a href="/#philosophy">Philosophy</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+        <a href="/support">Support</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button theme-toggle" type="button" aria-label="Toggle light and dark theme"><span class="theme-icon" aria-hidden="true"></span></button>
+        <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false"><span class="menu-lines" aria-hidden="true"></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-overlay" data-close-menu></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
+      <button class="icon-button" type="button" aria-label="Close menu" data-close-menu>×</button>
+    </div>
+    <nav>
+      <a href="/#apps">Apps</a>
+      <a href="/#philosophy">Philosophy</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+      <a href="/support">Support</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+  </aside>
+
+  <main>
+    <article class="doc">
+      <section class="doc-hero">
+        <span class="eyebrow">Privacy</span>
+        <h1 data-policy-title>SAME STUDIO 개인정보처리방침</h1>
+        <p class="updated" data-policy-updated>마지막 업데이트: 2026-05-05</p>
+        <p class="lead" data-policy-lead>SAME STUDIO는 사용자의 개인정보와 개인 기록을 최소한으로 처리하는 것을 원칙으로 합니다. 본 개인정보처리방침은 SAME STUDIO가 제공하는 모바일 앱 및 웹사이트에 공통 적용되며, 실제 처리되는 정보는 각 앱의 기능, 사용자가 허용한 권한, 서비스 버전에 따라 달라질 수 있습니다.</p>
+        <a class="home-link" href="/">Back to Home</a>
+      </section>
+
+      <section class="language-panel" aria-label="Privacy policy language selection">
+        <span class="language-label" data-language-label>Language / 언어</span>
+        <div class="language-buttons">
+          <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
+          <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
+          <button class="language-button" type="button" data-lang="ja" aria-pressed="false">日本語</button>
+          <button class="language-button" type="button" data-lang="zh" aria-pressed="false">中文</button>
+        </div>
+      </section>
+
+      <section class="policy-shell">
+        <div class="scope-card">
+          <h2 data-scope-title>적용 대상</h2>
+          <div data-scope-body></div>
+        </div>
+        <div class="policy-grid" data-policy-content></div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-social" aria-label="Social links">
+        <a class="social-link" href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z"/></svg></span></a>
+        <a class="social-link" href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z"/></svg></span></a>
+        <a class="social-link" href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg></span></a>
+      </div>
+      <div class="footer-info">
+        <strong>© 2026 SAME STUDIO</strong>
+        <div class="footer-meta">
+          <span>Business Name: 세임스튜디오</span>
+          <span>Representative: 김동찬</span>
+          <span>Email: contact@samestudio.kr</span>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/support">Support</a>
+        <a href="/">Home</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var storedTheme = localStorage.getItem("same-studio-theme");
+      var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.setAttribute("data-theme", storedTheme || systemTheme);
+
+      var translations = {
+        ko: {
+          lang: "ko",
+          title: "SAME STUDIO 개인정보처리방침",
+          documentTitle: "SAME STUDIO 개인정보처리방침 | SAME STUDIO",
+          updated: "마지막 업데이트: 2026-05-05",
+          lead: "SAME STUDIO는 사용자의 개인정보와 개인 기록을 최소한으로 처리하는 것을 원칙으로 합니다. 본 개인정보처리방침은 SAME STUDIO가 제공하는 모바일 앱 및 웹사이트에 공통 적용되며, 실제 처리되는 정보는 각 앱의 기능, 사용자가 허용한 권한, 서비스 버전에 따라 달라질 수 있습니다.",
+          languageLabel: "Language / 언어",
+          scopeTitle: "적용 대상",
+          scope: ["본 개인정보처리방침은 SAME STUDIO가 제공하는 Signal 404, Mapary, ODOW, LOCAUNT, Runtronome 및 향후 제공되는 모바일 앱, 웹사이트, 관련 서비스에 적용됩니다.", "특정 앱에서 별도의 개인정보처리방침을 제공하는 경우 해당 앱의 별도 방침이 우선할 수 있습니다.", "앱별 기능과 버전에 따라 실제 처리되는 개인정보 항목은 다를 수 있으며, 아래 항목이 모든 앱에서 항상 수집되는 것은 아닙니다."],
+          sections: [
+            { title: "1. 개인정보 처리 원칙", body: ["SAME STUDIO는 서비스 제공에 필요한 범위에서 개인정보를 최소한으로 처리합니다. 사용자의 메모, 일기, 캘린더 기록, 위치 기반 기록, 이미지, 게임형 수집/관측 기록 등 개인 기록은 앱의 기능과 사용자의 선택에 따라 처리됩니다.", "일부 데이터는 사용자의 기기, iCloud 또는 사용자가 선택한 외부 플랫폼에 저장될 수 있으며, 일부 서비스는 로그인, 동기화, 저장소, 광고, 결제, 문의 대응 등을 위해 외부 서비스를 사용할 수 있습니다."] },
+            { title: "2. 처리될 수 있는 개인정보 항목", list: ["소셜 로그인 식별 정보, 이메일, 사용자 ID, 닉네임 또는 프로필 정보", "위치 정보, 위치 기반 메모 또는 장소 기록", "카메라 촬영 이미지 또는 앱 내 저장 이미지, 사진/앨범 접근 정보", "사용자 기록, 메모, 일기, 캘린더 기록", "게임형 수집/관측 기록, 앱 사용 기록", "기기 정보, 오류 로그, 알림 권한 정보", "결제/구독 상태 정보", "광고 식별자 또는 광고 상호작용 정보", "문의 시 사용자가 제공하는 정보"] },
+            { title: "3. 수집 범위의 제한", body: ["위 항목은 SAME STUDIO의 모든 앱에서 항상 수집되는 것이 아닙니다. 실제 처리 항목은 앱의 기능, 사용자가 허용한 권한, 로그인 여부, 유료 기능 또는 광고 사용 여부, 서비스 버전에 따라 달라집니다.", "사용자가 위치, 카메라, 사진, 알림, 광고 추적 등 권한을 허용하지 않으면 관련 기능이 제한될 수 있으나, 가능한 범위에서 앱의 기본 기능을 이용할 수 있습니다."] },
+            { title: "4. 개인정보 이용 목적", list: ["로그인 및 계정 관리, 사용자 식별", "앱 기능 제공 및 사용자 기록 관리", "기록, 메모, 일기, 캘린더 기록, 위치 기반 기록 관리", "위치 기반 탐색, 장소 기반 알림, 지도 기능 제공", "카메라 촬영 및 이미지 기록 저장", "게임형 수집/관측 기록 제공", "타이머, 메트로놈, 알림 기능 제공", "앱 안정성 개선, 오류 분석, 서비스 품질 개선", "고객 문의 대응", "인앱결제, 구독, 프리미엄 기능 제공", "광고 제공 및 광고 성과 측정"] },
+            { title: "5. 위치 정보", body: ["일부 앱은 지도, 위치 메모, 장소 기반 알림, 위치 기반 게임 또는 탐색 경험을 위해 위치 권한을 요청할 수 있습니다.", "위치 정보는 사용자가 허용한 경우에만 사용되며, 위치 정확도는 기기, 네트워크, OS 설정에 따라 달라질 수 있습니다.", "사용자는 iOS 설정에서 위치 권한을 언제든지 변경하거나 철회할 수 있습니다."] },
+            { title: "6. 카메라 및 사진", body: ["일부 앱은 카메라 촬영, 이미지 저장, 사진 첨부, 기록 보관 기능을 위해 카메라 또는 사진 권한을 요청할 수 있습니다.", "사용자가 촬영하거나 선택한 이미지는 앱 기능 제공을 위해 사용될 수 있습니다. 사용자는 iOS 설정에서 카메라 및 사진 권한을 언제든지 변경할 수 있습니다.", "사용자는 앱을 이용해 촬영하거나 저장하는 이미지가 타인의 초상권, 사생활, 재산권을 침해하지 않도록 주의해야 합니다."] },
+            { title: "7. 공포 엔터테인먼트 및 가상 탐지 기능 고지", body: ["SAME STUDIO의 일부 앱은 레이더, 이상 신호, 괴이체 탐지, 심령 카메라, 수집/관측 기록과 같은 공포 엔터테인먼트 또는 게임적 연출을 제공할 수 있습니다.", "<strong>이러한 기능은 엔터테인먼트 목적의 가상 연출이며 실제 초자연 현상, 현실의 위험, 범죄, 사고, 생명·신체 안전 상태를 탐지하거나 보장하지 않습니다.</strong>"] },
+            { title: "8. 외부 서비스 및 위탁/제3자 플랫폼", body: ["현재 또는 향후 일부 서비스에서 Supabase(인증, 데이터베이스, 저장소), Apple(Apple 로그인, App Store 배포, 인앱결제, iCloud), Google(Google 로그인, Google AdMob), Kakao(Kakao 로그인), Cloudflare(웹사이트 호스팅, API 프록시, 정적 페이지 제공), GitHub Pages 또는 기타 호스팅 서비스가 사용될 수 있습니다.", "향후 서비스 품질 개선을 위해 분석 또는 오류 추적 도구가 추가될 수 있으며, 이 경우 본 방침 또는 앱 내 안내를 통해 필요한 내용을 고지합니다.", "향후 광고 기능이 제공되는 경우 Google AdMob을 통해 광고 식별자, 기기 정보, 광고 상호작용 정보 등이 광고 제공 및 성과 측정을 위해 처리될 수 있습니다."] },
+            { title: "9. 제3자 제공", body: ["SAME STUDIO는 원칙적으로 사용자의 동의 없이 개인정보를 제3자에게 판매하거나 제공하지 않습니다.", "다만 법령상 요청, 사용자의 명시적 동의, 서비스 제공에 필요한 외부 플랫폼 사용의 경우에는 필요한 범위에서 개인정보가 처리될 수 있습니다.", "SAME STUDIO는 사용자의 개인 기록 데이터를 광고주에게 판매하지 않습니다."] },
+            { title: "10. 국외 이전 및 해외 처리", body: ["Supabase, Apple, Google, Kakao, Cloudflare 등 외부 서비스를 이용하는 과정에서 개인정보가 해당 서비스 제공자의 인프라 위치에 따라 국외 서버 또는 해외 사업자의 시스템에서 처리될 수 있습니다.", "외부 서비스의 처리 위치와 보호 조치는 각 서비스 제공자의 정책 및 인프라 운영 방식에 따라 달라질 수 있습니다."] },
+            { title: "11. 보관 및 삭제", body: ["회원 탈퇴 또는 삭제 요청 시 SAME STUDIO가 보관 중인 관련 개인정보는 관련 법령상 보관이 필요한 경우를 제외하고 삭제됩니다.", "사용자가 직접 삭제한 기록은 앱 기능과 저장 위치에 따라 삭제 처리됩니다. 자체 서버에 저장하지 않는 데이터는 사용자의 기기, iCloud, OS 설정에서 직접 삭제해야 할 수 있습니다.", "백업 또는 로그 데이터는 보안, 오류 분석, 서비스 안정성을 위해 일정 기간 보관된 후 삭제될 수 있습니다."] },
+            { title: "12. 사용자 권리", body: ["사용자는 개인정보 열람, 수정, 삭제, 처리정지, 동의 철회, 계정 삭제 또는 데이터 삭제를 요청할 수 있습니다.", "위치, 카메라, 사진, 알림, 광고 추적 권한은 iOS 설정에서 언제든지 변경할 수 있습니다.", "개인정보 관련 요청은 <a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a> 로 보내주세요."] },
+            { title: "13. 아동의 개인정보", body: ["SAME STUDIO의 앱은 원칙적으로 만 14세 미만 아동을 주요 대상으로 하지 않습니다.", "미성년자가 서비스를 사용하는 경우 보호자 동의가 필요할 수 있으며, 관련 법령에서 요구하는 경우 보호자 동의 절차를 따릅니다."] },
+            { title: "14. 보안", body: ["SAME STUDIO는 접근 권한 관리, 암호화된 통신, 외부 서비스의 보안 기능 활용, 불필요한 서버 전송 최소화 등을 통해 개인정보 보호를 위해 노력합니다.", "다만 사용자의 기기, Apple ID, iCloud 계정, 외부 로그인 계정의 보안은 사용자가 직접 관리해야 합니다."] },
+            { title: "15. 방침 변경", body: ["본 개인정보처리방침은 서비스 기능, 법령, 외부 플랫폼 정책, 운영 방식 변경에 따라 수정될 수 있습니다.", "변경 사항은 웹사이트 또는 앱 내 공지를 통해 안내할 수 있으며, 본 페이지의 마지막 업데이트 날짜가 함께 변경됩니다."] },
+            { title: "16. 문의", contact: [["사업자명", "세임스튜디오"], ["대표자", "김동찬"], ["이메일", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["웹사이트", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        },
+        en: {
+          lang: "en",
+          title: "SAME STUDIO Privacy Policy",
+          documentTitle: "SAME STUDIO Privacy Policy | SAME STUDIO",
+          updated: "Last updated: 2026-05-05",
+          lead: "SAME STUDIO follows the principle of processing personal data and personal records only to the minimum extent necessary. This Privacy Policy applies to SAME STUDIO mobile apps and websites, and the information actually processed may vary depending on each app’s features, permissions allowed by the user, and service version.",
+          languageLabel: "Language",
+          scopeTitle: "Scope",
+          scope: ["This Privacy Policy applies to Signal 404, Mapary, ODOW, LOCAUNT, Runtronome, and future mobile apps, websites, and related services provided by SAME STUDIO.", "If a specific app provides a separate privacy policy, that separate policy may take precedence.", "The personal data actually processed may differ by app feature and version, and not every item below is collected by every app."],
+          sections: [
+            { title: "1. Privacy Principles", body: ["SAME STUDIO processes personal data only within the scope necessary to provide its services. Personal records such as notes, journals, calendar entries, location-based records, images, and game-style collection or observation records may be processed depending on app features and user choices.", "Some data may be stored on the user’s device, in iCloud, or on an external platform selected or required for the service. Some services may use external services for login, synchronization, storage, advertising, payments, or support."] },
+            { title: "2. Personal Data That May Be Processed", list: ["Social login identifiers, email address, user ID, nickname, or profile information", "Location information, location-based notes, or place records", "Camera images or in-app saved images, photo/library access information", "User records, notes, journals, and calendar records", "Game-style collection or observation records and app usage records", "Device information, error logs, and notification permission information", "Payment or subscription status information", "Advertising identifiers or ad interaction information", "Information provided by the user when contacting us"] },
+            { title: "3. Limited Scope of Collection", body: ["The items above are not always collected by all SAME STUDIO apps. The actual data processed depends on app features, permissions allowed by the user, login status, paid features or advertising use, and service version.", "If the user does not allow permissions such as location, camera, photos, notifications, or ad tracking, related features may be limited."] },
+            { title: "4. Purposes of Use", list: ["Login, account management, and user identification", "Providing app features and managing user records", "Managing notes, journals, calendar entries, and location-based records", "Providing location-based exploration, place-based notifications, and maps", "Camera capture and image record storage", "Providing game-style collection or observation records", "Providing timers, metronomes, and notifications", "Improving app stability, analyzing errors, and improving service quality", "Responding to customer inquiries", "Providing in-app purchases, subscriptions, and premium features", "Providing advertising and measuring ad performance"] },
+            { title: "5. Location Information", body: ["Some apps may request location permission for maps, location notes, place-based notifications, location-based games, or exploration experiences.", "Location information is used only when allowed by the user. Location accuracy may vary depending on the device, network, and OS settings.", "Users can change or revoke location permission at any time in iOS settings."] },
+            { title: "6. Camera and Photos", body: ["Some apps may request camera or photo permissions for camera capture, image storage, photo attachment, or record-keeping features.", "Images captured or selected by the user may be used to provide app features. Users can change camera and photo permissions at any time in iOS settings.", "Users must not infringe another person’s portrait rights, privacy, or property rights when capturing or saving images through the apps."] },
+            { title: "7. Horror Entertainment and Virtual Detection Notice", body: ["Some SAME STUDIO apps may provide horror entertainment or game-like effects such as radar, anomaly signals, entity detection, spirit camera features, and collection or observation records.", "<strong>These features are fictional effects for entertainment purposes and do not detect or guarantee actual supernatural phenomena, real-world danger, crime, accidents, or life, body, or safety conditions.</strong>"] },
+            { title: "8. External Services and Third-Party Platforms", body: ["Some current or future services may use Supabase for authentication, database, and storage; Apple for Sign in with Apple, App Store distribution, in-app purchases, and iCloud; Google for Google login and Google AdMob; Kakao for Kakao login; Cloudflare for website hosting, API proxying, and static pages; and GitHub Pages or other hosting services.", "Analytics or error tracking tools may be added in the future to improve service quality. If advertising features are provided in the future, Google AdMob may process advertising identifiers, device information, and ad interaction information for ad delivery and performance measurement."] },
+            { title: "9. Third-Party Disclosure", body: ["SAME STUDIO does not sell or provide personal data to third parties without user consent as a general rule.", "Exceptions may include legal requests, user consent, or the use of external platforms necessary to provide the service.", "SAME STUDIO does not sell users’ personal record data to advertisers."] },
+            { title: "10. International Processing", body: ["When external services such as Supabase, Apple, Google, Kakao, or Cloudflare are used, personal data may be processed on overseas servers or systems depending on the infrastructure locations of those service providers."] },
+            { title: "11. Retention and Deletion", body: ["When a user withdraws membership or requests deletion, related personal data held by SAME STUDIO will be deleted unless retention is required by law.", "Records deleted by the user are processed for deletion according to the app feature and storage location. Data not stored on SAME STUDIO servers may need to be deleted directly from the user’s device, iCloud, or OS settings.", "Backup or log data may be retained for a limited period for security, error analysis, and service stability, then deleted."] },
+            { title: "12. User Rights", body: ["Users may request access, correction, deletion, suspension of processing, withdrawal of consent, account deletion, or data deletion.", "Location, camera, photo, notification, and ad tracking permissions can be changed at any time in iOS settings.", "Privacy requests may be sent to <a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>."] },
+            { title: "13. Children’s Privacy", body: ["SAME STUDIO apps are generally not primarily directed to children under 14.", "If a minor uses the services, consent from a parent or guardian may be required where applicable law requires it."] },
+            { title: "14. Security", body: ["SAME STUDIO works to protect personal data through access control, encrypted communications, security features of external services, and minimizing unnecessary server transmission.", "Users are responsible for managing the security of their devices, Apple ID, iCloud accounts, and external login accounts."] },
+            { title: "15. Changes", body: ["This Privacy Policy may be updated due to changes in service features, laws, external platform policies, or operations.", "Changes may be announced on the website or in the apps, and the last updated date will be revised."] },
+            { title: "16. Contact", contact: [["Business Name", "세임스튜디오"], ["Representative", "김동찬"], ["Email", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["Website", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        },
+        ja: {
+          lang: "ja",
+          title: "SAME STUDIO プライバシーポリシー",
+          documentTitle: "SAME STUDIO プライバシーポリシー | SAME STUDIO",
+          updated: "最終更新日：2026-05-05",
+          lead: "SAME STUDIOは、個人情報および個人的な記録を必要最小限の範囲で取り扱うことを原則とします。本プライバシーポリシーはSAME STUDIOが提供するモバイルアプリおよびウェブサイトに共通して適用され、実際に取り扱われる情報は各アプリの機能、ユーザーが許可した権限、サービスのバージョンによって異なる場合があります。",
+          languageLabel: "言語",
+          scopeTitle: "適用範囲",
+          scope: ["本ポリシーは、SAME STUDIOが提供するSignal 404、Mapary、ODOW、LOCAUNT、Runtronomeおよび今後提供されるモバイルアプリ、ウェブサイト、関連サービスに適用されます。", "特定のアプリで別途プライバシーポリシーが提供される場合、その別途ポリシーが優先されることがあります。", "実際に取り扱われる個人情報の項目はアプリの機能やバージョンにより異なり、以下の項目がすべてのアプリで常に収集されるわけではありません。"],
+          sections: [
+            { title: "1. 基本方針", body: ["SAME STUDIOはサービス提供に必要な範囲で個人情報を最小限に取り扱います。メモ、日記、カレンダー記録、位置情報に基づく記録、画像、ゲーム形式の収集・観測記録などは、アプリの機能とユーザーの選択に応じて処理されます。"] },
+            { title: "2. 取り扱う可能性のある情報", list: ["ソーシャルログイン識別子、メールアドレス、ユーザーID、ニックネームまたはプロフィール情報", "位置情報、位置メモ、場所の記録", "カメラ撮影画像、アプリ内保存画像、写真ライブラリへのアクセス情報", "ユーザー記録、メモ、日記、カレンダー記録", "ゲーム形式の収集・観測記録、アプリ利用記録", "端末情報、エラーログ、通知権限情報", "決済・購読状態情報", "広告識別子または広告インタラクション情報", "お問い合わせ時にユーザーが提供する情報"] },
+            { title: "3. 収集範囲", body: ["上記の項目はすべてのSAME STUDIOアプリで常に収集されるものではありません。実際の処理項目は、アプリの機能、ユーザーが許可した権限、ログインの有無、有料機能または広告の利用有無、サービスのバージョンによって異なります。"] },
+            { title: "4. 利用目的", list: ["ログイン、アカウント管理、ユーザー識別", "アプリ機能およびユーザー記録の提供", "記録、メモ、日記、カレンダー、位置情報に基づく記録の管理", "位置情報に基づく探索、場所通知、地図機能の提供", "カメラ撮影および画像記録の保存", "ゲーム形式の収集・観測記録の提供", "タイマー、メトロノーム、通知機能の提供", "安定性改善、エラー分析、品質改善", "お問い合わせ対応", "アプリ内課金、購読、プレミアム機能の提供", "広告配信および広告効果測定"] },
+            { title: "5. 位置情報", body: ["一部のアプリは、地図、位置メモ、場所に基づく通知、位置情報を利用したゲームまたは探索体験のために位置情報の権限を求める場合があります。", "位置情報はユーザーが許可した場合にのみ使用され、精度は端末、ネットワーク、OS設定によって異なります。ユーザーはiOS設定でいつでも権限を変更できます。"] },
+            { title: "6. カメラおよび写真", body: ["一部のアプリは、カメラ撮影、画像保存、写真添付、記録保存のためにカメラまたは写真の権限を求める場合があります。", "ユーザーが撮影または選択した画像はアプリ機能の提供に使用されることがあります。ユーザーは他人の肖像権、プライバシー、財産権を侵害してはなりません。"] },
+            { title: "7. ホラー演出および仮想検知機能", body: ["一部のアプリは、レーダー、異常信号、怪異体検知、心霊カメラ、収集・観測記録などのホラーエンターテインメントまたはゲーム的演出を提供する場合があります。", "<strong>これらの機能はエンターテインメント目的の仮想演出であり、実際の超常現象、現実の危険、犯罪、事故、生命・身体の安全状態を検知または保証するものではありません。</strong>"] },
+            { title: "8. 外部サービス", body: ["現在または今後、Supabase、Apple、Google、Kakao、Cloudflare、GitHub Pagesまたはその他のホスティングサービスを、認証、データベース、保存、配信、決済、iCloud、広告、APIプロキシ、静的ページ提供などに使用する場合があります。", "今後広告機能が提供される場合、Google AdMobにより広告識別子、端末情報、広告インタラクション情報などが広告配信および効果測定のために処理されることがあります。"] },
+            { title: "9. 第三者提供", body: ["SAME STUDIOは原則として、ユーザーの同意なく個人情報を第三者に販売または提供しません。法令上の要請、ユーザーの同意、サービス提供に必要な外部プラットフォームの利用は例外となる場合があります。", "SAME STUDIOはユーザーの個人的な記録データを広告主に販売しません。"] },
+            { title: "10. 国外処理", body: ["Supabase、Apple、Google、Kakao、Cloudflareなどの外部サービスを利用する過程で、個人情報は各サービス提供者のインフラ所在地に応じて国外サーバーまたは海外事業者のシステムで処理される場合があります。"] },
+            { title: "11. 保管および削除", body: ["退会または削除要請があった場合、法令上保管が必要な場合を除き、SAME STUDIOが保有する関連個人情報を削除します。", "自社サーバーに保存されていないデータは、ユーザーの端末、iCloud、OS設定から直接削除する必要がある場合があります。バックアップまたはログデータは一定期間後に削除されることがあります。"] },
+            { title: "12. ユーザーの権利", body: ["ユーザーは、個人情報の閲覧、訂正、削除、処理停止、同意撤回、アカウントまたはデータ削除を求めることができます。位置、カメラ、写真、通知、広告トラッキングの権限はiOS設定でいつでも変更できます。お問い合わせは <a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a> までご連絡ください。"] },
+            { title: "13. 児童の個人情報", body: ["SAME STUDIOのアプリは原則として14歳未満の児童を主な対象としていません。未成年者が利用する場合、保護者の同意が必要となることがあります。"] },
+            { title: "14. セキュリティ", body: ["SAME STUDIOはアクセス権限管理、暗号化通信、外部サービスのセキュリティ機能の活用、不要なサーバー送信の最小化に努めます。ただし、端末、Apple ID、iCloudアカウント等の安全管理はユーザー自身の責任です。"] },
+            { title: "15. 変更", body: ["本ポリシーは、サービス機能、法令、外部プラットフォームの方針、運営方式の変更により更新される場合があります。"] },
+            { title: "16. お問い合わせ", contact: [["事業者名", "세임스튜디오"], ["代表者", "김동찬"], ["メール", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["ウェブサイト", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        },
+        zh: {
+          lang: "zh",
+          title: "SAME STUDIO 隐私政策",
+          documentTitle: "SAME STUDIO 隐私政策 | SAME STUDIO",
+          updated: "最后更新日期：2026-05-05",
+          lead: "SAME STUDIO 的原则是尽量少处理用户的个人信息和个人记录。本隐私政策共同适用于 SAME STUDIO 提供的移动应用和网站，实际处理的信息可能会根据各应用的功能、用户允许的权限以及服务版本而有所不同。",
+          languageLabel: "语言",
+          scopeTitle: "适用范围",
+          scope: ["本政策适用于 SAME STUDIO 提供的 Signal 404、Mapary、ODOW、LOCAUNT、Runtronome 以及未来提供的移动应用、网站和相关服务。", "如果某个应用提供单独的隐私政策，该单独政策可能优先适用。", "实际处理的个人信息项目会因应用功能和版本而异，以下项目并非所有应用都会始终收集。"],
+          sections: [
+            { title: "1. 基本原则", body: ["SAME STUDIO 仅在提供服务所需的范围内最小化处理个人信息。备忘、日记、日历记录、基于位置的记录、图片、游戏式收集或观察记录等，会根据应用功能和用户选择进行处理。"] },
+            { title: "2. 可能处理的信息", list: ["社交登录标识、电子邮件、用户 ID、昵称或个人资料信息", "位置信息、基于位置的备忘或地点记录", "相机拍摄图片、应用内保存图片、照片/相册访问信息", "用户记录、备忘、日记、日历记录", "游戏式收集/观察记录、应用使用记录", "设备信息、错误日志、通知权限信息", "付款/订阅状态信息", "广告标识符或广告互动信息", "用户咨询时提供的信息"] },
+            { title: "3. 收集范围", body: ["上述项目并非 SAME STUDIO 的所有应用都会始终收集。实际处理项目取决于应用功能、用户允许的权限、是否登录、是否使用付费功能或广告以及服务版本。"] },
+            { title: "4. 使用目的", list: ["登录、账户管理和用户识别", "提供应用功能和管理用户记录", "管理记录、备忘、日记、日历和位置记录", "提供基于位置的探索、地点提醒和地图功能", "相机拍摄和图片记录保存", "提供游戏式收集/观察记录", "提供计时器、节拍器和通知功能", "改善稳定性、错误分析和服务质量", "回应用户咨询", "提供应用内购买、订阅和高级功能", "广告投放和广告效果衡量"] },
+            { title: "5. 位置信息", body: ["部分应用可能会为了地图、位置备忘、基于地点的通知、基于位置的游戏或探索体验而请求位置权限。", "位置信息仅在用户允许时使用，准确度可能因设备、网络和 OS 设置而不同。用户可随时在 iOS 设置中更改权限。"] },
+            { title: "6. 相机和照片", body: ["部分应用可能会为了相机拍摄、图片保存、照片附加、记录保存而请求相机或照片权限。", "用户拍摄或选择的图片可能用于提供应用功能。用户不得侵犯他人的肖像权、隐私权或财产权。"] },
+            { title: "7. 恐怖娱乐和虚拟探测功能", body: ["部分应用可能提供雷达、异常信号、怪异体探测、灵异相机、收集/观察记录等恐怖娱乐或游戏式演出。", "<strong>这些功能是以娱乐为目的的虚拟演出，并不探测或保证真实的超自然现象、现实危险、犯罪、事故、生命或身体安全状态。</strong>"] },
+            { title: "8. 外部服务", body: ["当前或未来可能使用 Supabase、Apple、Google、Kakao、Cloudflare、GitHub Pages 或其他托管服务，用于认证、数据库、存储、分发、应用内购买、iCloud、广告、API 代理和静态页面提供等。", "未来提供广告功能时，Google AdMob 可能会为了广告投放和效果衡量处理广告标识符、设备信息和广告互动信息。"] },
+            { title: "9. 第三方提供", body: ["原则上，SAME STUDIO 不会在未经用户同意的情况下向第三方出售或提供个人信息。但法律要求、用户同意或提供服务所需的外部平台使用可能例外。", "SAME STUDIO 不会将用户个人记录数据出售给广告主。"] },
+            { title: "10. 境外处理", body: ["使用 Supabase、Apple、Google、Kakao、Cloudflare 等外部服务时，个人信息可能会根据服务提供商的基础设施位置在境外服务器或海外运营商系统中处理。"] },
+            { title: "11. 保留和删除", body: ["用户注销或请求删除时，除法律要求保留外，SAME STUDIO 持有的相关个人信息将被删除。", "未存储在自有服务器的数据可能需要用户在设备、iCloud 或 OS 设置中自行删除。备份或日志数据可能会在一定期间后删除。"] },
+            { title: "12. 用户权利", body: ["用户可以请求查阅、更正、删除、停止处理、撤回同意、删除账户或删除数据。位置、相机、照片、通知、广告追踪权限可随时在 iOS 设置中更改。相关请求请发送至 <a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>。"] },
+            { title: "13. 儿童隐私", body: ["SAME STUDIO 的应用原则上并非主要面向 14 岁以下儿童。未成年人使用服务时，可能需要监护人同意。"] },
+            { title: "14. 安全", body: ["SAME STUDIO 通过访问权限管理、加密通信、使用外部服务的安全功能、减少不必要的服务器传输等方式保护个人信息。但用户设备、Apple ID、iCloud 账户等安全由用户自行管理。"] },
+            { title: "15. 变更", body: ["本政策可能会因服务功能、法律、外部平台政策或运营方式的变化而更新。"] },
+            { title: "16. 联系方式", contact: [["企业名称", "세임스튜디오"], ["代表人", "김동찬"], ["电子邮件", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["网站", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        }
+      };
+
+      var header = document.querySelector("[data-header]");
+      var menuButton = document.querySelector(".menu-button");
+      var closeButtons = document.querySelectorAll("[data-close-menu]");
+      var drawerLinks = document.querySelectorAll(".drawer a");
+      var themeButtons = document.querySelectorAll(".theme-toggle");
+      var languageButtons = document.querySelectorAll(".language-button");
+      var titleEl = document.querySelector("[data-policy-title]");
+      var updatedEl = document.querySelector("[data-policy-updated]");
+      var leadEl = document.querySelector("[data-policy-lead]");
+      var languageLabelEl = document.querySelector("[data-language-label]");
+      var scopeTitleEl = document.querySelector("[data-scope-title]");
+      var scopeBodyEl = document.querySelector("[data-scope-body]");
+      var contentEl = document.querySelector("[data-policy-content]");
+
+      function setMenu(open) {
+        document.body.classList.toggle("menu-open", open);
+        if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      }
+
+      function detectLanguage() {
+        var stored = localStorage.getItem("same-studio-privacy-lang");
+        if (stored && translations[stored]) return stored;
+        var browser = (navigator.language || "ko").toLowerCase();
+        if (browser.indexOf("ko") === 0) return "ko";
+        if (browser.indexOf("en") === 0) return "en";
+        if (browser.indexOf("ja") === 0) return "ja";
+        if (browser.indexOf("zh") === 0) return "zh";
+        return "ko";
+      }
+
+      function paragraphHtml(items) {
+        return items.map(function (item) { return "<p>" + item + "</p>"; }).join("");
+      }
+
+      function listHtml(items) {
+        return "<ul>" + items.map(function (item) { return "<li>" + item + "</li>"; }).join("") + "</ul>";
+      }
+
+      function contactHtml(items) {
+        return "<div class=\"contact-list\">" + items.map(function (item) {
+          return "<div class=\"contact-row\"><span>" + item[0] + "</span><span>" + item[1] + "</span></div>";
+        }).join("") + "</div>";
+      }
+
+      function renderLanguage(lang) {
+        var data = translations[lang] || translations.ko;
+        root.setAttribute("lang", data.lang);
+        document.title = data.documentTitle;
+        titleEl.textContent = data.title;
+        updatedEl.textContent = data.updated;
+        leadEl.textContent = data.lead;
+        languageLabelEl.textContent = data.languageLabel;
+        scopeTitleEl.textContent = data.scopeTitle;
+        scopeBodyEl.innerHTML = paragraphHtml(data.scope);
+        contentEl.innerHTML = data.sections.map(function (section) {
+          var body = "";
+          if (section.body) body += paragraphHtml(section.body);
+          if (section.list) body += listHtml(section.list);
+          if (section.contact) body += contactHtml(section.contact);
+          return "<section class=\"policy-section\"><h2>" + section.title + "</h2>" + body + "</section>";
+        }).join("");
+
+        languageButtons.forEach(function (button) {
+          var isActive = button.getAttribute("data-lang") === lang;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+          if (isActive) button.setAttribute("aria-current", "true");
+          else button.removeAttribute("aria-current");
+        });
+        localStorage.setItem("same-studio-privacy-lang", lang);
+      }
+
+      themeButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("same-studio-theme", next);
+        });
+      });
+
+      languageButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          renderLanguage(button.getAttribute("data-lang"));
+        });
+      });
+
+      if (menuButton) menuButton.addEventListener("click", function () { setMenu(true); });
+      closeButtons.forEach(function (button) { button.addEventListener("click", function () { setMenu(false); }); });
+      drawerLinks.forEach(function (link) { link.addEventListener("click", function () { setMenu(false); }); });
+      document.addEventListener("keydown", function (event) { if (event.key === "Escape") setMenu(false); });
+
+      function updateHeader() {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+      updateHeader();
+      window.addEventListener("scroll", updateHeader, { passive: true });
+
+      var cursorGlow = document.querySelector(".cursor-glow");
+      var supportsCursorGlow = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (cursorGlow && supportsCursorGlow && !reduceMotion) {
+        var targetX = window.innerWidth / 2;
+        var targetY = window.innerHeight / 2;
+        var currentX = targetX;
+        var currentY = targetY;
+        var glowVisible = false;
+        function animateCursorGlow() {
+          currentX += (targetX - currentX) * .12;
+          currentY += (targetY - currentY) * .12;
+          cursorGlow.style.left = currentX + "px";
+          cursorGlow.style.top = currentY + "px";
+          window.requestAnimationFrame(animateCursorGlow);
+        }
+        window.addEventListener("mousemove", function (event) {
+          targetX = event.clientX;
+          targetY = event.clientY;
+          document.body.classList.toggle("is-hovering-interactive", Boolean(event.target.closest("a, button, .policy-section, .scope-card, .language-panel, .language-button, .social-link")));
+          if (!glowVisible) {
+            glowVisible = true;
+            cursorGlow.classList.remove("is-hidden");
+          }
+        }, { passive: true });
+        document.addEventListener("mouseleave", function () {
+          glowVisible = false;
+          document.body.classList.remove("is-hovering-interactive");
+          cursorGlow.classList.add("is-hidden");
+        });
+        document.addEventListener("mouseenter", function () {
+          glowVisible = true;
+          cursorGlow.classList.remove("is-hidden");
+        });
+        animateCursorGlow();
+      }
+
+      document.addEventListener("click", function (event) {
+        var link = event.target.closest("a[href]");
+        if (!link) return;
+        var href = link.getAttribute("href");
+        if (!href || href.charAt(0) === "#" || href.indexOf("mailto:") === 0 || link.target === "_blank" || link.hasAttribute("download")) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        var url = new URL(href, window.location.href);
+        var isInternal = url.origin === window.location.origin;
+        var isSamePage = url.pathname === window.location.pathname && url.hash === window.location.hash;
+        if (!isInternal || isSamePage) return;
+        event.preventDefault();
+        document.body.classList.add("is-transitioning");
+        window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
+      });
+      renderLanguage(detectLanguage());
+    })();
+  </script>
+</body>
+</html>

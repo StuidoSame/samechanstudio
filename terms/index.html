@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SAME STUDIO 통합 이용약관">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <title>SAME STUDIO 이용약관 | SAME STUDIO</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fbf8ff;
+      --bg-deep: #f2ecff;
+      --text: #18151f;
+      --muted: #676172;
+      --soft: #887f99;
+      --card: rgba(255,255,255,.72);
+      --card-strong: rgba(255,255,255,.88);
+      --border: rgba(86,64,122,.16);
+      --border-strong: rgba(128,88,205,.36);
+      --nav: rgba(251,248,255,.76);
+      --nav-strong: rgba(251,248,255,.92);
+      --accent: linear-gradient(135deg,#6d5df7,#a855f7 48%,#ff6aa8);
+      --shadow: 0 24px 70px rgba(75,55,120,.13);
+      --max: 980px;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0c12;
+      --bg-deep: #151222;
+      --text: #f5f0ff;
+      --muted: #bbb4ca;
+      --soft: #928aa5;
+      --card: rgba(30,28,39,.68);
+      --card-strong: rgba(38,35,49,.86);
+      --border: rgba(255,255,255,.13);
+      --border-strong: rgba(182,140,255,.32);
+      --nav: rgba(13,12,18,.76);
+      --nav-strong: rgba(13,12,18,.92);
+      --shadow: 0 24px 74px rgba(0,0,0,.34);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(168,85,247,.22), transparent 30rem),
+        radial-gradient(circle at 86% 10%, rgba(255,106,168,.14), transparent 28rem),
+        linear-gradient(180deg,var(--bg),var(--bg-deep));
+      color: var(--text);
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 28% 36%, rgba(109,93,247,.12), transparent 18rem),
+        radial-gradient(circle at 76% 54%, rgba(255,106,168,.10), transparent 20rem);
+      filter: blur(28px);
+      animation: ambient 18s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    :focus-visible { outline: 3px solid rgba(168,85,247,.5); outline-offset: 4px; }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      background: var(--nav);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid transparent;
+      transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .site-header.is-scrolled {
+      background: var(--nav-strong);
+      border-color: var(--border);
+      box-shadow: 0 10px 34px rgba(0,0,0,.06);
+    }
+    .nav {
+      width: min(100% - 32px,var(--max));
+      height: 76px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand-mark { width: 12px; height: 12px; border-radius: 999px; background: linear-gradient(135deg, #7c5cff, #ec4899); box-shadow: 0 0 16px rgba(168, 85, 247, 0.55); flex: 0 0 auto; }
+    .brand-text { letter-spacing: 0.12em; font-weight: 800; color: var(--text); font-size: .95rem; }
+    .desktop-menu { display: flex; align-items: center; gap: 6px; }
+    .desktop-menu a, .drawer a {
+      color: var(--muted);
+      font-size: .92rem;
+      font-weight: 650;
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .desktop-menu a:hover, .drawer a:hover { color: var(--text); background: rgba(141,101,214,.10); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .icon-button:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+    .theme-icon::before { content: "☾"; font-size: 1.05rem; }
+    [data-theme="dark"] .theme-icon::before { content: "☼"; }
+    .menu-button { display: none; }
+    .menu-lines, .menu-lines::before, .menu-lines::after {
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      display: block;
+      content: "";
+      position: relative;
+    }
+    .menu-lines::before { position: absolute; top: -6px; }
+    .menu-lines::after { position: absolute; top: 6px; }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(12,10,18,.48);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .drawer {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 90;
+      width: min(84vw, 320px);
+      background: var(--nav-strong);
+      border-right: 1px solid var(--border);
+      box-shadow: 30px 0 80px rgba(0,0,0,.20);
+      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
+      transform: translateX(-105%);
+      transition: transform .28s ease;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; }
+    .drawer nav { display: grid; gap: 4px; margin-top: 18px; }
+    body.menu-open { overflow: hidden; }
+    body.menu-open .drawer { transform: translateX(0); }
+    body.menu-open .drawer-overlay { opacity: 1; pointer-events: auto; }
+
+    main { padding: 136px 0 72px; }
+    .doc { width: min(100% - 32px,var(--max)); margin: 0 auto; }
+    .doc-hero, .policy-shell, .policy-section, .language-panel {
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+    .doc-hero {
+      border-radius: 30px;
+      padding: clamp(26px,5vw,42px);
+      animation: fadeUp .7s ease both;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #8b5cf6;
+      font-size: .82rem;
+      font-weight: 820;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      box-shadow: 0 0 0 5px rgba(139,92,246,.13);
+    }
+    h1 {
+      margin: 14px 0 0;
+      font-size: clamp(2.45rem,6vw,4.8rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+    .lead, .updated, .scope-card p, .policy-section p, .policy-section li {
+      color: var(--muted);
+      line-height: 1.82;
+      word-break: keep-all;
+    }
+    .lead { margin: 18px 0 0; font-size: 1.05rem; }
+    .updated { margin: 14px 0 0; font-weight: 720; }
+    .home-link { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 20px; padding: 0 18px; border-radius: 999px; color: white; background: var(--accent); font-weight: 760; box-shadow: 0 16px 34px rgba(125,86,223,.28); transition: transform .2s ease,box-shadow .2s ease; }
+    .home-link:hover { transform: translateY(-2px); box-shadow: 0 18px 46px rgba(158,83,224,.34); }
+    .language-panel {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .language-label { color: var(--soft); font-size: .88rem; font-weight: 760; }
+    .language-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .language-button {
+      min-height: 38px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.18);
+      color: var(--muted);
+      font-weight: 760;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .language-button:hover { transform: translateY(-1px); border-color: var(--border-strong); color: var(--text); }
+    .language-button.is-active {
+      color: white;
+      border-color: transparent;
+      background: var(--accent);
+      box-shadow: 0 14px 32px rgba(139,92,246,.25);
+    }
+    .policy-shell {
+      margin-top: 24px;
+      padding: clamp(18px,3vw,28px);
+      border-radius: 30px;
+    }
+    .scope-card {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(135deg,rgba(139,92,246,.10),rgba(255,106,168,.06));
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+    .scope-card h2 { margin: 0 0 10px; font-size: 1.32rem; }
+    .scope-card ul, .policy-section ul { margin: 12px 0 0; padding-left: 1.2rem; }
+    .policy-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .policy-section {
+      border-radius: 22px;
+      padding: clamp(20px,3vw,28px);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .scope-card:hover,
+      .policy-section:hover {
+        transform: translateY(-2px);
+        border-color: var(--border-strong);
+        background:
+          radial-gradient(circle at 12% 0%, rgba(168,85,247,.10), transparent 16rem),
+          radial-gradient(circle at 96% 24%, rgba(255,106,168,.08), transparent 14rem),
+          var(--card-strong);
+        box-shadow: var(--shadow), 0 0 0 1px rgba(168,85,247,.08), 0 18px 46px rgba(99,102,241,.12);
+      }
+    }
+    .policy-section h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.18rem,2vw,1.42rem);
+      line-height: 1.35;
+    }
+    .policy-section p { margin: 0 0 12px; }
+    .policy-section p:last-child { margin-bottom: 0; }
+    .policy-section strong { color: var(--text); }
+    .policy-section a, .scope-card a { color: #8b5cf6; font-weight: 760; border-bottom: 1px solid rgba(139,92,246,.32); }
+    .policy-section a:hover, .scope-card a:hover { border-color: currentColor; }
+    .contact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .contact-row span:first-child { color: var(--soft); font-weight: 760; }
+
+    .site-footer { padding: 42px 0; border-top: 1px solid var(--border); color: var(--muted); }
+    .footer-grid {
+      width: min(100% - 32px,var(--max));
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+      text-align: center;
+    }
+    .footer-info { order: 2; }
+    .footer-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; margin-top: 12px; font-size: .9rem; }
+    .footer-links { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-weight: 720; order: 3; }
+    .footer-links a:hover { color: #8b5cf6; }
+    .footer-social { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; order: 1; }
+    .social-link { width: 42px; height: 42px; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 999px; display: inline-grid; place-items: center; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: transform .2s ease, color .2s ease, border-color .2s ease; }
+    .social-link:hover { color: var(--text); border-color: var(--border-strong); transform: translateY(-2px); }
+    .social-icon { width: 17px; height: 17px; display: inline-block; }
+    .social-icon svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+    .page-transition { position: fixed; inset: 0; z-index: 120; pointer-events: none; opacity: 0; background: rgba(12,10,18,.10); transition: opacity .18s ease; }
+    .page-transition::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); box-shadow: 0 0 22px rgba(168,85,247,.45); }
+    body.is-transitioning .page-transition { opacity: 1; }
+    body.is-transitioning .page-transition::before { animation: pageLoad .38s ease forwards; }
+    body.is-transitioning main, body.is-transitioning .site-footer { opacity: .45; transition: opacity .22s ease; }
+    main, .site-footer { position: relative; z-index: 1; }
+    .cursor-glow {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: 420px;
+      height: 420px;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      background:
+        radial-gradient(circle at center,
+          rgba(168,85,247,.72) 0%,
+          rgba(236,72,153,.44) 28%,
+          rgba(59,130,246,.30) 48%,
+          rgba(34,211,238,.14) 62%,
+          transparent 76%);
+      filter: blur(50px);
+      mix-blend-mode: screen;
+      transform: translate3d(-50%,-50%,0) scale(var(--cursor-glow-scale, 1));
+      transition: opacity .18s ease, transform .22s ease;
+      will-change: left, top, opacity, transform;
+    }
+    [data-theme="dark"] .cursor-glow { opacity: .42; }
+    [data-theme="light"] .cursor-glow { opacity: .20; mix-blend-mode: normal; }
+    body.is-hovering-interactive .cursor-glow { --cursor-glow-scale: 1.22; opacity: .52; }
+    [data-theme="light"] body.is-hovering-interactive .cursor-glow { opacity: .26; }
+    .cursor-glow.is-hidden { opacity: 0 !important; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes ambient { from { transform: translate3d(-1%,0,0) scale(1); } to { transform: translate3d(1.5%,1%,0) scale(1.04); } }
+    @keyframes pageLoad { from { width: 0; } to { width: 100%; } }
+
+    @media (max-width: 860px) {
+      .desktop-menu { display: none; }
+      .menu-button { display: inline-grid; }
+      .footer-grid { align-items: center; }
+      .footer-social { justify-content: center; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { width: min(100% - 24px,var(--max)); height: 64px; }
+      .brand-mark { width: 10px; height: 10px; }
+      .brand-text { font-size: .86rem; }
+      .icon-button { width: 39px; height: 39px; }
+      main { padding-top: 104px; }
+      .doc, .footer-grid { width: min(100% - 24px,var(--max)); }
+      .doc-hero, .policy-shell { border-radius: 24px; }
+      .language-panel { align-items: stretch; }
+      .language-buttons { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+      .language-button { flex: 0 0 auto; }
+      .policy-section, .scope-card { border-radius: 18px; }
+      .contact-row { grid-template-columns: 1fr; gap: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+      body.is-transitioning .page-transition::before { animation: none; width: 100%; }
+      body.is-transitioning main, body.is-transitioning .site-footer { opacity: 1; }
+      .scope-card:hover,
+      .policy-section:hover { transform: none; }
+      .cursor-glow { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-transition" aria-hidden="true"></div>
+  <div class="cursor-glow is-hidden" aria-hidden="true"></div>
+  <header class="site-header" data-header>
+    <div class="nav">
+      <a class="brand" href="/" aria-label="SAME STUDIO home"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
+      <nav class="desktop-menu" aria-label="Primary navigation">
+        <a href="/#apps">Apps</a>
+        <a href="/#philosophy">Philosophy</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+        <a href="/support">Support</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button theme-toggle" type="button" aria-label="Toggle light and dark theme"><span class="theme-icon" aria-hidden="true"></span></button>
+        <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false"><span class="menu-lines" aria-hidden="true"></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-overlay" data-close-menu></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">SAME STUDIO</span></a>
+      <button class="icon-button" type="button" aria-label="Close menu" data-close-menu>×</button>
+    </div>
+    <nav>
+      <a href="/#apps">Apps</a>
+      <a href="/#philosophy">Philosophy</a>
+      <a href="/#about">About</a>
+      <a href="/#contact">Contact</a>
+      <a href="/support">Support</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+  </aside>
+
+  <main>
+    <article class="doc">
+      <section class="doc-hero">
+        <span class="eyebrow">Terms</span>
+        <h1 data-policy-title>SAME STUDIO 이용약관</h1>
+        <p class="updated" data-policy-updated>마지막 업데이트: 2026-05-05</p>
+        <p class="lead" data-policy-lead>SAME STUDIO 이용약관은 SAME STUDIO가 제공하는 모바일 앱, 웹사이트 및 관련 서비스의 이용 조건을 안내합니다. 각 앱의 기능과 버전에 따라 제공되는 기능은 달라질 수 있습니다.</p>
+        <a class="home-link" href="/">Back to Home</a>
+      </section>
+
+      <section class="language-panel" aria-label="Terms language selection">
+        <span class="language-label" data-language-label>Language / 언어</span>
+        <div class="language-buttons">
+          <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
+          <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
+          <button class="language-button" type="button" data-lang="ja" aria-pressed="false">日本語</button>
+          <button class="language-button" type="button" data-lang="zh" aria-pressed="false">中文</button>
+        </div>
+      </section>
+
+      <section class="policy-shell">
+        <div class="scope-card">
+          <h2 data-scope-title>적용 대상</h2>
+          <div data-scope-body></div>
+        </div>
+        <div class="policy-grid" data-policy-content></div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-social" aria-label="Social links">
+        <a class="social-link" href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z"/></svg></span></a>
+        <a class="social-link" href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z"/></svg></span></a>
+        <a class="social-link" href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><span class="social-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg></span></a>
+      </div>
+      <div class="footer-info">
+        <strong>© 2026 SAME STUDIO</strong>
+        <div class="footer-meta">
+          <span>Business Name: 세임스튜디오</span>
+          <span>Representative: 김동찬</span>
+          <span>Email: contact@samestudio.kr</span>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/support">Support</a>
+        <a href="/">Home</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var storedTheme = localStorage.getItem("same-studio-theme");
+      var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.setAttribute("data-theme", storedTheme || systemTheme);
+
+      var translations = {
+        ko: {
+          lang: "ko",
+          title: "SAME STUDIO 이용약관",
+          documentTitle: "SAME STUDIO 이용약관 | SAME STUDIO",
+          updated: "마지막 업데이트: 2026-05-05",
+          lead: "SAME STUDIO 이용약관은 SAME STUDIO가 제공하는 모바일 앱, 웹사이트 및 관련 서비스의 이용 조건을 안내합니다. 각 앱의 기능과 버전에 따라 제공되는 기능은 달라질 수 있습니다.",
+          languageLabel: "Language / 언어",
+          scopeTitle: "적용 대상",
+          scope: ["본 약관은 Signal 404, Mapary, ODOW, LOCAUNT, Runtronome 및 향후 SAME STUDIO가 제공하는 앱, 웹사이트, 관련 서비스에 적용됩니다.", "특정 앱에서 별도 약관을 제공하는 경우 해당 약관이 우선할 수 있습니다.", "사용자가 서비스를 설치, 접속 또는 이용하면 본 약관에 동의한 것으로 볼 수 있습니다."],
+          sections: [
+            { title: "1. 서비스 개요", body: ["SAME STUDIO는 기록, 위치 기반 기능, 알림, 카메라/사진, 게임형 수집, 공포 엔터테인먼트, 메트로놈/타이머 등 다양한 앱과 웹서비스를 제공할 수 있습니다.", "앱별 제공 기능은 다를 수 있으며, 기능은 앱의 버전, 운영 정책, 기기 및 OS 환경에 따라 변경될 수 있습니다."] },
+            { title: "2. 이용 자격 및 약관 동의", body: ["사용자는 본 약관에 동의해야 서비스를 이용할 수 있습니다. 약관에 동의하지 않는 경우 서비스를 이용하지 않아야 합니다.", "미성년자는 법령 또는 앱 마켓 정책에 따라 보호자 동의가 필요할 수 있습니다."] },
+            { title: "3. 계정 및 로그인", body: ["일부 앱은 Apple, Google, Kakao 등 소셜 로그인을 사용할 수 있습니다. 사용자는 계정 정보를 안전하게 관리해야 하며, 타인의 계정을 사용하거나 허위 정보를 제공해서는 안 됩니다.", "계정 또는 로그인 수단의 분실, 도용, 부정 사용이 의심되는 경우 즉시 해당 플랫폼 및 SAME STUDIO에 알려야 합니다."] },
+            { title: "4. 위치 기반 기능", body: ["일부 앱은 위치 기반 탐색, 위치 메모, 장소 기반 알림, 지도 기능, 위치 기반 게임 경험을 제공할 수 있습니다.", "위치 정확도는 기기, 네트워크, OS 설정에 따라 달라질 수 있습니다. 위치 기능을 실제 안전 판단, 긴급 상황 판단, 범죄 또는 재난 탐지 용도로 사용해서는 안 됩니다."] },
+            { title: "5. 카메라 및 사진 기능", body: ["일부 앱은 카메라 촬영, 사진 첨부, 이미지 저장 기능을 제공할 수 있습니다.", "사용자는 타인의 초상권, 사생활, 재산권을 침해하지 않아야 하며, 타인을 몰래 촬영하거나 출입이 제한된 장소에서 촬영해서는 안 됩니다."] },
+            { title: "6. 기록 및 사용자 콘텐츠", body: ["사용자가 작성한 메모, 일기, 기록, 이미지, 위치 기반 기록, 수집/관측 기록은 사용자의 책임하에 관리됩니다.", "불법적, 혐오, 폭력적, 타인 권리 침해 콘텐츠를 작성, 저장, 공유하거나 서비스 운영을 방해하는 방식으로 사용해서는 안 됩니다.", "사용자는 자신이 생성한 콘텐츠와 그 이용 결과에 대한 책임을 집니다."] },
+            { title: "7. 공포/레이더/가상 탐지 기능 고지", body: ["일부 앱은 레이더, 이상 신호, 괴이체 탐지, 심령 카메라, 수집/관측 기록 등 공포 엔터테인먼트 또는 게임적 연출을 제공할 수 있습니다.", "<strong>본 서비스의 레이더, 이상 신호, 괴이체 탐지, 심령 카메라, 수집/관측 기능은 엔터테인먼트 목적의 가상 연출이며 실제 초자연 현상, 위험, 범죄, 사고, 건강 상태, 생명·신체 안전 상태를 탐지하거나 보장하지 않습니다.</strong>"] },
+            { title: "8. 안전 관련 고지", body: ["사용자는 현실 세계에서 이동하거나 촬영할 때 주변 환경을 확인해야 합니다. 운전, 보행, 야간 이동, 위험 지역에서 앱 사용 시 각별히 주의해야 합니다.", "출입 금지 구역, 사유지, 공사장, 위험 장소에서 앱을 사용해서는 안 됩니다. SAME STUDIO 앱은 긴급 구조, 치안, 의료, 안전 판단 도구가 아닙니다."] },
+            { title: "9. 금지 행위", list: ["불법적인 장소 침입 또는 위험 지역 접근", "타인 몰래 촬영하거나 타인의 권리를 침해하는 행위", "앱을 실제 위험 탐지 도구처럼 오용하는 행위", "서비스 방해, 리버스 엔지니어링, 악성 코드 삽입", "비정상적 자동화 사용 또는 서비스의 정상 운영을 저해하는 행위", "관련 법령, 앱 마켓 정책, 본 약관을 위반하는 행위"] },
+            { title: "10. 유료 기능 및 인앱결제", body: ["일부 앱은 프리미엄 기능, 광고 제거, 추가 콘텐츠, 인앱결제 또는 구독 기능을 제공할 수 있습니다.", "결제, 환불, 구독 관리는 Apple App Store 또는 해당 앱 마켓 정책을 따릅니다. 유료 기능의 내용과 제공 범위는 앱별로 다를 수 있습니다."] },
+            { title: "11. 광고", body: ["일부 앱은 광고를 표시할 수 있습니다. 광고 제공 시 관련 정보 처리는 <a href=\"/privacy\">SAME STUDIO 개인정보처리방침</a>을 따릅니다."] },
+            { title: "12. 서비스 변경 및 중단", body: ["SAME STUDIO는 업데이트, 운영상 필요, 보안, 정책 변경, 외부 플랫폼 사정 등에 따라 앱 기능 또는 서비스를 변경, 제한, 중단할 수 있습니다.", "서비스 변경 또는 중단이 발생하는 경우 가능한 범위에서 웹사이트 또는 앱 내 공지를 통해 안내할 수 있습니다."] },
+            { title: "13. 면책 조항", body: ["SAME STUDIO는 앱의 정확성, 지속성, 특정 목적 적합성을 항상 보장하지 않습니다.", "위치, 알림, 지도, 카메라, iCloud, 외부 로그인, 결제, 광고 기능은 OS 설정, 네트워크, 기기 상태, 외부 플랫폼 상태에 따라 제한될 수 있습니다.", "사용자가 앱을 이용하며 현실 세계에서 하는 이동, 접근, 촬영, 판단은 사용자의 책임입니다."] },
+            { title: "14. 개인정보 보호", body: ["개인정보 처리는 <a href=\"/privacy\">SAME STUDIO 개인정보처리방침</a>을 따릅니다."] },
+            { title: "15. 약관 변경", body: ["SAME STUDIO는 관련 법령, 서비스 구조, 앱 기능, 운영 정책 변경에 따라 본 약관을 수정할 수 있습니다.", "약관 변경 시 웹사이트 또는 앱 내 공지를 통해 안내할 수 있으며, 변경 후 서비스를 계속 사용하면 변경 약관에 동의한 것으로 볼 수 있습니다."] },
+            { title: "16. 문의", contact: [["사업자명", "세임스튜디오"], ["대표자", "김동찬"], ["이메일", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["웹사이트", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        },
+        en: {
+          lang: "en",
+          title: "SAME STUDIO Terms of Service",
+          documentTitle: "SAME STUDIO Terms of Service | SAME STUDIO",
+          updated: "Last updated: 2026-05-05",
+          lead: "These Terms of Service explain the conditions for using mobile apps, websites, and related services provided by SAME STUDIO. Available features may vary depending on each app’s features and version.",
+          languageLabel: "Language",
+          scopeTitle: "Scope",
+          scope: ["These Terms apply to Signal 404, Mapary, ODOW, LOCAUNT, Runtronome, and future apps, websites, and related services provided by SAME STUDIO.", "If a specific app provides separate terms, those separate terms may take precedence.", "By installing, accessing, or using the services, the user is deemed to agree to these Terms."],
+          sections: [
+            { title: "1. Service Overview", body: ["SAME STUDIO may provide apps for records, location-based features, notifications, camera/photos, game-style collection, horror entertainment, metronomes, timers, and related web services.", "Features may differ by app and may change depending on version, operating policy, device, and OS environment."] },
+            { title: "2. Eligibility and Agreement", body: ["Users must agree to these Terms to use the services. Minors may need consent from a parent or guardian depending on applicable laws or app marketplace policies."] },
+            { title: "3. Accounts and Login", body: ["Some apps may support social login through Apple, Google, Kakao, or similar providers. Users must keep account information secure and must not use another person’s account or provide false information."] },
+            { title: "4. Location-Based Features", body: ["Some apps may provide location-based exploration, location notes, place-based notifications, map features, or location-based game experiences.", "Location accuracy may vary depending on device, network, and OS settings. Location features must not be used for real safety decisions, emergency decisions, crime detection, or disaster detection."] },
+            { title: "5. Camera and Photo Features", body: ["Some apps may provide camera capture, photo attachment, or image storage features.", "Users must not infringe another person’s portrait rights, privacy, or property rights, secretly film others, or capture images in restricted places."] },
+            { title: "6. Records and User Content", body: ["Notes, journals, records, images, location-based records, and collection or observation records created by users are managed under the user’s responsibility.", "Illegal, hateful, violent, or rights-infringing content is prohibited. Users are responsible for the content they create and the consequences of using it."] },
+            { title: "7. Horror, Radar, and Virtual Detection Notice", body: ["Some apps may provide horror entertainment or game-like effects such as radar, anomaly signals, entity detection, spirit camera features, and collection or observation records.", "<strong>The radar, anomaly signal, entity detection, spirit camera, and collection/observation features of the services are fictional effects for entertainment purposes and do not detect or guarantee actual supernatural phenomena, danger, crime, accidents, health conditions, or life, body, or safety conditions.</strong>"] },
+            { title: "8. Safety Notice", body: ["Users must check their surroundings when moving or filming in the real world. Use caution while driving, walking, traveling at night, or using apps in risky areas.", "Do not use the apps in restricted areas, private property, construction sites, or dangerous places. SAME STUDIO apps are not emergency rescue, law enforcement, medical, or safety decision tools."] },
+            { title: "9. Prohibited Conduct", list: ["Illegal entry into places or access to dangerous areas", "Secretly filming others or infringing others’ rights", "Misusing an app as an actual danger detection tool", "Interfering with services, reverse engineering, or inserting malicious code", "Abnormal automation or actions that disrupt normal operation", "Violating laws, app marketplace policies, or these Terms"] },
+            { title: "10. Paid Features and In-App Purchases", body: ["Some apps may offer premium features, ad removal, additional content, in-app purchases, or subscriptions.", "Payments, refunds, and subscription management follow Apple App Store or the applicable app marketplace policies. Paid features may differ by app."] },
+            { title: "11. Advertising", body: ["Some apps may display advertising. Processing of related information follows the <a href=\"/privacy\">SAME STUDIO Privacy Policy</a>."] },
+            { title: "12. Service Changes and Suspension", body: ["SAME STUDIO may change, limit, or suspend app features or services due to updates, operational needs, security, policy changes, or external platform circumstances."] },
+            { title: "13. Disclaimer", body: ["SAME STUDIO does not always guarantee the accuracy, continuity, or fitness for a particular purpose of the apps.", "Location, notifications, maps, camera, iCloud, external login, payments, and advertising may be limited by OS settings, networks, device status, or external platform status.", "Users are responsible for real-world movement, access, filming, and decisions made while using the apps."] },
+            { title: "14. Privacy", body: ["Personal data is processed according to the <a href=\"/privacy\">SAME STUDIO Privacy Policy</a>."] },
+            { title: "15. Changes to Terms", body: ["SAME STUDIO may update these Terms due to changes in laws, service structure, app features, or operating policies. Continued use after changes may be considered acceptance of the updated Terms."] },
+            { title: "16. Contact", contact: [["Business Name", "세임스튜디오"], ["Representative", "김동찬"], ["Email", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["Website", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        },
+        ja: {
+          lang: "ja",
+          title: "SAME STUDIO 利用規約",
+          documentTitle: "SAME STUDIO 利用規約 | SAME STUDIO",
+          updated: "最終更新日：2026-05-05",
+          lead: "本利用規約は、SAME STUDIOが提供するモバイルアプリ、ウェブサイトおよび関連サービスの利用条件を説明するものです。提供される機能は各アプリの機能およびバージョンによって異なる場合があります。",
+          languageLabel: "言語",
+          scopeTitle: "適用範囲",
+          scope: ["本規約は、Signal 404、Mapary、ODOW、LOCAUNT、Runtronomeおよび今後SAME STUDIOが提供するアプリ、ウェブサイト、関連サービスに適用されます。", "特定のアプリで別途規約が提供される場合、その規約が優先されることがあります。"],
+          sections: [
+            { title: "1. サービス概要", body: ["SAME STUDIOは、記録、位置情報機能、通知、カメラ・写真、ゲーム形式の収集、ホラーエンターテインメント、メトロノーム・タイマーなどのアプリを提供する場合があります。アプリごとに提供機能は異なります。"] },
+            { title: "2. 利用資格および同意", body: ["ユーザーは本規約に同意したうえでサービスを利用する必要があります。未成年者は保護者の同意が必要となる場合があります。"] },
+            { title: "3. アカウントおよびログイン", body: ["一部のアプリはApple、Google、Kakaoなどのソーシャルログインを使用する場合があります。ユーザーはアカウント情報を安全に管理し、他人のアカウント使用や虚偽情報の提供をしてはなりません。"] },
+            { title: "4. 位置情報機能", body: ["一部のアプリは位置情報に基づく探索、位置メモ、場所通知、地図機能、位置情報ゲーム体験を提供する場合があります。", "位置精度は端末、ネットワーク、OS設定により異なります。位置機能を実際の安全判断、緊急判断、犯罪・災害検知目的で使用してはなりません。"] },
+            { title: "5. カメラおよび写真", body: ["一部のアプリはカメラ撮影、写真添付、画像保存機能を提供する場合があります。ユーザーは他人の肖像権、プライバシー、財産権を侵害してはならず、盗撮や立入制限場所での撮影をしてはなりません。"] },
+            { title: "6. 記録およびユーザーコンテンツ", body: ["ユーザーが作成したメモ、日記、記録、画像、位置情報に基づく記録、収集・観測記録はユーザーの責任で管理されます。違法、差別的、暴力的、権利侵害的なコンテンツは禁止されます。"] },
+            { title: "7. ホラー・レーダー・仮想検知機能", body: ["一部のアプリはレーダー、異常信号、怪異体検知、心霊カメラ、収集・観測記録などのホラー演出またはゲーム的演出を提供する場合があります。", "<strong>本サービスのレーダー、異常信号、怪異体検知、心霊カメラ、収集・観測機能はエンターテインメント目的の仮想演出であり、実際の超常現象、危険、犯罪、事故、健康状態、生命・身体の安全状態を検知または保証するものではありません。</strong>"] },
+            { title: "8. 安全に関する注意", body: ["現実世界で移動または撮影する際は周囲を確認してください。運転、歩行、夜間移動、危険地域での使用には注意し、立入禁止区域、私有地、工事現場、危険な場所で使用してはなりません。アプリは緊急救助、治安、安全判断の道具ではありません。"] },
+            { title: "9. 禁止行為", list: ["違法な場所への侵入", "危険地域への接近", "盗撮または他人の権利侵害", "アプリを実際の危険検知道具として誤用する行為", "サービス妨害、リバースエンジニアリング、悪性コード挿入", "異常な自動化利用、法令違反"] },
+            { title: "10. 有料機能およびアプリ内課金", body: ["一部のアプリはプレミアム機能、広告削除、追加コンテンツ、アプリ内課金または購読を提供する場合があります。決済、返金、購読管理はApple App Storeまたは該当アプリマーケットの方針に従います。"] },
+            { title: "11. 広告", body: ["一部のアプリは広告を表示する場合があります。関連情報の処理は <a href=\"/privacy\">SAME STUDIOプライバシーポリシー</a> に従います。"] },
+            { title: "12. サービス変更および中断", body: ["アプリ機能はアップデート、運営上の必要、ポリシー変更により変更または中断される場合があります。"] },
+            { title: "13. 免責事項", body: ["SAME STUDIOはアプリの正確性、継続性、特定目的への適合性を常に保証しません。位置、通知、地図、カメラ、iCloud、外部ログイン、決済、広告機能はOS設定、ネットワーク、外部プラットフォームの状態により制限される場合があります。現実世界での移動、接近、撮影、判断はユーザーの責任です。"] },
+            { title: "14. プライバシー", body: ["個人情報の取り扱いは <a href=\"/privacy\">SAME STUDIOプライバシーポリシー</a> に従います。"] },
+            { title: "15. 規約変更", body: ["本規約は変更される場合があり、変更後もサービスを継続して利用する場合、変更後の規約に同意したものとみなされることがあります。"] },
+            { title: "16. お問い合わせ", contact: [["事業者名", "세임스튜디오"], ["代表者", "김동찬"], ["メール", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["ウェブサイト", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        },
+        zh: {
+          lang: "zh",
+          title: "SAME STUDIO 服务条款",
+          documentTitle: "SAME STUDIO 服务条款 | SAME STUDIO",
+          updated: "最后更新日期：2026-05-05",
+          lead: "本服务条款说明 SAME STUDIO 提供的移动应用、网站及相关服务的使用条件。各应用提供的功能可能会根据功能和版本而有所不同。",
+          languageLabel: "语言",
+          scopeTitle: "适用范围",
+          scope: ["本条款适用于 Signal 404、Mapary、ODOW、LOCAUNT、Runtronome 以及未来 SAME STUDIO 提供的应用、网站和相关服务。", "如果某个应用提供单独条款，该条款可能优先适用。"],
+          sections: [
+            { title: "1. 服务概述", body: ["SAME STUDIO 可能提供记录、基于位置的功能、通知、相机/照片、游戏式收集、恐怖娱乐、节拍器/计时器等多种应用。各应用提供的功能可能不同。"] },
+            { title: "2. 使用资格与同意", body: ["用户必须同意本条款后才能使用服务。未成年人可能需要监护人同意。"] },
+            { title: "3. 账户和登录", body: ["部分应用可能使用 Apple、Google、Kakao 等社交登录。用户应安全管理账户信息，不得使用他人账户或提供虚假信息。"] },
+            { title: "4. 基于位置的功能", body: ["部分应用可能提供基于位置的探索、位置备忘、地点提醒、地图功能和位置游戏体验。", "位置准确度可能因设备、网络和 OS 设置而不同。不得将位置功能用于实际安全判断、紧急情况判断、犯罪或灾害探测。"] },
+            { title: "5. 相机和照片功能", body: ["部分应用可能提供相机拍摄、照片附加、图片保存功能。用户不得侵犯他人的肖像权、隐私权或财产权，不得偷拍他人或在限制进入的场所拍摄。"] },
+            { title: "6. 记录和用户内容", body: ["用户创建的备忘、日记、记录、图片、位置记录、收集/观察记录由用户自行负责管理。禁止违法、仇恨、暴力或侵犯他人权利的内容。"] },
+            { title: "7. 恐怖/雷达/虚拟探测功能", body: ["部分应用可能提供雷达、异常信号、怪异体探测、灵异相机、收集/观察记录等恐怖娱乐或游戏式演出。", "<strong>本服务的雷达、异常信号、怪异体探测、灵异相机、收集/观察功能是以娱乐为目的的虚拟演出，并不探测或保证真实的超自然现象、危险、犯罪、事故、健康状态、生命或身体安全状态。</strong>"] },
+            { title: "8. 安全提示", body: ["用户在现实世界中移动或拍摄时应确认周围环境。驾驶、步行、夜间移动、危险区域使用应用时需注意。不得在禁止进入区域、私有地、施工现场或危险地点使用应用。应用不是紧急救援、治安或安全判断工具。"] },
+            { title: "9. 禁止行为", list: ["非法进入地点", "接近危险区域", "偷拍或侵犯他人权利", "将应用误用为真实危险探测工具", "干扰服务、逆向工程、插入恶意代码", "异常自动化使用或违反法律"] },
+            { title: "10. 付费功能和应用内购买", body: ["部分应用可能提供高级功能、移除广告、附加内容、应用内购买或订阅。付款、退款、订阅管理遵循 Apple App Store 或相应应用市场政策。"] },
+            { title: "11. 广告", body: ["部分应用可能显示广告。相关信息处理遵循 <a href=\"/privacy\">SAME STUDIO 隐私政策</a>。"] },
+            { title: "12. 服务变更和中断", body: ["应用功能可能因更新、运营需要或政策变化而变更或中断。"] },
+            { title: "13. 免责声明", body: ["SAME STUDIO 不始终保证应用的准确性、持续性或适合特定目的。位置、通知、地图、相机、iCloud、外部登录、支付、广告功能可能因 OS 设置、网络或外部平台状态而受到限制。用户在现实世界中的移动、进入、拍摄和判断由用户自行负责。"] },
+            { title: "14. 隐私", body: ["个人信息处理遵循 <a href=\"/privacy\">SAME STUDIO 隐私政策</a>。"] },
+            { title: "15. 条款变更", body: ["本条款可能会变更，变更后继续使用服务可能被视为同意变更后的条款。"] },
+            { title: "16. 联系方式", contact: [["企业名称", "세임스튜디오"], ["代表人", "김동찬"], ["电子邮件", "<a href=\"mailto:contact@samestudio.kr\">contact@samestudio.kr</a>"], ["网站", "<a href=\"https://samestudio.kr\" target=\"_blank\" rel=\"noopener noreferrer\">https://samestudio.kr</a>"]] }
+          ]
+        }
+      };
+
+      var header = document.querySelector("[data-header]");
+      var menuButton = document.querySelector(".menu-button");
+      var closeButtons = document.querySelectorAll("[data-close-menu]");
+      var drawerLinks = document.querySelectorAll(".drawer a");
+      var themeButtons = document.querySelectorAll(".theme-toggle");
+      var languageButtons = document.querySelectorAll(".language-button");
+      var titleEl = document.querySelector("[data-policy-title]");
+      var updatedEl = document.querySelector("[data-policy-updated]");
+      var leadEl = document.querySelector("[data-policy-lead]");
+      var languageLabelEl = document.querySelector("[data-language-label]");
+      var scopeTitleEl = document.querySelector("[data-scope-title]");
+      var scopeBodyEl = document.querySelector("[data-scope-body]");
+      var contentEl = document.querySelector("[data-policy-content]");
+
+      function setMenu(open) {
+        document.body.classList.toggle("menu-open", open);
+        if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      }
+
+      function detectLanguage() {
+        var stored = localStorage.getItem("same-studio-terms-lang");
+        if (stored && translations[stored]) return stored;
+        var browser = (navigator.language || "ko").toLowerCase();
+        if (browser.indexOf("ko") === 0) return "ko";
+        if (browser.indexOf("en") === 0) return "en";
+        if (browser.indexOf("ja") === 0) return "ja";
+        if (browser.indexOf("zh") === 0) return "zh";
+        return "ko";
+      }
+
+      function paragraphHtml(items) {
+        return items.map(function (item) { return "<p>" + item + "</p>"; }).join("");
+      }
+
+      function listHtml(items) {
+        return "<ul>" + items.map(function (item) { return "<li>" + item + "</li>"; }).join("") + "</ul>";
+      }
+
+      function contactHtml(items) {
+        return "<div class=\"contact-list\">" + items.map(function (item) {
+          return "<div class=\"contact-row\"><span>" + item[0] + "</span><span>" + item[1] + "</span></div>";
+        }).join("") + "</div>";
+      }
+
+      function renderLanguage(lang) {
+        var data = translations[lang] || translations.ko;
+        root.setAttribute("lang", data.lang);
+        document.title = data.documentTitle;
+        titleEl.textContent = data.title;
+        updatedEl.textContent = data.updated;
+        leadEl.textContent = data.lead;
+        languageLabelEl.textContent = data.languageLabel;
+        scopeTitleEl.textContent = data.scopeTitle;
+        scopeBodyEl.innerHTML = paragraphHtml(data.scope);
+        contentEl.innerHTML = data.sections.map(function (section) {
+          var body = "";
+          if (section.body) body += paragraphHtml(section.body);
+          if (section.list) body += listHtml(section.list);
+          if (section.contact) body += contactHtml(section.contact);
+          return "<section class=\"policy-section\"><h2>" + section.title + "</h2>" + body + "</section>";
+        }).join("");
+
+        languageButtons.forEach(function (button) {
+          var isActive = button.getAttribute("data-lang") === lang;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+          if (isActive) button.setAttribute("aria-current", "true");
+          else button.removeAttribute("aria-current");
+        });
+        localStorage.setItem("same-studio-terms-lang", lang);
+      }
+
+      themeButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("same-studio-theme", next);
+        });
+      });
+
+      languageButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          renderLanguage(button.getAttribute("data-lang"));
+        });
+      });
+
+      if (menuButton) menuButton.addEventListener("click", function () { setMenu(true); });
+      closeButtons.forEach(function (button) { button.addEventListener("click", function () { setMenu(false); }); });
+      drawerLinks.forEach(function (link) { link.addEventListener("click", function () { setMenu(false); }); });
+      document.addEventListener("keydown", function (event) { if (event.key === "Escape") setMenu(false); });
+
+      function updateHeader() {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+      updateHeader();
+      window.addEventListener("scroll", updateHeader, { passive: true });
+
+      var cursorGlow = document.querySelector(".cursor-glow");
+      var supportsCursorGlow = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (cursorGlow && supportsCursorGlow && !reduceMotion) {
+        var targetX = window.innerWidth / 2;
+        var targetY = window.innerHeight / 2;
+        var currentX = targetX;
+        var currentY = targetY;
+        var glowVisible = false;
+        function animateCursorGlow() {
+          currentX += (targetX - currentX) * .12;
+          currentY += (targetY - currentY) * .12;
+          cursorGlow.style.left = currentX + "px";
+          cursorGlow.style.top = currentY + "px";
+          window.requestAnimationFrame(animateCursorGlow);
+        }
+        window.addEventListener("mousemove", function (event) {
+          targetX = event.clientX;
+          targetY = event.clientY;
+          document.body.classList.toggle("is-hovering-interactive", Boolean(event.target.closest("a, button, .policy-section, .scope-card, .language-panel, .language-button, .social-link")));
+          if (!glowVisible) {
+            glowVisible = true;
+            cursorGlow.classList.remove("is-hidden");
+          }
+        }, { passive: true });
+        document.addEventListener("mouseleave", function () {
+          glowVisible = false;
+          document.body.classList.remove("is-hovering-interactive");
+          cursorGlow.classList.add("is-hidden");
+        });
+        document.addEventListener("mouseenter", function () {
+          glowVisible = true;
+          cursorGlow.classList.remove("is-hidden");
+        });
+        animateCursorGlow();
+      }
+
+      document.addEventListener("click", function (event) {
+        var link = event.target.closest("a[href]");
+        if (!link) return;
+        var href = link.getAttribute("href");
+        if (!href || href.charAt(0) === "#" || href.indexOf("mailto:") === 0 || link.target === "_blank" || link.hasAttribute("download")) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        var url = new URL(href, window.location.href);
+        var isInternal = url.origin === window.location.origin;
+        var isSamePage = url.pathname === window.location.pathname && url.hash === window.location.hash;
+        if (!isInternal || isSamePage) return;
+        event.preventDefault();
+        document.body.classList.add("is-transitioning");
+        window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
+      });
+      renderLanguage(detectLanguage());
+    })();
+  </script>
+</body>
+</html>
