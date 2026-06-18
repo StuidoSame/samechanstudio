@@ -574,6 +574,10 @@
     }
 
     .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .more-apps-grid { margin-top: 18px; }
+    .more-apps-grid[hidden] { display: none; }
+    .apps-toggle-wrap { display: flex; justify-content: center; margin-top: 24px; }
+    .apps-toggle { cursor: pointer; font: inherit; }
     .app-card, .value-card, .contact-panel, .about-copy, .map-card {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
@@ -1472,7 +1476,13 @@
             <p class="en">A daily question-based reflection app for recording thoughts and emotions through one prompt a day.</p>
             <div class="tag-row"><span class="tag">daily question</span><span class="tag">reflection</span><span class="tag">journal</span></div>
           </article>
+        </div>
 
+        <div class="apps-toggle-wrap">
+          <button class="button primary apps-toggle" type="button" aria-expanded="false" aria-controls="more-apps">View More Apps</button>
+        </div>
+
+        <div class="apps-grid more-apps-grid" id="more-apps" hidden>
           <article class="app-card app-pepesnap released" data-intent="record">
             <div class="app-top">
               <div class="app-identity"><div class="app-icon"><img src="assets/icons/pepesnap_icon.png" alt="PEPESNAP icon"></div><div class="app-name"><h3>PEPESNAP</h3><span class="category-pill">Daily Shape Mission</span></div></div>
@@ -2034,6 +2044,17 @@
         document.body.classList.add("is-transitioning");
         window.setTimeout(function () { window.location.assign(url.href); }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 360);
       });
+
+      var appsToggle = document.querySelector(".apps-toggle");
+      var moreApps = document.getElementById("more-apps");
+      if (appsToggle && moreApps) {
+        appsToggle.addEventListener("click", function () {
+          var isExpanded = appsToggle.getAttribute("aria-expanded") === "true";
+          appsToggle.setAttribute("aria-expanded", String(!isExpanded));
+          appsToggle.textContent = isExpanded ? "View More Apps" : "Show Less";
+          moreApps.hidden = isExpanded;
+        });
+      }
 
       var revealItems = document.querySelectorAll(".reveal, .app-card, .value-card");
       if ("IntersectionObserver" in window) {
