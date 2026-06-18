@@ -15,6 +15,24 @@
     return normalize(localStorage.getItem(STORAGE_KEY) || localStorage.getItem("same-studio-terms-lang") || localStorage.getItem("same-studio-privacy-lang") || "ko");
   }
 
+  function updateFooterBusinessInformation(language) {
+    var labels = {
+      ko: ["사업자명", "사업자등록번호", "대표자", "이메일"],
+      en: ["Business Name", "Business Registration Number", "Representative", "Email"],
+      ja: ["事業者名", "事業者登録番号", "代表者", "メール"],
+      "zh-CN": ["企业名称", "商业登记号码", "代表人", "电子邮件"],
+      "zh-TW": ["企業名稱", "商業登記號碼", "代表人", "電子郵件"]
+    };
+    var copy = labels[language] || labels.ko;
+    document.querySelectorAll(".footer-meta").forEach(function (footer) {
+      footer.innerHTML =
+        "<span>" + copy[0] + ": 세임스튜디오 (SAME STUDIO)</span>" +
+        "<span>" + copy[1] + ": 272-08-03608</span>" +
+        "<span>" + copy[2] + ": 김동찬</span>" +
+        "<span>" + copy[3] + ": contact@samestudio.kr</span>";
+    });
+  }
+
   function set(code) {
     var language = normalize(code);
     localStorage.setItem(STORAGE_KEY, language);
@@ -24,6 +42,7 @@
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(active));
     });
+    updateFooterBusinessInformation(language);
     window.dispatchEvent(new CustomEvent("sameStudioLanguageChange", { detail: { language: language } }));
     return language;
   }

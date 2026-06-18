@@ -610,8 +610,6 @@
       animation: appMarquee 28s linear infinite;
       will-change: transform;
     }
-    .app-selector:hover .app-selector-track,
-    .app-selector:focus-within .app-selector-track,
     .app-selector.is-paused .app-selector-track { animation-play-state: paused; }
     .app-selector-group { padding: 16px 6px; display: flex; gap: 12px; }
     .app-selector-button {
@@ -1671,7 +1669,8 @@
       <div class="footer-info">
         <strong>© 2026 SAME STUDIO</strong>
         <div class="footer-meta">
-          <span>Business Name: 세임스튜디오</span>
+          <span>Business Name: 세임스튜디오 (SAME STUDIO)</span>
+          <span>Business Registration Number: 272-08-03608</span>
           <span>Representative: 김동찬</span>
           <span>Email: contact@samestudio.kr</span>
         </div>
@@ -2339,22 +2338,59 @@
         }).join("");
 
         var marqueeResumeTimer = 0;
-        appSelector.addEventListener("pointerdown", function () {
+        var isPointerOverMarquee = false;
+        var isPointerActiveOnMarquee = false;
+        var isFocusWithinMarquee = false;
+
+        function pauseMarquee() {
           window.clearTimeout(marqueeResumeTimer);
           appSelector.classList.add("is-paused");
-        });
-        function resumeMarquee() {
-          window.clearTimeout(marqueeResumeTimer);
-          marqueeResumeTimer = window.setTimeout(function () { appSelector.classList.remove("is-paused"); }, 180);
         }
-        appSelector.addEventListener("pointerup", resumeMarquee);
-        appSelector.addEventListener("pointercancel", resumeMarquee);
-        appSelector.addEventListener("pointerleave", resumeMarquee);
+
+        function scheduleMarqueeResume() {
+          window.clearTimeout(marqueeResumeTimer);
+          appSelector.classList.add("is-paused");
+          marqueeResumeTimer = window.setTimeout(function () {
+            if (!isPointerOverMarquee && !isPointerActiveOnMarquee && !isFocusWithinMarquee) appSelector.classList.remove("is-paused");
+          }, 2500);
+        }
+
+        appSelector.addEventListener("pointerenter", function (event) {
+          if (event.pointerType === "touch") return;
+          isPointerOverMarquee = true;
+          pauseMarquee();
+        });
+        appSelector.addEventListener("pointerleave", function (event) {
+          if (event.pointerType !== "touch") isPointerOverMarquee = false;
+          isPointerActiveOnMarquee = false;
+          scheduleMarqueeResume();
+        });
+        appSelector.addEventListener("pointerdown", function () {
+          isPointerActiveOnMarquee = true;
+          pauseMarquee();
+        });
+        function finishMarqueePointer() {
+          isPointerActiveOnMarquee = false;
+          scheduleMarqueeResume();
+        }
+        appSelector.addEventListener("pointerup", finishMarqueePointer);
+        appSelector.addEventListener("pointercancel", finishMarqueePointer);
+        appSelector.addEventListener("focusin", function () {
+          isFocusWithinMarquee = true;
+          pauseMarquee();
+        });
+        appSelector.addEventListener("focusout", function (event) {
+          if (event.relatedTarget && appSelector.contains(event.relatedTarget)) return;
+          isFocusWithinMarquee = false;
+          scheduleMarqueeResume();
+        });
         appSelector.addEventListener("click", function (event) {
           var button = event.target.closest(".app-selector-button");
           if (!button) return;
+          pauseMarquee();
           var app = apps.find(function (item) { return item.id === button.getAttribute("data-app-id"); });
           if (app) selectApp(app, button);
+          scheduleMarqueeResume();
         });
       }
       SameStudioLanguage.mount(applyIndexLanguage);
