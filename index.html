@@ -685,7 +685,7 @@
     }
     .app-empty-state h3 { margin: 0; font-size: clamp(1.45rem,3vw,2rem); }
     .app-empty-state p { margin: 0; color: var(--muted); line-height: 1.65; }
-    .app-detail-card .typing-line { min-height: 3.3em; }
+    .app-detail-card .typing-line { min-height: 3.3em; white-space: pre-line; }
     @keyframes selectorPop { 0%,100% { transform: scale(1.07) translateY(0); } 48% { transform: scale(1.16) translateY(-5px); } }
     @keyframes appMarquee { from { transform: translateX(0); } to { transform: translateX(-33.333333%); } }
     @keyframes detailEnter { from { opacity: .25; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
@@ -743,6 +743,14 @@
     .app-waesseum {
       --app-gradient: linear-gradient(135deg,#14b8a6,#3b82f6 50%,#8b5cf6);
       --app-glow: rgba(59,130,246,.24);
+    }
+    .app-skkoo {
+      --app-gradient: linear-gradient(135deg,#f97316,#ec4899 50%,#8b5cf6);
+      --app-glow: rgba(236,72,153,.22);
+    }
+    .app-terubozu {
+      --app-gradient: linear-gradient(135deg,#38bdf8,#6366f1 52%,#f59e0b);
+      --app-glow: rgba(56,189,248,.22);
     }
     .app-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; position: relative; }
     .app-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
@@ -857,6 +865,22 @@
       --category-glow: rgba(59,130,246,.12);
       --category-hover: linear-gradient(135deg,#14b8a6,#3b82f6,#8b5cf6);
     }
+    .app-skkoo .category-pill {
+      --category-text: #be123c;
+      --category-bg-a: rgba(249,115,22,.18);
+      --category-bg-b: rgba(139,92,246,.16);
+      --category-border: rgba(236,72,153,.30);
+      --category-glow: rgba(236,72,153,.11);
+      --category-hover: linear-gradient(135deg,#f97316,#ec4899,#8b5cf6);
+    }
+    .app-terubozu .category-pill {
+      --category-text: #075985;
+      --category-bg-a: rgba(56,189,248,.20);
+      --category-bg-b: rgba(245,158,11,.14);
+      --category-border: rgba(56,189,248,.32);
+      --category-glow: rgba(56,189,248,.12);
+      --category-hover: linear-gradient(135deg,#38bdf8,#6366f1,#f59e0b);
+    }
     [data-theme="dark"] .category-pill { color: #f8f3ff; box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 8px 22px var(--category-glow); }
     @media (hover: hover) and (pointer: fine) {
       .category-pill:hover {
@@ -897,6 +921,12 @@
     .app-waesseum .tag:nth-child(1) { background: rgba(20,184,166,.16); color: #0f766e; border-color: rgba(20,184,166,.25); }
     .app-waesseum .tag:nth-child(2) { background: rgba(59,130,246,.15); color: #1d4ed8; border-color: rgba(59,130,246,.25); }
     .app-waesseum .tag:nth-child(3) { background: rgba(139,92,246,.15); color: #6d28d9; border-color: rgba(139,92,246,.25); }
+    .app-skkoo .tag:nth-child(1) { background: rgba(249,115,22,.15); color: #c2410c; border-color: rgba(249,115,22,.24); }
+    .app-skkoo .tag:nth-child(2) { background: rgba(236,72,153,.14); color: #be185d; border-color: rgba(236,72,153,.22); }
+    .app-skkoo .tag:nth-child(3) { background: rgba(139,92,246,.14); color: #6d28d9; border-color: rgba(139,92,246,.22); }
+    .app-terubozu .tag:nth-child(1) { background: rgba(56,189,248,.15); color: #0369a1; border-color: rgba(56,189,248,.24); }
+    .app-terubozu .tag:nth-child(2) { background: rgba(99,102,241,.14); color: #4338ca; border-color: rgba(99,102,241,.22); }
+    .app-terubozu .tag:nth-child(3) { background: rgba(245,158,11,.14); color: #b45309; border-color: rgba(245,158,11,.22); }
     [data-theme="dark"] .tag { color: #ede7ff; }
     .app-actions { margin-top: auto; padding-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; position: relative; }
     .app-card.released .app-actions, .app-card.upcoming .app-actions { margin-top: 18px; padding-top: 0; }
@@ -2213,6 +2243,26 @@
           koreanDescription: "날짜와 키워드로 기록을 다시 찾아보고, 지나온 생각의 흐름을 차분히 정리하는 기록 앱.",
           englishDescription: "A personal archive app for revisiting memories, thoughts, and records by date and keyword.",
           tags: ["memory", "keyword", "archive"]
+        },
+        {
+          id: "skkoo", name: "SKKOO", icon: "assets/icons/skkoo_icon.png", category: "Coming soon", theme: "app-skkoo", intent: "record",
+          appStoreUrl: "",
+          available: false,
+          comingSoon: true,
+          isComingSoon: true,
+          koreanDescription: "준비 중인 앱입니다.",
+          englishDescription: "This app is coming soon.",
+          tags: ["coming soon", "record", "collection"]
+        },
+        {
+          id: "terubozu", name: "TeruBozu", icon: "assets/icons/terubozu_icon.png", category: "Coming soon", theme: "app-terubozu", intent: "focus",
+          appStoreUrl: "",
+          available: false,
+          comingSoon: true,
+          isComingSoon: true,
+          koreanDescription: "준비 중인 앱입니다.",
+          englishDescription: "This app is coming soon.",
+          tags: ["coming soon", "daily", "collection"]
         }
       ];
       var appLocalizedDescriptions = {
@@ -2283,10 +2333,16 @@
         appDetail.setAttribute("data-intent", app.intent);
         var pageCopy = indexTranslations[currentSiteLanguage] || indexTranslations.ko;
         var localized = appLocalizedDescriptions[app.id] || {};
-        var description = currentSiteLanguage === "ko" ? app.koreanDescription : currentSiteLanguage === "en" ? app.englishDescription : (localized[currentSiteLanguage] || app.englishDescription);
+        var comingSoonLabel = currentSiteLanguage === "ko" ? "준비 중" : "Coming soon";
+        var comingSoonDescription = currentSiteLanguage === "ko"
+          ? "준비 중인 앱입니다.\n곧 SAME STUDIO 앱 컬렉션에 추가될 예정이에요."
+          : "This app is coming soon.\nIt will be added to the SAME STUDIO collection soon.";
+        var description = app.comingSoon
+          ? comingSoonDescription
+          : currentSiteLanguage === "ko" ? app.koreanDescription : currentSiteLanguage === "en" ? app.englishDescription : (localized[currentSiteLanguage] || app.englishDescription);
         var action = app.appStoreUrl
           ? '<a class="app-action store" href="' + app.appStoreUrl + '" target="_blank" rel="noopener noreferrer">' + pageCopy.store + '</a>'
-          : '<button class="app-action soon" type="button" disabled aria-disabled="true">' + pageCopy.comingSoon + '</button>';
+          : '<button class="app-action soon" type="button" disabled aria-disabled="true">' + (app.comingSoon ? comingSoonLabel : pageCopy.comingSoon) + '</button>';
         appDetail.innerHTML =
           '<div class="app-top">' +
             '<div class="app-identity"><div class="app-icon detail-icon-pop"><img src="' + app.icon + '" alt="' + app.name + ' icon"></div><div class="app-name"><h3>' + app.name + '</h3><span class="category-pill">' + app.category + '</span></div></div>' +
