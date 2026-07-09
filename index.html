@@ -744,6 +744,10 @@
       --app-gradient: linear-gradient(135deg,#14b8a6,#3b82f6 50%,#8b5cf6);
       --app-glow: rgba(59,130,246,.24);
     }
+    .app-tocklist {
+      --app-gradient: linear-gradient(135deg,#0f766e,#22c55e 48%,#84cc16);
+      --app-glow: rgba(34,197,94,.22);
+    }
     .app-skkoo {
       --app-gradient: linear-gradient(135deg,#f97316,#ec4899 50%,#8b5cf6);
       --app-glow: rgba(236,72,153,.22);
@@ -865,6 +869,14 @@
       --category-glow: rgba(59,130,246,.12);
       --category-hover: linear-gradient(135deg,#14b8a6,#3b82f6,#8b5cf6);
     }
+    .app-tocklist .category-pill {
+      --category-text: #047857;
+      --category-bg-a: rgba(20,184,166,.20);
+      --category-bg-b: rgba(132,204,22,.15);
+      --category-border: rgba(34,197,94,.32);
+      --category-glow: rgba(34,197,94,.12);
+      --category-hover: linear-gradient(135deg,#0f766e,#22c55e,#84cc16);
+    }
     .app-skkoo .category-pill {
       --category-text: #be123c;
       --category-bg-a: rgba(249,115,22,.18);
@@ -921,6 +933,9 @@
     .app-waesseum .tag:nth-child(1) { background: rgba(20,184,166,.16); color: #0f766e; border-color: rgba(20,184,166,.25); }
     .app-waesseum .tag:nth-child(2) { background: rgba(59,130,246,.15); color: #1d4ed8; border-color: rgba(59,130,246,.25); }
     .app-waesseum .tag:nth-child(3) { background: rgba(139,92,246,.15); color: #6d28d9; border-color: rgba(139,92,246,.25); }
+    .app-tocklist .tag:nth-child(1) { background: rgba(20,184,166,.16); color: #0f766e; border-color: rgba(20,184,166,.25); }
+    .app-tocklist .tag:nth-child(2) { background: rgba(34,197,94,.15); color: #15803d; border-color: rgba(34,197,94,.25); }
+    .app-tocklist .tag:nth-child(3) { background: rgba(132,204,22,.14); color: #4d7c0f; border-color: rgba(132,204,22,.24); }
     .app-skkoo .tag:nth-child(1) { background: rgba(249,115,22,.15); color: #c2410c; border-color: rgba(249,115,22,.24); }
     .app-skkoo .tag:nth-child(2) { background: rgba(236,72,153,.14); color: #be185d; border-color: rgba(236,72,153,.22); }
     .app-skkoo .tag:nth-child(3) { background: rgba(139,92,246,.14); color: #6d28d9; border-color: rgba(139,92,246,.22); }
@@ -2231,11 +2246,21 @@
           tags: ["daily question", "reflection", "journal"]
         },
         {
-          id: "pepesnap", name: "PEPESNAP", icon: "assets/icons/pepesnap_icon.png", category: "Daily Shape Mission", theme: "app-pepesnap", intent: "record",
-          appStoreUrl: "https://apps.apple.com/kr/app/pepesnap-%EC%98%A4%EB%8A%98%EC%9D%98-%EB%8F%84%ED%98%95-%EB%AF%B8%EC%85%98/id6781632351",
-          koreanDescription: "매일 주어지는 도형 미션을 따라 사진을 남기고, 오늘의 시선을 가볍게 기록하는 앱.",
-          englishDescription: "A daily shape mission app for capturing small moments through simple photo prompts.",
-          tags: ["photo", "shape", "daily mission"]
+          id: "skkoo", name: "SKKOO", icon: "assets/icons/skkoo_icon.png", category: "Coming soon", theme: "app-skkoo", intent: "record",
+          appStoreUrl: "",
+          available: false,
+          comingSoon: true,
+          isComingSoon: true,
+          koreanDescription: "준비 중인 앱입니다.",
+          englishDescription: "This app is coming soon.",
+          tags: ["coming soon", "record", "collection"]
+        },
+        {
+          id: "tocklist", name: "TOCKLIST", icon: "assets/icons/tocklist_icon.png", category: "Time Planner", theme: "app-tocklist", intent: "record",
+          appStoreUrl: "https://apps.apple.com/kr/app/tocklist/id6782831874",
+          koreanDescription: "하루의 계획과 회고를 24시간 리듬으로 정리하는 시간 기록 앱.",
+          englishDescription: "A time recording app for organizing daily plans and reviews around a 24-hour rhythm.",
+          tags: ["plan", "routine", "review"]
         },
         {
           id: "waesseum", name: "WAESSEUM", icon: "assets/icons/waesseum_icon.png", category: "Personal Archive", theme: "app-waesseum", intent: "record",
@@ -2245,14 +2270,11 @@
           tags: ["memory", "keyword", "archive"]
         },
         {
-          id: "skkoo", name: "SKKOO", icon: "assets/icons/skkoo_icon.png", category: "Coming soon", theme: "app-skkoo", intent: "record",
-          appStoreUrl: "",
-          available: false,
-          comingSoon: true,
-          isComingSoon: true,
-          koreanDescription: "준비 중인 앱입니다.",
-          englishDescription: "This app is coming soon.",
-          tags: ["coming soon", "record", "collection"]
+          id: "pepesnap", name: "PEPESNAP", icon: "assets/icons/pepesnap_icon.png", category: "Daily Shape Mission", theme: "app-pepesnap", intent: "record",
+          appStoreUrl: "https://apps.apple.com/kr/app/pepesnap-%EC%98%A4%EB%8A%98%EC%9D%98-%EB%8F%84%ED%98%95-%EB%AF%B8%EC%85%98/id6781632351",
+          koreanDescription: "매일 주어지는 도형 미션을 따라 사진을 남기고, 오늘의 시선을 가볍게 기록하는 앱.",
+          englishDescription: "A daily shape mission app for capturing small moments through simple photo prompts.",
+          tags: ["photo", "shape", "daily mission"]
         },
         {
           id: "terubozu", name: "TeruBozu", icon: "assets/icons/terubozu_icon.png", category: "Coming soon", theme: "app-terubozu", intent: "focus",
