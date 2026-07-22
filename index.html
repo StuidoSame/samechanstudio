@@ -2314,6 +2314,23 @@
           tags: ["coming soon", "record", "collection"]
         },
         {
+          id: "feeloo", name: "Feeloo", icon: "assets/icons/feeloo.icon.png", category: "Coming Soon", theme: "app-terubozu", intent: "focus",
+          appStoreUrl: "",
+          available: false,
+          comingSoon: true,
+          isComingSoon: true,
+          comingSoonCopy: {
+            ko: { description: "준비중입니다.", action: "준비중" },
+            en: { description: "Coming soon.", action: "Coming Soon" },
+            ja: { description: "準備中です。", action: "準備中" },
+            "zh-CN": { description: "正在准备中。", action: "敬请期待" },
+            "zh-TW": { description: "準備中。", action: "敬請期待" }
+          },
+          koreanDescription: "준비중입니다.",
+          englishDescription: "Coming soon.",
+          tags: ["mood", "diary", "emotion"]
+        },
+        {
           id: "tocklist", name: "TOCKLIST", icon: "assets/icons/tocklist_icon.png", category: "Time Planner", theme: "app-tocklist", intent: "record",
           appStoreUrl: "https://apps.apple.com/kr/app/tocklist/id6782831874",
           koreanDescription: "하루의 계획과 회고를 24시간 리듬으로 정리하는 시간 기록 앱.",
@@ -2414,8 +2431,13 @@
         appDetail.setAttribute("data-intent", app.intent);
         var pageCopy = indexTranslations[currentSiteLanguage] || indexTranslations.ko;
         var localized = appLocalizedDescriptions[app.id] || {};
-        var comingSoonLabel = currentSiteLanguage === "ko" ? "준비 중" : "Coming soon";
-        var comingSoonDescription = currentSiteLanguage === "ko"
+        var customComingSoonCopy = app.comingSoonCopy && (app.comingSoonCopy[currentSiteLanguage] || app.comingSoonCopy.en);
+        var comingSoonLabel = customComingSoonCopy
+          ? customComingSoonCopy.action
+          : currentSiteLanguage === "ko" ? "준비 중" : "Coming soon";
+        var comingSoonDescription = customComingSoonCopy
+          ? customComingSoonCopy.description
+          : currentSiteLanguage === "ko"
           ? "준비 중인 앱입니다.\n곧 SAME STUDIO 앱 컬렉션에 추가될 예정이에요."
           : "This app is coming soon.\nIt will be added to the SAME STUDIO collection soon.";
         var description = app.comingSoon
