@@ -449,7 +449,7 @@
       left: 12px;
       right: 12px;
       top: 106px;
-      bottom: 12px;
+      bottom: 62px;
       overflow: hidden;
       border-radius: 28px;
       -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 88%, transparent);
@@ -467,7 +467,10 @@
     .phone-feed {
       display: grid;
       gap: 12px;
-      animation: phoneFeed 18s linear infinite;
+      animation: phoneFeed 42s linear infinite;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .iphone:hover .phone-feed { animation-play-state: paused; }
     }
     .phone-card {
       position: relative;
@@ -488,7 +491,17 @@
     .phone-card-locaunt-map { --card-gradient: linear-gradient(135deg,#3b82f6,#7c3aed,#22d3ee); }
     .phone-card-runtronome { --card-gradient: linear-gradient(135deg,#fb7185,#ec4899,#8b5cf6); }
     .phone-card-locaunt-place { --card-gradient: linear-gradient(135deg,#3b82f6,#22d3ee,#a855f7); }
+    .phone-card-skkoo { --card-gradient: linear-gradient(135deg,#f97316,#ec4899,#8b5cf6); }
+    .phone-card-tocklist { --card-gradient: linear-gradient(135deg,#0f766e,#22c55e,#84cc16); }
+    .phone-card-waesseum { --card-gradient: linear-gradient(135deg,#14b8a6,#3b82f6,#8b5cf6); }
+    .phone-card-pepesnap { --card-gradient: linear-gradient(135deg,#172554,#312e81,#7e3a78); }
+    .phone-card-terubozu { --card-gradient: linear-gradient(135deg,#38bdf8,#6366f1,#f59e0b); }
+    .phone-card-feeloo { --card-gradient: linear-gradient(135deg,#8b5cf6,#ec4899,#fb7185); }
     .phone-card > * { position: relative; }
+    .phone-app-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .phone-app-icon { width: 42px; height: 42px; flex: 0 0 auto; border-radius: 13px; object-fit: cover; box-shadow: 0 9px 18px rgba(12,9,28,.26); }
+    .phone-app-row > div { min-width: 0; }
+    .phone-app-row .phone-copy { margin-top: 3px; font-size: .86rem; }
     .phone-label { display: block; color: var(--soft); font-size: .72rem; font-weight: 820; letter-spacing: .04em; text-transform: uppercase; }
     .phone-copy { margin-top: 9px; color: var(--text); font-weight: 780; line-height: 1.45; word-break: keep-all; }
     .phone-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
@@ -1594,6 +1607,30 @@
                     <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">LOCAUNT</span><div class="phone-copy">Near your place</div></div></div>
                     <div class="phone-pills"><span class="pill">reminder</span></div>
                   </div>
+                  <div class="phone-card phone-card-skkoo" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/skkoo_icon.png" alt=""><div><span class="phone-label">SKKOO</span><div class="phone-copy">Decorate your day</div></div></div>
+                    <div class="phone-pills"><span class="pill">diary</span></div>
+                  </div>
+                  <div class="phone-card phone-card-tocklist" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/tocklist_icon.png" alt=""><div><span class="phone-label">TOCKLIST</span><div class="phone-copy">Plan your 24 hours</div></div></div>
+                    <div class="phone-pills"><span class="pill">schedule</span></div>
+                  </div>
+                  <div class="phone-card phone-card-waesseum" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/waesseum_icon.png" alt=""><div><span class="phone-label">WAESSEUM</span><div class="phone-copy">Check in today</div></div></div>
+                    <div class="phone-pills"><span class="pill">record</span></div>
+                  </div>
+                  <div class="phone-card phone-card-pepesnap" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/pepesnap_icon.png" alt=""><div><span class="phone-label">PepeSnap</span><div class="phone-copy">Find shapes around you</div></div></div>
+                    <div class="phone-pills"><span class="pill">camera</span></div>
+                  </div>
+                  <div class="phone-card phone-card-terubozu" data-intent="focus">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/terubozu_icon.png" alt=""><div><span class="phone-label">TeruBozu</span><div class="phone-copy">Make a wish</div></div></div>
+                    <div class="phone-pills"><span class="pill">weather</span></div>
+                  </div>
+                  <div class="phone-card phone-card-feeloo" data-intent="focus">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/feeloo.icon.png" alt=""><div><span class="phone-label">Feeloo</span><div class="phone-copy">Record your feelings</div></div></div>
+                    <div class="phone-pills"><span class="pill">emotion</span></div>
+                  </div>
                   <div class="phone-card phone-card-odow" data-intent="record">
                     <span class="phone-label">Today’s Question</span>
                     <div class="phone-copy">오늘 가장 선명했던 순간은?</div>
@@ -1617,6 +1654,30 @@
                   <div class="phone-card phone-card-locaunt-place" data-intent="place">
                     <div class="place-row"><span class="pin-symbol"></span><div><span class="phone-label">LOCAUNT</span><div class="phone-copy">Near your place</div></div></div>
                     <div class="phone-pills"><span class="pill">reminder</span></div>
+                  </div>
+                  <div class="phone-card phone-card-skkoo" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/skkoo_icon.png" alt=""><div><span class="phone-label">SKKOO</span><div class="phone-copy">Decorate your day</div></div></div>
+                    <div class="phone-pills"><span class="pill">diary</span></div>
+                  </div>
+                  <div class="phone-card phone-card-tocklist" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/tocklist_icon.png" alt=""><div><span class="phone-label">TOCKLIST</span><div class="phone-copy">Plan your 24 hours</div></div></div>
+                    <div class="phone-pills"><span class="pill">schedule</span></div>
+                  </div>
+                  <div class="phone-card phone-card-waesseum" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/waesseum_icon.png" alt=""><div><span class="phone-label">WAESSEUM</span><div class="phone-copy">Check in today</div></div></div>
+                    <div class="phone-pills"><span class="pill">record</span></div>
+                  </div>
+                  <div class="phone-card phone-card-pepesnap" data-intent="record">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/pepesnap_icon.png" alt=""><div><span class="phone-label">PepeSnap</span><div class="phone-copy">Find shapes around you</div></div></div>
+                    <div class="phone-pills"><span class="pill">camera</span></div>
+                  </div>
+                  <div class="phone-card phone-card-terubozu" data-intent="focus">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/terubozu_icon.png" alt=""><div><span class="phone-label">TeruBozu</span><div class="phone-copy">Make a wish</div></div></div>
+                    <div class="phone-pills"><span class="pill">weather</span></div>
+                  </div>
+                  <div class="phone-card phone-card-feeloo" data-intent="focus">
+                    <div class="phone-app-row"><img class="phone-app-icon" src="assets/icons/feeloo.icon.png" alt=""><div><span class="phone-label">Feeloo</span><div class="phone-copy">Record your feelings</div></div></div>
+                    <div class="phone-pills"><span class="pill">emotion</span></div>
                   </div>
                 </div>
               </div>
