@@ -421,6 +421,7 @@ export function HomeExperience() {
     };
 
     const applyDepth = (x: number, y: number, strength: number) => {
+      // DOM transforms use screen coordinates: right/down are positive.
       hero.style.setProperty(
         "--hero-pointer-offset-x",
         `${x * depthBoundsRef.current.width * 0.5}px`,
@@ -447,10 +448,11 @@ export function HomeExperience() {
         0.75,
       );
       interactionRef.current.pointerX = x;
-      interactionRef.current.pointerY = y;
+      // Three.js uses an upward-positive Y axis, unlike CSS transforms.
+      interactionRef.current.pointerY = -y;
       interactionRef.current.pointerStrength = proximity * 0.095 * strength;
       loaderInteractionRef.current.pointerX = x;
-      loaderInteractionRef.current.pointerY = y;
+      loaderInteractionRef.current.pointerY = -y;
       loaderInteractionRef.current.pointerStrength = proximity * 0.13 * strength;
 
       const loader = loaderRef.current;
@@ -461,7 +463,7 @@ export function HomeExperience() {
         );
         loader.style.setProperty(
           "--preloader-pointer-offset-y",
-          `${-y * window.innerHeight * 0.5}px`,
+          `${y * window.innerHeight * 0.5}px`,
         );
         loader.style.setProperty("--preloader-pointer-strength", String(strength));
       }
@@ -514,7 +516,7 @@ export function HomeExperience() {
       } else {
         depthTargetRef.current = {
           x: clamp((clientX / Math.max(window.innerWidth, 1)) * 2 - 1, -1, 1),
-          y: clamp(1 - (clientY / Math.max(window.innerHeight, 1)) * 2, -1, 1),
+          y: clamp((clientY / Math.max(window.innerHeight, 1)) * 2 - 1, -1, 1),
           strength: 1,
         };
       }
@@ -611,7 +613,7 @@ export function HomeExperience() {
         const pointerDepth = depthCurrentRef.current;
         const activeCard = absolute < 0.5;
         const parallaxX = pointerDepth.x * (activeCard ? 3.25 : 8.5);
-        const parallaxY = -pointerDepth.y * (activeCard ? 2.5 : 7.5);
+        const parallaxY = pointerDepth.y * (activeCard ? 2.5 : 7.5);
         const parallaxZ = pointerDepth.strength * (activeCard ? 5.5 : 9);
         const parallaxRotation = pointerDepth.x * (activeCard ? 0.65 : 1.15);
 
