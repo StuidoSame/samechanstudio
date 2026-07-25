@@ -14,6 +14,17 @@ import type { JellyInteraction } from "./JellyCanvas";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 
 const JellyCanvas = dynamic(() => import("./JellyCanvas"), { ssr: false });
+const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="jelly-fallback preloader-jelly preloader-module-fallback"
+      aria-hidden="true"
+    >
+      <span />
+    </div>
+  ),
+});
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -159,24 +170,34 @@ function Loader({
   reducedMotion: boolean;
   leaving: boolean;
 }) {
+  const normalizedProgress = clamp(progress / 100, 0, 1);
+
   return (
     <div
       className={`preloader ${leaving ? "is-leaving" : ""}`}
       role="status"
       aria-live="polite"
       aria-label={`Loading ${progress}%`}
+      data-loader-progress={normalizedProgress.toFixed(2)}
+      style={
+        {
+          "--loader-progress": normalizedProgress,
+        } as CSSProperties
+      }
     >
-      <span className="preloader-brand">SAME STUDIO</span>
-      <JellyCanvas
+      <LoaderJellyCanvas
         className="preloader-jelly"
         interactionRef={interactionRef}
         reducedMotion={reducedMotion}
         loader
+        loaderProgress={normalizedProgress}
       />
       <span className="preloader-count">
         {String(progress).padStart(3, "0")}<small>%</small>
       </span>
-      <span className="preloader-line"><i style={{ width: `${progress}%` }} /></span>
+      <span className="preloader-line">
+        <i style={{ width: `${normalizedProgress * 100}%` }} />
+      </span>
     </div>
   );
 }
@@ -266,16 +287,14 @@ export function HomeExperience() {
       const assetRatio = loaded / assets.length;
       const minTime = reducedMotion ? 260 : 900;
       const timeRatio = clamp((now - started) / minTime, 0, 1);
-      const next = Math.min(
-        100,
-        Math.floor(assetRatio * 78 + timeRatio * 22),
-      );
+      const normalizedProgress = Math.min(assetRatio, timeRatio);
+      const next = Math.min(100, Math.floor(normalizedProgress * 100));
       setLoadProgress(next);
       loaderInteractionRef.current.stretch =
-        0.02 + Math.pow(next / 100, 2) * 0.2;
+        0.02 + Math.pow(normalizedProgress, 2) * 0.2;
       loaderInteractionRef.current.transition =
-        next > 88 ? (next - 88) / 12 : 0;
-      loaderInteractionRef.current.velocity = next / 220;
+        normalizedProgress > 0.88 ? (normalizedProgress - 0.88) / 0.12 : 0;
+      loaderInteractionRef.current.velocity = normalizedProgress / 2.2;
       if (done && timeRatio >= 1) {
         setLoadProgress(100);
         window.setTimeout(() => setLoaderLeaving(true), reducedMotion ? 40 : 260);

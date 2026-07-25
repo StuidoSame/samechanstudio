@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ErrorInfo,
   type ReactNode,
 } from "react";
@@ -24,6 +25,7 @@ type JellyCanvasProps = {
   className?: string;
   reducedMotion?: boolean;
   loader?: boolean;
+  loaderProgress?: number;
 };
 
 const vertexShader = `
@@ -102,10 +104,12 @@ function JellyMesh({
   interactionRef,
   reducedMotion,
   loader,
+  loaderProgress = 0,
   detail,
 }: Omit<JellyCanvasProps, "className"> & { detail: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const loaderGrowthRef = useRef(detail === 4 ? 0.52 : 0.55);
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -145,21 +149,39 @@ function JellyMesh({
       0.06,
     );
 
-    const idleScale = reducedMotion
-      ? 1
-      : 1 + Math.sin(material.uniforms.uTime.value * 0.7) * 0.008;
-    meshRef.current.scale.set(
-      idleScale * (loader ? 0.96 : 1),
-      idleScale,
-      idleScale,
+    const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
+    const smoothedProgress =
+      normalizedProgress * normalizedProgress * (3 - 2 * normalizedProgress);
+    const loaderMinScale = detail === 4 ? 0.52 : 0.55;
+    const loaderMaxScale = detail === 4 ? 0.98 : 1.08;
+    const loaderTargetScale = THREE.MathUtils.lerp(
+      loaderMinScale,
+      loaderMaxScale,
+      smoothedProgress,
     );
+    loaderGrowthRef.current = loader
+      ? THREE.MathUtils.damp(
+          loaderGrowthRef.current,
+          loaderTargetScale,
+          reducedMotion ? 22 : 11,
+          Math.min(delta, 0.04),
+        )
+      : 1;
+
+    const breathingVariation = reducedMotion
+      ? 0
+      : Math.sin(material.uniforms.uTime.value * 0.7) * 0.008;
+    const finalScale = loader
+      ? loaderGrowthRef.current + breathingVariation
+      : 1 + breathingVariation;
+    meshRef.current.scale.setScalar(finalScale);
     meshRef.current.rotation.z =
       Math.sin(material.uniforms.uTime.value * 0.23) * 0.025;
     state.gl.setClearColor(0x000000, 0);
   });
 
   return (
-    <mesh ref={meshRef} scale={loader ? 0.96 : 1}>
+    <mesh ref={meshRef} scale={loader ? (detail === 4 ? 0.52 : 0.55) : 1}>
       <icosahedronGeometry args={[1, detail]} />
       <shaderMaterial
         ref={materialRef}
@@ -174,10 +196,37 @@ function JellyMesh({
   );
 }
 
-function JellyFallback({ className = "" }: { className?: string }) {
+function JellyFallback({
+  className = "",
+  loader = false,
+  loaderProgress = 0,
+  mobile = false,
+}: {
+  className?: string;
+  loader?: boolean;
+  loaderProgress?: number;
+  mobile?: boolean;
+}) {
+  const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
+  const smoothedProgress =
+    normalizedProgress * normalizedProgress * (3 - 2 * normalizedProgress);
+  const fallbackScale = loader
+    ? THREE.MathUtils.lerp(
+        mobile ? 0.52 : 0.55,
+        mobile ? 0.98 : 1.08,
+        smoothedProgress,
+      )
+    : 1;
+
   return (
     <div className={`jelly-fallback ${className}`} aria-hidden="true">
-      <span />
+      <span
+        style={
+          {
+            "--fallback-loader-scale": fallbackScale,
+          } as CSSProperties
+        }
+      />
     </div>
   );
 }
@@ -208,6 +257,7 @@ export default function JellyCanvas({
   className = "",
   reducedMotion = false,
   loader = false,
+  loaderProgress = 0,
 }: JellyCanvasProps) {
   const [webglAvailable] = useState(() => {
     if (typeof document === "undefined") return true;
@@ -226,11 +276,28 @@ export default function JellyCanvas({
     typeof window !== "undefined" && window.innerWidth < 768 ? 4 : 5,
   );
 
-  if (!webglAvailable) return <JellyFallback className={className} />;
+  if (!webglAvailable) {
+    return (
+      <JellyFallback
+        className={className}
+        loader={loader}
+        loaderProgress={loaderProgress}
+        mobile={geometryDetail === 4}
+      />
+    );
+  }
 
   return (
     <div className={`jelly-canvas ${className}`} aria-hidden="true">
-      <JellyBoundary fallback={<JellyFallback />}>
+      <JellyBoundary
+        fallback={
+          <JellyFallback
+            loader={loader}
+            loaderProgress={loaderProgress}
+            mobile={geometryDetail === 4}
+          />
+        }
+      >
         <Canvas
           camera={{ position: [0, 0, 3.1], fov: 43 }}
           dpr={[1, geometryDetail === 4 ? 1.35 : 1.65]}
@@ -246,6 +313,7 @@ export default function JellyCanvas({
             interactionRef={interactionRef}
             reducedMotion={reducedMotion}
             loader={loader}
+            loaderProgress={loaderProgress}
             detail={geometryDetail}
           />
         </Canvas>

@@ -248,6 +248,9 @@ button {
     inset 18px 22px 30px rgba(255, 255, 255, 0.47),
     inset -18px -20px 42px rgba(99, 31, 197, 0.2),
     0 26px 48px rgba(113, 61, 191, 0.18);
+  transform: scale(var(--fallback-loader-scale, 1));
+  transform-origin: center;
+  transition: transform 0.12s ease-out;
 }
 
 .app-card {
@@ -1059,26 +1062,27 @@ footer small {
   visibility: hidden;
 }
 
-.preloader-brand {
-  position: absolute;
-  top: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  font-weight: 750;
-  letter-spacing: 0.22em;
-}
-
 .preloader-jelly {
-  top: 48%;
+  --loader-min-scale: 0.55;
+  --loader-scale-range: 0.53;
+  top: 50%;
   width: clamp(260px, 30vw, 410px);
   height: clamp(260px, 30vw, 410px);
+}
+
+.preloader-module-fallback span {
+  transform: scale(
+    calc(
+      var(--loader-min-scale) +
+      var(--loader-progress, 0) * var(--loader-scale-range)
+    )
+  );
 }
 
 .preloader-count {
   position: absolute;
   z-index: 10;
-  top: 48%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
@@ -1109,7 +1113,6 @@ footer small {
   display: block;
   height: 100%;
   background: #784be2;
-  transition: width 0.12s linear;
 }
 
 @keyframes info-in {
@@ -1208,6 +1211,11 @@ footer small {
   .jelly-fallback {
     width: clamp(265px, 76vw, 310px);
     height: clamp(270px, 77vw, 320px);
+  }
+
+  .preloader-jelly {
+    --loader-min-scale: 0.52;
+    --loader-scale-range: 0.46;
   }
 
   .app-card {
