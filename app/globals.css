@@ -1066,19 +1066,19 @@ footer small {
   --loader-min-scale: 0.5;
   --loader-scale-range: 0.62;
   top: 50%;
-  width: clamp(260px, 30vw, 410px);
-  height: clamp(260px, 30vw, 410px);
+  width: clamp(380px, 35vw, 500px);
+  height: clamp(380px, 35vw, 500px);
 }
 
 .preloader-wordmark {
   position: absolute;
   z-index: 10;
-  top: calc(50% - clamp(215px, 21vw, 275px));
+  top: calc(50% - clamp(225px, 20vw, 285px));
   left: 50%;
   display: flex;
   gap: 0.72em;
-  color: #7046db;
-  font-size: clamp(13px, 1vw, 16px);
+  color: #8a63eb;
+  font-size: clamp(20px, 1.8vw, 28px);
   font-weight: 600;
   letter-spacing: 0.24em;
   line-height: 1;
@@ -1241,15 +1241,15 @@ footer small {
   .preloader-jelly {
     --loader-min-scale: 0.5;
     --loader-scale-range: 0.5;
-    width: min(72vw, 310px);
-    height: min(72vw, 310px);
+    width: min(80vw, 310px);
+    height: min(80vw, 310px);
   }
 
   .preloader-wordmark {
-    top: calc(50% - min(51vw, 205px));
+    top: calc(50% - min(47vw, 190px));
     gap: 0.64em;
-    font-size: clamp(12px, 3.3vw, 14px);
-    letter-spacing: 0.2em;
+    font-size: clamp(17px, 5vw, 21px);
+    letter-spacing: 0.21em;
     transform: translate(
       -50%,
       calc(-50% + var(--loader-wordmark-mobile-shift, 0px))

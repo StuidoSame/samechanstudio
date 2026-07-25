@@ -47,9 +47,14 @@ const vertexShader = `
   }
 
   float loaderSurface(vec3 p, float t) {
-    float broad = sin(dot(p, normalize(vec3(0.8, 1.2, -0.65))) * 4.2 + t * 2.15) * 0.024;
-    float crossing = sin(atan(p.y, p.x) * 5.0 - t * 1.55 + p.z * 2.4) * 0.018;
-    return (broad + crossing) * uLoaderMotion;
+    float lowFrequency = sin(atan(p.y, p.x) * 2.2 + t * 2.05) * 0.062;
+    lowFrequency += sin(dot(p, normalize(vec3(0.82, 1.18, -0.6))) * 2.35 - t * 1.62) * 0.041;
+
+    float mediumFrequency = sin(atan(p.z, p.x) * 4.4 - t * 3.55 + p.y * 1.8) * 0.034;
+    mediumFrequency += sin(dot(p, normalize(vec3(-0.5, 0.92, 0.74))) * 5.0 + t * 4.1) * 0.024;
+
+    float microFrequency = sin(p.x * 6.5 - p.y * 4.2 + p.z * 3.6 + t * 5.5) * 0.008;
+    return (lowFrequency + mediumFrequency + microFrequency) * uLoaderMotion;
   }
 
   void main() {
@@ -60,11 +65,12 @@ const vertexShader = `
     float membrane = directionalFace * uStretch * 0.34;
     membrane -= releaseFace * uTransition * 0.075;
     float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * 0.026;
+    float loaderSqueeze = sin(uTime * 2.05) * uLoaderMotion;
 
     vec3 displaced = position + n * (idle + membrane + wobble);
-    displaced.x *= 1.0 + uStretch * 0.08;
+    displaced.x *= 1.0 + uStretch * 0.08 + loaderSqueeze * 0.045;
     displaced.x += uDirection * uStretch * (0.09 + directionalFace * 0.08);
-    displaced.y *= 0.94 + sin(uTime * 0.45) * 0.008;
+    displaced.y *= 0.94 + sin(uTime * 0.45) * 0.008 - loaderSqueeze * 0.035;
     displaced.z *= 0.91;
 
     vBulge = membrane + idle;
@@ -154,7 +160,7 @@ function JellyMesh({
     );
     const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
     const loaderMotionIntensity = loader
-      ? (0.65 + normalizedProgress * 0.35) * (reducedMotion ? 0.16 : 1)
+      ? (0.7 + normalizedProgress * 0.48) * (reducedMotion ? 0.12 : 1)
       : 0;
     material.uniforms.uLoaderMotion.value = THREE.MathUtils.lerp(
       material.uniforms.uLoaderMotion.value,
@@ -169,7 +175,7 @@ function JellyMesh({
     const smoothedProgress =
       normalizedProgress * normalizedProgress * (3 - 2 * normalizedProgress);
     const loaderMinScale = 0.5;
-    const loaderMaxScale = detail === 4 ? 1 : 1.12;
+    const loaderMaxScale = detail === 4 ? 1.02 : 1.18;
     const loaderTargetScale = THREE.MathUtils.lerp(
       loaderMinScale,
       loaderMaxScale,
@@ -193,8 +199,8 @@ function JellyMesh({
       ? loaderGrowthRef.current + breathingVariation
       : 1 + breathingVariation;
     const motionAmplitude = loader
-      ? THREE.MathUtils.lerp(0.02, 0.045, normalizedProgress) *
-        (reducedMotion ? 0.15 : 1)
+      ? THREE.MathUtils.lerp(0.075, 0.115, normalizedProgress) *
+        (reducedMotion ? 0.12 : 1)
       : 0;
     const largeWave = Math.sin(material.uniforms.uTime.value * 1.55);
     const secondaryWave = Math.sin(
@@ -211,16 +217,30 @@ function JellyMesh({
       1,
     );
     const settlePulse = -Math.sin(finalPhase * Math.PI) * 0.024;
-    const preparationWidth = loader ? preparation * 0.026 + settlePulse : 0;
+    const preparationWidth = loader ? preparation * 0.04 + settlePulse : 0;
 
     meshRef.current.scale.set(
       finalScale * (1 + largeWave * motionAmplitude + preparationWidth),
       finalScale *
         (1 -
-          largeWave * motionAmplitude * 0.72 +
-          secondaryWave * motionAmplitude * 0.24 -
-          preparationWidth * 0.35),
-      finalScale * (1 + secondaryWave * motionAmplitude * 0.3),
+          largeWave * motionAmplitude * 0.84 +
+          secondaryWave * motionAmplitude * 0.34 -
+          preparationWidth * 0.48) *
+        (loader && detail === 4 ? 0.9 : 1),
+      finalScale * (1 + secondaryWave * motionAmplitude * 0.42),
+    );
+    meshRef.current.position.set(
+      loader
+        ? (Math.sin(material.uniforms.uTime.value * 0.68 + 0.55) * 0.026 +
+            Math.sin(material.uniforms.uTime.value * 1.9) * 0.008) *
+            (reducedMotion ? 0.12 : 1)
+        : 0,
+      loader
+        ? Math.sin(material.uniforms.uTime.value * 0.92 - 0.8) *
+            0.018 *
+            (reducedMotion ? 0.12 : 1)
+        : 0,
+      0,
     );
     meshRef.current.rotation.y = loader
       ? Math.sin(material.uniforms.uTime.value * 0.55) *
@@ -266,7 +286,7 @@ function JellyFallback({
   const fallbackScale = loader
     ? THREE.MathUtils.lerp(
         0.5,
-        mobile ? 1 : 1.12,
+        mobile ? 1.02 : 1.18,
         smoothedProgress,
       )
     : 1;
@@ -326,7 +346,11 @@ export default function JellyCanvas({
     }
   });
   const [geometryDetail] = useState(() =>
-    typeof window !== "undefined" && window.innerWidth < 768 ? 4 : 5,
+    typeof window !== "undefined" && window.innerWidth < 768
+      ? 4
+      : loader
+        ? 6
+        : 5,
   );
 
   if (!webglAvailable) {
@@ -352,7 +376,10 @@ export default function JellyCanvas({
         }
       >
         <Canvas
-          camera={{ position: [0, 0, 3.1], fov: 43 }}
+          camera={{
+            position: [0, 0, loader ? (geometryDetail === 4 ? 2.9 : 3.55) : 3.1],
+            fov: 43,
+          }}
           dpr={[1, geometryDetail === 4 ? 1.35 : 1.65]}
           gl={{
             alpha: true,
