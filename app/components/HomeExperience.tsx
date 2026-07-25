@@ -294,6 +294,11 @@ export function HomeExperience() {
     transition: 0,
     accent: "#a873ff",
   });
+  const depthTargetRef = useRef({ x: 0, y: 0, strength: 0 });
+  const depthCurrentRef = useRef({ x: 0, y: 0, strength: 0 });
+  const depthBoundsRef = useRef({ left: 0, top: 0, width: 1, height: 1 });
+  const depthEnabledRef = useRef(false);
+  const requestDepthFrameRef = useRef<() => void>(() => {});
 
   const activeApp = apps[activeIndex];
 
@@ -381,6 +386,87 @@ export function HomeExperience() {
       cancelAnimationFrame(animationFrame);
       window.clearTimeout(leavingTimer);
       window.clearTimeout(removalTimer);
+    };
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let animationFrame = 0;
+
+    const updateBounds = () => {
+      const bounds = hero.getBoundingClientRect();
+      depthBoundsRef.current = {
+        left: bounds.left,
+        top: bounds.top,
+        width: Math.max(bounds.width, 1),
+        height: Math.max(bounds.height, 1),
+      };
+    };
+
+    const applyDepth = (x: number, y: number, strength: number) => {
+      hero.style.setProperty(
+        "--hero-pointer-offset-x",
+        `${x * depthBoundsRef.current.width * 0.5}px`,
+      );
+      hero.style.setProperty(
+        "--hero-pointer-offset-y",
+        `${y * depthBoundsRef.current.height * 0.5}px`,
+      );
+      hero.style.setProperty("--hero-pointer-strength", String(strength * 0.86));
+      hero.style.setProperty("--hero-depth-bg-x", `${x * 3}px`);
+      hero.style.setProperty("--hero-depth-bg-y", `${y * 3}px`);
+      hero.style.setProperty("--hero-depth-floor-x", `${x * 4}px`);
+      hero.style.setProperty("--hero-depth-floor-y", `${y * 3}px`);
+      hero.style.setProperty("--hero-depth-floor-z", `${strength * 5}px`);
+      hero.style.setProperty("--hero-depth-mid-x", `${x * 7}px`);
+      hero.style.setProperty("--hero-depth-mid-y", `${y * 7}px`);
+      hero.style.setProperty("--hero-depth-mid-z", `${strength * 12}px`);
+    };
+
+    const renderDepth = () => {
+      const target = depthTargetRef.current;
+      const current = depthCurrentRef.current;
+      current.x += (target.x - current.x) * 0.085;
+      current.y += (target.y - current.y) * 0.085;
+      current.strength += (target.strength - current.strength) * 0.085;
+      applyDepth(current.x, current.y, current.strength);
+
+      const settling =
+        Math.abs(target.x - current.x) > 0.002 ||
+        Math.abs(target.y - current.y) > 0.002 ||
+        Math.abs(target.strength - current.strength) > 0.002;
+      animationFrame = settling ? requestAnimationFrame(renderDepth) : 0;
+    };
+
+    const requestDepthFrame = () => {
+      if (!depthEnabledRef.current || animationFrame) return;
+      animationFrame = requestAnimationFrame(renderDepth);
+    };
+
+    const updateEnabled = () => {
+      depthEnabledRef.current = hoverQuery.matches && !reducedMotion;
+      if (!depthEnabledRef.current) {
+        depthTargetRef.current = { x: 0, y: 0, strength: 0 };
+        depthCurrentRef.current = { x: 0, y: 0, strength: 0 };
+        applyDepth(0, 0, 0);
+      }
+    };
+
+    updateBounds();
+    updateEnabled();
+    requestDepthFrameRef.current = requestDepthFrame;
+    const observer = new ResizeObserver(updateBounds);
+    observer.observe(hero);
+    hoverQuery.addEventListener("change", updateEnabled);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      observer.disconnect();
+      hoverQuery.removeEventListener("change", updateEnabled);
+      requestDepthFrameRef.current = () => {};
     };
   }, [reducedMotion]);
 
@@ -538,6 +624,23 @@ export function HomeExperience() {
     heroRef.current?.setPointerCapture(event.pointerId);
   };
 
+  const updateHeroDepth = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!depthEnabledRef.current || event.pointerType === "touch") return;
+    const bounds = depthBoundsRef.current;
+    depthTargetRef.current = {
+      x: clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
+      y: clamp(((event.clientY - bounds.top) / bounds.height) * 2 - 1, -1, 1),
+      strength: 1,
+    };
+    requestDepthFrameRef.current();
+  };
+
+  const resetHeroDepth = () => {
+    if (!depthEnabledRef.current) return;
+    depthTargetRef.current = { x: 0, y: 0, strength: 0 };
+    requestDepthFrameRef.current();
+  };
+
   const onPointerMove = (event: ReactPointerEvent<HTMLElement>) => {
     const pointer = pointerRef.current;
     if (!pointer.dragging || event.pointerId !== pointer.id) return;
@@ -605,8 +708,16 @@ export function HomeExperience() {
           id="apps"
           ref={heroRef}
           aria-label="SAME STUDIO app explorer"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
+          onPointerEnter={updateHeroDepth}
+          onPointerLeave={resetHeroDepth}
+          onPointerDown={(event) => {
+            updateHeroDepth(event);
+            onPointerDown(event);
+          }}
+          onPointerMove={(event) => {
+            updateHeroDepth(event);
+            onPointerMove(event);
+          }}
           onPointerUp={endPointer}
           onPointerCancel={endPointer}
         >
@@ -634,6 +745,7 @@ export function HomeExperience() {
           </header>
 
           <div className="ambient-glow" aria-hidden="true" />
+          <div className="pointer-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
           <div className="decorations" aria-hidden="true">
             {Array.from({ length: 14 }, (_, index) => (

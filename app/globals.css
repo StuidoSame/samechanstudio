@@ -94,6 +94,8 @@ button {
   min-height: 760px;
   overflow: hidden;
   isolation: isolate;
+  perspective: 1200px;
+  transform-style: preserve-3d;
   touch-action: pan-y;
   user-select: none;
   background:
@@ -179,11 +181,40 @@ button {
   left: 50%;
   width: min(72vw, 950px);
   height: 68%;
-  transform: translateX(-50%);
+  transform: translate3d(
+    calc(-50% + var(--hero-depth-bg-x, 0px)),
+    var(--hero-depth-bg-y, 0px),
+    3px
+  );
   background:
     radial-gradient(circle, rgba(175, 120, 255, 0.21), rgba(255, 182, 224, 0.09) 42%, transparent 72%);
   filter: blur(26px);
   transition: background 0.6s ease;
+  will-change: transform;
+}
+
+.pointer-glow {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: clamp(240px, 28vw, 420px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: var(--hero-pointer-strength, 0);
+  transform: translate3d(
+    calc(-50% + var(--hero-pointer-offset-x, 0px)),
+    calc(-50% + var(--hero-pointer-offset-y, 0px)),
+    8px
+  );
+  background: radial-gradient(
+    circle,
+    rgba(170, 125, 255, 0.16),
+    rgba(220, 195, 255, 0.07) 22%,
+    transparent 46%
+  );
+  filter: blur(5px);
+  will-change: transform, opacity;
 }
 
 .perspective-floor {
@@ -195,12 +226,18 @@ button {
   height: 64%;
   opacity: 0.24;
   transform-origin: 50% 0;
-  transform: perspective(420px) rotateX(66deg);
+  transform: translate3d(
+      var(--hero-depth-floor-x, 0px),
+      var(--hero-depth-floor-y, 0px),
+      var(--hero-depth-floor-z, 0px)
+    )
+    perspective(420px) rotateX(66deg);
   background-image:
     linear-gradient(rgba(118, 72, 221, 0.11) 1px, transparent 1px),
     linear-gradient(90deg, rgba(118, 72, 221, 0.08) 1px, transparent 1px);
   background-size: 48px 38px;
   mask-image: linear-gradient(to bottom, transparent, black 20%, transparent 82%);
+  will-change: transform;
 }
 
 .carousel-stage {
@@ -922,6 +959,13 @@ button {
   z-index: 1;
   inset: 0;
   pointer-events: none;
+  transform: translate3d(
+    var(--hero-depth-mid-x, 0px),
+    var(--hero-depth-mid-y, 0px),
+    var(--hero-depth-mid-z, 0px)
+  );
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .decoration {
@@ -1515,5 +1559,17 @@ footer small {
       opacity 0.18s ease,
       filter 0.18s ease,
       transform 0.18s ease !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .pointer-glow {
+    display: none;
+  }
+
+  .ambient-glow,
+  .perspective-floor,
+  .decorations {
+    will-change: auto;
   }
 }
