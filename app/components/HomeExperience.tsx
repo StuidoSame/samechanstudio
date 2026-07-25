@@ -268,6 +268,7 @@ export function HomeExperience() {
 
   const heroRef = useRef<HTMLElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const progressRef = useRef(DEFAULT_APP_INDEX);
   const targetRef = useRef(DEFAULT_APP_INDEX);
@@ -327,6 +328,26 @@ export function HomeExperience() {
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    window.addEventListener("pointerdown", closeOnOutsidePointer);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("pointerdown", closeOnOutsidePointer);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     let loaded = 0;
@@ -807,11 +828,15 @@ export function HomeExperience() {
           onPointerUp={endPointer}
           onPointerCancel={endPointer}
         >
-          <header className="site-header">
+          <header className="site-header" ref={headerRef}>
             <a href="#apps" className="wordmark" aria-label="SAME STUDIO home">
               SAME STUDIO
             </a>
-            <nav className={menuOpen ? "is-open" : ""} aria-label="Primary navigation">
+            <nav
+              id="site-menu"
+              className={menuOpen ? "is-open" : ""}
+              aria-label="Primary navigation"
+            >
               <a href="#about" onClick={() => setMenuOpen(false)}>ABOUT</a>
               <a href="#apps" onClick={() => setMenuOpen(false)}>APPS</a>
               <a href="#contact" onClick={() => setMenuOpen(false)}>CONTACT</a>
@@ -821,12 +846,11 @@ export function HomeExperience() {
               className="menu-control"
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              onClick={(event) => {
-                event.stopPropagation();
-                setMenuOpen((open) => !open);
-              }}
+              aria-controls="site-menu"
+              onClick={() => setMenuOpen((open) => !open)}
             >
-              {menuOpen ? "CLOSE" : "MENU"}
+              <span />
+              <span />
             </button>
           </header>
 
