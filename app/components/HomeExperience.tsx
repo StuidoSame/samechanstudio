@@ -29,6 +29,38 @@ const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
+const LOADER_WORDS = ["SAME", "STUDIO"] as const;
+const LOADER_DURATION = 2400;
+const LOADER_COMPLETE_HOLD = 320;
+
+const smoothStep = (value: number) => value * value * (3 - 2 * value);
+
+const presentationProgress = (elapsed: number) => {
+  const points = [
+    [0, 0],
+    [400, 0.12],
+    [800, 0.28],
+    [1200, 0.48],
+    [1600, 0.67],
+    [2000, 0.84],
+    [2300, 0.95],
+    [LOADER_DURATION, 1],
+  ] as const;
+  const time = clamp(elapsed, 0, LOADER_DURATION);
+
+  for (let index = 1; index < points.length; index += 1) {
+    const [endTime, endProgress] = points[index];
+    if (time > endTime) continue;
+    const [startTime, startProgress] = points[index - 1];
+    const segmentProgress = smoothStep(
+      (time - startTime) / (endTime - startTime),
+    );
+    return startProgress + (endProgress - startProgress) * segmentProgress;
+  }
+
+  return 1;
+};
+
 const easeSlot = (slot: number, width: number) => {
   const sign = Math.sign(slot);
   const absolute = Math.abs(slot);
@@ -171,20 +203,43 @@ function Loader({
   leaving: boolean;
 }) {
   const normalizedProgress = clamp(progress / 100, 0, 1);
+  const displayProgress = Math.floor(progress);
 
   return (
     <div
       className={`preloader ${leaving ? "is-leaving" : ""}`}
       role="status"
       aria-live="polite"
-      aria-label={`Loading ${progress}%`}
-      data-loader-progress={normalizedProgress.toFixed(2)}
+      aria-label={`Loading ${displayProgress}%`}
+      data-loader-progress={normalizedProgress.toFixed(3)}
       style={
         {
           "--loader-progress": normalizedProgress,
+          "--loader-wordmark-shift": `${(1 - normalizedProgress) * 115}px`,
+          "--loader-wordmark-mobile-shift": `${(1 - normalizedProgress) * 84}px`,
+          "--loader-wordmark-short-shift": `${(1 - normalizedProgress) * 46}px`,
         } as CSSProperties
       }
     >
+      <span className="preloader-wordmark" aria-label="SAME STUDIO">
+        {LOADER_WORDS.map((word, wordIndex) => (
+          <span className="preloader-word" aria-hidden="true" key={word}>
+            {[...word].map((letter, letterIndex) => {
+              const revealIndex = letterIndex + (wordIndex === 0 ? 0 : 4);
+              return (
+                <span
+                  className={`preloader-letter ${
+                    displayProgress >= revealIndex * 10 ? "is-visible" : ""
+                  }`}
+                  key={`${word}-${letterIndex}`}
+                >
+                  {letter}
+                </span>
+              );
+            })}
+          </span>
+        ))}
+      </span>
       <LoaderJellyCanvas
         className="preloader-jelly"
         interactionRef={interactionRef}
@@ -193,10 +248,7 @@ function Loader({
         loaderProgress={normalizedProgress}
       />
       <span className="preloader-count">
-        {String(progress).padStart(3, "0")}<small>%</small>
-      </span>
-      <span className="preloader-line">
-        <i style={{ width: `${normalizedProgress * 100}%` }} />
+        {String(displayProgress).padStart(3, "0")}<small>%</small>
       </span>
     </div>
   );
@@ -261,7 +313,11 @@ export function HomeExperience() {
     let loaded = 0;
     let done = false;
     let animationFrame = 0;
+    let leavingTimer = 0;
+    let removalTimer = 0;
     const started = performance.now();
+    let previousTick = started;
+    let displayedProgress = 0;
     const assets = apps.map(
       (app) =>
         new Promise<void>((resolve) => {
@@ -285,26 +341,47 @@ export function HomeExperience() {
 
     const tick = (now: number) => {
       const assetRatio = loaded / assets.length;
-      const minTime = reducedMotion ? 260 : 900;
-      const timeRatio = clamp((now - started) / minTime, 0, 1);
-      const normalizedProgress = Math.min(assetRatio, timeRatio);
-      const next = Math.min(100, Math.floor(normalizedProgress * 100));
-      setLoadProgress(next);
+      const elapsed = now - started;
+      const timelineProgress = presentationProgress(elapsed);
+      const loadingCap = done ? 1 : 0.92 + assetRatio * 0.06;
+      const targetProgress = Math.min(timelineProgress, loadingCap);
+      const maxFrameStep = Math.max(0.002, (now - previousTick) * 0.0005);
+      previousTick = now;
+      displayedProgress = Math.min(
+        targetProgress,
+        displayedProgress + maxFrameStep,
+      );
+      const normalizedProgress = clamp(displayedProgress, 0, 1);
+      setLoadProgress(normalizedProgress * 100);
       loaderInteractionRef.current.stretch =
-        0.02 + Math.pow(normalizedProgress, 2) * 0.2;
+        0.018 + Math.pow(normalizedProgress, 1.7) * 0.11;
       loaderInteractionRef.current.transition =
-        normalizedProgress > 0.88 ? (normalizedProgress - 0.88) / 0.12 : 0;
-      loaderInteractionRef.current.velocity = normalizedProgress / 2.2;
-      if (done && timeRatio >= 1) {
+        normalizedProgress > 0.9 ? (normalizedProgress - 0.9) / 0.1 : 0;
+      loaderInteractionRef.current.velocity = 0.16 + normalizedProgress * 0.2;
+      if (
+        done &&
+        elapsed >= LOADER_DURATION &&
+        normalizedProgress >= 0.999
+      ) {
         setLoadProgress(100);
-        window.setTimeout(() => setLoaderLeaving(true), reducedMotion ? 40 : 260);
-        window.setTimeout(() => setLoaderVisible(false), reducedMotion ? 140 : 820);
+        leavingTimer = window.setTimeout(
+          () => setLoaderLeaving(true),
+          LOADER_COMPLETE_HOLD,
+        );
+        removalTimer = window.setTimeout(
+          () => setLoaderVisible(false),
+          LOADER_COMPLETE_HOLD + (reducedMotion ? 80 : 580),
+        );
         return;
       }
       animationFrame = requestAnimationFrame(tick);
     };
     animationFrame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animationFrame);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      window.clearTimeout(leavingTimer);
+      window.clearTimeout(removalTimer);
+    };
   }, [reducedMotion]);
 
   useEffect(() => {

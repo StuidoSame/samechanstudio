@@ -34,6 +34,7 @@ const vertexShader = `
   uniform float uStretch;
   uniform float uVelocity;
   uniform float uTransition;
+  uniform float uLoaderMotion;
   varying vec3 vNormalW;
   varying vec3 vPosition;
   varying float vBulge;
@@ -45,9 +46,15 @@ const vertexShader = `
     return lobes;
   }
 
+  float loaderSurface(vec3 p, float t) {
+    float broad = sin(dot(p, normalize(vec3(0.8, 1.2, -0.65))) * 4.2 + t * 2.15) * 0.024;
+    float crossing = sin(atan(p.y, p.x) * 5.0 - t * 1.55 + p.z * 2.4) * 0.018;
+    return (broad + crossing) * uLoaderMotion;
+  }
+
   void main() {
     vec3 n = normalize(position);
-    float idle = organic(n, uTime);
+    float idle = organic(n, uTime) + loaderSurface(n, uTime);
     float directionalFace = pow(max(0.0, dot(n, vec3(uDirection, 0.0, 0.0))), 2.25);
     float releaseFace = pow(max(0.0, dot(n, vec3(-uDirection, 0.0, 0.0))), 3.0);
     float membrane = directionalFace * uStretch * 0.34;
@@ -109,7 +116,7 @@ function JellyMesh({
 }: Omit<JellyCanvasProps, "className"> & { detail: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const loaderGrowthRef = useRef(detail === 4 ? 0.52 : 0.55);
+  const loaderGrowthRef = useRef(0.5);
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -117,6 +124,7 @@ function JellyMesh({
       uStretch: { value: 0 },
       uVelocity: { value: 0 },
       uTransition: { value: 0 },
+      uLoaderMotion: { value: 0 },
       uAccentColor: { value: new THREE.Color("#ff5559") },
     }),
     [],
@@ -144,16 +152,24 @@ function JellyMesh({
       data.transition,
       0.1,
     );
+    const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
+    const loaderMotionIntensity = loader
+      ? (0.65 + normalizedProgress * 0.35) * (reducedMotion ? 0.16 : 1)
+      : 0;
+    material.uniforms.uLoaderMotion.value = THREE.MathUtils.lerp(
+      material.uniforms.uLoaderMotion.value,
+      loaderMotionIntensity,
+      0.08,
+    );
     material.uniforms.uAccentColor.value.lerp(
       new THREE.Color(data.accent),
       0.06,
     );
 
-    const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
     const smoothedProgress =
       normalizedProgress * normalizedProgress * (3 - 2 * normalizedProgress);
-    const loaderMinScale = detail === 4 ? 0.52 : 0.55;
-    const loaderMaxScale = detail === 4 ? 0.98 : 1.08;
+    const loaderMinScale = 0.5;
+    const loaderMaxScale = detail === 4 ? 1 : 1.12;
     const loaderTargetScale = THREE.MathUtils.lerp(
       loaderMinScale,
       loaderMaxScale,
@@ -170,18 +186,55 @@ function JellyMesh({
 
     const breathingVariation = reducedMotion
       ? 0
-      : Math.sin(material.uniforms.uTime.value * 0.7) * 0.008;
+      : Math.sin(
+          material.uniforms.uTime.value * (loader ? 0.73 : 0.7),
+        ) * (loader ? 0.006 : 0.008);
     const finalScale = loader
       ? loaderGrowthRef.current + breathingVariation
       : 1 + breathingVariation;
-    meshRef.current.scale.setScalar(finalScale);
-    meshRef.current.rotation.z =
-      Math.sin(material.uniforms.uTime.value * 0.23) * 0.025;
+    const motionAmplitude = loader
+      ? THREE.MathUtils.lerp(0.02, 0.045, normalizedProgress) *
+        (reducedMotion ? 0.15 : 1)
+      : 0;
+    const largeWave = Math.sin(material.uniforms.uTime.value * 1.55);
+    const secondaryWave = Math.sin(
+      material.uniforms.uTime.value * 2.2 + 1.35,
+    );
+    const preparation = THREE.MathUtils.smoothstep(
+      normalizedProgress,
+      0.9,
+      0.97,
+    );
+    const finalPhase = THREE.MathUtils.clamp(
+      (normalizedProgress - 0.97) / 0.03,
+      0,
+      1,
+    );
+    const settlePulse = -Math.sin(finalPhase * Math.PI) * 0.024;
+    const preparationWidth = loader ? preparation * 0.026 + settlePulse : 0;
+
+    meshRef.current.scale.set(
+      finalScale * (1 + largeWave * motionAmplitude + preparationWidth),
+      finalScale *
+        (1 -
+          largeWave * motionAmplitude * 0.72 +
+          secondaryWave * motionAmplitude * 0.24 -
+          preparationWidth * 0.35),
+      finalScale * (1 + secondaryWave * motionAmplitude * 0.3),
+    );
+    meshRef.current.rotation.y = loader
+      ? Math.sin(material.uniforms.uTime.value * 0.55) *
+        THREE.MathUtils.degToRad(reducedMotion ? 0.7 : 4.5)
+      : 0;
+    meshRef.current.rotation.z = loader
+      ? Math.sin(material.uniforms.uTime.value * 0.42 + 0.8) *
+        THREE.MathUtils.degToRad(reducedMotion ? 0.5 : 3)
+      : Math.sin(material.uniforms.uTime.value * 0.23) * 0.025;
     state.gl.setClearColor(0x000000, 0);
   });
 
   return (
-    <mesh ref={meshRef} scale={loader ? (detail === 4 ? 0.52 : 0.55) : 1}>
+    <mesh ref={meshRef} scale={loader ? 0.5 : 1}>
       <icosahedronGeometry args={[1, detail]} />
       <shaderMaterial
         ref={materialRef}
@@ -212,8 +265,8 @@ function JellyFallback({
     normalizedProgress * normalizedProgress * (3 - 2 * normalizedProgress);
   const fallbackScale = loader
     ? THREE.MathUtils.lerp(
-        mobile ? 0.52 : 0.55,
-        mobile ? 0.98 : 1.08,
+        0.5,
+        mobile ? 1 : 1.12,
         smoothedProgress,
       )
     : 1;
