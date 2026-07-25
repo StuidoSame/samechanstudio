@@ -18,6 +18,9 @@ export type JellyInteraction = {
   stretch: number;
   transition: number;
   accent: string;
+  pointerX: number;
+  pointerY: number;
+  pointerStrength: number;
 };
 
 type JellyCanvasProps = {
@@ -35,6 +38,8 @@ const vertexShader = `
   uniform float uVelocity;
   uniform float uTransition;
   uniform float uLoaderMotion;
+  uniform vec2 uPointer;
+  uniform float uPointerStrength;
   varying vec3 vNormalW;
   varying vec3 vPosition;
   varying float vBulge;
@@ -66,14 +71,18 @@ const vertexShader = `
     membrane -= releaseFace * uTransition * 0.075;
     float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * 0.026;
     float loaderSqueeze = sin(uTime * 2.05) * uLoaderMotion;
+    vec3 pointerDirection = normalize(vec3(uPointer.x, uPointer.y * 0.86, 0.72));
+    float pointerFace = pow(max(0.0, dot(n, pointerDirection)), 3.2);
+    float pointerSurface = pointerFace * uPointerStrength;
 
-    vec3 displaced = position + n * (idle + membrane + wobble);
+    vec3 displaced = position + n * (idle + membrane + wobble + pointerSurface);
+    displaced += pointerDirection * pointerSurface * 0.06;
     displaced.x *= 1.0 + uStretch * 0.08 + loaderSqueeze * 0.045;
     displaced.x += uDirection * uStretch * (0.09 + directionalFace * 0.08);
     displaced.y *= 0.94 + sin(uTime * 0.45) * 0.008 - loaderSqueeze * 0.035;
     displaced.z *= 0.91;
 
-    vBulge = membrane + idle;
+    vBulge = membrane + idle + pointerSurface;
     vPosition = displaced;
     vNormalW = normalize(normalMatrix * n);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
@@ -85,6 +94,8 @@ const fragmentShader = `
   uniform float uTime;
   uniform vec3 uAccentColor;
   uniform float uTransition;
+  uniform vec2 uPointer;
+  uniform float uPointerStrength;
   varying vec3 vNormalW;
   varying vec3 vPosition;
   varying float vBulge;
@@ -95,6 +106,8 @@ const fragmentShader = `
     float upperLight = smoothstep(-0.75, 0.85, vNormalW.y);
     float leftPearl = pow(max(0.0, dot(normalize(vNormalW), normalize(vec3(-0.7, 0.8, 0.9)))), 12.0);
     float pinkPearl = pow(max(0.0, dot(normalize(vNormalW), normalize(vec3(0.8, -0.15, 0.7)))), 8.0);
+    vec3 pointerDirection = normalize(vec3(uPointer.x, uPointer.y * 0.86, 0.72));
+    float pointerPearl = pow(max(0.0, dot(normalize(vNormalW), pointerDirection)), 11.0) * uPointerStrength;
     float inner = 0.5 + 0.5 * sin(vPosition.y * 3.0 - vPosition.x * 2.2 + uTime * 0.17);
 
     vec3 lavender = vec3(0.658, 0.451, 1.0);
@@ -106,9 +119,10 @@ const fragmentShader = `
     color = mix(color, pink, pinkPearl * 0.22);
     color = mix(color, uAccentColor, (0.055 + uTransition * 0.05) * inner);
     color += vec3(1.0) * leftPearl * 0.55;
+    color += vec3(0.88, 0.78, 1.0) * pointerPearl * 1.15;
     color += vec3(0.17, 0.06, 0.28) * max(0.0, vBulge) * 0.5;
 
-    float alpha = 0.60 + fresnel * 0.27 + leftPearl * 0.08;
+    float alpha = 0.60 + fresnel * 0.27 + leftPearl * 0.08 + pointerPearl * 0.08;
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -132,6 +146,8 @@ function JellyMesh({
       uTransition: { value: 0 },
       uLoaderMotion: { value: 0 },
       uAccentColor: { value: new THREE.Color("#ff5559") },
+      uPointer: { value: new THREE.Vector2(0, 0) },
+      uPointerStrength: { value: 0 },
     }),
     [],
   );
@@ -170,6 +186,22 @@ function JellyMesh({
     material.uniforms.uAccentColor.value.lerp(
       new THREE.Color(data.accent),
       0.06,
+    );
+    const pointerFollow = reducedMotion ? 0.08 : 0.22;
+    material.uniforms.uPointer.value.x = THREE.MathUtils.lerp(
+      material.uniforms.uPointer.value.x,
+      data.pointerX,
+      pointerFollow,
+    );
+    material.uniforms.uPointer.value.y = THREE.MathUtils.lerp(
+      material.uniforms.uPointer.value.y,
+      data.pointerY,
+      pointerFollow,
+    );
+    material.uniforms.uPointerStrength.value = THREE.MathUtils.lerp(
+      material.uniforms.uPointerStrength.value,
+      reducedMotion ? 0 : data.pointerStrength,
+      0.2,
     );
 
     const smoothedProgress =

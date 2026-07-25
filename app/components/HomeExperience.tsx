@@ -196,17 +196,20 @@ function Loader({
   interactionRef,
   reducedMotion,
   leaving,
+  containerRef,
 }: {
   progress: number;
   interactionRef: React.MutableRefObject<JellyInteraction>;
   reducedMotion: boolean;
   leaving: boolean;
+  containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const normalizedProgress = clamp(progress / 100, 0, 1);
   const displayProgress = Math.floor(progress);
 
   return (
     <div
+      ref={containerRef}
       className={`preloader ${leaving ? "is-leaving" : ""}`}
       role="status"
       aria-live="polite"
@@ -221,6 +224,7 @@ function Loader({
         } as CSSProperties
       }
     >
+      <div className="preloader-pointer-glow" aria-hidden="true" />
       <span className="preloader-wordmark" aria-label="SAME STUDIO">
         {LOADER_WORDS.map((word, wordIndex) => (
           <span className="preloader-word" aria-hidden="true" key={word}>
@@ -263,6 +267,7 @@ export function HomeExperience() {
   const [loaderVisible, setLoaderVisible] = useState(true);
 
   const heroRef = useRef<HTMLElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const progressRef = useRef(DEFAULT_APP_INDEX);
   const targetRef = useRef(DEFAULT_APP_INDEX);
@@ -286,6 +291,9 @@ export function HomeExperience() {
     stretch: 0,
     transition: 0,
     accent: apps[DEFAULT_APP_INDEX].accent,
+    pointerX: 0,
+    pointerY: 0,
+    pointerStrength: 0,
   });
   const loaderInteractionRef = useRef<JellyInteraction>({
     velocity: 0,
@@ -293,12 +301,18 @@ export function HomeExperience() {
     stretch: 0.02,
     transition: 0,
     accent: "#a873ff",
+    pointerX: 0,
+    pointerY: 0,
+    pointerStrength: 0,
   });
   const depthTargetRef = useRef({ x: 0, y: 0, strength: 0 });
   const depthCurrentRef = useRef({ x: 0, y: 0, strength: 0 });
   const depthBoundsRef = useRef({ left: 0, top: 0, width: 1, height: 1 });
   const depthEnabledRef = useRef(false);
   const requestDepthFrameRef = useRef<() => void>(() => {});
+  const updatePointerTargetRef = useRef<
+    (clientX: number, clientY: number, pointerType?: string) => void
+  >(() => {});
 
   const activeApp = apps[activeIndex];
 
@@ -415,23 +429,52 @@ export function HomeExperience() {
         "--hero-pointer-offset-y",
         `${y * depthBoundsRef.current.height * 0.5}px`,
       );
-      hero.style.setProperty("--hero-pointer-strength", String(strength * 0.86));
-      hero.style.setProperty("--hero-depth-bg-x", `${x * 3}px`);
-      hero.style.setProperty("--hero-depth-bg-y", `${y * 3}px`);
-      hero.style.setProperty("--hero-depth-floor-x", `${x * 4}px`);
-      hero.style.setProperty("--hero-depth-floor-y", `${y * 3}px`);
-      hero.style.setProperty("--hero-depth-floor-z", `${strength * 5}px`);
-      hero.style.setProperty("--hero-depth-mid-x", `${x * 7}px`);
-      hero.style.setProperty("--hero-depth-mid-y", `${y * 7}px`);
-      hero.style.setProperty("--hero-depth-mid-z", `${strength * 12}px`);
+      hero.style.setProperty("--hero-pointer-strength", String(strength));
+      hero.style.setProperty("--hero-depth-bg-x", `${x * 7}px`);
+      hero.style.setProperty("--hero-depth-bg-y", `${y * 7}px`);
+      hero.style.setProperty("--hero-depth-floor-x", `${x * 10}px`);
+      hero.style.setProperty("--hero-depth-floor-y", `${y * 8}px`);
+      hero.style.setProperty("--hero-depth-floor-z", `${strength * 10}px`);
+      hero.style.setProperty("--hero-depth-far-x", `${x * 10}px`);
+      hero.style.setProperty("--hero-depth-far-y", `${y * 10}px`);
+      hero.style.setProperty("--hero-depth-far-z", `${strength * 8}px`);
+      hero.style.setProperty("--hero-depth-near-x", `${x * 20}px`);
+      hero.style.setProperty("--hero-depth-near-y", `${y * 18}px`);
+      hero.style.setProperty("--hero-depth-near-z", `${strength * 22}px`);
+
+      const proximity = Math.pow(
+        1 - smoothStep(clamp(Math.hypot(x, y) / 0.78, 0, 1)),
+        0.75,
+      );
+      interactionRef.current.pointerX = x;
+      interactionRef.current.pointerY = y;
+      interactionRef.current.pointerStrength = proximity * 0.095 * strength;
+      loaderInteractionRef.current.pointerX = x;
+      loaderInteractionRef.current.pointerY = y;
+      loaderInteractionRef.current.pointerStrength = proximity * 0.13 * strength;
+
+      const loader = loaderRef.current;
+      if (loader) {
+        loader.style.setProperty(
+          "--preloader-pointer-offset-x",
+          `${x * window.innerWidth * 0.5}px`,
+        );
+        loader.style.setProperty(
+          "--preloader-pointer-offset-y",
+          `${-y * window.innerHeight * 0.5}px`,
+        );
+        loader.style.setProperty("--preloader-pointer-strength", String(strength));
+      }
     };
 
     const renderDepth = () => {
       const target = depthTargetRef.current;
       const current = depthCurrentRef.current;
-      current.x += (target.x - current.x) * 0.085;
-      current.y += (target.y - current.y) * 0.085;
-      current.strength += (target.strength - current.strength) * 0.085;
+      const distance = Math.hypot(target.x - current.x, target.y - current.y);
+      const follow = distance > 0.3 ? 0.32 : 0.24;
+      current.x += (target.x - current.x) * follow;
+      current.y += (target.y - current.y) * follow;
+      current.strength += (target.strength - current.strength) * 0.24;
       applyDepth(current.x, current.y, current.strength);
 
       const settling =
@@ -455,20 +498,57 @@ export function HomeExperience() {
       }
     };
 
+    const updatePointerTarget = (
+      clientX: number,
+      clientY: number,
+      pointerType = "mouse",
+    ) => {
+      if (!depthEnabledRef.current || pointerType === "touch") return;
+      const insideHero =
+        clientX >= depthBoundsRef.current.left &&
+        clientX <= depthBoundsRef.current.left + depthBoundsRef.current.width &&
+        clientY >= depthBoundsRef.current.top &&
+        clientY <= depthBoundsRef.current.top + depthBoundsRef.current.height;
+      if (!loaderRef.current && !insideHero) {
+        depthTargetRef.current = { x: 0, y: 0, strength: 0 };
+      } else {
+        depthTargetRef.current = {
+          x: clamp((clientX / Math.max(window.innerWidth, 1)) * 2 - 1, -1, 1),
+          y: clamp(1 - (clientY / Math.max(window.innerHeight, 1)) * 2, -1, 1),
+          strength: 1,
+        };
+      }
+      requestDepthFrame();
+    };
+
+    const resetDepth = () => {
+      if (!depthEnabledRef.current) return;
+      depthTargetRef.current = { x: 0, y: 0, strength: 0 };
+      requestDepthFrame();
+    };
+
     updateBounds();
     updateEnabled();
     requestDepthFrameRef.current = requestDepthFrame;
+    updatePointerTargetRef.current = updatePointerTarget;
     const observer = new ResizeObserver(updateBounds);
     observer.observe(hero);
+    const onWindowPointerMove = (event: PointerEvent) =>
+      updatePointerTarget(event.clientX, event.clientY, event.pointerType);
+    window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
+    window.addEventListener("blur", resetDepth);
     hoverQuery.addEventListener("change", updateEnabled);
 
     return () => {
       cancelAnimationFrame(animationFrame);
       observer.disconnect();
       hoverQuery.removeEventListener("change", updateEnabled);
+      window.removeEventListener("pointermove", onWindowPointerMove);
+      window.removeEventListener("blur", resetDepth);
       requestDepthFrameRef.current = () => {};
+      updatePointerTargetRef.current = () => {};
     };
-  }, [reducedMotion]);
+  }, [loaderVisible, reducedMotion]);
 
   useEffect(() => {
     let frame = 0;
@@ -528,8 +608,14 @@ export function HomeExperience() {
               ? 18 + (absolute - 1) * 10
               : 28 + Math.min(absolute - 2, 1) * 10);
         const depth = -Math.min(absolute, 3.4) * 82;
+        const pointerDepth = depthCurrentRef.current;
+        const activeCard = absolute < 0.5;
+        const parallaxX = pointerDepth.x * (activeCard ? 3.25 : 8.5);
+        const parallaxY = -pointerDepth.y * (activeCard ? 2.5 : 7.5);
+        const parallaxZ = pointerDepth.strength * (activeCard ? 5.5 : 9);
+        const parallaxRotation = pointerDepth.x * (activeCard ? 0.65 : 1.15);
 
-        card.style.transform = `translate3d(calc(-50% + ${x}px), -50%, ${depth}px) rotateY(${rotation}deg) scale(${scale})`;
+        card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${parallaxY}px), ${depth + parallaxZ}px) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
         card.style.opacity = String(opacity);
         card.style.zIndex = String(50 - Math.round(absolute * 8));
         card.style.pointerEvents = absolute < 3.45 ? "auto" : "none";
@@ -625,14 +711,11 @@ export function HomeExperience() {
   };
 
   const updateHeroDepth = (event: ReactPointerEvent<HTMLElement>) => {
-    if (!depthEnabledRef.current || event.pointerType === "touch") return;
-    const bounds = depthBoundsRef.current;
-    depthTargetRef.current = {
-      x: clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
-      y: clamp(((event.clientY - bounds.top) / bounds.height) * 2 - 1, -1, 1),
-      strength: 1,
-    };
-    requestDepthFrameRef.current();
+    updatePointerTargetRef.current(
+      event.clientX,
+      event.clientY,
+      event.pointerType,
+    );
   };
 
   const resetHeroDepth = () => {
@@ -697,6 +780,7 @@ export function HomeExperience() {
           interactionRef={loaderInteractionRef}
           reducedMotion={reducedMotion}
           leaving={loaderLeaving}
+          containerRef={loaderRef}
         />
       )}
       <main
@@ -748,9 +832,16 @@ export function HomeExperience() {
           <div className="pointer-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
           <div className="decorations" aria-hidden="true">
-            {Array.from({ length: 14 }, (_, index) => (
-              <i key={index} className={`decoration decoration-${index + 1}`} />
-            ))}
+            <div className="decorations-far">
+              {Array.from({ length: 8 }, (_, index) => (
+                <i key={index} className={`decoration decoration-${index + 1}`} />
+              ))}
+            </div>
+            <div className="decorations-near">
+              {Array.from({ length: 6 }, (_, index) => (
+                <i key={index} className={`decoration decoration-${index + 9}`} />
+              ))}
+            </div>
           </div>
 
           <div className="carousel-stage" aria-live="polite">
