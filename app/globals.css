@@ -371,23 +371,20 @@ button {
 }
 
 .app-card {
-  --card-accent: #a873ff;
-  --card-accent-rgb: 168, 115, 255;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(194px, 15vw, 215px);
-  height: clamp(350px, 27.2vw, 390px);
+  width: clamp(260px, 21vw, 300px);
+  aspect-ratio: 1;
+  height: auto;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.68);
-  border-radius: 28px;
+  border: 0;
+  border-radius: 24%;
   overflow: hidden;
   transform-origin: center;
   transform-style: preserve-3d;
-  background: rgba(255, 255, 255, 0.58);
-  box-shadow:
-    0 30px 58px rgba(76, 49, 127, 0.12),
-    inset 0 0 0 1px rgba(107, 72, 150, 0.08);
+  background: transparent;
+  box-shadow: 0 26px 52px rgba(76, 49, 127, 0.2);
   cursor: pointer;
   will-change: transform, opacity;
   pointer-events: auto;
@@ -395,27 +392,9 @@ button {
   -webkit-backface-visibility: hidden;
 }
 
-.app-card::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(var(--card-accent-rgb), 0.22), transparent 42%),
-    linear-gradient(155deg, rgba(255, 255, 255, 0.45), transparent 58%);
-  pointer-events: none;
-}
-
-.app-card::after {
-  content: "";
-  position: absolute;
-  z-index: 10;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.72),
-    inset 0 -12px 28px rgba(62, 34, 98, 0.06);
-  pointer-events: none;
+.carousel-app-icon {
+  object-fit: contain;
+  user-select: none;
 }
 
 .card-eyebrow {
@@ -1013,25 +992,6 @@ button {
   right: clamp(8px, 2vw, 30px);
 }
 
-.interaction-hint {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-bottom: 20px;
-  color: rgba(102, 68, 162, 0.54);
-  font-size: 8px;
-  font-weight: 650;
-  letter-spacing: 0.2em;
-  white-space: nowrap;
-}
-
-.interaction-hint span {
-  width: 20px;
-  height: 10px;
-  border: 1px solid rgba(102, 68, 162, 0.35);
-  border-radius: 8px;
-}
-
 .decorations {
   position: absolute;
   z-index: 1;
@@ -1387,8 +1347,8 @@ footer {
   }
 
   .app-card {
-    width: clamp(188px, 22vw, 208px);
-    height: clamp(340px, 40vw, 378px);
+    width: clamp(220px, 32vw, 250px);
+    height: auto;
   }
 
   .jelly-canvas,
@@ -1467,9 +1427,8 @@ footer {
   }
 
   .app-card {
-    width: clamp(168px, 48.7vw, 195px);
-    height: clamp(300px, 87.2vw, 350px);
-    border-radius: 25px;
+    width: clamp(190px, 56vw, 220px);
+    height: auto;
   }
 
   .screen-runtronome strong {
@@ -1521,11 +1480,6 @@ footer {
 
   .arrow-right {
     right: 0;
-  }
-
-  .interaction-hint {
-    margin-bottom: 16px;
-    font-size: 7px;
   }
 
   .perspective-floor {
@@ -1596,8 +1550,8 @@ footer {
   }
 
   .app-card {
-    width: 158px;
-    height: 280px;
+    width: 180px;
+    height: auto;
   }
 
   .jelly-canvas,
@@ -1625,10 +1579,6 @@ footer {
     top: calc(clamp(318px, 56svh, 440px) - 24px);
   }
 
-  .interaction-hint {
-    margin-bottom: 14px;
-  }
-
   .app-info h1 {
     font-size: 22px;
   }
@@ -1651,8 +1601,8 @@ footer {
   }
 
   .app-card {
-    width: 176px;
-    height: 318px;
+    width: 240px;
+    height: auto;
   }
 
   .jelly-canvas,
@@ -1670,10 +1620,6 @@ footer {
     font-size: 28px;
   }
 
-  .app-info p {
-    margin-top: 8px;
-  }
-
   .view-app {
     margin-top: 12px;
   }
@@ -1686,8 +1632,8 @@ footer {
   }
 
   .app-card {
-    width: clamp(145px, 44vw, 168px);
-    height: clamp(248px, 76vw, 285px);
+    width: clamp(165px, 54vw, 190px);
+    height: auto;
   }
 
   .jelly-canvas,
@@ -1712,10 +1658,6 @@ footer {
   .view-app {
     min-height: 38px;
     margin-top: 12px;
-  }
-
-  .interaction-hint {
-    margin-bottom: 14px;
   }
 
   .decoration-4,

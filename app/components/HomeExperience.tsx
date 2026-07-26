@@ -69,97 +69,13 @@ const easeSlot = (slot: number, width: number) => {
   const anchors = mobile
     ? [0, width * 0.59, width * 1.04, width * 1.35]
     : tablet
-      ? [0, width * 0.23, width * 0.4, width * 0.52]
-      : [0, width * 0.16, width * 0.29, width * 0.38, width * 0.48];
+      ? [0, width * 0.31, width * 0.46, width * 0.58]
+      : [0, width * 0.22, width * 0.39, width * 0.5, width * 0.58];
   const lower = Math.min(Math.floor(absolute), anchors.length - 1);
   const upper = Math.min(lower + 1, anchors.length - 1);
   const mix = absolute - Math.floor(absolute);
   return sign * (anchors[lower] + (anchors[upper] - anchors[lower]) * mix);
 };
-
-function CardScreen({ app }: { app: AppItem }) {
-  return (
-    <>
-      <div className="card-eyebrow">{app.eyebrow}</div>
-      <Image
-        className="card-app-icon"
-        src={app.icon}
-        alt=""
-        width={22}
-        height={22}
-        draggable={false}
-        unoptimized
-      />
-      {app.screen === "runtronome" && (
-        <div className="screen-runtronome">
-          <strong>180</strong>
-          <span>BPM</span>
-          <i className="play-mark">▶</i>
-          <b className="progress-mark" />
-        </div>
-      )}
-      {app.screen === "odow" && (
-        <div className="screen-odow">
-          <span>JUL 26</span>
-          <strong>quiet</strong>
-          <p>rain on the window<br />tea gone cold<br />day slowly folds away.</p>
-          <b>day 214</b>
-        </div>
-      )}
-      {app.screen === "teru" && (
-        <div className="screen-teru">
-          <span className="teru-head"><i /><i /></span>
-          <b />
-          <p>Sunny · 26°</p>
-        </div>
-      )}
-      {app.screen === "feeloo" && (
-        <div className="screen-feeloo">
-          <p>calm · warm</p>
-          <div>{["🙂", "😌", "🥹", "🌱"].map((face) => <span key={face}>{face}</span>)}</div>
-        </div>
-      )}
-      {app.screen === "skkoo" && (
-        <div className="screen-skkoo">
-          <span>Morning<br /><strong>Coffee Ritual</strong></span>
-          <i>💗</i>
-          <b>02 / 09</b>
-        </div>
-      )}
-      {app.screen === "locaunt" && (
-        <div className="screen-locaunt">
-          <span className="map-line line-a" />
-          <span className="map-line line-b" />
-          <span className="map-line line-c" />
-          <i />
-          <p>Home visited</p>
-        </div>
-      )}
-      {app.screen === "pepesnap" && (
-        <div className="screen-pepe">
-          <span />
-          <i />
-          <p>W11.8 · 24mm</p>
-        </div>
-      )}
-      {app.screen === "mapary" && (
-        <div className="screen-mapary">
-          <span className="map-route" />
-          <i className="map-pin a" />
-          <i className="map-pin b" />
-          <p>DAEJEON<br /><b>3 memories</b></p>
-        </div>
-      )}
-      {app.screen === "tocklist" && (
-        <div className="screen-tocklist">
-          <strong>24</strong>
-          <p>today’s rhythm</p>
-          <span /><span /><span />
-        </div>
-      )}
-    </>
-  );
-}
 
 function AppCard({
   app,
@@ -175,18 +91,20 @@ function AppCard({
   return (
     <button
       ref={setRef}
-      className={`app-card card-${app.screen}`}
+      className="app-card"
       type="button"
       aria-label={`Select ${app.name}`}
       onClick={() => onSelect(index)}
-      style={
-        {
-          "--card-accent": app.accent,
-          "--card-accent-rgb": app.accentRgb,
-        } as CSSProperties
-      }
     >
-      <CardScreen app={app} />
+      <Image
+        className="carousel-app-icon"
+        src={app.icon}
+        alt=""
+        fill
+        sizes="(max-width: 767px) 56vw, (max-width: 1023px) 32vw, 21vw"
+        draggable={false}
+        unoptimized
+      />
     </button>
   );
 }
@@ -338,7 +256,6 @@ export function HomeExperience() {
   const targetRef = useRef(DEFAULT_APP_INDEX);
   const velocityRef = useRef(0);
   const activeIndexRef = useRef(DEFAULT_APP_INDEX);
-  const wheelRef = useRef({ amount: 0, lastMove: 0 });
   const pointerRef = useRef({
     id: -1,
     startX: 0,
@@ -677,10 +594,10 @@ export function HomeExperience() {
         const x = easeSlot(slot, width);
         const scale =
           absolute <= 1
-            ? 1 - absolute * 0.12
+            ? 1 - absolute * 0.18
             : absolute <= 2
-              ? 0.88 - (absolute - 1) * 0.13
-              : 0.75 - Math.min(absolute - 2, 1.2) * 0.1;
+              ? 0.82 - (absolute - 1) * 0.16
+              : 0.66 - Math.min(absolute - 2, 1.2) * 0.13;
         const opacity =
           absolute <= 1
             ? 1 - absolute * 0.09
@@ -750,30 +667,6 @@ export function HomeExperience() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [moveTo]);
-
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const onWheel = (event: globalThis.WheelEvent) => {
-      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
-        ? event.deltaX
-        : event.deltaY;
-      const atStart = targetRef.current <= 0.001 && delta < 0;
-      const atEnd = targetRef.current >= apps.length - 1.001 && delta > 0;
-      if (atStart || atEnd) return;
-      event.preventDefault();
-      const now = performance.now();
-      const wheel = wheelRef.current;
-      if (now - wheel.lastMove > 260) wheel.amount = 0;
-      wheel.amount += delta;
-      if (Math.abs(wheel.amount) < 42 || now - wheel.lastMove < 280) return;
-      moveTo(Math.round(targetRef.current) + Math.sign(wheel.amount));
-      wheel.lastMove = now;
-      wheel.amount = 0;
-    };
-    hero.addEventListener("wheel", onWheel, { passive: false });
-    return () => hero.removeEventListener("wheel", onWheel);
   }, [moveTo]);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
@@ -955,10 +848,6 @@ export function HomeExperience() {
           </div>
 
           <div className="app-info">
-            <div className="interaction-hint" aria-hidden="true">
-              <span />
-              DRAG · SWIPE · SCROLL
-            </div>
             <div className="app-info-content" key={activeApp.id}>
               <span className="app-count">
                 {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
