@@ -1023,10 +1023,10 @@ export function HomeExperience() {
         <footer id="contact">
           <div className="footer-inner">
             <div className="footer-social" aria-label="SAME STUDIO social links">
-              <a href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
+              <a href="https://github.com/StuidoSame" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
               <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO X"><SocialIcon platform="x" /></a>
               <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Instagram"><SocialIcon platform="instagram" /></a>
-              <span className="is-unlinked" aria-label="SAME STUDIO Threads — URL required"><SocialIcon platform="threads" /></span>
+              <a href="https://www.threads.com/@do.ob0909?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Threads"><SocialIcon platform="threads" /></a>
             </div>
             <p className="footer-copyright">© 2026 SAME STUDIO</p>
             <div className="footer-business">

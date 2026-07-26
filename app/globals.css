@@ -1161,7 +1161,8 @@ button {
 footer {
   padding: 36px clamp(24px, 5vw, 78px) 32px;
   color: #f6f1ff;
-  background: #6f49c9;
+  border-top: 1px solid rgba(120, 90, 170, 0.1);
+  background: linear-gradient(180deg, #675681 0%, #594a70 100%);
 }
 
 .footer-inner {
@@ -1191,21 +1192,21 @@ footer {
   min-height: 42px;
   max-width: 42px;
   max-height: 42px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 42px;
   overflow: hidden;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.86);
   background: transparent;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .footer-social > a:hover {
-  border-color: rgba(255, 255, 255, 0.34);
-  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .footer-social-icon {
@@ -1221,7 +1222,7 @@ footer {
 
 .footer-copyright {
   margin: 19px 0 0;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 15px;
 }
 
