@@ -37,8 +37,12 @@ const LOADER_LOGO_MOVE_MS = 650;
 const LOADER_EFFECT_MS = 550;
 const FINAL_LOGO_HOLD_MS = 800;
 const LOADER_EXIT_MS = 450;
-const AUTOPLAY_INTERVAL_MS = 3000;
 const AUTOPLAY_RESUME_DELAY_MS = 3000;
+const TYPE_CHAR_INTERVAL_MS = 70;
+const NAME_EMPHASIS_MS = 300;
+const PLATFORM_REVEAL_MS = 250;
+const DETAIL_REVEAL_MS = 300;
+const ACTIVE_COMPLETE_HOLD_MS = 500;
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -46,6 +50,14 @@ type LoaderPhase =
   | "effect"
   | "final"
   | "leaving";
+type ActiveSequencePhase =
+  | "idle"
+  | "typing"
+  | "name-emphasis"
+  | "platform-reveal"
+  | "detail-reveal"
+  | "hold"
+  | "complete";
 const HERO_ANDROID_APP_IDS = new Set([
   "mapary",
   "runtronome",
@@ -288,6 +300,10 @@ export function HomeExperience() {
   const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
   const [loaderCompletionMediaVisible, setLoaderCompletionMediaVisible] = useState(true);
   const [loaderVisible, setLoaderVisible] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [activeSequencePhase, setActiveSequencePhase] =
+    useState<ActiveSequencePhase>("idle");
+  const [typedNameLength, setTypedNameLength] = useState(0);
 
   const heroRef = useRef<HTMLElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -338,21 +354,14 @@ export function HomeExperience() {
   >(() => {});
   const autoplayTimerRef = useRef<number | null>(null);
   const autoplayEnabledRef = useRef(false);
+  const autoplayAdvancePendingRef = useRef(false);
+  const autoplayResumeNotBeforeRef = useRef(0);
+  const isTransitioningRef = useRef(false);
   const autoplayPauseReasonsRef = useRef(
     new Set<"interaction" | "detail-hover" | "detail-focus">(),
   );
 
   const activeApp = apps[activeIndex];
-
-  const moveBy = useCallback((offset: number) => {
-    targetRef.current = Math.round(targetRef.current) + offset;
-  }, []);
-
-  const moveToApp = useCallback((appIndex: number) => {
-    const progress = progressRef.current;
-    const nearestCycle = Math.round((progress - appIndex) / apps.length);
-    targetRef.current = appIndex + nearestCycle * apps.length;
-  }, []);
 
   const clearAutoplay = useCallback(() => {
     if (autoplayTimerRef.current === null) return;
@@ -360,9 +369,37 @@ export function HomeExperience() {
     autoplayTimerRef.current = null;
   }, []);
 
-  const scheduleAutoplay = useCallback(
-    function schedule(delay = AUTOPLAY_INTERVAL_MS) {
+  const beginTransition = useCallback(() => {
+    clearAutoplay();
+    autoplayAdvancePendingRef.current = false;
+    isTransitioningRef.current = true;
+    setIsTransitioning(true);
+    setActiveSequencePhase("idle");
+    setTypedNameLength(0);
+  }, [clearAutoplay]);
+
+  const moveBy = useCallback(
+    (offset: number) => {
+      beginTransition();
+      targetRef.current = Math.round(targetRef.current) + offset;
+    },
+    [beginTransition],
+  );
+
+  const moveToApp = useCallback(
+    (appIndex: number) => {
+      beginTransition();
+      const progress = progressRef.current;
+      const nearestCycle = Math.round((progress - appIndex) / apps.length);
+      targetRef.current = appIndex + nearestCycle * apps.length;
+    },
+    [beginTransition],
+  );
+
+  const queueAutoplayAdvance = useCallback(
+    (minimumDelay = 0) => {
       clearAutoplay();
+      autoplayAdvancePendingRef.current = true;
       if (
         !autoplayEnabledRef.current ||
         document.visibilityState === "hidden" ||
@@ -371,11 +408,22 @@ export function HomeExperience() {
         return;
       }
 
+      const resumeDelay = Math.max(
+        0,
+        autoplayResumeNotBeforeRef.current - performance.now(),
+      );
       autoplayTimerRef.current = window.setTimeout(() => {
         autoplayTimerRef.current = null;
+        if (
+          !autoplayEnabledRef.current ||
+          document.visibilityState === "hidden" ||
+          autoplayPauseReasonsRef.current.size > 0
+        ) {
+          return;
+        }
+        autoplayAdvancePendingRef.current = false;
         moveBy(1);
-        schedule(AUTOPLAY_INTERVAL_MS);
-      }, delay);
+      }, Math.max(minimumDelay, resumeDelay));
     },
     [clearAutoplay, moveBy],
   );
@@ -391,9 +439,13 @@ export function HomeExperience() {
   const resumeAutoplay = useCallback(
     (reason: "interaction" | "detail-hover" | "detail-focus") => {
       autoplayPauseReasonsRef.current.delete(reason);
-      scheduleAutoplay(AUTOPLAY_RESUME_DELAY_MS);
+      autoplayResumeNotBeforeRef.current =
+        performance.now() + AUTOPLAY_RESUME_DELAY_MS;
+      if (autoplayAdvancePendingRef.current) {
+        queueAutoplayAdvance(AUTOPLAY_RESUME_DELAY_MS);
+      }
     },
-    [scheduleAutoplay],
+    [queueAutoplayAdvance],
   );
 
   const selectApp = useCallback(
@@ -415,13 +467,13 @@ export function HomeExperience() {
 
   useEffect(() => {
     autoplayEnabledRef.current = !loaderVisible && !reducedMotion;
-    if (autoplayEnabledRef.current) {
-      scheduleAutoplay();
-    } else {
+    if (!autoplayEnabledRef.current) {
       clearAutoplay();
+    } else if (autoplayAdvancePendingRef.current) {
+      queueAutoplayAdvance();
     }
     return clearAutoplay;
-  }, [clearAutoplay, loaderVisible, reducedMotion, scheduleAutoplay]);
+  }, [clearAutoplay, loaderVisible, queueAutoplayAdvance, reducedMotion]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -429,13 +481,77 @@ export function HomeExperience() {
         clearAutoplay();
         return;
       }
-      scheduleAutoplay();
+      autoplayResumeNotBeforeRef.current =
+        performance.now() + AUTOPLAY_RESUME_DELAY_MS;
+      if (autoplayAdvancePendingRef.current) {
+        queueAutoplayAdvance(AUTOPLAY_RESUME_DELAY_MS);
+      }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [clearAutoplay, scheduleAutoplay]);
+  }, [clearAutoplay, queueAutoplayAdvance]);
+
+  useEffect(() => {
+    if (loaderVisible || isTransitioning) return;
+    autoplayAdvancePendingRef.current = false;
+
+    if (reducedMotion) {
+      setTypedNameLength(activeApp.name.length);
+      setActiveSequencePhase("complete");
+      return;
+    }
+
+    const timers: number[] = [];
+    const typingDuration = activeApp.name.length * TYPE_CHAR_INTERVAL_MS;
+    setTypedNameLength(0);
+    setActiveSequencePhase("typing");
+
+    for (let length = 1; length <= activeApp.name.length; length += 1) {
+      timers.push(
+        window.setTimeout(
+          () => setTypedNameLength(length),
+          length * TYPE_CHAR_INTERVAL_MS,
+        ),
+      );
+    }
+
+    const nameEmphasisStart = typingDuration;
+    const platformRevealStart = nameEmphasisStart + NAME_EMPHASIS_MS;
+    const detailRevealStart = platformRevealStart + PLATFORM_REVEAL_MS;
+    const holdStart = detailRevealStart + DETAIL_REVEAL_MS;
+    const completeAt = holdStart + ACTIVE_COMPLETE_HOLD_MS;
+
+    timers.push(
+      window.setTimeout(
+        () => setActiveSequencePhase("name-emphasis"),
+        nameEmphasisStart,
+      ),
+      window.setTimeout(
+        () => setActiveSequencePhase("platform-reveal"),
+        platformRevealStart,
+      ),
+      window.setTimeout(
+        () => setActiveSequencePhase("detail-reveal"),
+        detailRevealStart,
+      ),
+      window.setTimeout(() => setActiveSequencePhase("hold"), holdStart),
+      window.setTimeout(() => {
+        setActiveSequencePhase("complete");
+        queueAutoplayAdvance();
+      }, completeAt),
+    );
+
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [
+    activeApp.id,
+    activeApp.name,
+    isTransitioning,
+    loaderVisible,
+    queueAutoplayAdvance,
+    reducedMotion,
+  ]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -715,6 +831,10 @@ export function HomeExperience() {
         ) {
           progressRef.current = targetRef.current;
           velocityRef.current = 0;
+          if (isTransitioningRef.current) {
+            isTransitioningRef.current = false;
+            setIsTransitioning(false);
+          }
         }
       }
 
@@ -866,6 +986,7 @@ export function HomeExperience() {
       pointer.horizontal = true;
     }
     event.preventDefault();
+    if (!isTransitioningRef.current) beginTransition();
     const width = window.innerWidth;
     const step = width < 768 ? width * 0.59 : width < 1024 ? width * 0.23 : width * 0.16;
     const now = performance.now();
@@ -999,28 +1120,37 @@ export function HomeExperience() {
           </div>
 
           <div className="app-info">
-            <div className="app-info-content" key={activeApp.id}>
+            <div
+              className={`app-info-content sequence-${activeSequencePhase}`}
+              key={activeApp.id}
+              data-sequence-phase={activeSequencePhase}
+              data-transitioning={isTransitioning ? "true" : "false"}
+            >
               <span className="app-count">
                 {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
               </span>
-              <h1>{activeApp.name}</h1>
+              <h1 aria-label={activeApp.name}>
+                {activeApp.name.slice(0, typedNameLength)}
+              </h1>
               <PlatformIcons app={activeApp} />
-              {activeApp.appStoreUrl ? (
-                <a
-                  className="view-app"
-                  href={activeApp.appStoreUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  onMouseEnter={() => pauseAutoplay("detail-hover")}
-                  onMouseLeave={() => resumeAutoplay("detail-hover")}
-                  onFocus={() => pauseAutoplay("detail-focus")}
-                  onBlur={() => resumeAutoplay("detail-focus")}
-                >
-                  VIEW DETAIL
-                </a>
-              ) : (
-                <span className="view-app is-disabled">VIEW DETAIL</span>
-              )}
+              <span className="view-app-sequence">
+                {activeApp.appStoreUrl ? (
+                  <a
+                    className="view-app"
+                    href={activeApp.appStoreUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onMouseEnter={() => pauseAutoplay("detail-hover")}
+                    onMouseLeave={() => resumeAutoplay("detail-hover")}
+                    onFocus={() => pauseAutoplay("detail-focus")}
+                    onBlur={() => resumeAutoplay("detail-focus")}
+                  >
+                    VIEW DETAIL
+                  </a>
+                ) : (
+                  <span className="view-app is-disabled">VIEW DETAIL</span>
+                )}
+              </span>
             </div>
           </div>
 
