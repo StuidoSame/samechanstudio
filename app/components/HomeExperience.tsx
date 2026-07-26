@@ -13,6 +13,11 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
+import {
+  getTypeRevealDelay,
+  TypeReveal,
+  TypeRevealGroup,
+} from "./type-reveal/TypeReveal";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
@@ -54,6 +59,18 @@ const PLAY_RESUME_DELAY_MS = 400;
 const FAST_FORWARD_TRANSITION_MS = 280;
 const FAST_FORWARD_GAP_MS = 70;
 const REDUCED_MOTION_FAST_FORWARD_TRANSITION_MS = 360;
+const ABOUT_REVEAL_STEPS = [
+  { text: "SAME STUDIO / ABOUT", speed: 32 },
+  { text: "Small apps, made with a lot of care.", speed: 45 },
+  {
+    text: "SAME STUDIO is an independent mobile app studio based in Daejeon, Korea. We build gentle tools for records, places, rhythm, and focus.",
+    speed: 18,
+  },
+  {
+    text: "Soft on first impression, dependable in daily use. Each app is designed to make a small recurring moment feel a little clearer.",
+    speed: 18,
+  },
+] as const;
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -1824,22 +1841,37 @@ export function HomeExperience() {
 
         </section>
 
-        <section className="studio-about">
+        <TypeRevealGroup as="section" className="studio-about">
           <div>
-            <span className="section-label">SAME STUDIO / ABOUT</span>
-            <h2>Small apps, made with a lot of care.</h2>
+            <TypeReveal
+              as="span"
+              className="section-label"
+              text={ABOUT_REVEAL_STEPS[0].text}
+              speed={ABOUT_REVEAL_STEPS[0].speed}
+              delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 0)}
+            />
+            <TypeReveal
+              as="h2"
+              text={ABOUT_REVEAL_STEPS[1].text}
+              speed={ABOUT_REVEAL_STEPS[1].speed}
+              delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 1)}
+            />
           </div>
           <div className="about-copy">
-            <p>
-              SAME STUDIO is an independent mobile app studio based in Daejeon,
-              Korea. We build gentle tools for records, places, rhythm, and focus.
-            </p>
-            <p>
-              Soft on first impression, dependable in daily use. Each app is
-              designed to make a small recurring moment feel a little clearer.
-            </p>
+            <TypeReveal
+              as="p"
+              text={ABOUT_REVEAL_STEPS[2].text}
+              speed={ABOUT_REVEAL_STEPS[2].speed}
+              delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 2)}
+            />
+            <TypeReveal
+              as="p"
+              text={ABOUT_REVEAL_STEPS[3].text}
+              speed={ABOUT_REVEAL_STEPS[3].speed}
+              delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 3)}
+            />
           </div>
-        </section>
+        </TypeRevealGroup>
 
         <DeviceShowcase />
 
