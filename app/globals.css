@@ -878,6 +878,64 @@ button {
   pointer-events: none;
 }
 
+.autoplay-control {
+  width: 36px;
+  height: 36px;
+  margin: -48px 0 12px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  border: 1px solid rgba(119, 80, 200, 0.22);
+  border-radius: 50%;
+  color: #7b56c4;
+  background: rgba(249, 246, 255, 0.52);
+  box-shadow:
+    0 8px 20px rgba(104, 69, 169, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.autoplay-control-icon,
+.autoplay-control-icon svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.autoplay-control-icon {
+  animation: autoplay-icon-in 0.18s ease-out both;
+}
+
+.autoplay-control:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.autoplay-control:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .autoplay-control:hover:not(:disabled) {
+    transform: scale(1.05);
+    border-color: rgba(119, 80, 200, 0.42);
+    background: rgba(250, 247, 255, 0.72);
+    box-shadow:
+      0 10px 24px rgba(104, 69, 169, 0.12),
+      0 0 18px rgba(147, 97, 235, 0.13),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+}
+
 .app-info-content {
   width: 100%;
   display: flex;
@@ -1672,6 +1730,17 @@ footer {
   }
 }
 
+@keyframes autoplay-icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.72) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
 @keyframes info-in {
   from {
     opacity: 0;
@@ -1804,6 +1873,13 @@ footer {
   .app-info {
     top: calc(clamp(350px, 57svh, 532px) - 26px);
     width: calc(100% - 32px);
+  }
+
+  .autoplay-control {
+    width: 34px;
+    height: 34px;
+    margin-top: -46px;
+    flex-basis: 34px;
   }
 
   .app-count {
@@ -1960,6 +2036,13 @@ footer {
 
   .app-info {
     top: calc(clamp(318px, 56svh, 440px) - 24px);
+  }
+
+  .autoplay-control {
+    width: 32px;
+    height: 32px;
+    margin-top: -44px;
+    flex-basis: 32px;
   }
 
   .app-info h1 {

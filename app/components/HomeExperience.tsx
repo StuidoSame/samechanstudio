@@ -43,6 +43,7 @@ const NAME_EMPHASIS_MS = 300;
 const PLATFORM_REVEAL_MS = 250;
 const DETAIL_REVEAL_MS = 300;
 const ACTIVE_COMPLETE_HOLD_MS = 500;
+const PLAY_RESUME_DELAY_MS = 400;
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -302,6 +303,7 @@ export function HomeExperience() {
   const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
   const [loaderCompletionMediaVisible, setLoaderCompletionMediaVisible] = useState(true);
   const [loaderVisible, setLoaderVisible] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [activeSequencePhase, setActiveSequencePhase] =
     useState<ActiveSequencePhase>("idle");
@@ -358,6 +360,7 @@ export function HomeExperience() {
   const autoplayEnabledRef = useRef(false);
   const autoplayAdvancePendingRef = useRef(false);
   const autoplayResumeNotBeforeRef = useRef(0);
+  const isPlayingRef = useRef(true);
   const isTransitioningRef = useRef(false);
   const autoplayPauseReasonsRef = useRef(
     new Set<"interaction" | "detail-hover" | "detail-focus">(),
@@ -404,6 +407,7 @@ export function HomeExperience() {
       autoplayAdvancePendingRef.current = true;
       if (
         !autoplayEnabledRef.current ||
+        !isPlayingRef.current ||
         document.visibilityState === "hidden" ||
         autoplayPauseReasonsRef.current.size > 0
       ) {
@@ -418,6 +422,7 @@ export function HomeExperience() {
         autoplayTimerRef.current = null;
         if (
           !autoplayEnabledRef.current ||
+          !isPlayingRef.current ||
           document.visibilityState === "hidden" ||
           autoplayPauseReasonsRef.current.size > 0
         ) {
@@ -459,6 +464,25 @@ export function HomeExperience() {
     [moveToApp, pauseAutoplay, resumeAutoplay],
   );
 
+  const toggleAutoplay = useCallback(() => {
+    if (isTransitioningRef.current) return;
+
+    if (isPlayingRef.current) {
+      isPlayingRef.current = false;
+      setIsPlaying(false);
+      clearAutoplay();
+      return;
+    }
+
+    isPlayingRef.current = true;
+    setIsPlaying(true);
+    autoplayResumeNotBeforeRef.current =
+      performance.now() + PLAY_RESUME_DELAY_MS;
+    if (autoplayAdvancePendingRef.current) {
+      queueAutoplayAdvance(PLAY_RESUME_DELAY_MS);
+    }
+  }, [clearAutoplay, queueAutoplayAdvance]);
+
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => setReducedMotion(query.matches);
@@ -469,6 +493,10 @@ export function HomeExperience() {
 
   useEffect(() => {
     autoplayEnabledRef.current = !loaderVisible && !reducedMotion;
+    if (reducedMotion && isPlayingRef.current) {
+      isPlayingRef.current = false;
+      setIsPlaying(false);
+    }
     if (!autoplayEnabledRef.current) {
       clearAutoplay();
     } else if (autoplayAdvancePendingRef.current) {
@@ -1145,6 +1173,32 @@ export function HomeExperience() {
           </div>
 
           <div className="app-info">
+            <button
+              className={`autoplay-control ${isPlaying ? "is-playing" : "is-paused"}`}
+              type="button"
+              aria-label={isPlaying ? "자동 재생 일시정지" : "자동 재생 시작"}
+              disabled={isTransitioning || reducedMotion}
+              data-playing={isPlaying ? "true" : "false"}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={toggleAutoplay}
+            >
+              <span
+                className="autoplay-control-icon"
+                key={isPlaying ? "pause" : "play"}
+                aria-hidden="true"
+              >
+                {isPlaying ? (
+                  <svg viewBox="0 0 16 16" fill="currentColor">
+                    <rect x="3.25" y="2.5" width="3.25" height="11" rx="1" />
+                    <rect x="9.5" y="2.5" width="3.25" height="11" rx="1" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M4.25 2.8a.9.9 0 0 1 1.36-.77l7.1 4.53a.9.9 0 0 1 0 1.52l-7.1 4.53a.9.9 0 0 1-1.36-.76V2.8Z" />
+                  </svg>
+                )}
+              </span>
+            </button>
             <div
               className={`app-info-content sequence-${activeSequencePhase}`}
               key={activeApp.id}
