@@ -84,6 +84,14 @@ const CONTACT_REVEAL_STEPS = [
   },
   { text: "contact@samestudio.kr", speed: 32 },
 ] as const;
+const HEADER_LANGUAGES = [
+  { code: "ko", label: "한국어" },
+  { code: "en", label: "English" },
+  { code: "ja", label: "日本語" },
+  { code: "zh-CN", label: "简体中文" },
+  { code: "zh-TW", label: "繁體中文" },
+] as const;
+type HeaderLanguageCode = (typeof HEADER_LANGUAGES)[number]["code"];
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -443,6 +451,10 @@ function Loader({
 export function HomeExperience() {
   const [activeIndex, setActiveIndex] = useState(DEFAULT_APP_INDEX);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<HeaderLanguageCode>("ko");
+  const [darkPressKey, setDarkPressKey] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
@@ -872,15 +884,19 @@ export function HomeExperience() {
   ]);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen && !languageOpen) return;
 
     const closeOnOutsidePointer = (event: PointerEvent) => {
       if (event.target instanceof Node && !headerRef.current?.contains(event.target)) {
         setMenuOpen(false);
+        setLanguageOpen(false);
       }
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        setLanguageOpen(false);
+      }
     };
 
     window.addEventListener("pointerdown", closeOnOutsidePointer);
@@ -889,7 +905,7 @@ export function HomeExperience() {
       window.removeEventListener("pointerdown", closeOnOutsidePointer);
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [menuOpen]);
+  }, [languageOpen, menuOpen]);
 
   useEffect(() => {
     let loaded = 0;
@@ -1652,6 +1668,86 @@ export function HomeExperience() {
                 </span>
               </span>
             </a>
+            <div className="header-utility">
+              <div className="header-utility-bar" aria-label="언어 및 테마 컨트롤">
+                <button
+                  type="button"
+                  className="header-utility-segment language-control"
+                  aria-label="언어 선택"
+                  aria-expanded={languageOpen}
+                  aria-controls="language-panel"
+                  aria-haspopup="menu"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setLanguageOpen((open) => !open);
+                  }}
+                >
+                  <svg
+                    className="language-control-icon"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M3.6 9h16.8M3.6 15h16.8M12 3c2.15 2.35 3.25 5.35 3.25 9S14.15 18.65 12 21M12 3c-2.15 2.35-3.25 5.35-3.25 9S9.85 18.65 12 21" />
+                  </svg>
+                  <span>LANG</span>
+                </button>
+                <span className="header-utility-divider" aria-hidden="true" />
+                <button
+                  type="button"
+                  className="header-utility-segment dark-control"
+                  aria-label="다크 모드 준비 중"
+                  onClick={() => setDarkPressKey((key) => key + 1)}
+                >
+                  <span
+                    key={darkPressKey}
+                    className={`dark-control-icon${darkPressKey > 0 ? " is-pressing" : ""}`}
+                    aria-hidden="true"
+                  >
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.1 15.25A8.25 8.25 0 0 1 8.75 3.9 8.25 8.25 0 1 0 20.1 15.25Z" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                id="language-panel"
+                className={`language-panel${languageOpen ? " is-open" : ""}`}
+                role="menu"
+                aria-label="언어 선택 옵션"
+                aria-hidden={!languageOpen}
+              >
+                {HEADER_LANGUAGES.map((language) => (
+                  <button
+                    key={language.code}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={selectedLanguage === language.code}
+                    onClick={() => {
+                      setSelectedLanguage(language.code);
+                      setLanguageOpen(false);
+                    }}
+                  >
+                    <span>{language.label}</span>
+                    <i aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+            </div>
             <nav
               id="site-menu"
               className={menuOpen ? "is-open" : ""}
@@ -1670,7 +1766,10 @@ export function HomeExperience() {
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-controls="site-menu"
-              onClick={() => setMenuOpen((open) => !open)}
+              onClick={() => {
+                setLanguageOpen(false);
+                setMenuOpen((open) => !open);
+              }}
             >
               <span />
               <span />
