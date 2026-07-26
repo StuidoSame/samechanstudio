@@ -28,6 +28,10 @@ const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
+const smoothstep = (edge0: number, edge1: number, value: number) => {
+  const progress = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+  return progress * progress * (3 - 2 * progress);
+};
 
 const LOADER_WORDS = ["SAME", "STUDIO"] as const;
 const LOADER_DURATION = 2400;
@@ -385,6 +389,7 @@ export function HomeExperience() {
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const progressRef = useRef(DEFAULT_APP_INDEX);
   const targetRef = useRef(DEFAULT_APP_INDEX);
+  const transitionOriginRef = useRef(DEFAULT_APP_INDEX);
   const velocityRef = useRef(0);
   const activeIndexRef = useRef(DEFAULT_APP_INDEX);
   const pointerRef = useRef({
@@ -399,20 +404,42 @@ export function HomeExperience() {
     horizontal: false,
   });
   const interactionRef = useRef<JellyInteraction>({
+    phase: "idle",
     velocity: 0,
     direction: 1,
     stretch: 0,
     transition: 0,
+    enterDirection: 1,
+    exitDirection: -1,
+    enterStrength: 0,
+    exitStrength: 0,
+    releaseDirection: 1,
+    releaseStrength: 0,
+    settleAmplitude: 0,
+    settlePhase: 0,
+    idleStrength: 1,
+    fastForwarding: false,
     accent: apps[DEFAULT_APP_INDEX].accent,
     pointerX: 0,
     pointerY: 0,
     pointerStrength: 0,
   });
   const loaderInteractionRef = useRef<JellyInteraction>({
+    phase: "idle",
     velocity: 0,
     direction: 1,
     stretch: 0.02,
     transition: 0,
+    enterDirection: 1,
+    exitDirection: -1,
+    enterStrength: 0,
+    exitStrength: 0,
+    releaseDirection: 1,
+    releaseStrength: 0,
+    settleAmplitude: 0,
+    settlePhase: 0,
+    idleStrength: 1,
+    fastForwarding: false,
     accent: "#a873ff",
     pointerX: 0,
     pointerY: 0,
@@ -456,6 +483,7 @@ export function HomeExperience() {
   const beginTransition = useCallback(() => {
     clearAutoplay();
     autoplayAdvancePendingRef.current = false;
+    transitionOriginRef.current = progressRef.current;
     isTransitioningRef.current = true;
     setIsTransitioning(true);
     setActiveSequencePhase("idle");
@@ -1147,14 +1175,42 @@ export function HomeExperience() {
       interactionRef.current.velocity +=
         (v - interactionRef.current.velocity) * 0.18;
       interactionRef.current.direction = direction || 1;
-      interactionRef.current.stretch +=
-        (clamp(Math.abs(v) * 0.85 + distance * 0.18, 0, 0.48) -
-          interactionRef.current.stretch) *
-        0.12;
-      interactionRef.current.transition +=
-        (clamp(distance * 1.25 + Math.abs(v) * 1.7, 0, 1) -
-          interactionRef.current.transition) *
-        0.1;
+      const origin = transitionOriginRef.current;
+      const targetOffset = targetRef.current - origin;
+      const progressOffset = progress - origin;
+      const motionDirection =
+        Math.sign(targetOffset) || Math.sign(progressOffset) || direction || 1;
+      const travelDistance = Math.max(Math.abs(targetOffset), 1);
+      const travel = clamp(Math.abs(progressOffset) / travelDistance, 0, 1);
+      const moving = isTransitioningRef.current || pointer.dragging;
+      const exitEnvelope = moving
+        ? smoothstep(0.04, 0.54, travel) *
+          (1 - smoothstep(0.84, 1, travel))
+        : 0;
+      const enterEnvelope = moving
+        ? smoothstep(0.12, 0.7, travel) *
+          (1 - smoothstep(0.94, 1, travel))
+        : 0;
+      interactionRef.current.phase = moving
+        ? travel < 0.52
+          ? "exiting"
+          : "entering"
+        : "idle";
+      interactionRef.current.enterDirection = motionDirection;
+      interactionRef.current.exitDirection = -motionDirection;
+      interactionRef.current.enterStrength +=
+        (enterEnvelope - interactionRef.current.enterStrength) * 0.2;
+      interactionRef.current.exitStrength +=
+        (exitEnvelope - interactionRef.current.exitStrength) * 0.2;
+      interactionRef.current.stretch = Math.max(
+        interactionRef.current.enterStrength,
+        interactionRef.current.exitStrength,
+      );
+      interactionRef.current.transition = Math.max(
+        enterEnvelope,
+        exitEnvelope,
+      );
+      interactionRef.current.fastForwarding = isFastForwardingRef.current;
       interactionRef.current.accent = apps[nearest].accent;
 
       frame = requestAnimationFrame(render);

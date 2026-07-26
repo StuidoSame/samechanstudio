@@ -12,11 +12,29 @@ import {
 } from "react";
 import * as THREE from "three";
 
+export type JellyPhase =
+  | "entering"
+  | "settling"
+  | "idle"
+  | "exiting"
+  | "release";
+
 export type JellyInteraction = {
+  phase: JellyPhase;
   velocity: number;
   direction: number;
   stretch: number;
   transition: number;
+  enterDirection: number;
+  exitDirection: number;
+  enterStrength: number;
+  exitStrength: number;
+  releaseDirection: number;
+  releaseStrength: number;
+  settleAmplitude: number;
+  settlePhase: number;
+  idleStrength: number;
+  fastForwarding: boolean;
   accent: string;
   pointerX: number;
   pointerY: number;
@@ -38,6 +56,12 @@ const vertexShader = `
   uniform float uVelocity;
   uniform float uTransition;
   uniform float uLoaderMotion;
+  uniform float uHeroMode;
+  uniform float uMotionScale;
+  uniform float uEnterDirection;
+  uniform float uExitDirection;
+  uniform float uEnterStrength;
+  uniform float uExitStrength;
   uniform vec2 uPointer;
   uniform float uPointerStrength;
   varying vec3 vNormalW;
@@ -67,8 +91,15 @@ const vertexShader = `
     float idle = organic(n, uTime) + loaderSurface(n, uTime);
     float directionalFace = pow(max(0.0, dot(n, vec3(uDirection, 0.0, 0.0))), 2.25);
     float releaseFace = pow(max(0.0, dot(n, vec3(-uDirection, 0.0, 0.0))), 3.0);
-    float membrane = directionalFace * uStretch * 0.34;
-    membrane -= releaseFace * uTransition * 0.075;
+    float legacyMembrane = directionalFace * uStretch * 0.34;
+    legacyMembrane -= releaseFace * uTransition * 0.075;
+    float enterFace = pow(max(0.0, dot(n, vec3(uEnterDirection, 0.0, 0.0))), 2.4);
+    float exitFace = pow(max(0.0, dot(n, vec3(uExitDirection, 0.0, 0.0))), 2.15);
+    float directionalMembrane = (
+      enterFace * uEnterStrength * 0.16 +
+      exitFace * uExitStrength * 0.20
+    ) * uMotionScale;
+    float membrane = mix(legacyMembrane, directionalMembrane, uHeroMode);
     float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * 0.026;
     float loaderSqueeze = sin(uTime * 2.05) * uLoaderMotion;
     vec3 pointerDirection = normalize(vec3(uPointer.x, uPointer.y * 0.86, 0.72));
@@ -77,8 +108,13 @@ const vertexShader = `
 
     vec3 displaced = position + n * (idle + membrane + wobble + pointerSurface);
     displaced += pointerDirection * pointerSurface * 0.06;
-    displaced.x *= 1.0 + uStretch * 0.08 + loaderSqueeze * 0.045;
-    displaced.x += uDirection * uStretch * (0.09 + directionalFace * 0.08);
+    displaced.x *= 1.0 + mix(uStretch * 0.08, (uEnterStrength + uExitStrength) * 0.025 * uMotionScale, uHeroMode) + loaderSqueeze * 0.045;
+    float legacyShift = uDirection * uStretch * (0.09 + directionalFace * 0.08);
+    float directionalShift = (
+      uEnterDirection * enterFace * uEnterStrength * 0.13 +
+      uExitDirection * exitFace * uExitStrength * 0.16
+    ) * uMotionScale;
+    displaced.x += mix(legacyShift, directionalShift, uHeroMode);
     displaced.y *= 0.94 + sin(uTime * 0.45) * 0.008 - loaderSqueeze * 0.035;
     displaced.z *= 0.91;
 
@@ -145,11 +181,17 @@ function JellyMesh({
       uVelocity: { value: 0 },
       uTransition: { value: 0 },
       uLoaderMotion: { value: 0 },
+      uHeroMode: { value: loader ? 0 : 1 },
+      uMotionScale: { value: detail === 4 ? 0.8 : 1 },
+      uEnterDirection: { value: 1 },
+      uExitDirection: { value: -1 },
+      uEnterStrength: { value: 0 },
+      uExitStrength: { value: 0 },
       uAccentColor: { value: new THREE.Color("#ff5559") },
       uPointer: { value: new THREE.Vector2(0, 0) },
       uPointerStrength: { value: 0 },
     }),
-    [],
+    [detail, loader],
   );
 
   useFrame((state, delta) => {
@@ -173,6 +215,27 @@ function JellyMesh({
       material.uniforms.uTransition.value,
       data.transition,
       0.1,
+    );
+    material.uniforms.uEnterDirection.value = THREE.MathUtils.lerp(
+      material.uniforms.uEnterDirection.value,
+      data.enterDirection || 1,
+      0.22,
+    );
+    material.uniforms.uExitDirection.value = THREE.MathUtils.lerp(
+      material.uniforms.uExitDirection.value,
+      data.exitDirection || -1,
+      0.22,
+    );
+    const reducedForce = reducedMotion ? 0.24 : 1;
+    material.uniforms.uEnterStrength.value = THREE.MathUtils.lerp(
+      material.uniforms.uEnterStrength.value,
+      data.enterStrength * reducedForce,
+      0.18,
+    );
+    material.uniforms.uExitStrength.value = THREE.MathUtils.lerp(
+      material.uniforms.uExitStrength.value,
+      data.exitStrength * reducedForce,
+      0.18,
     );
     const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
     const loaderMotionIntensity = loader
