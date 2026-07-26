@@ -1,5 +1,6 @@
 import { DeviceSection } from "./DeviceSection";
 import { IPhoneFrame } from "./IPhoneFrame";
+import { IPadFrame } from "./IPadFrame";
 
 const phoneCopy = {
   index: "01",
@@ -16,6 +17,19 @@ const phoneCopy = {
   ),
 };
 
+const tabletCopy = {
+  index: "02",
+  category: "TABLET",
+  title: "Room to think.",
+  body: (
+    <p>
+      A little more space for ideas,
+      <br />
+      memories, and everything in between.
+    </p>
+  ),
+};
+
 export function DeviceShowcase() {
   return (
     <div className="device-showcase" aria-label="SAME STUDIO device showcase">
@@ -24,6 +38,12 @@ export function DeviceShowcase() {
           {...phoneCopy}
           className="device-showcase-phone"
           device={<IPhoneFrame />}
+        />
+        <DeviceSection
+          {...tabletCopy}
+          className="device-showcase-tablet"
+          device={<IPadFrame />}
+          reversed
         />
       </div>
     </div>

@@ -1488,6 +1488,21 @@ button {
   place-items: center;
 }
 
+.device-showcase-row.is-reversed {
+  grid-template-columns: minmax(300px, 0.78fr) minmax(0, 0.92fr);
+}
+
+.device-showcase-row.is-reversed .device-showcase-visual {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.device-showcase-row.is-reversed .device-showcase-copy {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+}
+
 .device-showcase-copy {
   position: relative;
   max-width: 470px;
@@ -1618,6 +1633,77 @@ button {
   height: 78px;
 }
 
+.device-tablet-stage {
+  position: relative;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  animation: device-tablet-float 8s ease-in-out infinite;
+}
+
+.device-tablet-stage::before {
+  position: absolute;
+  z-index: -1;
+  width: clamp(450px, 45vw, 620px);
+  aspect-ratio: 1.12;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(135, 91, 220, 0.2), rgba(206, 174, 247, 0.08) 48%, transparent 70%);
+  filter: blur(8px);
+  content: "";
+}
+
+.device-tablet-frame {
+  position: relative;
+  width: clamp(500px, 43vw, 590px);
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: clamp(30px, 2.7vw, 38px);
+  background: linear-gradient(145deg, #51475e 0%, #211d28 50%, #463a55 100%);
+  box-shadow:
+    0 40px 88px rgba(72, 47, 111, 0.22),
+    0 8px 22px rgba(61, 42, 94, 0.14),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.24),
+    inset -1px -1px 1px rgba(12, 9, 17, 0.68);
+  transform: perspective(1200px) rotateX(3deg) rotateY(-5deg);
+  transform-style: preserve-3d;
+}
+
+.device-tablet-screen {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: calc(clamp(30px, 2.7vw, 38px) - 9px);
+  background:
+    radial-gradient(circle at 74% 20%, rgba(220, 199, 255, 0.18), transparent 34%),
+    linear-gradient(145deg, #2c2639 0%, #1b1823 48%, #433651 100%);
+  box-shadow: inset 0 0 46px rgba(192, 153, 239, 0.055);
+}
+
+.device-tablet-camera {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #0b0a0e;
+  box-shadow: inset 0 0 0 1px rgba(121, 105, 146, 0.22);
+  transform: translateY(-50%);
+}
+
+.device-tablet-button {
+  position: absolute;
+  top: -3px;
+  left: 11%;
+  width: 54px;
+  height: 3px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #2a2530, #574b63, #2a2530);
+}
+
 @keyframes device-phone-float {
   0%,
   100% {
@@ -1625,6 +1711,16 @@ button {
   }
   50% {
     translate: 0 5px;
+  }
+}
+
+@keyframes device-tablet-float {
+  0%,
+  100% {
+    translate: 0 -4px;
+  }
+  50% {
+    translate: 0 4px;
   }
 }
 
@@ -1663,10 +1759,19 @@ button {
   .device-phone-stage::before {
     width: clamp(310px, 84vw, 430px);
   }
+
+  .device-tablet-frame {
+    width: min(90vw, 360px);
+  }
+
+  .device-tablet-stage::before {
+    width: min(108vw, 440px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .device-phone-stage {
+  .device-phone-stage,
+  .device-tablet-stage {
     animation: none;
   }
 }
