@@ -1129,7 +1129,6 @@ export function HomeExperience() {
 
         card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${parallaxY}px), ${depth + parallaxZ}px) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
         card.style.opacity = String(absolute < visibleRadius ? opacity : 0);
-        card.style.zIndex = String(50 - Math.round(absolute * 8));
         card.style.pointerEvents = absolute < visibleRadius ? "auto" : "none";
         card.setAttribute(
           "aria-hidden",

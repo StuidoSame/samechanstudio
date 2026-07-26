@@ -350,8 +350,8 @@ button {
   z-index: 3;
   top: 50%;
   left: 50%;
-  width: clamp(400px, 31vw, 460px);
-  height: clamp(360px, 29vw, 420px);
+  width: clamp(470px, 36vw, 520px);
+  height: clamp(440px, 34vw, 490px);
   transform: translate(-50%, -50%);
   pointer-events: none;
   filter:
@@ -390,6 +390,7 @@ button {
 
 .app-card {
   position: absolute;
+  z-index: 1;
   top: 50%;
   left: 50%;
   width: clamp(260px, 21vw, 300px);
@@ -1962,8 +1963,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: clamp(360px, 47vw, 430px);
-    height: clamp(340px, 44vw, 400px);
+    width: clamp(410px, 50vw, 480px);
+    height: clamp(390px, 47vw, 450px);
   }
 
   .app-info {
@@ -2007,8 +2008,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: clamp(265px, 76vw, 310px);
-    height: clamp(270px, 77vw, 320px);
+    width: clamp(285px, 82vw, 340px);
+    height: clamp(290px, 83vw, 350px);
   }
 
   .preloader-jelly {
@@ -2206,8 +2207,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: 240px;
-    height: 250px;
+    width: 250px;
+    height: 260px;
   }
 
   .card-eyebrow {
@@ -2267,8 +2268,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: 340px;
-    height: 320px;
+    width: 410px;
+    height: 380px;
   }
 
   .app-info {
@@ -2298,8 +2299,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: clamp(228px, 70vw, 265px);
-    height: clamp(235px, 70vw, 275px);
+    width: clamp(220px, 67vw, 250px);
+    height: clamp(230px, 68vw, 260px);
   }
 
   .app-info {
