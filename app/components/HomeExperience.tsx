@@ -14,10 +14,10 @@ import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import {
-  getTypeRevealDelay,
   TypeReveal,
   TypeRevealGroup,
 } from "./type-reveal/TypeReveal";
+import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
@@ -70,6 +70,19 @@ const ABOUT_REVEAL_STEPS = [
     text: "Soft on first impression, dependable in daily use. Each app is designed to make a small recurring moment feel a little clearer.",
     speed: 18,
   },
+] as const;
+const CONTACT_REVEAL_STEPS = [
+  { text: "CONTACT", speed: 32 },
+  { text: "Say hello.", speed: 45 },
+  {
+    text: "앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요.",
+    speed: 18,
+  },
+  {
+    text: "필요한 내용을 확인한 뒤 순차적으로 답변드립니다.",
+    speed: 18,
+  },
+  { text: "contact@samestudio.kr", speed: 32 },
 ] as const;
 type LoaderPhase =
   | "loading"
@@ -1875,24 +1888,53 @@ export function HomeExperience() {
 
         <DeviceShowcase />
 
-        <section
+        <TypeRevealGroup
+          as="section"
           className="contact-section"
           id="contact"
           aria-labelledby="contact-title"
         >
           <div className="contact-inner">
-            <span className="contact-label">CONTACT</span>
-            <h2 id="contact-title">Say hello.</h2>
+            <TypeReveal
+              as="span"
+              className="contact-label"
+              text={CONTACT_REVEAL_STEPS[0].text}
+              speed={CONTACT_REVEAL_STEPS[0].speed}
+              delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 0)}
+            />
+            <TypeReveal
+              as="h2"
+              id="contact-title"
+              text={CONTACT_REVEAL_STEPS[1].text}
+              speed={CONTACT_REVEAL_STEPS[1].speed}
+              delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 1)}
+            />
             <p className="contact-copy">
-              <span>앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요.</span>
-              <span>필요한 내용을 확인한 뒤 순차적으로 답변드립니다.</span>
+              <TypeReveal
+                as="span"
+                text={CONTACT_REVEAL_STEPS[2].text}
+                speed={CONTACT_REVEAL_STEPS[2].speed}
+                delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 2)}
+              />
+              <TypeReveal
+                as="span"
+                text={CONTACT_REVEAL_STEPS[3].text}
+                speed={CONTACT_REVEAL_STEPS[3].speed}
+                delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 3)}
+              />
             </p>
             <div className="contact-email-wrap">
               <a
                 className="contact-email-link"
                 href="mailto:contact@samestudio.kr"
+                aria-label="contact@samestudio.kr"
               >
-                contact@samestudio.kr
+                <TypeReveal
+                  as="span"
+                  text={CONTACT_REVEAL_STEPS[4].text}
+                  speed={CONTACT_REVEAL_STEPS[4].speed}
+                  delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 4)}
+                />
               </a>
               <span className="contact-star contact-star-one" aria-hidden="true" />
               <span className="contact-star contact-star-two" aria-hidden="true" />
@@ -1900,7 +1942,7 @@ export function HomeExperience() {
               <span className="contact-star contact-star-four" aria-hidden="true" />
             </div>
           </div>
-        </section>
+        </TypeRevealGroup>
 
         <footer>
           <div className="footer-inner">

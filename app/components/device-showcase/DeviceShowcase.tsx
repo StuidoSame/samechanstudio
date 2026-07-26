@@ -7,43 +7,21 @@ const phoneCopy = {
   index: "01",
   category: "PHONE",
   title: "Close to you.",
-  body: (
-    <p>
-      Made for everyday moments.
-      <br />
-      Small experiences designed
-      <br />
-      to stay close at hand.
-    </p>
-  ),
+  body: "Made for everyday moments.\nSmall experiences designed\nto stay close at hand.",
 };
 
 const tabletCopy = {
   index: "02",
   category: "TABLET",
   title: "Room to think.",
-  body: (
-    <p>
-      A little more space for ideas,
-      <br />
-      memories, and everything in between.
-    </p>
-  ),
+  body: "A little more space for ideas,\nmemories, and everything in between.",
 };
 
 const watchCopy = {
   index: "03",
   category: "WATCH",
   title: "Small, but present.",
-  body: (
-    <p>
-      Sometimes a glance is all you need.
-      <br />
-      The smallest screen can still hold
-      <br />
-      a thoughtful moment.
-    </p>
-  ),
+  body: "Sometimes a glance is all you need.\nThe smallest screen can still hold\na thoughtful moment.",
 };
 
 export function DeviceShowcase() {

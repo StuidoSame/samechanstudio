@@ -14,13 +14,8 @@ import {
 
 type RevealContextValue = {
   hasRevealed: boolean;
+  isInView: boolean;
   reducedMotion: boolean;
-};
-
-type TypeRevealStep = {
-  text: string;
-  speed: number;
-  gapAfter?: number;
 };
 
 type TypeRevealGroupProps = HTMLAttributes<HTMLElement> & {
@@ -42,23 +37,6 @@ type TypeRevealProps = {
 
 const TypeRevealContext = createContext<RevealContextValue | null>(null);
 
-const getCharacterCount = (text: string) => Array.from(text).length;
-
-export function getTypeRevealDelay(
-  steps: readonly TypeRevealStep[],
-  index: number,
-  defaultGap = 160,
-  initialDelay = 0,
-) {
-  return steps.slice(0, index).reduce(
-    (delay, step) =>
-      delay +
-      getCharacterCount(step.text) * step.speed +
-      (step.gapAfter ?? defaultGap),
-    initialDelay,
-  );
-}
-
 export function TypeRevealGroup({
   as = "div",
   children,
@@ -68,6 +46,7 @@ export function TypeRevealGroup({
 }: TypeRevealGroupProps) {
   const groupRef = useRef<HTMLElement>(null);
   const [hasRevealed, setHasRevealed] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -80,27 +59,35 @@ export function TypeRevealGroup({
   }, []);
 
   useEffect(() => {
-    if (hasRevealed || !groupRef.current) return;
+    if (!groupRef.current) return;
 
     if (!("IntersectionObserver" in window)) {
-      const fallbackId = globalThis.setTimeout(() => setHasRevealed(true), 0);
+      const fallbackId = globalThis.setTimeout(() => {
+        setHasRevealed(true);
+        setIsInView(true);
+      }, 0);
       return () => globalThis.clearTimeout(fallbackId);
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || entry.intersectionRatio < threshold) return;
+        if (!entry.isIntersecting) {
+          setIsInView(false);
+          return;
+        }
+
+        if (entry.intersectionRatio < threshold) return;
+        setIsInView(true);
         setHasRevealed(true);
-        observer.disconnect();
       },
-      { threshold, rootMargin },
+      { threshold: [0, threshold], rootMargin },
     );
 
     observer.observe(groupRef.current);
     return () => observer.disconnect();
-  }, [hasRevealed, rootMargin, threshold]);
+  }, [rootMargin, threshold]);
 
-  const contextValue = { hasRevealed, reducedMotion };
+  const contextValue = { hasRevealed, isInView, reducedMotion };
 
   if (as === "section") {
     return (
@@ -149,9 +136,9 @@ export function TypeReveal({
   const characters = useMemo(() => Array.from(text), [text]);
 
   useEffect(() => {
-    if (!context.hasRevealed) return;
+    if (!context.hasRevealed || complete) return;
 
-    if (context.reducedMotion) {
+    if (!context.isInView || context.reducedMotion) {
       const reducedRevealId = window.setTimeout(() => {
         setVisibleLength(characters.length);
         setComplete(true);
@@ -184,7 +171,15 @@ export function TypeReveal({
       window.clearTimeout(delayId);
       if (intervalId !== null) window.clearInterval(intervalId);
     };
-  }, [characters, context.hasRevealed, context.reducedMotion, delay, speed]);
+  }, [
+    characters,
+    complete,
+    context.hasRevealed,
+    context.isInView,
+    context.reducedMotion,
+    delay,
+    speed,
+  ]);
 
   const Tag = as;
   const stateClass = complete
