@@ -71,6 +71,72 @@ const HERO_ANDROID_APP_IDS = new Set([
   "skkoo",
   "terubozu",
 ]);
+type SpaceObject = {
+  depth: "far" | "near";
+  type: "dot" | "star" | "ring" | "sphere" | "diamond";
+  motion: "a" | "b";
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  opacity: number;
+  duration: number;
+  delay: number;
+  driftX: number;
+  driftY: number;
+  rotation: number;
+};
+const SPACE_OBJECTS: SpaceObject[] = [
+  { depth: "far", type: "dot", motion: "a", x: 5, y: 13, size: 2, color: "#ffffff", opacity: 0.42, duration: 7.3, delay: 1.1, driftX: 8, driftY: 5, rotation: 4 },
+  { depth: "far", type: "ring", motion: "b", x: 93, y: 15, size: 10, color: "#d9cbff", opacity: 0.34, duration: 10.8, delay: 4.2, driftX: -4, driftY: 11, rotation: -7 },
+  { depth: "far", type: "dot", motion: "a", x: 8, y: 33, size: 2, color: "#f5c4e7", opacity: 0.48, duration: 8.9, delay: 2.7, driftX: 12, driftY: 3, rotation: 8 },
+  { depth: "far", type: "dot", motion: "b", x: 95, y: 38, size: 2, color: "#b8d8ff", opacity: 0.38, duration: 12.1, delay: 5.4, driftX: -5, driftY: 7, rotation: -5 },
+  { depth: "far", type: "dot", motion: "a", x: 6, y: 56, size: 2, color: "#bda5ff", opacity: 0.28, duration: 9.7, delay: 3.8, driftX: 6, driftY: 9, rotation: 7 },
+  { depth: "far", type: "dot", motion: "b", x: 92, y: 60, size: 3, color: "#d9cbff", opacity: 0.27, duration: 13.4, delay: 7.2, driftX: -9, driftY: 4, rotation: -6 },
+  { depth: "far", type: "dot", motion: "a", x: 10, y: 79, size: 3, color: "#ffffff", opacity: 0.5, duration: 8.2, delay: 0.9, driftX: 5, driftY: 10, rotation: 3 },
+  { depth: "far", type: "star", motion: "b", x: 89, y: 82, size: 8, color: "#f5c4e7", opacity: 0.36, duration: 11.6, delay: 6.1, driftX: -7, driftY: 6, rotation: -8 },
+  { depth: "far", type: "dot", motion: "a", x: 18, y: 12, size: 2, color: "#bda5ff", opacity: 0.3, duration: 9.1, delay: 4.8, driftX: 4, driftY: 5, rotation: 4 },
+  { depth: "far", type: "dot", motion: "b", x: 82, y: 22, size: 2, color: "#b8d8ff", opacity: 0.32, duration: 12.8, delay: 8.3, driftX: -6, driftY: 3, rotation: -3 },
+  { depth: "far", type: "ring", motion: "a", x: 3, y: 70, size: 9, color: "#ffffff", opacity: 0.24, duration: 10.2, delay: 2.2, driftX: 8, driftY: 6, rotation: 6 },
+  { depth: "far", type: "dot", motion: "b", x: 97, y: 74, size: 2, color: "#d9cbff", opacity: 0.44, duration: 7.8, delay: 5.9, driftX: -5, driftY: 8, rotation: -5 },
+  { depth: "far", type: "diamond", motion: "a", x: 13, y: 92, size: 10, color: "#b8d8ff", opacity: 0.25, duration: 13.8, delay: 9.1, driftX: 7, driftY: 4, rotation: 8 },
+  { depth: "far", type: "sphere", motion: "b", x: 87, y: 91, size: 12, color: "#f5c4e7", opacity: 0.24, duration: 11.1, delay: 3.3, driftX: -8, driftY: 5, rotation: -7 },
+  { depth: "near", type: "dot", motion: "b", x: 4, y: 22, size: 2, color: "#ffffff", opacity: 0.52, duration: 7.1, delay: 3.1, driftX: -6, driftY: 5, rotation: -8 },
+  { depth: "near", type: "dot", motion: "a", x: 96, y: 29, size: 2, color: "#bda5ff", opacity: 0.38, duration: 9.4, delay: 6.7, driftX: 5, driftY: 9, rotation: 7 },
+  { depth: "near", type: "sphere", motion: "b", x: 9, y: 47, size: 10, color: "#b8d8ff", opacity: 0.32, duration: 12.5, delay: 1.6, driftX: -8, driftY: 4, rotation: -5 },
+  { depth: "near", type: "diamond", motion: "a", x: 91, y: 49, size: 8, color: "#d9cbff", opacity: 0.4, duration: 8.6, delay: 4.5, driftX: 6, driftY: 7, rotation: 8 },
+  { depth: "near", type: "dot", motion: "b", x: 2, y: 44, size: 3, color: "#f5c4e7", opacity: 0.46, duration: 10.6, delay: 7.8, driftX: -4, driftY: 10, rotation: -4 },
+  { depth: "near", type: "star", motion: "a", x: 98, y: 55, size: 9, color: "#ffffff", opacity: 0.42, duration: 13.1, delay: 2.9, driftX: 7, driftY: 5, rotation: 9 },
+  { depth: "near", type: "dot", motion: "b", x: 15, y: 68, size: 2, color: "#d9cbff", opacity: 0.34, duration: 8.1, delay: 5.2, driftX: -5, driftY: 6, rotation: -3 },
+  { depth: "near", type: "dot", motion: "a", x: 85, y: 69, size: 2, color: "#b8d8ff", opacity: 0.4, duration: 11.9, delay: 8.7, driftX: 4, driftY: 8, rotation: 5 },
+  { depth: "near", type: "ring", motion: "b", x: 7, y: 88, size: 12, color: "#bda5ff", opacity: 0.3, duration: 9.9, delay: 3.6, driftX: -7, driftY: 4, rotation: -8 },
+  { depth: "near", type: "star", motion: "a", x: 93, y: 88, size: 7, color: "#f5c4e7", opacity: 0.44, duration: 12.3, delay: 6.4, driftX: 6, driftY: 5, rotation: 7 },
+  { depth: "near", type: "dot", motion: "b", x: 24, y: 91, size: 2, color: "#ffffff", opacity: 0.32, duration: 7.6, delay: 1.8, driftX: -4, driftY: 7, rotation: -4 },
+  { depth: "near", type: "dot", motion: "a", x: 76, y: 94, size: 2, color: "#d9cbff", opacity: 0.36, duration: 10.4, delay: 7.4, driftX: 5, driftY: 4, rotation: 5 },
+];
+
+const getSpaceObjectStyle = (object: SpaceObject) =>
+  ({
+    left: `${object.x}%`,
+    top: `${object.y}%`,
+    width: `${object.size}px`,
+    height: `${object.size}px`,
+    color: object.color,
+    animationDuration: `${object.duration}s`,
+    animationDelay: `-${object.delay}s`,
+    "--object-opacity": object.opacity,
+    "--float-x-a": `${object.driftX}px`,
+    "--float-y-a": `${-object.driftY}px`,
+    "--float-x-b": `${object.driftX * -0.62}px`,
+    "--float-y-b": `${object.driftY * 0.78}px`,
+    "--float-x-c": `${object.driftX * 0.28}px`,
+    "--float-y-c": `${object.driftY * 0.36}px`,
+    "--float-rotation-a": `${object.rotation}deg`,
+    "--float-rotation-b": `${object.rotation * -0.65}deg`,
+    "--float-rotation-c": `${object.rotation * 0.35}deg`,
+    "--float-rotation-d": `${object.rotation * -0.55}deg`,
+    "--float-rotation-e": `${object.rotation * 0.42}deg`,
+  }) as CSSProperties;
 
 const smoothStep = (value: number) => value * value * (3 - 2 * value);
 
@@ -784,6 +850,15 @@ export function HomeExperience() {
     if (!hero) return;
 
     const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const decorationNodes = Array.from(
+      hero.querySelectorAll<HTMLElement>(".decoration"),
+    );
+    let decorationCenters: Array<{
+      element: HTMLElement;
+      x: number;
+      y: number;
+      proximity: number;
+    }> = [];
     let animationFrame = 0;
 
     const updateBounds = () => {
@@ -794,6 +869,17 @@ export function HomeExperience() {
         width: Math.max(bounds.width, 1),
         height: Math.max(bounds.height, 1),
       };
+      decorationCenters = decorationNodes
+        .filter((element) => getComputedStyle(element).display !== "none")
+        .map((element) => {
+          const objectBounds = element.getBoundingClientRect();
+          return {
+            element,
+            x: objectBounds.left + objectBounds.width * 0.5,
+            y: objectBounds.top + objectBounds.height * 0.5,
+            proximity: -1,
+          };
+        });
     };
 
     const applyDepth = (x: number, y: number, strength: number) => {
@@ -818,6 +904,37 @@ export function HomeExperience() {
       hero.style.setProperty("--hero-depth-near-x", `${x * 20}px`);
       hero.style.setProperty("--hero-depth-near-y", `${y * 18}px`);
       hero.style.setProperty("--hero-depth-near-z", `${strength * 22}px`);
+
+      const pointerClientX = ((x + 1) * window.innerWidth) / 2;
+      const pointerClientY = ((y + 1) * window.innerHeight) / 2;
+      const proximityRadius = 160;
+      decorationCenters.forEach((object) => {
+        const distance = Math.hypot(
+          pointerClientX - object.x,
+          pointerClientY - object.y,
+        );
+        const objectProximity =
+          strength *
+          Math.pow(clamp(1 - distance / proximityRadius, 0, 1), 0.72);
+        if (Math.abs(objectProximity - object.proximity) < 0.008) return;
+        object.proximity = objectProximity;
+        object.element.style.setProperty(
+          "--object-scale",
+          String(1 + objectProximity * 0.28),
+        );
+        object.element.style.setProperty(
+          "--object-opacity-boost",
+          String(objectProximity * 0.18),
+        );
+        object.element.style.setProperty(
+          "--object-brightness",
+          String(1 + objectProximity * 0.28),
+        );
+        object.element.style.setProperty(
+          "--object-glow",
+          `${objectProximity * 8}px`,
+        );
+      });
 
       const proximity = Math.pow(
         1 - smoothStep(clamp(Math.hypot(x, y) / 0.78, 0, 1)),
@@ -1270,14 +1387,26 @@ export function HomeExperience() {
           <div className="perspective-floor" aria-hidden="true" />
           <div className="decorations" aria-hidden="true">
             <div className="decorations-far">
-              {Array.from({ length: 8 }, (_, index) => (
-                <i key={index} className={`decoration decoration-${index + 1}`} />
-              ))}
+              {SPACE_OBJECTS.filter((object) => object.depth === "far").map(
+                (object, index) => (
+                  <i
+                    key={`far-${index}`}
+                    className={`decoration is-${object.type} motion-${object.motion}`}
+                    style={getSpaceObjectStyle(object)}
+                  />
+                ),
+              )}
             </div>
             <div className="decorations-near">
-              {Array.from({ length: 6 }, (_, index) => (
-                <i key={index} className={`decoration decoration-${index + 9}`} />
-              ))}
+              {SPACE_OBJECTS.filter((object) => object.depth === "near").map(
+                (object, index) => (
+                  <i
+                    key={`near-${index}`}
+                    className={`decoration is-${object.type} motion-${object.motion}`}
+                    style={getSpaceObjectStyle(object)}
+                  />
+                ),
+              )}
             </div>
           </div>
 

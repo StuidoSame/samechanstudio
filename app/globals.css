@@ -99,10 +99,13 @@ button {
   touch-action: pan-y;
   user-select: none;
   background:
-    linear-gradient(112deg, rgba(255, 255, 255, 0.2), transparent 35%),
-    radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.66), transparent 29%),
+    linear-gradient(112deg, rgba(255, 255, 255, 0.12), transparent 38%),
+    radial-gradient(circle at 12% 18%, rgba(174, 145, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 50% 43%, rgba(155, 110, 255, 0.15), transparent 34%),
+    radial-gradient(circle at 88% 76%, rgba(241, 188, 224, 0.12), transparent 32%),
+    radial-gradient(circle at 76% 16%, rgba(160, 196, 255, 0.08), transparent 27%),
     radial-gradient(ellipse 70% 18% at 50% 100%, rgba(178, 136, 245, 0.08), transparent 75%),
-    linear-gradient(180deg, #f1e9ff 0%, #f2e8ff 52%, #f5efff 100%);
+    linear-gradient(180deg, #e9e0f8 0%, #ede4fa 58%, #f5efff 100%);
 }
 
 .site-header {
@@ -293,7 +296,7 @@ button {
   right: -16%;
   bottom: -24%;
   height: 64%;
-  opacity: 0.24;
+  opacity: 0.055;
   transform-origin: 50% 0;
   transform: translate3d(
       var(--hero-depth-floor-x, 0px),
@@ -1303,62 +1306,75 @@ button {
 }
 
 .decoration {
+  --object-scale: 1;
+  --object-opacity-boost: 0;
+  --object-brightness: 1;
+  --object-glow: 0px;
   position: absolute;
   display: block;
-  width: 6px;
-  height: 6px;
+  color: #d9cbff;
   border-radius: 50%;
-  background: rgba(129, 87, 221, 0.24);
-  animation: drift 9s ease-in-out infinite alternate;
+  background: currentColor;
+  opacity: calc(var(--object-opacity, 0.32) + var(--object-opacity-boost));
+  transform: scale(var(--object-scale));
+  transform-origin: center;
+  filter:
+    brightness(var(--object-brightness))
+    drop-shadow(0 0 var(--object-glow) rgba(196, 166, 255, 0.4));
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.3, 0.95);
+  animation-iteration-count: infinite;
+  pointer-events: none;
+  contain: layout paint;
+  will-change: translate;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    filter 0.22s ease;
 }
 
-.decoration:nth-child(3n) {
-  width: 8px;
-  height: 8px;
+.decoration.motion-a {
+  animation-name: space-object-float-a;
+}
+
+.decoration.motion-b {
+  animation-name: space-object-float-b;
+}
+
+.decoration.is-ring {
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+.decoration.is-diamond {
+  border: 1px solid currentColor;
   border-radius: 1px;
-  border: 1px solid rgba(121, 76, 213, 0.18);
   background: transparent;
-  transform: rotate(45deg);
+  transform: rotate(45deg) scale(var(--object-scale));
 }
 
-.decoration:nth-child(4n) {
-  width: 12px;
-  height: 12px;
-  border: 1px solid rgba(121, 76, 213, 0.19);
-  background: transparent;
+.decoration.is-star {
+  border-radius: 0;
+  clip-path: polygon(
+    50% 0%,
+    61% 39%,
+    100% 50%,
+    61% 61%,
+    50% 100%,
+    39% 61%,
+    0% 50%,
+    39% 39%
+  );
 }
 
-.decoration:nth-child(5n)::before,
-.decoration:nth-child(5n)::after {
-  content: "";
-  position: absolute;
-  background: rgba(121, 76, 213, 0.25);
+.decoration.is-sphere {
+  background: radial-gradient(
+    circle at 34% 28%,
+    rgba(255, 255, 255, 0.9) 0 12%,
+    currentColor 38%,
+    transparent 76%
+  );
 }
 
-.decoration:nth-child(5n)::before {
-  inset: 50% 0 auto;
-  height: 1px;
-}
-
-.decoration:nth-child(5n)::after {
-  inset: 0 auto 0 50%;
-  width: 1px;
-}
-
-.decoration-1 { top: 12%; left: 7%; }
-.decoration-2 { top: 19%; left: 17%; background: rgba(255, 111, 144, 0.45); }
-.decoration-3 { top: 9%; left: 44%; }
-.decoration-4 { top: 14%; right: 7%; }
-.decoration-5 { top: 30%; right: 4%; }
-.decoration-6 { top: 56%; right: 9%; }
-.decoration-7 { top: 73%; right: 17%; background: rgba(255, 117, 157, 0.4); }
-.decoration-8 { bottom: 13%; right: 31%; }
-.decoration-9 { bottom: 8%; left: 18%; }
-.decoration-10 { top: 74%; left: 7%; }
-.decoration-11 { top: 55%; left: 4%; background: rgba(255, 110, 144, 0.38); }
-.decoration-12 { top: 34%; left: 13%; }
-.decoration-13 { top: 23%; right: 25%; }
-.decoration-14 { bottom: 18%; left: 31%; }
 
 .studio-about {
   min-height: 66vh;
@@ -1874,9 +1890,64 @@ footer {
   }
 }
 
-@keyframes drift {
-  from { translate: 0 0; rotate: 0deg; }
-  to { translate: 5px -8px; rotate: 28deg; }
+@keyframes space-object-float-a {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  29% {
+    translate: var(--float-x-a) var(--float-y-a);
+    rotate: var(--float-rotation-a);
+  }
+  63% {
+    translate: var(--float-x-b) var(--float-y-b);
+    rotate: var(--float-rotation-b);
+  }
+  84% {
+    translate: var(--float-x-c) var(--float-y-c);
+    rotate: var(--float-rotation-c);
+  }
+}
+
+@keyframes space-object-float-b {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  24% {
+    translate: var(--float-x-b) var(--float-y-a);
+    rotate: var(--float-rotation-d);
+  }
+  57% {
+    translate: var(--float-x-a) var(--float-y-c);
+    rotate: var(--float-rotation-a);
+  }
+  81% {
+    translate: var(--float-x-c) var(--float-y-b);
+    rotate: var(--float-rotation-e);
+  }
+}
+
+@keyframes space-object-float-mobile-a {
+  0%,
+  100% { translate: 0 0; }
+  38% { translate: 3px -2px; }
+  72% { translate: -2px 3px; }
+}
+
+@keyframes space-object-float-mobile-b {
+  0%,
+  100% { translate: 0 0; }
+  32% { translate: -2px -3px; }
+  68% { translate: 3px 2px; }
+}
+
+@media (max-width: 1100px) {
+  .decorations-near .decoration:nth-child(n + 5) {
+    display: none;
+  }
 }
 
 @media (max-width: 1023px) {
@@ -1899,12 +1970,6 @@ footer {
     top: calc(min(66.8svh, 578px) - 30px);
   }
 
-  .decoration-11,
-  .decoration-12,
-  .decoration-13,
-  .decoration-14 {
-    display: none;
-  }
 }
 
 @media (max-width: 767px) {
@@ -2058,19 +2123,20 @@ footer {
   }
 
   .perspective-floor {
-    opacity: 0.06;
+    opacity: 0.035;
   }
 
-  .decoration-6,
-  .decoration-7,
-  .decoration-8,
-  .decoration-9,
-  .decoration-10,
-  .decoration-11,
-  .decoration-12,
-  .decoration-13,
-  .decoration-14 {
+  .decorations-far .decoration:nth-child(n + 9),
+  .decorations-near .decoration:nth-child(n + 5) {
     display: none;
+  }
+
+  .decoration.motion-a {
+    animation-name: space-object-float-mobile-a;
+  }
+
+  .decoration.motion-b {
+    animation-name: space-object-float-mobile-b;
   }
 
   .studio-about {
@@ -2257,17 +2323,8 @@ footer {
     margin-top: 12px;
   }
 
-  .decoration-4,
-  .decoration-5,
-  .decoration-6,
-  .decoration-7,
-  .decoration-8,
-  .decoration-9,
-  .decoration-10,
-  .decoration-11,
-  .decoration-12,
-  .decoration-13,
-  .decoration-14 {
+  .decorations-far .decoration:nth-child(n + 7),
+  .decorations-near .decoration:nth-child(n + 3) {
     display: none;
   }
 }
