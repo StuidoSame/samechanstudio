@@ -363,8 +363,8 @@ button {
   z-index: 3;
   top: 50%;
   left: 50%;
-  width: clamp(470px, 36vw, 520px);
-  height: clamp(440px, 34vw, 490px);
+  width: clamp(540px, 42vw, 600px);
+  height: clamp(500px, 40vw, 570px);
   transform: translate(-50%, -50%);
   pointer-events: none;
   filter:
@@ -1976,8 +1976,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: clamp(410px, 50vw, 480px);
-    height: clamp(390px, 47vw, 450px);
+    width: clamp(472px, 58vw, 552px);
+    height: clamp(449px, 54vw, 518px);
   }
 
   .app-info {
@@ -2021,8 +2021,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: clamp(260px, 74vw, 295px);
-    height: clamp(270px, 76vw, 305px);
+    width: clamp(299px, 85vw, 340px);
+    height: clamp(310px, 87vw, 351px);
   }
 
   .preloader-jelly {
@@ -2281,8 +2281,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: 410px;
-    height: 380px;
+    width: 470px;
+    height: 435px;
   }
 
   .app-info {
@@ -2312,8 +2312,8 @@ footer {
 
   .jelly-canvas,
   .jelly-fallback {
-    width: clamp(220px, 67vw, 250px);
-    height: clamp(230px, 68vw, 260px);
+    width: clamp(255px, 78vw, 290px);
+    height: clamp(265px, 79vw, 300px);
   }
 
   .app-info {

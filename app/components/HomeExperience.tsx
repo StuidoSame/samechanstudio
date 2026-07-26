@@ -463,6 +463,7 @@ export function HomeExperience() {
     exitStrength: 0,
     releaseDirection: 1,
     releaseStrength: 0,
+    springResponse: 0,
     settleAmplitude: 0,
     settlePhase: 0,
     idleStrength: 1,
@@ -484,6 +485,7 @@ export function HomeExperience() {
     exitStrength: 0,
     releaseDirection: 1,
     releaseStrength: 0,
+    springResponse: 0,
     settleAmplitude: 0,
     settlePhase: 0,
     idleStrength: 1,
@@ -504,6 +506,7 @@ export function HomeExperience() {
   const autoplayTimerRef = useRef<number | null>(null);
   const fastForwardTimerRef = useRef<number | null>(null);
   const fastForwardPointerIdRef = useRef(-1);
+  const fastForwardSnapPendingRef = useRef(false);
   const autoplayEnabledRef = useRef(false);
   const autoplayAdvancePendingRef = useRef(false);
   const autoplayResumeNotBeforeRef = useRef(0);
@@ -562,6 +565,7 @@ export function HomeExperience() {
 
       clearFastForwardTimer();
       fastForwardPointerIdRef.current = -1;
+      fastForwardSnapPendingRef.current = true;
       isFastForwardingRef.current = false;
       setIsFastForwarding(false);
 
@@ -1127,6 +1131,8 @@ export function HomeExperience() {
     let settleStartedAt = -1;
     let settleWasFastForwarding = false;
     let lastMotionDirection = 1;
+    let springDisplacement = 0;
+    let springVelocity = 0;
 
     const render = (time: number) => {
       const width = window.innerWidth;
@@ -1231,7 +1237,20 @@ export function HomeExperience() {
         settleStartedAt = -1;
       } else if (justArrived) {
         settleStartedAt = time;
-        settleWasFastForwarding = isFastForwardingRef.current;
+        settleWasFastForwarding =
+          isFastForwardingRef.current || fastForwardSnapPendingRef.current;
+        fastForwardSnapPendingRef.current = false;
+        const arrivalImpulse = reducedMotion
+          ? 0.035
+          : settleWasFastForwarding
+            ? 0.1
+            : 0.14;
+        springDisplacement = clamp(
+          springDisplacement + lastMotionDirection * arrivalImpulse,
+          -0.18,
+          0.18,
+        );
+        springVelocity -= lastMotionDirection * arrivalImpulse * 0.08;
       }
       const exitEnvelope = moving
         ? sampleTensionCurve(travel, EXIT_TENSION_CURVE)
@@ -1249,10 +1268,10 @@ export function HomeExperience() {
 
       if (!moving && settleStartedAt >= 0) {
         const settleDuration = settleWasFastForwarding
-          ? 300
+          ? 280
           : reducedMotion
             ? 620
-            : 1200;
+            : 1250;
         const settleProgress = clamp(
           (time - settleStartedAt) / settleDuration,
           0,
@@ -1261,28 +1280,35 @@ export function HomeExperience() {
         settling = settleProgress < 1;
 
         if (settling && reducedMotion) {
-          settleAmplitude = 0.035 * (1 - settleProgress);
-          settlePhase = settleProgress * Math.PI;
-        } else if (settling && settleWasFastForwarding) {
-          settleAmplitude = 0.1 * Math.pow(1 - settleProgress, 0.72);
-          settlePhase = settleProgress * Math.PI * 4;
-        } else if (settling) {
-          if (settleProgress < 0.34) {
-            settleAmplitude =
-              0.15 - (settleProgress / 0.34) * (0.15 - 0.09);
-          } else if (settleProgress < 0.68) {
-            settleAmplitude =
-              0.09 -
-              ((settleProgress - 0.34) / 0.34) * (0.09 - 0.05);
-          } else {
-            settleAmplitude =
-              0.05 * (1 - (settleProgress - 0.68) / 0.32);
-          }
-          settlePhase = settleProgress * Math.PI * 7;
+          springDisplacement =
+            lastMotionDirection *
+            0.035 *
+            (1 - settleProgress) *
+            Math.cos(settleProgress * Math.PI);
         }
 
-        if (!settling) settleStartedAt = -1;
+        if (!settling) {
+          settleStartedAt = -1;
+          springDisplacement = 0;
+          springVelocity = 0;
+        }
       }
+
+      if (
+        !reducedMotion &&
+        (Math.abs(springDisplacement) > 0.0001 ||
+          Math.abs(springVelocity) > 0.0001)
+      ) {
+        const springTimeScale = settleWasFastForwarding ? 1.75 : 1;
+        const springDelta = delta * springTimeScale;
+        const springForce = -6.4 * springDisplacement;
+        springVelocity += springForce * 0.012 * springDelta;
+        springVelocity *= Math.pow(0.84, springDelta / 8);
+        springDisplacement += springVelocity * springDelta;
+      }
+
+      settleAmplitude = Math.abs(springDisplacement);
+      settlePhase = time * 0.006;
 
       interactionRef.current.phase = moving
         ? travel < 0.52
@@ -1303,6 +1329,7 @@ export function HomeExperience() {
         (releaseEnvelope > 0 ? 0.34 : 0.18);
       interactionRef.current.settleAmplitude = settleAmplitude;
       interactionRef.current.settlePhase = settlePhase;
+      interactionRef.current.springResponse = springDisplacement;
       interactionRef.current.idleStrength = moving
         ? 0.58
         : settling
@@ -1439,6 +1466,7 @@ export function HomeExperience() {
     }
 
     fastForwardPointerIdRef.current = event.pointerId;
+    fastForwardSnapPendingRef.current = false;
     clearAutoplay();
     autoplayAdvancePendingRef.current = false;
     isFastForwardingRef.current = true;
