@@ -152,6 +152,13 @@ const getCircularSlot = (appIndex: number, progress: number) => {
   return appIndex + nearestCycle * apps.length - progress;
 };
 
+const interpolateSlotValue = (absoluteSlot: number, anchors: number[]) => {
+  const lower = Math.min(Math.floor(absoluteSlot), anchors.length - 1);
+  const upper = Math.min(lower + 1, anchors.length - 1);
+  const progress = smoothstep(0, 1, absoluteSlot - Math.floor(absoluteSlot));
+  return anchors[lower] + (anchors[upper] - anchors[lower]) * progress;
+};
+
 const presentationProgress = (elapsed: number) => {
   const points = [
     [0, 0],
@@ -1132,18 +1139,8 @@ export function HomeExperience() {
         const absolute = Math.abs(slot);
         const visibleRadius = width < 768 ? 1.55 : width < 1024 ? 2.55 : 3.55;
         const x = easeSlot(slot, width);
-        const scale =
-          absolute <= 1
-            ? 1 - absolute * 0.18
-            : absolute <= 2
-              ? 0.82 - (absolute - 1) * 0.16
-              : 0.66 - Math.min(absolute - 2, 1.2) * 0.13;
-        const opacity =
-          absolute <= 1
-            ? 1 - absolute * 0.09
-            : absolute <= 2
-              ? 0.91 - (absolute - 1) * 0.23
-              : Math.max(0, 0.68 - (absolute - 2) * 0.27);
+        const scale = interpolateSlotValue(absolute, [1, 0.82, 0.67, 0.54, 0.46]);
+        const opacity = interpolateSlotValue(absolute, [1, 0.84, 0.58, 0.36, 0]);
         const rotation =
           -Math.sign(slot) *
           (absolute <= 1
@@ -1151,13 +1148,13 @@ export function HomeExperience() {
             : absolute <= 2
               ? 18 + (absolute - 1) * 10
               : 28 + Math.min(absolute - 2, 1) * 10);
-        const depth = -Math.min(absolute, 3.4) * 82;
+        const depth = interpolateSlotValue(absolute, [100, 30, -45, -100, -125]);
         const pointerDepth = depthCurrentRef.current;
-        const activeCard = absolute < 0.5;
-        const parallaxX = pointerDepth.x * (activeCard ? 3.25 : 8.5);
-        const parallaxY = pointerDepth.y * (activeCard ? 2.5 : 7.5);
-        const parallaxZ = pointerDepth.strength * (activeCard ? 5.5 : 9);
-        const parallaxRotation = pointerDepth.x * (activeCard ? 0.65 : 1.15);
+        const centerInfluence = 1 - smoothstep(0.15, 1.15, absolute);
+        const parallaxX = pointerDepth.x * (8.5 - centerInfluence * 5.25);
+        const parallaxY = pointerDepth.y * (7.5 - centerInfluence * 5);
+        const parallaxZ = pointerDepth.strength * (9 - centerInfluence * 3.5);
+        const parallaxRotation = pointerDepth.x * (1.15 - centerInfluence * 0.5);
 
         card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${parallaxY}px), ${depth + parallaxZ}px) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
         card.style.opacity = String(absolute < visibleRadius ? opacity : 0);
