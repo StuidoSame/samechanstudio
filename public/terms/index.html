@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO 통합 이용약관">
-  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/favicon/favicon.ico" type="image/x-icon" sizes="any">
   <link rel="stylesheet" href="/assets/css/language.css">
-  <title>SAME STUDIO 이용약관 | SAME STUDIO</title>
+  <title>SAME STUDIO</title>
   <style>
     @font-face {
       font-family: "BMJUA";
@@ -518,7 +518,6 @@
         ko: {
           lang: "ko",
           title: "SAME STUDIO 이용약관",
-          documentTitle: "SAME STUDIO 이용약관 | SAME STUDIO",
           updated: "마지막 업데이트: 2026-05-05",
           lead: "SAME STUDIO 이용약관은 SAME STUDIO가 제공하는 모바일 앱, 웹사이트 및 관련 서비스의 이용 조건을 안내합니다. 각 앱의 기능과 버전에 따라 제공되는 기능은 달라질 수 있습니다.",
           languageLabel: "Language / 언어",
@@ -546,7 +545,6 @@
         en: {
           lang: "en",
           title: "SAME STUDIO Terms of Service",
-          documentTitle: "SAME STUDIO Terms of Service | SAME STUDIO",
           updated: "Last updated: 2026-05-05",
           lead: "These Terms of Service explain the conditions for using mobile apps, websites, and related services provided by SAME STUDIO. Available features may vary depending on each app’s features and version.",
           languageLabel: "Language",
@@ -574,7 +572,6 @@
         ja: {
           lang: "ja",
           title: "SAME STUDIO 利用規約",
-          documentTitle: "SAME STUDIO 利用規約 | SAME STUDIO",
           updated: "最終更新日：2026-05-05",
           lead: "本利用規約は、SAME STUDIOが提供するモバイルアプリ、ウェブサイトおよび関連サービスの利用条件を説明するものです。提供される機能は各アプリの機能およびバージョンによって異なる場合があります。",
           languageLabel: "言語",
@@ -602,7 +599,6 @@
         "zh-CN": {
           lang: "zh-CN",
           title: "SAME STUDIO 服务条款",
-          documentTitle: "SAME STUDIO 服务条款 | SAME STUDIO",
           updated: "最后更新日期：2026-05-05",
           lead: "本服务条款说明 SAME STUDIO 提供的移动应用、网站及相关服务的使用条件。各应用提供的功能可能会根据功能和版本而有所不同。",
           languageLabel: "语言",
@@ -680,7 +676,6 @@
         var data = translations[lang] || translations.ko;
         var navigation = navigationTranslations[lang] || navigationTranslations.ko;
         root.setAttribute("lang", data.lang);
-        document.title = data.documentTitle;
         titleEl.textContent = data.title;
         updatedEl.textContent = data.updated;
         leadEl.textContent = data.lead;

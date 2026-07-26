@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO 통합 개인정보처리방침">
-  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/favicon/favicon.ico" type="image/x-icon" sizes="any">
   <link rel="stylesheet" href="/assets/css/language.css">
-  <title>SAME STUDIO 개인정보처리방침 | SAME STUDIO</title>
+  <title>SAME STUDIO</title>
   <style>
     @font-face {
       font-family: "BMJUA";
@@ -518,7 +518,6 @@
         ko: {
           lang: "ko",
           title: "SAME STUDIO 개인정보처리방침",
-          documentTitle: "SAME STUDIO 개인정보처리방침 | SAME STUDIO",
           updated: "마지막 업데이트: 2026-05-05",
           lead: "SAME STUDIO는 사용자의 개인정보와 개인 기록을 최소한으로 처리하는 것을 원칙으로 합니다. 본 개인정보처리방침은 SAME STUDIO가 제공하는 모바일 앱 및 웹사이트에 공통 적용되며, 실제 처리되는 정보는 각 앱의 기능, 사용자가 허용한 권한, 서비스 버전에 따라 달라질 수 있습니다.",
           languageLabel: "Language / 언어",
@@ -546,7 +545,6 @@
         en: {
           lang: "en",
           title: "SAME STUDIO Privacy Policy",
-          documentTitle: "SAME STUDIO Privacy Policy | SAME STUDIO",
           updated: "Last updated: 2026-05-05",
           lead: "SAME STUDIO follows the principle of processing personal data and personal records only to the minimum extent necessary. This Privacy Policy applies to SAME STUDIO mobile apps and websites, and the information actually processed may vary depending on each app’s features, permissions allowed by the user, and service version.",
           languageLabel: "Language",
@@ -574,7 +572,6 @@
         ja: {
           lang: "ja",
           title: "SAME STUDIO プライバシーポリシー",
-          documentTitle: "SAME STUDIO プライバシーポリシー | SAME STUDIO",
           updated: "最終更新日：2026-05-05",
           lead: "SAME STUDIOは、個人情報および個人的な記録を必要最小限の範囲で取り扱うことを原則とします。本プライバシーポリシーはSAME STUDIOが提供するモバイルアプリおよびウェブサイトに共通して適用され、実際に取り扱われる情報は各アプリの機能、ユーザーが許可した権限、サービスのバージョンによって異なる場合があります。",
           languageLabel: "言語",
@@ -602,7 +599,6 @@
         "zh-CN": {
           lang: "zh-CN",
           title: "SAME STUDIO 隐私政策",
-          documentTitle: "SAME STUDIO 隐私政策 | SAME STUDIO",
           updated: "最后更新日期：2026-05-05",
           lead: "SAME STUDIO 的原则是尽量少处理用户的个人信息和个人记录。本隐私政策共同适用于 SAME STUDIO 提供的移动应用和网站，实际处理的信息可能会根据各应用的功能、用户允许的权限以及服务版本而有所不同。",
           languageLabel: "语言",
@@ -680,7 +676,6 @@
         var data = translations[lang] || translations.ko;
         var navigation = navigationTranslations[lang] || navigationTranslations.ko;
         root.setAttribute("lang", data.lang);
-        document.title = data.documentTitle;
         titleEl.textContent = data.title;
         updatedEl.textContent = data.updated;
         leadEl.textContent = data.lead;

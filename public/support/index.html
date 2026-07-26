@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SAME STUDIO 고객지원 페이지">
-  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/favicon/favicon.ico" type="image/x-icon" sizes="any">
   <link rel="stylesheet" href="/assets/css/language.css">
-  <title>Support / 고객지원 | SAME STUDIO</title>
+  <title>SAME STUDIO</title>
   <style>
     @font-face{font-family:"BMJUA";src:url("/assets/font/BMJUA.otf") format("opentype");font-style:normal;font-weight:400;font-display:swap}
     :root{color-scheme:light;--bg:#fbf8ff;--bg-deep:#f2ecff;--text:#18151f;--muted:#676172;--card:rgba(255,255,255,.72);--border:rgba(86,64,122,.16);--border-strong:rgba(128,88,205,.36);--nav:rgba(251,248,255,.76);--nav-strong:rgba(251,248,255,.92);--accent:linear-gradient(135deg,#6d5df7,#a855f7 48%,#ff6aa8);--shadow:0 24px 70px rgba(75,55,120,.13);--max:980px}
@@ -114,7 +114,6 @@
 
       function renderLanguage(language) {
         var copy = translations[language] || translations.ko;
-        document.title = copy.title + " | SAME STUDIO";
         setTexts(".desktop-menu a, .drawer nav a", copy.nav.concat(copy.nav));
         document.querySelector(".hero h1").textContent = copy.title;
         document.querySelector(".hero .lead").textContent = copy.lead;

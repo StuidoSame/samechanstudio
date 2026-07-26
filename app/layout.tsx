@@ -2,23 +2,19 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://samestudio.kr"),
-  title: {
-    default: "SAME STUDIO",
-    template: "%s | SAME STUDIO",
-  },
+  title: "SAME STUDIO",
   description:
     "Small apps, made with a lot of care. Explore SAME STUDIO's independent mobile apps.",
   openGraph: {
     type: "website",
-    url: "/",
+    url: "https://samestudio.kr/",
     siteName: "SAME STUDIO",
-    title: "SAME STUDIO — Apps for thoughtful days",
+    title: "SAME STUDIO",
     description:
       "Explore SAME STUDIO apps in a bright synthetic lavender universe.",
     images: [
       {
-        url: "/og.png",
+        url: "https://samestudio.kr/og.png",
         width: 1200,
         height: 630,
         alt: "SAME STUDIO apps moving through a translucent lavender jelly",
@@ -27,13 +23,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SAME STUDIO — Apps for thoughtful days",
+    title: "SAME STUDIO",
     description:
       "Explore SAME STUDIO apps in a bright synthetic lavender universe.",
-    images: ["/og.png"],
+    images: ["https://samestudio.kr/og.png"],
   },
   icons: {
-    icon: "/assets/favicon/favicon.ico",
+    icon: {
+      url: "/assets/favicon/favicon.ico",
+      type: "image/x-icon",
+    },
     shortcut: "/assets/favicon/favicon.ico",
   },
 };
