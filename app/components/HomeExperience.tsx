@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
+import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 
 const JellyCanvas = dynamic(() => import("./JellyCanvas"), { ssr: false });
@@ -1770,6 +1771,8 @@ export function HomeExperience() {
             </p>
           </div>
         </section>
+
+        <DeviceShowcase />
 
         <footer id="contact">
           <div className="footer-inner">
