@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { AppItem } from "../../lib/apps";
+import {
+  getAvailableDetailStores,
+  type DetailStore,
+} from "../../lib/appDetailCapabilities";
 
 const OVERLAY_EXIT_MS = 300;
 
@@ -12,6 +16,28 @@ type AppDetailOverlayProps = {
   onExited: () => void;
 };
 
+const STORE_LABELS: Record<DetailStore, string> = {
+  apple: "APPLE APP STORE",
+  google: "GOOGLE PLAY STORE",
+};
+
+function StoreIcon({ store }: { store: DetailStore }) {
+  if (store === "apple") {
+    return (
+      <svg className="app-detail-store-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M16.72 12.76c.02-2.08 1.7-3.08 1.78-3.13a3.82 3.82 0 0 0-3.01-1.63c-1.27-.13-2.51.76-3.16.76-.67 0-1.67-.75-2.76-.73a4.02 4.02 0 0 0-3.39 2.07c-1.47 2.54-.37 6.28 1.03 8.33.7 1 1.52 2.11 2.6 2.07 1.05-.04 1.44-.67 2.71-.67 1.25 0 1.62.67 2.72.64 1.13-.02 1.84-1 2.51-2.01a8.3 8.3 0 0 0 1.15-2.34 3.6 3.6 0 0 1-2.18-3.36ZM14.66 6.65a3.67 3.67 0 0 0 .84-2.64 3.75 3.75 0 0 0-2.43 1.26 3.5 3.5 0 0 0-.86 2.54 3.1 3.1 0 0 0 2.45-1.16Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="app-detail-store-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4.3 3.4 15.2 12 4.3 20.6V3.4Z" fill="currentColor" opacity=".92" />
+      <path d="m15.2 12 2.7-2.13c1.45 1.08 2.18 1.68 2.18 2.13s-.73 1.05-2.18 2.13L15.2 12Z" fill="currentColor" opacity=".72" />
+    </svg>
+  );
+}
+
 export function AppDetailOverlay({
   app,
   open,
@@ -20,6 +46,17 @@ export function AppDetailOverlay({
 }: AppDetailOverlayProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const availableStores = useMemo(
+    () => getAvailableDetailStores(app.id),
+    [app.id],
+  );
+  const [selectedStore, setSelectedStore] = useState<DetailStore>(
+    availableStores[0],
+  );
+
+  useEffect(() => {
+    setSelectedStore(availableStores[0]);
+  }, [app.id, availableStores]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -109,8 +146,31 @@ export function AppDetailOverlay({
         </header>
 
         <div className="app-detail-content">
-          <div className="app-detail-preview" aria-label="Preview area" />
-          <div className="app-detail-description">
+          <div className="app-detail-store-selector" aria-label="스토어 선택">
+            {availableStores.map((store) => (
+              <button
+                className="app-detail-store-button"
+                type="button"
+                key={store}
+                aria-pressed={selectedStore === store}
+                onClick={() => setSelectedStore(store)}
+              >
+                <span className="app-detail-store-icon-slot">
+                  <StoreIcon store={store} />
+                </span>
+                <span>{STORE_LABELS[store]}</span>
+              </button>
+            ))}
+          </div>
+          <div
+            className="app-detail-preview"
+            aria-label={`${app.name} ${STORE_LABELS[selectedStore]} preview area`}
+            data-preview-key={`${app.id}:${selectedStore}`}
+          />
+          <div
+            className="app-detail-description"
+            data-description-key={`${app.id}:${selectedStore}`}
+          >
             <p>Device-specific experience description will appear here.</p>
           </div>
         </div>

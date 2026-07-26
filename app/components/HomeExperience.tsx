@@ -14,6 +14,7 @@ import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
+import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
 const JellyCanvas = dynamic(() => import("./JellyCanvas"), { ssr: false });
 const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
@@ -68,15 +69,6 @@ type ActiveSequencePhase =
   | "detail-reveal"
   | "hold"
   | "complete";
-const HERO_ANDROID_APP_IDS = new Set([
-  "mapary",
-  "runtronome",
-  "odow",
-  "pepesnap",
-  "tocklist",
-  "skkoo",
-  "terubozu",
-]);
 type SpaceObject = {
   depth: "far" | "near";
   type: "dot" | "star" | "ring" | "sphere" | "diamond";
