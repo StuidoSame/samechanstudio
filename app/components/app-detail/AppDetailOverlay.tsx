@@ -3,7 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AppItem } from "../../lib/apps";
 import {
+  getAppDetailContent,
+  getAvailableDetailDevices,
   getAvailableDetailStores,
+  type DetailDevice,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
 
@@ -19,6 +22,15 @@ type AppDetailOverlayProps = {
 const STORE_LABELS: Record<DetailStore, string> = {
   apple: "APPLE APP STORE",
   google: "GOOGLE PLAY STORE",
+};
+
+const DEVICE_LABELS: Record<DetailDevice, string> = {
+  iphone: "iPhone",
+  ipad: "iPad",
+  appleWatch: "Apple Watch",
+  androidPhone: "Android Phone",
+  androidTablet: "Tablet",
+  wearOsWatch: "Wear OS Watch",
 };
 
 function StoreIcon({ store }: { store: DetailStore }) {
@@ -38,6 +50,17 @@ function StoreIcon({ store }: { store: DetailStore }) {
   );
 }
 
+function DeviceSilhouette({ device }: { device: DetailDevice }) {
+  return (
+    <span
+      className={`app-detail-device-silhouette is-${device}`}
+      aria-hidden="true"
+    >
+      <span />
+    </span>
+  );
+}
+
 export function AppDetailOverlay({
   app,
   open,
@@ -53,9 +76,23 @@ export function AppDetailOverlay({
   const [selectedStore, setSelectedStore] = useState<DetailStore>(
     availableStores[0],
   );
+  const [selectedDevice, setSelectedDevice] = useState<DetailDevice | null>(
+    getAvailableDetailDevices(app.id, availableStores[0])[0] ?? null,
+  );
+  const availableDevices = useMemo(
+    () => getAvailableDetailDevices(app.id, selectedStore),
+    [app.id, selectedStore],
+  );
+  const selectedContent = selectedDevice
+    ? getAppDetailContent(app.id, selectedStore, selectedDevice)
+    : null;
 
   useEffect(() => {
-    setSelectedStore(availableStores[0]);
+    const firstStore = availableStores[0];
+    setSelectedStore(firstStore);
+    setSelectedDevice(
+      getAvailableDetailDevices(app.id, firstStore)[0] ?? null,
+    );
   }, [app.id, availableStores]);
 
   useEffect(() => {
@@ -153,7 +190,12 @@ export function AppDetailOverlay({
                 type="button"
                 key={store}
                 aria-pressed={selectedStore === store}
-                onClick={() => setSelectedStore(store)}
+                onClick={() => {
+                  setSelectedStore(store);
+                  setSelectedDevice(
+                    getAvailableDetailDevices(app.id, store)[0] ?? null,
+                  );
+                }}
               >
                 <span className="app-detail-store-icon-slot">
                   <StoreIcon store={store} />
@@ -163,16 +205,46 @@ export function AppDetailOverlay({
             ))}
           </div>
           <div
-            className="app-detail-preview"
-            aria-label={`${app.name} ${STORE_LABELS[selectedStore]} preview area`}
-            data-preview-key={`${app.id}:${selectedStore}`}
-          />
+            className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
+            aria-label={`${app.name} ${STORE_LABELS[selectedStore]} ${selectedDevice ? DEVICE_LABELS[selectedDevice] : ""} preview area`}
+            data-preview-key={`${app.id}:${selectedStore}:${selectedDevice ?? "none"}`}
+          >
+            {selectedDevice && (
+              <span className="app-detail-preview-marker">
+                <DeviceSilhouette device={selectedDevice} />
+              </span>
+            )}
+          </div>
           <div
             className="app-detail-description"
-            data-description-key={`${app.id}:${selectedStore}`}
+            data-description-key={`${app.id}:${selectedStore}:${selectedDevice ?? "none"}`}
+            aria-live="polite"
           >
-            <p>Device-specific experience description will appear here.</p>
+            <p>
+              {selectedDevice ? DEVICE_LABELS[selectedDevice] : "Device"} —{` `}
+              {selectedContent?.description}
+            </p>
           </div>
+          <div className="app-detail-device-selector" aria-label="디바이스 선택">
+            {availableDevices.map((device) => (
+              <button
+                className="app-detail-device-button"
+                type="button"
+                key={device}
+                aria-label={DEVICE_LABELS[device]}
+                aria-pressed={selectedDevice === device}
+                onClick={() => setSelectedDevice(device)}
+              >
+                <DeviceSilhouette device={device} />
+                <span className="app-detail-device-label">
+                  {DEVICE_LABELS[device]}
+                </span>
+              </button>
+            ))}
+          </div>
+          <span className="app-detail-screenshot-count" aria-hidden="true">
+            {selectedContent?.screenshots.length ?? 0}
+          </span>
         </div>
       </div>
     </div>
