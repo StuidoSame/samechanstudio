@@ -1,6 +1,7 @@
 import { DeviceSection } from "./DeviceSection";
 import { IPhoneFrame } from "./IPhoneFrame";
 import { IPadFrame } from "./IPadFrame";
+import { WatchGroup } from "./WatchGroup";
 
 const phoneCopy = {
   index: "01",
@@ -30,6 +31,21 @@ const tabletCopy = {
   ),
 };
 
+const watchCopy = {
+  index: "03",
+  category: "WATCH",
+  title: "Small, but present.",
+  body: (
+    <p>
+      Sometimes a glance is all you need.
+      <br />
+      The smallest screen can still hold
+      <br />
+      a thoughtful moment.
+    </p>
+  ),
+};
+
 export function DeviceShowcase() {
   return (
     <div className="device-showcase" aria-label="SAME STUDIO device showcase">
@@ -44,6 +60,11 @@ export function DeviceShowcase() {
           className="device-showcase-tablet"
           device={<IPadFrame />}
           reversed
+        />
+        <DeviceSection
+          {...watchCopy}
+          className="device-showcase-watch"
+          device={<WatchGroup />}
         />
       </div>
     </div>
