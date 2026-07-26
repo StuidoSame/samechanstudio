@@ -37,6 +37,8 @@ const LOADER_LOGO_MOVE_MS = 650;
 const LOADER_EFFECT_MS = 550;
 const FINAL_LOGO_HOLD_MS = 800;
 const LOADER_EXIT_MS = 450;
+const AUTOPLAY_INTERVAL_MS = 3000;
+const AUTOPLAY_RESUME_DELAY_MS = 3000;
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -55,6 +57,14 @@ const HERO_ANDROID_APP_IDS = new Set([
 ]);
 
 const smoothStep = (value: number) => value * value * (3 - 2 * value);
+
+const wrapIndex = (index: number) =>
+  ((index % apps.length) + apps.length) % apps.length;
+
+const getCircularSlot = (appIndex: number, progress: number) => {
+  const nearestCycle = Math.round((progress - appIndex) / apps.length);
+  return appIndex + nearestCycle * apps.length - progress;
+};
 
 const presentationProgress = (elapsed: number) => {
   const points = [
@@ -326,12 +336,74 @@ export function HomeExperience() {
   const updatePointerTargetRef = useRef<
     (clientX: number, clientY: number, pointerType?: string) => void
   >(() => {});
+  const autoplayTimerRef = useRef<number | null>(null);
+  const autoplayEnabledRef = useRef(false);
+  const autoplayPauseReasonsRef = useRef(
+    new Set<"interaction" | "detail-hover" | "detail-focus">(),
+  );
 
   const activeApp = apps[activeIndex];
 
-  const moveTo = useCallback((index: number) => {
-    targetRef.current = clamp(index, 0, apps.length - 1);
+  const moveBy = useCallback((offset: number) => {
+    targetRef.current = Math.round(targetRef.current) + offset;
   }, []);
+
+  const moveToApp = useCallback((appIndex: number) => {
+    const progress = progressRef.current;
+    const nearestCycle = Math.round((progress - appIndex) / apps.length);
+    targetRef.current = appIndex + nearestCycle * apps.length;
+  }, []);
+
+  const clearAutoplay = useCallback(() => {
+    if (autoplayTimerRef.current === null) return;
+    window.clearTimeout(autoplayTimerRef.current);
+    autoplayTimerRef.current = null;
+  }, []);
+
+  const scheduleAutoplay = useCallback(
+    function schedule(delay = AUTOPLAY_INTERVAL_MS) {
+      clearAutoplay();
+      if (
+        !autoplayEnabledRef.current ||
+        document.visibilityState === "hidden" ||
+        autoplayPauseReasonsRef.current.size > 0
+      ) {
+        return;
+      }
+
+      autoplayTimerRef.current = window.setTimeout(() => {
+        autoplayTimerRef.current = null;
+        moveBy(1);
+        schedule(AUTOPLAY_INTERVAL_MS);
+      }, delay);
+    },
+    [clearAutoplay, moveBy],
+  );
+
+  const pauseAutoplay = useCallback(
+    (reason: "interaction" | "detail-hover" | "detail-focus") => {
+      autoplayPauseReasonsRef.current.add(reason);
+      clearAutoplay();
+    },
+    [clearAutoplay],
+  );
+
+  const resumeAutoplay = useCallback(
+    (reason: "interaction" | "detail-hover" | "detail-focus") => {
+      autoplayPauseReasonsRef.current.delete(reason);
+      scheduleAutoplay(AUTOPLAY_RESUME_DELAY_MS);
+    },
+    [scheduleAutoplay],
+  );
+
+  const selectApp = useCallback(
+    (appIndex: number) => {
+      pauseAutoplay("interaction");
+      moveToApp(appIndex);
+      resumeAutoplay("interaction");
+    },
+    [moveToApp, pauseAutoplay, resumeAutoplay],
+  );
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -340,6 +412,30 @@ export function HomeExperience() {
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    autoplayEnabledRef.current = !loaderVisible && !reducedMotion;
+    if (autoplayEnabledRef.current) {
+      scheduleAutoplay();
+    } else {
+      clearAutoplay();
+    }
+    return clearAutoplay;
+  }, [clearAutoplay, loaderVisible, reducedMotion, scheduleAutoplay]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        clearAutoplay();
+        return;
+      }
+      scheduleAutoplay();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [clearAutoplay, scheduleAutoplay]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -608,7 +704,7 @@ export function HomeExperience() {
 
       if (!pointer.dragging) {
         const stiffness = reducedMotion ? 0.22 : 0.105;
-        const damping = reducedMotion ? 0.62 : 0.79;
+        const damping = reducedMotion ? 0.62 : 0.75;
         velocityRef.current +=
           (targetRef.current - progressRef.current) * stiffness * delta;
         velocityRef.current *= Math.pow(damping, delta);
@@ -623,7 +719,7 @@ export function HomeExperience() {
       }
 
       const progress = progressRef.current;
-      const nearest = clamp(Math.round(progress), 0, apps.length - 1);
+      const nearest = wrapIndex(Math.round(progress));
       if (nearest !== activeIndexRef.current) {
         activeIndexRef.current = nearest;
         setActiveIndex(nearest);
@@ -631,8 +727,9 @@ export function HomeExperience() {
 
       cardRefs.current.forEach((card, index) => {
         if (!card) return;
-        const slot = index - progress;
+        const slot = getCircularSlot(index, progress);
         const absolute = Math.abs(slot);
+        const visibleRadius = width < 768 ? 1.55 : width < 1024 ? 2.55 : 3.55;
         const x = easeSlot(slot, width);
         const scale =
           absolute <= 1
@@ -662,11 +759,14 @@ export function HomeExperience() {
         const parallaxRotation = pointerDepth.x * (activeCard ? 0.65 : 1.15);
 
         card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${parallaxY}px), ${depth + parallaxZ}px) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
-        card.style.opacity = String(opacity);
+        card.style.opacity = String(absolute < visibleRadius ? opacity : 0);
         card.style.zIndex = String(50 - Math.round(absolute * 8));
-        card.style.pointerEvents = absolute < 3.45 ? "auto" : "none";
-        card.setAttribute("aria-hidden", absolute > 3.45 ? "true" : "false");
-        card.tabIndex = Math.round(progress) === index ? 0 : -1;
+        card.style.pointerEvents = absolute < visibleRadius ? "auto" : "none";
+        card.setAttribute(
+          "aria-hidden",
+          absolute >= visibleRadius ? "true" : "false",
+        );
+        card.tabIndex = nearest === index ? 0 : -1;
       });
 
       const v = velocityRef.current;
@@ -703,13 +803,13 @@ export function HomeExperience() {
         event.target instanceof HTMLTextAreaElement
       ) return;
       event.preventDefault();
-      moveTo(
-        Math.round(targetRef.current) + (event.key === "ArrowRight" ? 1 : -1),
-      );
+      pauseAutoplay("interaction");
+      moveBy(event.key === "ArrowRight" ? 1 : -1);
+      resumeAutoplay("interaction");
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [moveTo]);
+  }, [moveBy, pauseAutoplay, resumeAutoplay]);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -719,6 +819,7 @@ export function HomeExperience() {
     ) {
       return;
     }
+    pauseAutoplay("interaction");
     const pointer = pointerRef.current;
     pointer.id = event.pointerId;
     pointer.startX = event.clientX;
@@ -755,6 +856,11 @@ export function HomeExperience() {
       if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
       if (Math.abs(dy) > Math.abs(dx) * 1.15) {
         pointer.dragging = false;
+        pointer.id = -1;
+        resumeAutoplay("interaction");
+        if (heroRef.current?.hasPointerCapture(event.pointerId)) {
+          heroRef.current.releasePointerCapture(event.pointerId);
+        }
         return;
       }
       pointer.horizontal = true;
@@ -764,7 +870,7 @@ export function HomeExperience() {
     const step = width < 768 ? width * 0.59 : width < 1024 ? width * 0.23 : width * 0.16;
     const now = performance.now();
     const elapsed = Math.max(now - pointer.lastTime, 8);
-    const next = clamp(pointer.startProgress - dx / step, 0, apps.length - 1);
+    const next = pointer.startProgress - dx / step;
     pointer.velocity = (-(event.clientX - pointer.lastX) / step) * (16.667 / elapsed);
     pointer.lastX = event.clientX;
     pointer.lastTime = now;
@@ -775,14 +881,16 @@ export function HomeExperience() {
 
   const endPointer = (event: ReactPointerEvent<HTMLElement>) => {
     const pointer = pointerRef.current;
-    if (!pointer.dragging || event.pointerId !== pointer.id) return;
+    if (event.pointerId !== pointer.id) return;
     pointer.dragging = false;
+    pointer.id = -1;
     const projected = progressRef.current + pointer.velocity * 0.32;
-    targetRef.current = clamp(Math.round(projected), 0, apps.length - 1);
+    targetRef.current = Math.round(projected);
     velocityRef.current = pointer.velocity * 0.24;
     if (heroRef.current?.hasPointerCapture(event.pointerId)) {
       heroRef.current.releasePointerCapture(event.pointerId);
     }
+    resumeAutoplay("interaction");
   };
 
   const accentStyle = useMemo(
@@ -884,7 +992,7 @@ export function HomeExperience() {
                   setRef={(node) => {
                     cardRefs.current[index] = node;
                   }}
-                  onSelect={moveTo}
+                  onSelect={selectApp}
                 />
               ))}
             </div>
@@ -903,6 +1011,10 @@ export function HomeExperience() {
                   href={activeApp.appStoreUrl}
                   target="_blank"
                   rel="noreferrer"
+                  onMouseEnter={() => pauseAutoplay("detail-hover")}
+                  onMouseLeave={() => resumeAutoplay("detail-hover")}
+                  onFocus={() => pauseAutoplay("detail-focus")}
+                  onBlur={() => resumeAutoplay("detail-focus")}
                 >
                   VIEW DETAIL
                 </a>
@@ -916,9 +1028,16 @@ export function HomeExperience() {
             className="carousel-arrow arrow-left"
             type="button"
             aria-label="Previous app"
-            disabled={activeIndex === 0}
-            onPointerDown={(event) => event.stopPropagation()}
-            onClick={() => moveTo(Math.round(targetRef.current) - 1)}
+            onPointerDown={(event) => {
+              event.stopPropagation();
+              pauseAutoplay("interaction");
+            }}
+            onPointerUp={() => resumeAutoplay("interaction")}
+            onPointerCancel={() => resumeAutoplay("interaction")}
+            onClick={() => {
+              moveBy(-1);
+              resumeAutoplay("interaction");
+            }}
           >
             ←
           </button>
@@ -926,9 +1045,16 @@ export function HomeExperience() {
             className="carousel-arrow arrow-right"
             type="button"
             aria-label="Next app"
-            disabled={activeIndex === apps.length - 1}
-            onPointerDown={(event) => event.stopPropagation()}
-            onClick={() => moveTo(Math.round(targetRef.current) + 1)}
+            onPointerDown={(event) => {
+              event.stopPropagation();
+              pauseAutoplay("interaction");
+            }}
+            onPointerUp={() => resumeAutoplay("interaction")}
+            onPointerCancel={() => resumeAutoplay("interaction")}
+            onClick={() => {
+              moveBy(1);
+              resumeAutoplay("interaction");
+            }}
           >
             →
           </button>
