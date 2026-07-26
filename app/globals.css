@@ -878,10 +878,19 @@ button {
   pointer-events: none;
 }
 
+.autoplay-controls {
+  margin: -48px 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  pointer-events: none;
+}
+
 .autoplay-control {
   width: 36px;
   height: 36px;
-  margin: -48px 0 12px;
+  margin: 0;
   padding: 0;
   display: grid;
   place-items: center;
@@ -936,12 +945,76 @@ button {
   }
 }
 
+.fast-forward-control {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+  opacity: 0.82;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.fast-forward-control::after {
+  position: absolute;
+  inset: -5px;
+  content: "";
+}
+
+.fast-forward-control-icon,
+.fast-forward-control-icon svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fast-forward-control:hover:not(:disabled) {
+    opacity: 1;
+    border-color: rgba(119, 80, 200, 0.38);
+    box-shadow:
+      0 9px 22px rgba(104, 69, 169, 0.1),
+      0 0 15px rgba(147, 97, 235, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  }
+}
+
+.fast-forward-control[aria-pressed="true"],
+.fast-forward-control[aria-pressed="true"]:hover:not(:disabled) {
+  opacity: 1;
+  color: #8560cf;
+  background: rgba(228, 215, 252, 0.78);
+  border-color: rgba(119, 80, 200, 0.4);
+  box-shadow:
+    0 7px 18px rgba(104, 69, 169, 0.14),
+    0 0 20px rgba(147, 97, 235, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transform: scale(0.92);
+}
+
+.fast-forward-control[aria-pressed="true"] .fast-forward-control-icon {
+  animation: fast-forward-icon 0.38s ease-in-out infinite;
+}
+
 .app-info-content {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   animation: info-in 0.36s ease both;
+}
+
+.app-info-content.is-fast-forwarding {
+  animation: fast-forward-info-in 0.12s ease-out both;
+}
+
+.app-info-content.is-fast-forwarding h1,
+.app-info-content.is-fast-forwarding .platform-icons,
+.app-info-content.is-fast-forwarding .view-app-sequence {
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 
 .app-count {
@@ -1753,6 +1826,27 @@ footer {
   }
 }
 
+@keyframes fast-forward-icon {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes fast-forward-info-in {
+  from {
+    opacity: 0.72;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes info-in {
   from {
     opacity: 0;
@@ -1887,10 +1981,13 @@ footer {
     width: calc(100% - 32px);
   }
 
+  .autoplay-controls {
+    margin-top: -46px;
+  }
+
   .autoplay-control {
     width: 34px;
     height: 34px;
-    margin-top: -46px;
     flex-basis: 34px;
   }
 
@@ -2050,10 +2147,13 @@ footer {
     top: calc(clamp(318px, 56svh, 440px) - 24px);
   }
 
+  .autoplay-controls {
+    margin-top: -44px;
+  }
+
   .autoplay-control {
     width: 32px;
     height: 32px;
-    margin-top: -44px;
     flex-basis: 32px;
   }
 

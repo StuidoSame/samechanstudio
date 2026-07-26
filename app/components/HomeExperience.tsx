@@ -44,6 +44,9 @@ const PLATFORM_REVEAL_MS = 250;
 const DETAIL_REVEAL_MS = 300;
 const ACTIVE_COMPLETE_HOLD_MS = 500;
 const PLAY_RESUME_DELAY_MS = 400;
+const FAST_FORWARD_TRANSITION_MS = 280;
+const FAST_FORWARD_GAP_MS = 70;
+const REDUCED_MOTION_FAST_FORWARD_TRANSITION_MS = 360;
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -305,6 +308,7 @@ export function HomeExperience() {
   const [loaderVisible, setLoaderVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isFastForwarding, setIsFastForwarding] = useState(false);
   const [activeSequencePhase, setActiveSequencePhase] =
     useState<ActiveSequencePhase>("idle");
   const [typedNameLength, setTypedNameLength] = useState(0);
@@ -357,11 +361,14 @@ export function HomeExperience() {
     (clientX: number, clientY: number, pointerType?: string) => void
   >(() => {});
   const autoplayTimerRef = useRef<number | null>(null);
+  const fastForwardTimerRef = useRef<number | null>(null);
+  const fastForwardPointerIdRef = useRef(-1);
   const autoplayEnabledRef = useRef(false);
   const autoplayAdvancePendingRef = useRef(false);
   const autoplayResumeNotBeforeRef = useRef(0);
   const isPlayingRef = useRef(true);
   const isTransitioningRef = useRef(false);
+  const isFastForwardingRef = useRef(false);
   const autoplayPauseReasonsRef = useRef(
     new Set<"interaction" | "detail-hover" | "detail-focus">(),
   );
@@ -372,6 +379,12 @@ export function HomeExperience() {
     if (autoplayTimerRef.current === null) return;
     window.clearTimeout(autoplayTimerRef.current);
     autoplayTimerRef.current = null;
+  }, []);
+
+  const clearFastForwardTimer = useCallback(() => {
+    if (fastForwardTimerRef.current === null) return;
+    window.clearTimeout(fastForwardTimerRef.current);
+    fastForwardTimerRef.current = null;
   }, []);
 
   const beginTransition = useCallback(() => {
@@ -399,6 +412,28 @@ export function HomeExperience() {
       targetRef.current = appIndex + nearestCycle * apps.length;
     },
     [beginTransition],
+  );
+
+  const stopFastForward = useCallback(
+    (pauseAfterSnap = false) => {
+      if (!isFastForwardingRef.current) return;
+
+      clearFastForwardTimer();
+      fastForwardPointerIdRef.current = -1;
+      isFastForwardingRef.current = false;
+      setIsFastForwarding(false);
+
+      beginTransition();
+      targetRef.current = Math.round(progressRef.current);
+      velocityRef.current *= 0.18;
+
+      if (pauseAfterSnap) {
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+        clearAutoplay();
+      }
+    },
+    [beginTransition, clearAutoplay, clearFastForwardTimer],
   );
 
   const queueAutoplayAdvance = useCallback(
@@ -465,6 +500,10 @@ export function HomeExperience() {
   );
 
   const toggleAutoplay = useCallback(() => {
+    if (isFastForwardingRef.current) {
+      stopFastForward(true);
+      return;
+    }
     if (isTransitioningRef.current) return;
 
     if (isPlayingRef.current) {
@@ -481,7 +520,37 @@ export function HomeExperience() {
     if (autoplayAdvancePendingRef.current) {
       queueAutoplayAdvance(PLAY_RESUME_DELAY_MS);
     }
-  }, [clearAutoplay, queueAutoplayAdvance]);
+  }, [clearAutoplay, queueAutoplayAdvance, stopFastForward]);
+
+  useEffect(() => {
+    if (!isFastForwarding) {
+      clearFastForwardTimer();
+      return;
+    }
+
+    const transitionDuration = reducedMotion
+      ? REDUCED_MOTION_FAST_FORWARD_TRANSITION_MS
+      : FAST_FORWARD_TRANSITION_MS;
+    const cycleDuration = transitionDuration + FAST_FORWARD_GAP_MS;
+
+    const advance = () => {
+      if (
+        !isFastForwardingRef.current ||
+        !isPlayingRef.current ||
+        document.visibilityState === "hidden"
+      ) {
+        return;
+      }
+
+      moveBy(1);
+      fastForwardTimerRef.current = window.setTimeout(advance, cycleDuration);
+    };
+
+    advance();
+    return clearFastForwardTimer;
+  }, [clearFastForwardTimer, isFastForwarding, moveBy, reducedMotion]);
+
+  useEffect(() => clearFastForwardTimer, [clearFastForwardTimer]);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -493,6 +562,9 @@ export function HomeExperience() {
 
   useEffect(() => {
     autoplayEnabledRef.current = !loaderVisible && !reducedMotion;
+    if (reducedMotion && isFastForwardingRef.current) {
+      stopFastForward(true);
+    }
     if (reducedMotion && isPlayingRef.current) {
       isPlayingRef.current = false;
       setIsPlaying(false);
@@ -503,11 +575,18 @@ export function HomeExperience() {
       queueAutoplayAdvance();
     }
     return clearAutoplay;
-  }, [clearAutoplay, loaderVisible, queueAutoplayAdvance, reducedMotion]);
+  }, [
+    clearAutoplay,
+    loaderVisible,
+    queueAutoplayAdvance,
+    reducedMotion,
+    stopFastForward,
+  ]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
+        stopFastForward();
         clearAutoplay();
         return;
       }
@@ -521,11 +600,21 @@ export function HomeExperience() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [clearAutoplay, queueAutoplayAdvance]);
+  }, [clearAutoplay, queueAutoplayAdvance, stopFastForward]);
+
+  useEffect(() => {
+    const handleWindowBlur = () => stopFastForward();
+    window.addEventListener("blur", handleWindowBlur);
+    return () => window.removeEventListener("blur", handleWindowBlur);
+  }, [stopFastForward]);
 
   useEffect(() => {
     if (loaderVisible || isTransitioning) return;
     autoplayAdvancePendingRef.current = false;
+
+    if (isFastForwarding) {
+      return;
+    }
 
     if (reducedMotion) {
       setTypedNameLength(activeApp.name.length);
@@ -577,6 +666,7 @@ export function HomeExperience() {
   }, [
     activeApp.id,
     activeApp.name,
+    isFastForwarding,
     isTransitioning,
     loaderVisible,
     queueAutoplayAdvance,
@@ -849,8 +939,20 @@ export function HomeExperience() {
       previousTime = time;
 
       if (!pointer.dragging) {
-        const stiffness = reducedMotion ? 0.22 : 0.105;
-        const damping = reducedMotion ? 0.62 : 0.75;
+        const stiffness = isFastForwardingRef.current
+          ? reducedMotion
+            ? 0.16
+            : 0.24
+          : reducedMotion
+            ? 0.22
+            : 0.105;
+        const damping = isFastForwardingRef.current
+          ? reducedMotion
+            ? 0.72
+            : 0.62
+          : reducedMotion
+            ? 0.62
+            : 0.75;
         velocityRef.current +=
           (targetRef.current - progressRef.current) * stiffness * delta;
         velocityRef.current *= Math.pow(damping, delta);
@@ -1045,6 +1147,33 @@ export function HomeExperience() {
     resumeAutoplay("interaction");
   };
 
+  const startFastForward = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (
+      !isPlayingRef.current ||
+      isTransitioningRef.current ||
+      isFastForwardingRef.current
+    ) {
+      return;
+    }
+
+    fastForwardPointerIdRef.current = event.pointerId;
+    clearAutoplay();
+    autoplayAdvancePendingRef.current = false;
+    isFastForwardingRef.current = true;
+    setIsFastForwarding(true);
+  };
+
+  const releaseFastForward = (
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (fastForwardPointerIdRef.current !== event.pointerId) return;
+    stopFastForward();
+  };
+
   const updateDetailMagnet = (event: ReactPointerEvent<HTMLAnchorElement>) => {
     if (event.pointerType !== "mouse") return;
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -1173,34 +1302,59 @@ export function HomeExperience() {
           </div>
 
           <div className="app-info">
-            <button
-              className={`autoplay-control ${isPlaying ? "is-playing" : "is-paused"}`}
-              type="button"
-              aria-label={isPlaying ? "자동 재생 일시정지" : "자동 재생 시작"}
-              disabled={isTransitioning || reducedMotion}
-              data-playing={isPlaying ? "true" : "false"}
-              onPointerDown={(event) => event.stopPropagation()}
-              onClick={toggleAutoplay}
-            >
-              <span
-                className="autoplay-control-icon"
-                key={isPlaying ? "pause" : "play"}
-                aria-hidden="true"
+            <div className="autoplay-controls">
+              <button
+                className={`autoplay-control ${isPlaying ? "is-playing" : "is-paused"}`}
+                type="button"
+                aria-label={isPlaying ? "자동 재생 일시정지" : "자동 재생 시작"}
+                disabled={(isTransitioning && !isFastForwarding) || reducedMotion}
+                data-playing={isPlaying ? "true" : "false"}
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={toggleAutoplay}
               >
-                {isPlaying ? (
-                  <svg viewBox="0 0 16 16" fill="currentColor">
-                    <rect x="3.25" y="2.5" width="3.25" height="11" rx="1" />
-                    <rect x="9.5" y="2.5" width="3.25" height="11" rx="1" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M4.25 2.8a.9.9 0 0 1 1.36-.77l7.1 4.53a.9.9 0 0 1 0 1.52l-7.1 4.53a.9.9 0 0 1-1.36-.76V2.8Z" />
-                  </svg>
-                )}
-              </span>
-            </button>
+                <span
+                  className="autoplay-control-icon"
+                  key={isPlaying ? "pause" : "play"}
+                  aria-hidden="true"
+                >
+                  {isPlaying ? (
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                      <rect x="3.25" y="2.5" width="3.25" height="11" rx="1" />
+                      <rect x="9.5" y="2.5" width="3.25" height="11" rx="1" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M4.25 2.8a.9.9 0 0 1 1.36-.77l7.1 4.53a.9.9 0 0 1 0 1.52l-7.1 4.53a.9.9 0 0 1-1.36-.76V2.8Z" />
+                    </svg>
+                  )}
+                </span>
+              </button>
+              {isPlaying && (
+                <button
+                  className="autoplay-control fast-forward-control"
+                  type="button"
+                  aria-label="앱 빠르게 넘기기"
+                  aria-pressed={isFastForwarding}
+                  disabled={(isTransitioning && !isFastForwarding) || reducedMotion}
+                  onPointerDown={startFastForward}
+                  onPointerUp={releaseFastForward}
+                  onPointerCancel={releaseFastForward}
+                  onPointerLeave={(event) => {
+                    if (isFastForwardingRef.current) releaseFastForward(event);
+                  }}
+                  onContextMenu={(event) => event.preventDefault()}
+                >
+                  <span className="fast-forward-control-icon" aria-hidden="true">
+                    <svg viewBox="0 0 18 16" fill="currentColor">
+                      <path d="M1.8 2.65a.8.8 0 0 1 1.22-.68l5.8 4.68a.8.8 0 0 1 0 1.24l-5.8 4.68a.8.8 0 0 1-1.22-.68V2.65Z" />
+                      <path d="M8.4 2.65a.8.8 0 0 1 1.22-.68l5.8 4.68a.8.8 0 0 1 0 1.24l-5.8 4.68a.8.8 0 0 1-1.22-.68V2.65Z" />
+                    </svg>
+                  </span>
+                </button>
+              )}
+            </div>
             <div
-              className={`app-info-content sequence-${activeSequencePhase}`}
+              className={`app-info-content sequence-${activeSequencePhase}${isFastForwarding ? " is-fast-forwarding" : ""}`}
               key={activeApp.id}
               data-sequence-phase={activeSequencePhase}
               data-transitioning={isTransitioning ? "true" : "false"}
@@ -1209,7 +1363,10 @@ export function HomeExperience() {
                 {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
               </span>
               <h1 aria-label={activeApp.name}>
-                {activeApp.name.slice(0, typedNameLength)}
+                {activeApp.name.slice(
+                  0,
+                  isFastForwarding ? activeApp.name.length : typedNameLength,
+                )}
               </h1>
               <PlatformIcons app={activeApp} />
               <span className="view-app-sequence">
