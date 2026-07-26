@@ -159,6 +159,47 @@ const interpolateSlotValue = (absoluteSlot: number, anchors: number[]) => {
   return anchors[lower] + (anchors[upper] - anchors[lower]) * progress;
 };
 
+const sampleTensionCurve = (
+  progress: number,
+  anchors: ReadonlyArray<readonly [number, number]>,
+) => {
+  const value = clamp(progress, 0, 1);
+
+  for (let index = 1; index < anchors.length; index += 1) {
+    const [endProgress, endValue] = anchors[index];
+    if (value > endProgress) continue;
+    const [startProgress, startValue] = anchors[index - 1];
+    const segment = smoothstep(
+      0,
+      1,
+      (value - startProgress) / Math.max(endProgress - startProgress, 0.001),
+    );
+    return startValue + (endValue - startValue) * segment;
+  }
+
+  return anchors.at(-1)?.[1] ?? 0;
+};
+
+const ENTER_TENSION_CURVE = [
+  [0, 0],
+  [0.25, 0.24],
+  [0.5, 0.47],
+  [0.75, 0.82],
+  [0.9, 1],
+  [0.97, 1],
+  [1, 0],
+] as const;
+
+const EXIT_TENSION_CURVE = [
+  [0, 0],
+  [0.3, 0.3],
+  [0.55, 0.6],
+  [0.75, 0.9],
+  [0.9, 1],
+  [0.97, 1],
+  [1, 0],
+] as const;
+
 const presentationProgress = (elapsed: number) => {
   const points = [
     [0, 0],
@@ -1193,12 +1234,10 @@ export function HomeExperience() {
         settleWasFastForwarding = isFastForwardingRef.current;
       }
       const exitEnvelope = moving
-        ? smoothstep(0.04, 0.54, travel) *
-          (1 - smoothstep(0.84, 1, travel))
+        ? sampleTensionCurve(travel, EXIT_TENSION_CURVE)
         : 0;
       const enterEnvelope = moving
-        ? smoothstep(0.12, 0.7, travel) *
-          (1 - smoothstep(0.94, 1, travel))
+        ? sampleTensionCurve(travel, ENTER_TENSION_CURVE)
         : 0;
       const releaseEnvelope = moving
         ? smoothstep(0.72, 0.86, travel) *
@@ -1257,10 +1296,8 @@ export function HomeExperience() {
       interactionRef.current.enterDirection = motionDirection;
       interactionRef.current.exitDirection = -motionDirection;
       interactionRef.current.releaseDirection = lastMotionDirection;
-      interactionRef.current.enterStrength +=
-        (enterEnvelope - interactionRef.current.enterStrength) * 0.2;
-      interactionRef.current.exitStrength +=
-        (exitEnvelope - interactionRef.current.exitStrength) * 0.2;
+      interactionRef.current.enterStrength = enterEnvelope;
+      interactionRef.current.exitStrength = exitEnvelope;
       interactionRef.current.releaseStrength +=
         (releaseEnvelope - interactionRef.current.releaseStrength) *
         (releaseEnvelope > 0 ? 0.34 : 0.18);

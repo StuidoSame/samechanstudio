@@ -102,7 +102,7 @@ const vertexShader = `
     float enterFace = pow(max(0.0, dot(n, vec3(uEnterDirection, 0.0, 0.0))), 2.4);
     float exitFace = pow(max(0.0, dot(n, vec3(uExitDirection, 0.0, 0.0))), 2.15);
     float directionalMembrane = (
-      enterFace * uEnterStrength * 0.16 +
+      enterFace * uEnterStrength * 0.17 +
       exitFace * uExitStrength * 0.20
     ) * uMotionScale;
     float releaseSurface = (
@@ -253,12 +253,12 @@ function JellyMesh({
     material.uniforms.uEnterStrength.value = THREE.MathUtils.lerp(
       material.uniforms.uEnterStrength.value,
       data.enterStrength * reducedForce,
-      0.18,
+      0.24,
     );
     material.uniforms.uExitStrength.value = THREE.MathUtils.lerp(
       material.uniforms.uExitStrength.value,
       data.exitStrength * reducedForce,
-      0.18,
+      0.24,
     );
     material.uniforms.uReleaseDirection.value = THREE.MathUtils.lerp(
       material.uniforms.uReleaseDirection.value,
