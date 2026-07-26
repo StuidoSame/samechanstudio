@@ -932,7 +932,7 @@ export function HomeExperience() {
   }, [moveBy, pauseAutoplay, resumeAutoplay]);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (event.pointerType === "mouse") return;
     if (
       event.target instanceof Element &&
       event.target.closest(".site-header, .app-info, .carousel-arrow")
@@ -949,7 +949,7 @@ export function HomeExperience() {
     pointer.startProgress = progressRef.current;
     pointer.velocity = 0;
     pointer.dragging = true;
-    pointer.horizontal = event.pointerType === "mouse";
+    pointer.horizontal = false;
     heroRef.current?.setPointerCapture(event.pointerId);
   };
 
@@ -968,6 +968,7 @@ export function HomeExperience() {
   };
 
   const onPointerMove = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "mouse") return;
     const pointer = pointerRef.current;
     if (!pointer.dragging || event.pointerId !== pointer.id) return;
     const dx = event.clientX - pointer.startX;
