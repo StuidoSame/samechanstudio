@@ -2549,6 +2549,199 @@ button {
   }
 }
 
+.contact-section {
+  position: relative;
+  scroll-margin-top: 100px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 32%, rgba(177, 132, 236, 0.12), transparent 25rem),
+    radial-gradient(ellipse 80% 24% at 50% 100%, rgba(103, 86, 129, 0.12), transparent 74%),
+    linear-gradient(180deg, #f2ebff 0%, #eee6f8 58%, #e7dcef 100%);
+}
+
+.contact-section::before {
+  position: absolute;
+  top: 18%;
+  left: 11%;
+  width: min(36vw, 480px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(165, 116, 235, 0.11), transparent 68%);
+  filter: blur(18px);
+  content: "";
+  pointer-events: none;
+}
+
+.contact-inner {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: clamp(150px, 12vw, 180px) clamp(24px, 6vw, 80px)
+    clamp(145px, 11vw, 170px);
+}
+
+.contact-label {
+  display: block;
+  color: #7952cd;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+}
+
+.contact-inner h2 {
+  margin: 22px 0 0;
+  color: #6240bd;
+  font-size: clamp(48px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.contact-copy {
+  margin: 30px 0 0;
+  color: #75678e;
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.82;
+}
+
+.contact-copy span {
+  display: block;
+}
+
+.contact-email-wrap {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 42px;
+}
+
+.contact-email-link {
+  display: inline-block;
+  max-width: 100%;
+  color: #5f3bb6;
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 1.1;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  transform-origin: left center;
+  transition:
+    color 0.22s ease-out,
+    text-shadow 0.22s ease-out,
+    transform 0.22s ease-out;
+}
+
+.contact-email-link:focus-visible {
+  color: #7952d8;
+  outline: 2px solid rgba(126, 82, 216, 0.38);
+  outline-offset: 8px;
+  border-radius: 4px;
+  text-shadow: 0 0 14px rgba(150, 105, 255, 0.18);
+  transform: scale(1.02);
+}
+
+.contact-star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(126, 83, 211, 0.34);
+  box-shadow: 0 0 9px rgba(150, 105, 255, 0.18);
+  opacity: 0.42;
+  pointer-events: none;
+  transition:
+    opacity 0.22s ease-out,
+    transform 0.22s ease-out;
+}
+
+.contact-star-one {
+  top: -18px;
+  left: 8%;
+}
+
+.contact-star-two {
+  top: -11px;
+  right: 17%;
+  width: 3px;
+  height: 3px;
+}
+
+.contact-star-three {
+  bottom: -19px;
+  left: 35%;
+  width: 3px;
+  height: 3px;
+}
+
+.contact-star-four {
+  right: 4%;
+  bottom: -12px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-email-link:hover {
+    color: #7952d8;
+    text-shadow: 0 0 14px rgba(150, 105, 255, 0.18);
+    transform: scale(1.02);
+  }
+
+  .contact-email-wrap:hover .contact-star,
+  .contact-email-wrap:focus-within .contact-star {
+    opacity: 0.72;
+  }
+
+  .contact-email-wrap:hover .contact-star-one,
+  .contact-email-wrap:focus-within .contact-star-one {
+    transform: translate(1px, -2px);
+  }
+
+  .contact-email-wrap:hover .contact-star-two,
+  .contact-email-wrap:focus-within .contact-star-two {
+    transform: translate(2px, 1px);
+  }
+
+  .contact-email-wrap:hover .contact-star-three,
+  .contact-email-wrap:focus-within .contact-star-three {
+    transform: translate(-1px, 2px);
+  }
+
+  .contact-email-wrap:hover .contact-star-four,
+  .contact-email-wrap:focus-within .contact-star-four {
+    transform: translate(1px, 2px);
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-section {
+    scroll-margin-top: 92px;
+  }
+
+  .contact-inner {
+    padding: 112px 20px 110px;
+  }
+
+  .contact-label {
+    font-size: 11px;
+  }
+
+  .contact-inner h2 {
+    margin-top: 18px;
+    font-size: 44px;
+  }
+
+  .contact-copy {
+    margin-top: 24px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .contact-email-wrap {
+    margin-top: 34px;
+  }
+
+  .contact-email-link {
+    font-size: clamp(22px, 7.2vw, 32px);
+  }
+}
+
 footer {
   padding: 36px clamp(24px, 5vw, 78px) 32px;
   color: #f6f1ff;

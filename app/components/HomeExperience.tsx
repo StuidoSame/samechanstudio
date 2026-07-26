@@ -1843,7 +1843,34 @@ export function HomeExperience() {
 
         <DeviceShowcase />
 
-        <footer id="contact">
+        <section
+          className="contact-section"
+          id="contact"
+          aria-labelledby="contact-title"
+        >
+          <div className="contact-inner">
+            <span className="contact-label">CONTACT</span>
+            <h2 id="contact-title">Say hello.</h2>
+            <p className="contact-copy">
+              <span>앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요.</span>
+              <span>필요한 내용을 확인한 뒤 순차적으로 답변드립니다.</span>
+            </p>
+            <div className="contact-email-wrap">
+              <a
+                className="contact-email-link"
+                href="mailto:contact@samestudio.kr"
+              >
+                contact@samestudio.kr
+              </a>
+              <span className="contact-star contact-star-one" aria-hidden="true" />
+              <span className="contact-star contact-star-two" aria-hidden="true" />
+              <span className="contact-star contact-star-three" aria-hidden="true" />
+              <span className="contact-star contact-star-four" aria-hidden="true" />
+            </div>
+          </div>
+        </section>
+
+        <footer>
           <div className="footer-inner">
             <div className="footer-social" aria-label="SAME STUDIO social links">
               <a href="https://github.com/StuidoSame" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
