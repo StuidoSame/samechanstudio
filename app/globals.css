@@ -142,6 +142,7 @@ button {
   top: 70px;
   right: clamp(20px, 2.2vw, 36px);
   width: clamp(190px, 15vw, 230px);
+  height: auto;
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -179,6 +180,11 @@ button {
   font-size: clamp(16px, 1.25vw, 19px);
   font-weight: 400;
   letter-spacing: 0.06em;
+  opacity: 0.88;
+  transition:
+    color 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .site-header nav a::after,
@@ -197,6 +203,13 @@ button {
 .footer-links a:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  color: #6132ce;
+  opacity: 1;
+  transform: translateX(3px);
 }
 
 .menu-control {

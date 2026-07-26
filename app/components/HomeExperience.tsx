@@ -1497,6 +1497,9 @@ export function HomeExperience() {
               <a href="#about" onClick={() => setMenuOpen(false)}>ABOUT</a>
               <a href="#apps" onClick={() => setMenuOpen(false)}>APPS</a>
               <a href="#contact" onClick={() => setMenuOpen(false)}>CONTACT</a>
+              <a href="/support/" onClick={() => setMenuOpen(false)}>SUPPORT</a>
+              <a href="/terms/" onClick={() => setMenuOpen(false)}>TERMS</a>
+              <a href="/privacy/" onClick={() => setMenuOpen(false)}>PRIVACY</a>
             </nav>
             <button
               type="button"
