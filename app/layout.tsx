@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     images: ["/og.png"],
   },
   icons: {
-    icon: "/assets/icons/favicon.ico",
-    shortcut: "/assets/icons/favicon.ico",
+    icon: "/assets/favicon/favicon.ico",
+    shortcut: "/assets/favicon/favicon.ico",
   },
 };
 
