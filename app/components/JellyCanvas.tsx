@@ -62,6 +62,11 @@ const vertexShader = `
   uniform float uExitDirection;
   uniform float uEnterStrength;
   uniform float uExitStrength;
+  uniform float uReleaseDirection;
+  uniform float uReleaseStrength;
+  uniform float uSettleAmplitude;
+  uniform float uSettlePhase;
+  uniform float uIdleStrength;
   uniform vec2 uPointer;
   uniform float uPointerStrength;
   varying vec3 vNormalW;
@@ -88,7 +93,8 @@ const vertexShader = `
 
   void main() {
     vec3 n = normalize(position);
-    float idle = organic(n, uTime) + loaderSurface(n, uTime);
+    float idleScale = mix(1.0, uIdleStrength * 0.52, uHeroMode);
+    float idle = organic(n, uTime) * idleScale + loaderSurface(n, uTime);
     float directionalFace = pow(max(0.0, dot(n, vec3(uDirection, 0.0, 0.0))), 2.25);
     float releaseFace = pow(max(0.0, dot(n, vec3(-uDirection, 0.0, 0.0))), 3.0);
     float legacyMembrane = directionalFace * uStretch * 0.34;
@@ -99,8 +105,19 @@ const vertexShader = `
       enterFace * uEnterStrength * 0.16 +
       exitFace * uExitStrength * 0.20
     ) * uMotionScale;
-    float membrane = mix(legacyMembrane, directionalMembrane, uHeroMode);
-    float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * 0.026;
+    float releaseSurface = (
+      -exitFace * uReleaseStrength * 0.12 +
+      enterFace * uReleaseStrength * 0.045
+    ) * uMotionScale;
+    float settlePrimary = sin(uSettlePhase + n.y * 1.7) * uSettleAmplitude * 0.56;
+    float settleSecondary = sin(uSettlePhase * 1.24 + 1.35 + n.z * 2.15) * uSettleAmplitude * 0.28;
+    float settleSurface = (settlePrimary + settleSecondary) * uMotionScale;
+    float membrane = mix(
+      legacyMembrane,
+      directionalMembrane + releaseSurface + settleSurface,
+      uHeroMode
+    );
+    float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * 0.018;
     float loaderSqueeze = sin(uTime * 2.05) * uLoaderMotion;
     vec3 pointerDirection = normalize(vec3(uPointer.x, uPointer.y * 0.86, 0.72));
     float pointerFace = pow(max(0.0, dot(n, pointerDirection)), 3.2);
@@ -112,7 +129,8 @@ const vertexShader = `
     float legacyShift = uDirection * uStretch * (0.09 + directionalFace * 0.08);
     float directionalShift = (
       uEnterDirection * enterFace * uEnterStrength * 0.13 +
-      uExitDirection * exitFace * uExitStrength * 0.16
+      uExitDirection * exitFace * uExitStrength * 0.16 +
+      uReleaseDirection * uReleaseStrength * (0.11 + enterFace * 0.04)
     ) * uMotionScale;
     displaced.x += mix(legacyShift, directionalShift, uHeroMode);
     displaced.y *= 0.94 + sin(uTime * 0.45) * 0.008 - loaderSqueeze * 0.035;
@@ -187,6 +205,11 @@ function JellyMesh({
       uExitDirection: { value: -1 },
       uEnterStrength: { value: 0 },
       uExitStrength: { value: 0 },
+      uReleaseDirection: { value: 1 },
+      uReleaseStrength: { value: 0 },
+      uSettleAmplitude: { value: 0 },
+      uSettlePhase: { value: 0 },
+      uIdleStrength: { value: 1 },
       uAccentColor: { value: new THREE.Color("#ff5559") },
       uPointer: { value: new THREE.Vector2(0, 0) },
       uPointerStrength: { value: 0 },
@@ -236,6 +259,27 @@ function JellyMesh({
       material.uniforms.uExitStrength.value,
       data.exitStrength * reducedForce,
       0.18,
+    );
+    material.uniforms.uReleaseDirection.value = THREE.MathUtils.lerp(
+      material.uniforms.uReleaseDirection.value,
+      data.releaseDirection || 1,
+      0.22,
+    );
+    material.uniforms.uReleaseStrength.value = THREE.MathUtils.lerp(
+      material.uniforms.uReleaseStrength.value,
+      data.releaseStrength * reducedForce,
+      data.phase === "release" ? 0.32 : 0.16,
+    );
+    material.uniforms.uSettleAmplitude.value = THREE.MathUtils.lerp(
+      material.uniforms.uSettleAmplitude.value,
+      data.settleAmplitude,
+      data.phase === "settling" ? 0.28 : 0.14,
+    );
+    material.uniforms.uSettlePhase.value = data.settlePhase;
+    material.uniforms.uIdleStrength.value = THREE.MathUtils.lerp(
+      material.uniforms.uIdleStrength.value,
+      data.idleStrength,
+      0.08,
     );
     const normalizedProgress = THREE.MathUtils.clamp(loaderProgress, 0, 1);
     const loaderMotionIntensity = loader
@@ -314,15 +358,31 @@ function JellyMesh({
     const settlePulse = -Math.sin(finalPhase * Math.PI) * 0.024;
     const preparationWidth = loader ? preparation * 0.04 + settlePulse : 0;
 
+    const settleAmplitude = loader
+      ? 0
+      : material.uniforms.uSettleAmplitude.value * (detail === 4 ? 0.8 : 1);
+    const settleWave = Math.sin(material.uniforms.uSettlePhase.value);
+    const settleCrossWave = Math.sin(
+      material.uniforms.uSettlePhase.value * 1.24 + 1.35,
+    );
     meshRef.current.scale.set(
-      finalScale * (1 + largeWave * motionAmplitude + preparationWidth),
+      finalScale *
+        (1 +
+          largeWave * motionAmplitude +
+          preparationWidth +
+          settleWave * settleAmplitude * 0.38),
       finalScale *
         (1 -
           largeWave * motionAmplitude * 0.84 +
           secondaryWave * motionAmplitude * 0.34 -
-          preparationWidth * 0.48) *
+          preparationWidth * 0.48 -
+          settleWave * settleAmplitude * 0.29 +
+          settleCrossWave * settleAmplitude * 0.12) *
         (loader && detail === 4 ? 0.9 : 1),
-      finalScale * (1 + secondaryWave * motionAmplitude * 0.42),
+      finalScale *
+        (1 +
+          secondaryWave * motionAmplitude * 0.42 +
+          settleCrossWave * settleAmplitude * 0.2),
     );
     meshRef.current.position.set(
       loader

@@ -1076,10 +1076,14 @@ export function HomeExperience() {
   useEffect(() => {
     let frame = 0;
     let previousTime = performance.now();
+    let settleStartedAt = -1;
+    let settleWasFastForwarding = false;
+    let lastMotionDirection = 1;
 
     const render = (time: number) => {
       const width = window.innerWidth;
       const pointer = pointerRef.current;
+      const transitionWasActive = isTransitioningRef.current;
       const delta = Math.min((time - previousTime) / 16.667, 2);
       previousTime = time;
 
@@ -1183,6 +1187,14 @@ export function HomeExperience() {
       const travelDistance = Math.max(Math.abs(targetOffset), 1);
       const travel = clamp(Math.abs(progressOffset) / travelDistance, 0, 1);
       const moving = isTransitioningRef.current || pointer.dragging;
+      const justArrived = transitionWasActive && !isTransitioningRef.current;
+      if (moving) {
+        lastMotionDirection = motionDirection;
+        settleStartedAt = -1;
+      } else if (justArrived) {
+        settleStartedAt = time;
+        settleWasFastForwarding = isFastForwardingRef.current;
+      }
       const exitEnvelope = moving
         ? smoothstep(0.04, 0.54, travel) *
           (1 - smoothstep(0.84, 1, travel))
@@ -1191,17 +1203,77 @@ export function HomeExperience() {
         ? smoothstep(0.12, 0.7, travel) *
           (1 - smoothstep(0.94, 1, travel))
         : 0;
+      const releaseEnvelope = moving
+        ? smoothstep(0.72, 0.86, travel) *
+          (1 - smoothstep(0.96, 1, travel))
+        : 0;
+      let settleAmplitude = 0;
+      let settlePhase = 0;
+      let settling = false;
+
+      if (!moving && settleStartedAt >= 0) {
+        const settleDuration = settleWasFastForwarding
+          ? 300
+          : reducedMotion
+            ? 620
+            : 1200;
+        const settleProgress = clamp(
+          (time - settleStartedAt) / settleDuration,
+          0,
+          1,
+        );
+        settling = settleProgress < 1;
+
+        if (settling && reducedMotion) {
+          settleAmplitude = 0.035 * (1 - settleProgress);
+          settlePhase = settleProgress * Math.PI;
+        } else if (settling && settleWasFastForwarding) {
+          settleAmplitude = 0.1 * Math.pow(1 - settleProgress, 0.72);
+          settlePhase = settleProgress * Math.PI * 4;
+        } else if (settling) {
+          if (settleProgress < 0.34) {
+            settleAmplitude =
+              0.15 - (settleProgress / 0.34) * (0.15 - 0.09);
+          } else if (settleProgress < 0.68) {
+            settleAmplitude =
+              0.09 -
+              ((settleProgress - 0.34) / 0.34) * (0.09 - 0.05);
+          } else {
+            settleAmplitude =
+              0.05 * (1 - (settleProgress - 0.68) / 0.32);
+          }
+          settlePhase = settleProgress * Math.PI * 7;
+        }
+
+        if (!settling) settleStartedAt = -1;
+      }
+
       interactionRef.current.phase = moving
         ? travel < 0.52
           ? "exiting"
-          : "entering"
-        : "idle";
+          : travel < 0.84
+            ? "entering"
+            : "release"
+        : settling
+          ? "settling"
+          : "idle";
       interactionRef.current.enterDirection = motionDirection;
       interactionRef.current.exitDirection = -motionDirection;
+      interactionRef.current.releaseDirection = lastMotionDirection;
       interactionRef.current.enterStrength +=
         (enterEnvelope - interactionRef.current.enterStrength) * 0.2;
       interactionRef.current.exitStrength +=
         (exitEnvelope - interactionRef.current.exitStrength) * 0.2;
+      interactionRef.current.releaseStrength +=
+        (releaseEnvelope - interactionRef.current.releaseStrength) *
+        (releaseEnvelope > 0 ? 0.34 : 0.18);
+      interactionRef.current.settleAmplitude = settleAmplitude;
+      interactionRef.current.settlePhase = settlePhase;
+      interactionRef.current.idleStrength = moving
+        ? 0.58
+        : settling
+          ? 0.82
+          : 1;
       interactionRef.current.stretch = Math.max(
         interactionRef.current.enterStrength,
         interactionRef.current.exitStrength,
@@ -1209,6 +1281,8 @@ export function HomeExperience() {
       interactionRef.current.transition = Math.max(
         enterEnvelope,
         exitEnvelope,
+        releaseEnvelope,
+        settleAmplitude,
       );
       interactionRef.current.fastForwarding = isFastForwardingRef.current;
       interactionRef.current.accent = apps[nearest].accent;
