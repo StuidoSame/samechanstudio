@@ -31,7 +31,19 @@ const clamp = (value: number, min: number, max: number) =>
 
 const LOADER_WORDS = ["SAME", "STUDIO"] as const;
 const LOADER_DURATION = 2400;
-const LOADER_COMPLETE_HOLD = 320;
+const LOADER_COMPLETE_HOLD_MS = 250;
+const LOADER_JELLY_EXIT_MS = 420;
+const LOADER_LOGO_MOVE_MS = 650;
+const LOADER_EFFECT_MS = 550;
+const FINAL_LOGO_HOLD_MS = 800;
+const LOADER_EXIT_MS = 450;
+type LoaderPhase =
+  | "loading"
+  | "complete"
+  | "revealing"
+  | "effect"
+  | "final"
+  | "leaving";
 const HERO_ANDROID_APP_IDS = new Set([
   "mapary",
   "runtronome",
@@ -186,13 +198,15 @@ function Loader({
   progress,
   interactionRef,
   reducedMotion,
-  leaving,
+  phase,
+  completionMediaVisible,
   containerRef,
 }: {
   progress: number;
   interactionRef: React.MutableRefObject<JellyInteraction>;
   reducedMotion: boolean;
-  leaving: boolean;
+  phase: LoaderPhase;
+  completionMediaVisible: boolean;
   containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const normalizedProgress = clamp(progress / 100, 0, 1);
@@ -201,11 +215,12 @@ function Loader({
   return (
     <div
       ref={containerRef}
-      className={`preloader ${leaving ? "is-leaving" : ""}`}
+      className={`preloader is-${phase}`}
       role="status"
       aria-live="polite"
-      aria-label={`Loading ${displayProgress}%`}
+      aria-label={phase === "loading" ? `Loading ${displayProgress}%` : "Loading complete"}
       data-loader-progress={normalizedProgress.toFixed(3)}
+      data-loader-phase={phase}
       style={
         {
           "--loader-progress": normalizedProgress,
@@ -227,6 +242,7 @@ function Loader({
                     displayProgress >= revealIndex * 10 ? "is-visible" : ""
                   }`}
                   key={`${word}-${letterIndex}`}
+                  style={{ "--final-letter-index": revealIndex } as CSSProperties}
                 >
                   {letter}
                 </span>
@@ -235,16 +251,21 @@ function Loader({
           </span>
         ))}
       </span>
-      <LoaderJellyCanvas
-        className="preloader-jelly"
-        interactionRef={interactionRef}
-        reducedMotion={reducedMotion}
-        loader
-        loaderProgress={normalizedProgress}
-      />
-      <span className="preloader-count">
-        {String(displayProgress).padStart(3, "0")}<small>%</small>
-      </span>
+      <div className="preloader-final-glow" aria-hidden="true" />
+      {completionMediaVisible && (
+        <>
+          <LoaderJellyCanvas
+            className="preloader-jelly"
+            interactionRef={interactionRef}
+            reducedMotion={reducedMotion}
+            loader
+            loaderProgress={normalizedProgress}
+          />
+          <span className="preloader-count">
+            {String(displayProgress).padStart(3, "0")}<small>%</small>
+          </span>
+        </>
+      )}
     </div>
   );
 }
@@ -254,7 +275,8 @@ export function HomeExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
-  const [loaderLeaving, setLoaderLeaving] = useState(false);
+  const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
+  const [loaderCompletionMediaVisible, setLoaderCompletionMediaVisible] = useState(true);
   const [loaderVisible, setLoaderVisible] = useState(true);
 
   const heroRef = useRef<HTMLElement>(null);
@@ -305,6 +327,18 @@ export function HomeExperience() {
     (clientX: number, clientY: number, pointerType?: string) => void
   >(() => {});
 
+  useEffect(() => {
+    performance.mark(`same-studio-preloader:${loaderPhase}`);
+    console.info("[preloader-timing]", loaderPhase, performance.now());
+  }, [loaderPhase]);
+
+  useEffect(() => {
+    if (!loaderVisible) {
+      performance.mark("same-studio-preloader:removed");
+      console.info("[preloader-timing]", "removed", performance.now());
+    }
+  }, [loaderVisible]);
+
   const activeApp = apps[activeIndex];
 
   const moveTo = useCallback((index: number) => {
@@ -343,8 +377,7 @@ export function HomeExperience() {
     let loaded = 0;
     let done = false;
     let animationFrame = 0;
-    let leavingTimer = 0;
-    let removalTimer = 0;
+    const phaseTimers: number[] = [];
     const started = performance.now();
     let previousTick = started;
     let displayedProgress = 0;
@@ -394,13 +427,26 @@ export function HomeExperience() {
         normalizedProgress >= 0.999
       ) {
         setLoadProgress(100);
-        leavingTimer = window.setTimeout(
-          () => setLoaderLeaving(true),
-          LOADER_COMPLETE_HOLD,
-        );
-        removalTimer = window.setTimeout(
-          () => setLoaderVisible(false),
-          LOADER_COMPLETE_HOLD + (reducedMotion ? 80 : 580),
+        setLoaderPhase("complete");
+
+        const revealStart = LOADER_COMPLETE_HOLD_MS;
+        const effectStart = revealStart + LOADER_LOGO_MOVE_MS;
+        const finalStart = effectStart + LOADER_EFFECT_MS;
+        const leavingStart = finalStart + FINAL_LOGO_HOLD_MS;
+
+        phaseTimers.push(
+          window.setTimeout(() => setLoaderPhase("revealing"), revealStart),
+          window.setTimeout(
+            () => setLoaderCompletionMediaVisible(false),
+            revealStart + LOADER_JELLY_EXIT_MS,
+          ),
+          window.setTimeout(() => setLoaderPhase("effect"), effectStart),
+          window.setTimeout(() => setLoaderPhase("final"), finalStart),
+          window.setTimeout(() => setLoaderPhase("leaving"), leavingStart),
+          window.setTimeout(
+            () => setLoaderVisible(false),
+            leavingStart + LOADER_EXIT_MS,
+          ),
         );
         return;
       }
@@ -409,10 +455,9 @@ export function HomeExperience() {
     animationFrame = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(animationFrame);
-      window.clearTimeout(leavingTimer);
-      window.clearTimeout(removalTimer);
+      phaseTimers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, [reducedMotion]);
+  }, []);
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -768,12 +813,13 @@ export function HomeExperience() {
           progress={loadProgress}
           interactionRef={loaderInteractionRef}
           reducedMotion={reducedMotion}
-          leaving={loaderLeaving}
+          phase={loaderPhase}
+          completionMediaVisible={loaderCompletionMediaVisible}
           containerRef={loaderRef}
         />
       )}
       <main
-        className={`site-shell ${loaderVisible ? "is-loading" : "is-ready"}`}
+        className={`site-shell ${loaderVisible && loaderPhase !== "leaving" ? "is-loading" : "is-ready"}`}
         style={accentStyle}
       >
         <section
