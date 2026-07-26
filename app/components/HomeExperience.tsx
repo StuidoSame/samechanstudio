@@ -1229,8 +1229,8 @@ export function HomeExperience() {
                     <span className="view-app-label">VIEW DETAIL</span>
                   </a>
                 ) : (
-                  <span className="view-app is-disabled">
-                    <span className="view-app-label">VIEW DETAIL</span>
+                  <span className="view-app is-disabled" aria-disabled="true">
+                    <span className="view-app-label">COMING SOON</span>
                   </span>
                 )}
               </span>

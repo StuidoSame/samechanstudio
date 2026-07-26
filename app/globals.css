@@ -1104,10 +1104,22 @@ button {
 }
 
 .view-app.is-disabled {
-  color: #8b74b0;
-  background: rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(111, 70, 189, 0.12);
-  box-shadow: none;
+  color: rgba(111, 82, 153, 0.76);
+  background: rgba(237, 226, 255, 0.62);
+  border: 1px solid rgba(126, 90, 180, 0.14);
+  box-shadow: 0 7px 18px rgba(117, 79, 170, 0.07);
+  cursor: default;
+}
+
+.view-app.is-disabled:hover {
+  color: rgba(111, 82, 153, 0.76);
+  background: rgba(237, 226, 255, 0.66);
+  transform: none;
+  box-shadow: 0 7px 20px rgba(117, 79, 170, 0.1);
+}
+
+.view-app.is-disabled:active {
+  transform: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
