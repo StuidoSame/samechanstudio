@@ -153,8 +153,9 @@ function AppCard({
 }
 
 function PlatformIcon({ platform }: { platform: "apple" | "android" }) {
-  if (platform === "apple") {
-    return (
+  return (
+    <span className="platform-icon-interaction" aria-hidden="true">
+      {platform === "apple" ? (
       <svg
         className="platform-icon"
         width="22"
@@ -165,20 +166,21 @@ function PlatformIcon({ platform }: { platform: "apple" | "android" }) {
       >
         <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.25.07 2.12.69 2.85.74 1.1-.22 2.15-.85 3.32-.76 1.4.11 2.45.66 3.15 1.66-2.89 1.74-2.2 5.55.45 6.62-.53 1.4-1.21 2.79-1.77 4.71ZM12.03 7.25c-.15-2.08 1.55-3.8 3.49-3.97.27 2.4-2.18 4.2-3.49 3.97Z" />
       </svg>
-    );
-  }
-
-  return (
-    <svg
-      className="platform-icon"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="m7.38 6.26-1.3-2.25.87-.5 1.33 2.3A7.55 7.55 0 0 1 12 4.85c1.34 0 2.6.35 3.7.96l1.34-2.3.87.5-1.3 2.25A7.48 7.48 0 0 1 19.5 12H4.5a7.48 7.48 0 0 1 2.88-5.74ZM8.5 9.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm7 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM4.5 13h15v5.5a1.5 1.5 0 0 1-1.5 1.5h-1v2.25a1.25 1.25 0 0 1-2.5 0V20h-5v2.25a1.25 1.25 0 0 1-2.5 0V20H6a1.5 1.5 0 0 1-1.5-1.5V13ZM2.75 13A1.25 1.25 0 0 1 4 14.25v3.5a1.25 1.25 0 0 1-2.5 0v-3.5A1.25 1.25 0 0 1 2.75 13Zm18.5 0a1.25 1.25 0 0 1 1.25 1.25v3.5a1.25 1.25 0 0 1-2.5 0v-3.5A1.25 1.25 0 0 1 21.25 13Z" />
-    </svg>
+      ) : (
+        <svg
+          className="platform-icon"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="m7.38 6.26-1.3-2.25.87-.5 1.33 2.3A7.55 7.55 0 0 1 12 4.85c1.34 0 2.6.35 3.7.96l1.34-2.3.87.5-1.3 2.25A7.48 7.48 0 0 1 19.5 12H4.5a7.48 7.48 0 0 1 2.88-5.74ZM8.5 9.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm7 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM4.5 13h15v5.5a1.5 1.5 0 0 1-1.5 1.5h-1v2.25a1.25 1.25 0 0 1-2.5 0V20h-5v2.25a1.25 1.25 0 0 1-2.5 0V20H6a1.5 1.5 0 0 1-1.5-1.5V13ZM2.75 13A1.25 1.25 0 0 1 4 14.25v3.5a1.25 1.25 0 0 1-2.5 0v-3.5A1.25 1.25 0 0 1 2.75 13Zm18.5 0a1.25 1.25 0 0 1 1.25 1.25v3.5a1.25 1.25 0 0 1-2.5 0v-3.5A1.25 1.25 0 0 1 21.25 13Z" />
+        </svg>
+      )}
+      <i className="platform-sparkle sparkle-a" />
+      <i className="platform-sparkle sparkle-b" />
+    </span>
   );
 }
 
@@ -1015,6 +1017,28 @@ export function HomeExperience() {
     resumeAutoplay("interaction");
   };
 
+  const updateDetailMagnet = (event: ReactPointerEvent<HTMLAnchorElement>) => {
+    if (event.pointerType !== "mouse") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const offsetX = clamp(
+      ((event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5) * 6,
+      -3,
+      3,
+    );
+    const offsetY = clamp(
+      ((event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5) * 6,
+      -3,
+      3,
+    );
+    event.currentTarget.style.setProperty("--detail-magnet-x", `${offsetX}px`);
+    event.currentTarget.style.setProperty("--detail-magnet-y", `${offsetY}px`);
+  };
+
+  const resetDetailMagnet = (event: ReactPointerEvent<HTMLAnchorElement>) => {
+    event.currentTarget.style.setProperty("--detail-magnet-x", "0px");
+    event.currentTarget.style.setProperty("--detail-magnet-y", "0px");
+  };
+
   const accentStyle = useMemo(
     () =>
       ({
@@ -1145,11 +1169,15 @@ export function HomeExperience() {
                     onMouseLeave={() => resumeAutoplay("detail-hover")}
                     onFocus={() => pauseAutoplay("detail-focus")}
                     onBlur={() => resumeAutoplay("detail-focus")}
+                    onPointerMove={updateDetailMagnet}
+                    onPointerLeave={resetDetailMagnet}
                   >
-                    VIEW DETAIL
+                    <span className="view-app-label">VIEW DETAIL</span>
                   </a>
                 ) : (
-                  <span className="view-app is-disabled">VIEW DETAIL</span>
+                  <span className="view-app is-disabled">
+                    <span className="view-app-label">VIEW DETAIL</span>
+                  </span>
                 )}
               </span>
             </div>

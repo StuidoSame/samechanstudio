@@ -947,6 +947,43 @@ button {
   flex: 0 0 22px;
 }
 
+.platform-icon-interaction {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  display: block;
+  color: inherit;
+  pointer-events: auto;
+  transform-origin: center;
+  transition:
+    transform 0.19s ease,
+    color 0.19s ease,
+    filter 0.19s ease;
+}
+
+.platform-sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  display: block;
+  background: rgba(255, 255, 255, 0.92);
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.platform-sparkle.sparkle-a {
+  top: -5px;
+  right: -5px;
+}
+
+.platform-sparkle.sparkle-b {
+  bottom: -3px;
+  left: -4px;
+  width: 4px;
+  height: 4px;
+}
+
 .view-app-sequence {
   margin-top: 20px;
   display: inline-flex;
@@ -983,14 +1020,29 @@ button {
   line-height: 1;
   letter-spacing: 0.17em;
   pointer-events: auto;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transform-origin: center;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .view-app:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.04);
+  background: linear-gradient(120deg, #8155f1, #a363ff);
   box-shadow:
-    0 16px 32px rgba(120, 66, 220, 0.25),
-    0 0 28px rgba(var(--active-accent-rgb), 0.2);
+    0 17px 34px rgba(120, 66, 220, 0.27),
+    0 0 32px rgba(var(--active-accent-rgb), 0.24);
+}
+
+.view-app-label {
+  display: block;
+  transform: translate3d(
+    var(--detail-magnet-x, 0px),
+    var(--detail-magnet-y, 0px),
+    0
+  );
+  transition: transform 0.12s ease-out;
 }
 
 .view-app.is-disabled {
@@ -998,6 +1050,34 @@ button {
   background: rgba(255, 255, 255, 0.42);
   border: 1px solid rgba(111, 70, 189, 0.12);
   box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .platform-icon-interaction:hover {
+    color: #a183d4;
+    transform: translateY(-2px) scale(1.15);
+    filter:
+      brightness(1.08)
+      drop-shadow(0 0 8px rgba(151, 100, 238, 0.42));
+  }
+
+  .platform-icon-interaction:hover .sparkle-a {
+    animation: platform-sparkle 0.4s ease-out both;
+  }
+
+  .platform-icon-interaction:hover .sparkle-b {
+    animation: platform-sparkle 0.34s 0.06s ease-out both;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .platform-icon-interaction:active {
+    transform: scale(0.96);
+  }
+
+  .view-app:active {
+    transform: scale(0.97);
+  }
 }
 
 .carousel-arrow {
@@ -1577,6 +1657,21 @@ footer {
   }
 }
 
+@keyframes platform-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  42% {
+    opacity: 0.9;
+    transform: scale(1) rotate(20deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.55) rotate(42deg);
+  }
+}
+
 @keyframes info-in {
   from {
     opacity: 0;
@@ -1733,6 +1828,11 @@ footer {
     max-width: 19px;
     max-height: 19px;
     flex-basis: 19px;
+  }
+
+  .platform-icon-interaction {
+    width: 19px;
+    height: 19px;
   }
 
   .view-app {
