@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
+import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 
@@ -431,6 +432,8 @@ export function HomeExperience() {
   const [activeSequencePhase, setActiveSequencePhase] =
     useState<ActiveSequencePhase>("idle");
   const [typedNameLength, setTypedNameLength] = useState(0);
+  const [detailApp, setDetailApp] = useState<AppItem | null>(null);
+  const [detailOverlayOpen, setDetailOverlayOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -517,6 +520,8 @@ export function HomeExperience() {
   const autoplayPauseReasonsRef = useRef(
     new Set<"interaction" | "detail-hover" | "detail-focus">(),
   );
+  const detailTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const detailWasPlayingRef = useRef(false);
 
   const activeApp = apps[activeIndex];
 
@@ -1483,7 +1488,46 @@ export function HomeExperience() {
     stopFastForward();
   };
 
-  const updateDetailMagnet = (event: ReactPointerEvent<HTMLAnchorElement>) => {
+  const openAppDetail = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!activeApp.appStoreUrl || detailApp) return;
+
+    detailTriggerRef.current = event.currentTarget;
+    detailWasPlayingRef.current = isPlayingRef.current;
+    autoplayPauseReasonsRef.current.delete("detail-hover");
+    autoplayPauseReasonsRef.current.delete("detail-focus");
+
+    if (isFastForwardingRef.current) {
+      stopFastForward(true);
+    } else {
+      isPlayingRef.current = false;
+      setIsPlaying(false);
+      clearAutoplay();
+    }
+
+    setDetailApp(activeApp);
+    window.requestAnimationFrame(() => setDetailOverlayOpen(true));
+  };
+
+  const requestAppDetailClose = useCallback(() => {
+    setDetailOverlayOpen(false);
+  }, []);
+
+  const finishAppDetailClose = useCallback(() => {
+    setDetailApp(null);
+    detailTriggerRef.current?.focus({ preventScroll: true });
+
+    if (detailWasPlayingRef.current && !reducedMotion) {
+      isPlayingRef.current = true;
+      setIsPlaying(true);
+      autoplayResumeNotBeforeRef.current = performance.now() + PLAY_RESUME_DELAY_MS;
+      if (autoplayAdvancePendingRef.current) {
+        queueAutoplayAdvance(PLAY_RESUME_DELAY_MS);
+      }
+    }
+    detailWasPlayingRef.current = false;
+  }, [queueAutoplayAdvance, reducedMotion]);
+
+  const updateDetailMagnet = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.pointerType !== "mouse") return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const offsetX = clamp(
@@ -1500,7 +1544,7 @@ export function HomeExperience() {
     event.currentTarget.style.setProperty("--detail-magnet-y", `${offsetY}px`);
   };
 
-  const resetDetailMagnet = (event: ReactPointerEvent<HTMLAnchorElement>) => {
+  const resetDetailMagnet = (event: ReactPointerEvent<HTMLButtonElement>) => {
     event.currentTarget.style.setProperty("--detail-magnet-x", "0px");
     event.currentTarget.style.setProperty("--detail-magnet-y", "0px");
   };
@@ -1695,20 +1739,19 @@ export function HomeExperience() {
               <PlatformIcons app={activeApp} />
               <span className="view-app-sequence">
                 {activeApp.appStoreUrl ? (
-                  <a
+                  <button
                     className="view-app"
-                    href={activeApp.appStoreUrl}
-                    target="_blank"
-                    rel="noreferrer"
+                    type="button"
                     onMouseEnter={() => pauseAutoplay("detail-hover")}
                     onMouseLeave={() => resumeAutoplay("detail-hover")}
                     onFocus={() => pauseAutoplay("detail-focus")}
                     onBlur={() => resumeAutoplay("detail-focus")}
                     onPointerMove={updateDetailMagnet}
                     onPointerLeave={resetDetailMagnet}
+                    onClick={openAppDetail}
                   >
                     <span className="view-app-label">VIEW DETAIL</span>
-                  </a>
+                  </button>
                 ) : (
                   <span className="view-app is-disabled" aria-disabled="true">
                     <span className="view-app-label">COMING SOON</span>
@@ -1792,6 +1835,14 @@ export function HomeExperience() {
           </div>
         </footer>
       </main>
+      {detailApp && (
+        <AppDetailOverlay
+          app={detailApp}
+          open={detailOverlayOpen}
+          onRequestClose={requestAppDetailClose}
+          onExited={finishAppDetailClose}
+        />
+      )}
     </>
   );
 }
