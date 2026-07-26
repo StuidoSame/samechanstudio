@@ -32,6 +32,15 @@ const clamp = (value: number, min: number, max: number) =>
 const LOADER_WORDS = ["SAME", "STUDIO"] as const;
 const LOADER_DURATION = 2400;
 const LOADER_COMPLETE_HOLD = 320;
+const HERO_ANDROID_APP_IDS = new Set([
+  "mapary",
+  "runtronome",
+  "odow",
+  "pepesnap",
+  "tocklist",
+  "skkoo",
+  "terubozu",
+]);
 
 const smoothStep = (value: number) => value * value * (3 - 2 * value);
 
@@ -140,8 +149,8 @@ function PlatformIcon({ platform }: { platform: "apple" | "android" }) {
 }
 
 function PlatformIcons({ app }: { app: AppItem }) {
-  const supportsApple = Boolean(app.appStoreUrl);
-  const supportsAndroid = Boolean(app.googlePlayUrl);
+  const supportsApple = true;
+  const supportsAndroid = HERO_ANDROID_APP_IDS.has(app.id);
   const platformNames = [
     supportsApple ? "Apple" : null,
     supportsAndroid ? "Android" : null,
