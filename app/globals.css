@@ -100,7 +100,9 @@ button {
   user-select: none;
   background:
     linear-gradient(112deg, rgba(255, 255, 255, 0.2), transparent 35%),
-    radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.66), transparent 29%);
+    radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.66), transparent 29%),
+    radial-gradient(ellipse 70% 18% at 50% 100%, rgba(178, 136, 245, 0.08), transparent 75%),
+    linear-gradient(180deg, #f1e9ff 0%, #f2e8ff 52%, #f5efff 100%);
 }
 
 .site-header {
@@ -303,7 +305,20 @@ button {
     linear-gradient(rgba(118, 72, 221, 0.11) 1px, transparent 1px),
     linear-gradient(90deg, rgba(118, 72, 221, 0.08) 1px, transparent 1px);
   background-size: 48px 38px;
-  mask-image: linear-gradient(to bottom, transparent, black 20%, transparent 82%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 30%,
+    transparent 62.5%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 30%,
+    transparent 62.5%
+  );
   will-change: transform;
 }
 
@@ -1353,8 +1368,9 @@ button {
   align-items: center;
   gap: clamp(60px, 10vw, 160px);
   background:
-    radial-gradient(circle at 70% 50%, rgba(142, 95, 231, 0.11), transparent 22rem),
-    rgba(251, 249, 255, 0.88);
+    radial-gradient(ellipse 70% 22% at 50% 0%, rgba(178, 136, 245, 0.08), transparent 75%),
+    radial-gradient(circle at 70% 50%, rgba(142, 95, 231, 0.09), transparent 22rem),
+    linear-gradient(180deg, #f5efff 0%, #f8f5ff 56%, #faf8ff 100%);
 }
 
 .section-label {
