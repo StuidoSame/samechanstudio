@@ -48,7 +48,11 @@ const watchCopy = {
 
 export function DeviceShowcase() {
   return (
-    <div className="device-showcase" aria-label="SAME STUDIO device showcase">
+    <section
+      className="device-showcase"
+      id="about"
+      aria-label="SAME STUDIO device showcase"
+    >
       <div className="device-showcase-inner">
         <DeviceSection
           {...phoneCopy}
@@ -67,6 +71,6 @@ export function DeviceShowcase() {
           device={<WatchGroup />}
         />
       </div>
-    </div>
+    </section>
   );
 }

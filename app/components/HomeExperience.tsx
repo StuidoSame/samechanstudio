@@ -1755,7 +1755,7 @@ export function HomeExperience() {
 
         </section>
 
-        <section className="studio-about" id="about">
+        <section className="studio-about">
           <div>
             <span className="section-label">SAME STUDIO / ABOUT</span>
             <h2>Small apps, made with a lot of care.</h2>

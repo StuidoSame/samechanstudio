@@ -1430,6 +1430,7 @@ button {
 
 .device-showcase {
   position: relative;
+  scroll-margin-top: 100px;
   overflow: hidden;
   background:
     radial-gradient(circle at 18% 18%, rgba(150, 103, 231, 0.1), transparent 24rem),
@@ -1945,6 +1946,12 @@ button {
 
   .device-watch-stage::before {
     width: min(104vw, 410px);
+  }
+}
+
+@media (max-width: 600px) {
+  .device-showcase {
+    scroll-margin-top: 16px;
   }
 }
 
