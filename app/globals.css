@@ -915,7 +915,7 @@ button {
 
 .app-info h1 {
   max-width: 100%;
-  margin: 14px 0 0;
+  margin: 18px 0 0;
   color: #6f42de;
   font-size: clamp(27px, 2.5vw, 36px);
   line-height: 1;
@@ -923,28 +923,35 @@ button {
   overflow-wrap: anywhere;
 }
 
-.app-info p {
-  margin: 12px 0 0;
-  color: #7865a1;
-  font-size: 14px;
+.platform-icons {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #947cbd;
+  line-height: 0;
 }
 
-.platforms {
-  margin-top: 9px;
-  color: #947cbd;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+.platform-icon {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  max-width: 22px;
+  max-height: 22px;
+  display: block;
+  flex: 0 0 22px;
 }
 
 .view-app {
-  min-width: 112px;
+  min-width: 128px;
   min-height: 40px;
-  margin-top: 17px;
+  margin-top: 20px;
   padding: 0 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   border-radius: 999px;
   color: white;
   background: linear-gradient(120deg, #7749ed, #9a57fb);
@@ -953,6 +960,7 @@ button {
     0 0 24px rgba(var(--active-accent-rgb), 0.14);
   font-size: 9px;
   font-weight: 750;
+  line-height: 1;
   letter-spacing: 0.17em;
   pointer-events: auto;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
@@ -1477,26 +1485,29 @@ footer {
   }
 
   .app-info h1 {
-    margin-top: 10px;
+    margin-top: 14px;
     font-size: clamp(23px, 7.5vw, 30px);
   }
 
-  .app-info p {
-    margin-top: 9px;
-    font-size: 13px;
+  .platform-icons {
+    margin-top: 12px;
+    gap: 12px;
   }
 
-  .platforms {
-    max-width: 94vw;
-    margin-top: 7px;
-    font-size: 9px;
-    letter-spacing: 0.04em;
+  .platform-icon {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    min-height: 19px;
+    max-width: 19px;
+    max-height: 19px;
+    flex-basis: 19px;
   }
 
   .view-app {
-    min-width: 110px;
+    min-width: 128px;
     min-height: 42px;
-    margin-top: 13px;
+    margin-top: 18px;
   }
 
   .carousel-arrow {
@@ -1689,23 +1700,17 @@ footer {
   }
 
   .app-info h1 {
-    margin-top: 7px;
+    margin-top: 10px;
     font-size: 21px;
   }
 
-  .app-info p {
-    margin-top: 6px;
-    font-size: 11px;
-  }
-
-  .platforms {
-    margin-top: 5px;
-    font-size: 8px;
+  .platform-icons {
+    margin-top: 9px;
   }
 
   .view-app {
     min-height: 38px;
-    margin-top: 9px;
+    margin-top: 12px;
   }
 
   .interaction-hint {

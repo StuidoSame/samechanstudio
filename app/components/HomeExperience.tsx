@@ -191,6 +191,57 @@ function AppCard({
   );
 }
 
+function PlatformIcon({ platform }: { platform: "apple" | "android" }) {
+  if (platform === "apple") {
+    return (
+      <svg
+        className="platform-icon"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.25.07 2.12.69 2.85.74 1.1-.22 2.15-.85 3.32-.76 1.4.11 2.45.66 3.15 1.66-2.89 1.74-2.2 5.55.45 6.62-.53 1.4-1.21 2.79-1.77 4.71ZM12.03 7.25c-.15-2.08 1.55-3.8 3.49-3.97.27 2.4-2.18 4.2-3.49 3.97Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      className="platform-icon"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="m7.38 6.26-1.3-2.25.87-.5 1.33 2.3A7.55 7.55 0 0 1 12 4.85c1.34 0 2.6.35 3.7.96l1.34-2.3.87.5-1.3 2.25A7.48 7.48 0 0 1 19.5 12H4.5a7.48 7.48 0 0 1 2.88-5.74ZM8.5 9.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm7 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM4.5 13h15v5.5a1.5 1.5 0 0 1-1.5 1.5h-1v2.25a1.25 1.25 0 0 1-2.5 0V20h-5v2.25a1.25 1.25 0 0 1-2.5 0V20H6a1.5 1.5 0 0 1-1.5-1.5V13ZM2.75 13A1.25 1.25 0 0 1 4 14.25v3.5a1.25 1.25 0 0 1-2.5 0v-3.5A1.25 1.25 0 0 1 2.75 13Zm18.5 0a1.25 1.25 0 0 1 1.25 1.25v3.5a1.25 1.25 0 0 1-2.5 0v-3.5A1.25 1.25 0 0 1 21.25 13Z" />
+    </svg>
+  );
+}
+
+function PlatformIcons({ app }: { app: AppItem }) {
+  const supportsApple = Boolean(app.appStoreUrl);
+  const supportsAndroid = Boolean(app.googlePlayUrl);
+  const platformNames = [
+    supportsApple ? "Apple" : null,
+    supportsAndroid ? "Android" : null,
+  ].filter(Boolean);
+
+  if (platformNames.length === 0) return null;
+
+  return (
+    <span
+      className="platform-icons"
+      aria-label={`Supported platforms: ${platformNames.join(", ")}`}
+    >
+      {supportsApple && <PlatformIcon platform="apple" />}
+      {supportsAndroid && <PlatformIcon platform="android" />}
+    </span>
+  );
+}
+
 function SocialIcon({ platform }: { platform: "github" | "x" | "instagram" | "threads" }) {
   if (platform === "github") {
     return <svg className="footer-social-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z" /></svg>;
@@ -913,8 +964,7 @@ export function HomeExperience() {
                 {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
               </span>
               <h1>{activeApp.name}</h1>
-              <p>{activeApp.tagline}</p>
-              <span className="platforms">{activeApp.platforms}</span>
+              <PlatformIcons app={activeApp} />
               {activeApp.appStoreUrl ? (
                 <a
                   className="view-app"
@@ -922,10 +972,10 @@ export function HomeExperience() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  VIEW APP <span aria-hidden="true">↗</span>
+                  VIEW DETAIL
                 </a>
               ) : (
-                <span className="view-app is-disabled">COMING SOON</span>
+                <span className="view-app is-disabled">VIEW DETAIL</span>
               )}
             </div>
           </div>
