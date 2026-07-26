@@ -455,6 +455,11 @@ export function HomeExperience() {
   const [selectedLanguage, setSelectedLanguage] =
     useState<HeaderLanguageCode>("ko");
   const [darkPressKey, setDarkPressKey] = useState(0);
+  const [headerUtilityHidden, setHeaderUtilityHidden] = useState(false);
+  const [headerUtilityDragging, setHeaderUtilityDragging] = useState(false);
+  const [headerUtilityDragX, setHeaderUtilityDragX] = useState(0);
+  const [headerUtilityHideDistance, setHeaderUtilityHideDistance] = useState(0);
+  const [headerUtilityHintKey, setHeaderUtilityHintKey] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
@@ -473,6 +478,18 @@ export function HomeExperience() {
   const heroRef = useRef<HTMLElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const headerUtilityRef = useRef<HTMLDivElement>(null);
+  const headerLanguageButtonRef = useRef<HTMLButtonElement>(null);
+  const headerUtilityHandleRef = useRef<HTMLButtonElement>(null);
+  const headerUtilityWasHiddenRef = useRef(false);
+  const headerUtilitySuppressClickRef = useRef(false);
+  const headerUtilityDragRef = useRef({
+    id: -1,
+    startX: 0,
+    startY: 0,
+    distanceX: 0,
+    horizontal: false,
+  });
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const progressRef = useRef(DEFAULT_APP_INDEX);
   const targetRef = useRef(DEFAULT_APP_INDEX);
@@ -906,6 +923,33 @@ export function HomeExperience() {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [languageOpen, menuOpen]);
+
+  useEffect(() => {
+    if (!headerUtilityHidden || reducedMotion) return;
+
+    let hintInterval: number | undefined;
+    const firstHint = window.setTimeout(() => {
+      setHeaderUtilityHintKey((key) => key + 1);
+      hintInterval = window.setInterval(
+        () => setHeaderUtilityHintKey((key) => key + 1),
+        5500,
+      );
+    }, 1000);
+
+    return () => {
+      window.clearTimeout(firstHint);
+      if (hintInterval !== undefined) window.clearInterval(hintInterval);
+    };
+  }, [headerUtilityHidden, reducedMotion]);
+
+  useEffect(() => {
+    if (headerUtilityHidden) {
+      headerUtilityHandleRef.current?.focus({ preventScroll: true });
+    } else if (headerUtilityWasHiddenRef.current) {
+      headerLanguageButtonRef.current?.focus({ preventScroll: true });
+    }
+    headerUtilityWasHiddenRef.current = headerUtilityHidden;
+  }, [headerUtilityHidden]);
 
   useEffect(() => {
     let loaded = 0;
@@ -1522,6 +1566,97 @@ export function HomeExperience() {
     resumeAutoplay("interaction");
   };
 
+  const onHeaderUtilityPointerDown = (
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) => {
+    if (headerUtilityHidden || !event.isPrimary || event.button !== 0) return;
+
+    const drag = headerUtilityDragRef.current;
+    drag.id = event.pointerId;
+    drag.startX = event.clientX;
+    drag.startY = event.clientY;
+    drag.distanceX = 0;
+    drag.horizontal = false;
+    headerUtilitySuppressClickRef.current = false;
+    setHeaderUtilityDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const onHeaderUtilityPointerMove = (
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) => {
+    const drag = headerUtilityDragRef.current;
+    if (drag.id !== event.pointerId) return;
+
+    const distanceX = Math.max(0, event.clientX - drag.startX);
+    const distanceY = Math.abs(event.clientY - drag.startY);
+
+    if (!drag.horizontal) {
+      if (distanceY > 8 && distanceY > distanceX) {
+        drag.id = -1;
+        setHeaderUtilityDragging(false);
+        setHeaderUtilityDragX(0);
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+        return;
+      }
+
+      if (distanceX < 8 || distanceX <= distanceY * 1.2) return;
+      drag.horizontal = true;
+      headerUtilitySuppressClickRef.current = true;
+    }
+
+    drag.distanceX = distanceX;
+    setHeaderUtilityDragX(distanceX);
+  };
+
+  const finishHeaderUtilityDrag = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    cancelled = false,
+  ) => {
+    const drag = headerUtilityDragRef.current;
+    if (drag.id !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    const threshold = window.matchMedia("(max-width: 767px)").matches
+      ? 40
+      : 55;
+    if (!cancelled && drag.horizontal && drag.distanceX >= threshold) {
+      const rect = headerUtilityRef.current?.getBoundingClientRect();
+      setHeaderUtilityHideDistance(
+        rect
+          ? Math.max(window.innerWidth - rect.left + 24, 0)
+          : window.innerWidth,
+      );
+      setLanguageOpen(false);
+      setHeaderUtilityHidden(true);
+    }
+
+    drag.id = -1;
+    drag.distanceX = 0;
+    drag.horizontal = false;
+    setHeaderUtilityDragging(false);
+    setHeaderUtilityDragX(0);
+    window.setTimeout(() => {
+      headerUtilitySuppressClickRef.current = false;
+    }, 0);
+  };
+
+  const headerUtilityStyle = {
+    "--header-utility-drag-x": `${headerUtilityDragX * 0.75}px`,
+    "--header-utility-drag-opacity": String(
+      1 - Math.min(headerUtilityDragX / 200, 0.35),
+    ),
+    "--header-utility-drag-scale": String(
+      1 - Math.min(headerUtilityDragX / 2500, 0.02),
+    ),
+    "--header-utility-hide-x": `${headerUtilityHideDistance}px`,
+  } as CSSProperties;
+
   const startFastForward = (event: ReactPointerEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -1668,15 +1803,37 @@ export function HomeExperience() {
                 </span>
               </span>
             </a>
-            <div className="header-utility">
+            <div
+              ref={headerUtilityRef}
+              className={`header-utility${
+                headerUtilityDragging ? " is-dragging" : ""
+              }${headerUtilityHidden ? " is-hidden" : ""}`}
+              style={headerUtilityStyle}
+              aria-hidden={headerUtilityHidden}
+              inert={headerUtilityHidden ? true : undefined}
+              onPointerDown={onHeaderUtilityPointerDown}
+              onPointerMove={onHeaderUtilityPointerMove}
+              onPointerUp={(event) => finishHeaderUtilityDrag(event)}
+              onPointerCancel={(event) =>
+                finishHeaderUtilityDrag(event, true)
+              }
+              onClickCapture={(event) => {
+                if (!headerUtilitySuppressClickRef.current) return;
+                event.preventDefault();
+                event.stopPropagation();
+                headerUtilitySuppressClickRef.current = false;
+              }}
+            >
               <div className="header-utility-bar" aria-label="언어 및 테마 컨트롤">
                 <button
+                  ref={headerLanguageButtonRef}
                   type="button"
                   className="header-utility-segment language-control"
                   aria-label="언어 선택"
                   aria-expanded={languageOpen}
                   aria-controls="language-panel"
                   aria-haspopup="menu"
+                  tabIndex={headerUtilityHidden ? -1 : 0}
                   onClick={() => {
                     setMenuOpen(false);
                     setLanguageOpen((open) => !open);
@@ -1702,6 +1859,7 @@ export function HomeExperience() {
                   type="button"
                   className="header-utility-segment dark-control"
                   aria-label="다크 모드 준비 중"
+                  tabIndex={headerUtilityHidden ? -1 : 0}
                   onClick={() => setDarkPressKey((key) => key + 1)}
                 >
                   <span
@@ -1748,6 +1906,29 @@ export function HomeExperience() {
                 ))}
               </div>
             </div>
+            <button
+              ref={headerUtilityHandleRef}
+              type="button"
+              className={`header-utility-handle${
+                headerUtilityHidden ? " is-visible" : ""
+              }`}
+              aria-label="언어 및 테마 버튼 열기"
+              aria-hidden={!headerUtilityHidden}
+              tabIndex={headerUtilityHidden ? 0 : -1}
+              onClick={() => {
+                setLanguageOpen(false);
+                setHeaderUtilityDragX(0);
+                setHeaderUtilityHidden(false);
+              }}
+            >
+              <span
+                key={headerUtilityHintKey}
+                className={headerUtilityHintKey > 0 ? "is-hinting" : ""}
+                aria-hidden="true"
+              >
+                ‹
+              </span>
+            </button>
             <nav
               id="site-menu"
               className={menuOpen ? "is-open" : ""}
