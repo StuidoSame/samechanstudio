@@ -888,7 +888,7 @@ button {
 .app-info {
   position: absolute;
   z-index: 65;
-  top: min(64svh, 592px);
+  top: calc(min(64svh, 592px) - 30px);
   left: 50%;
   width: min(92vw, 580px);
   display: flex;
@@ -897,6 +897,13 @@ button {
   transform: translateX(-50%);
   text-align: center;
   pointer-events: none;
+}
+
+.app-info-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   animation: info-in 0.36s ease both;
 }
 
@@ -999,14 +1006,10 @@ button {
 }
 
 .interaction-hint {
-  position: absolute;
-  z-index: 60;
-  bottom: 25px;
-  left: 50%;
   display: flex;
   align-items: center;
   gap: 9px;
-  transform: translateX(-50%);
+  margin-bottom: 20px;
   color: rgba(102, 68, 162, 0.54);
   font-size: 8px;
   font-weight: 650;
@@ -1306,11 +1309,11 @@ footer small {
 @keyframes info-in {
   from {
     opacity: 0;
-    transform: translate(-50%, 7px);
+    transform: translateY(7px);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
   }
 }
 
@@ -1336,7 +1339,7 @@ footer small {
   }
 
   .app-info {
-    top: min(64svh, 602px);
+    top: calc(min(66.8svh, 578px) - 30px);
   }
 
   .decoration-11,
@@ -1415,7 +1418,7 @@ footer small {
   }
 
   .app-info {
-    top: clamp(350px, 57svh, 532px);
+    top: calc(clamp(350px, 57svh, 532px) - 26px);
     width: calc(100% - 32px);
   }
 
@@ -1459,7 +1462,7 @@ footer small {
   }
 
   .interaction-hint {
-    bottom: 15px;
+    margin-bottom: 16px;
     font-size: 7px;
   }
 
@@ -1532,11 +1535,21 @@ footer small {
   }
 
   .app-info {
-    top: clamp(318px, 56svh, 440px);
+    top: calc(clamp(318px, 56svh, 440px) - 24px);
+  }
+
+  .interaction-hint {
+    margin-bottom: 14px;
   }
 
   .app-info h1 {
     font-size: 22px;
+  }
+}
+
+@media (max-height: 800px) and (min-width: 1024px) {
+  .app-info {
+    top: calc(min(65svh, 592px) - 2px);
   }
 }
 
@@ -1562,7 +1575,7 @@ footer small {
   }
 
   .app-info {
-    top: 430px;
+    top: 439px;
   }
 
   .app-info h1 {
@@ -1597,7 +1610,7 @@ footer small {
   }
 
   .app-info {
-    top: 322px;
+    top: 345px;
   }
 
   .app-info h1 {
@@ -1621,7 +1634,7 @@ footer small {
   }
 
   .interaction-hint {
-    display: none;
+    margin-bottom: 14px;
   }
 
   .decoration-4,

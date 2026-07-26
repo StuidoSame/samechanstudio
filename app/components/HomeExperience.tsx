@@ -191,6 +191,19 @@ function AppCard({
   );
 }
 
+function SocialIcon({ platform }: { platform: "github" | "x" | "instagram" | "threads" }) {
+  if (platform === "github") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z" /></svg>;
+  }
+  if (platform === "x") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z" /></svg>;
+  }
+  if (platform === "instagram") {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z" /></svg>;
+  }
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true"><path d="M12 3.3c4.65 0 7.5 2.66 7.5 6.61 0 4.02-2.7 7.2-7.27 7.2-3.2 0-5.42-1.7-5.42-4.25 0-2.34 1.83-4.03 4.41-4.03 2.75 0 4.36 1.74 4.36 4.31 0 2.75-1.46 4.93-4.17 6.72" strokeLinecap="round" strokeLinejoin="round" /><path d="M8.1 13c0-1.3 1.08-2.18 2.76-2.18 1.95 0 2.97 1.03 2.97 2.56 0 1.31-.73 2.2-1.94 2.2-1.07 0-1.62-.7-1.62-1.62" strokeLinecap="round" /></svg>;
+}
+
 function Loader({
   progress,
   interactionRef,
@@ -890,25 +903,31 @@ export function HomeExperience() {
             </div>
           </div>
 
-          <div className="app-info" key={activeApp.id}>
-            <span className="app-count">
-              {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
-            </span>
-            <h1>{activeApp.name}</h1>
-            <p>{activeApp.tagline}</p>
-            <span className="platforms">{activeApp.platforms}</span>
-            {activeApp.appStoreUrl ? (
-              <a
-                className="view-app"
-                href={activeApp.appStoreUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                VIEW APP <span aria-hidden="true">↗</span>
-              </a>
-            ) : (
-              <span className="view-app is-disabled">COMING SOON</span>
-            )}
+          <div className="app-info">
+            <div className="interaction-hint" aria-hidden="true">
+              <span />
+              DRAG · SWIPE · SCROLL
+            </div>
+            <div className="app-info-content" key={activeApp.id}>
+              <span className="app-count">
+                {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
+              </span>
+              <h1>{activeApp.name}</h1>
+              <p>{activeApp.tagline}</p>
+              <span className="platforms">{activeApp.platforms}</span>
+              {activeApp.appStoreUrl ? (
+                <a
+                  className="view-app"
+                  href={activeApp.appStoreUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  VIEW APP <span aria-hidden="true">↗</span>
+                </a>
+              ) : (
+                <span className="view-app is-disabled">COMING SOON</span>
+              )}
+            </div>
           </div>
 
           <button
@@ -932,10 +951,6 @@ export function HomeExperience() {
             →
           </button>
 
-          <div className="interaction-hint" aria-hidden="true">
-            <span />
-            DRAG · SWIPE · SCROLL
-          </div>
         </section>
 
         <section className="studio-about" id="about">
@@ -956,16 +971,21 @@ export function HomeExperience() {
         </section>
 
         <footer id="contact">
-          <a className="footer-contact" href="mailto:contact@samestudio.kr">
-            contact@samestudio.kr ↗
-          </a>
-          <div className="footer-links">
-            <a href="/support/">SUPPORT</a>
-            <a href="/privacy/">PRIVACY</a>
-            <a href="/terms/">TERMS</a>
-            <a href="https://github.com/Kingdongchan" target="_blank" rel="noreferrer">GITHUB</a>
+          <div className="footer-inner">
+            <div className="footer-social" aria-label="SAME STUDIO social links">
+              <a href="https://github.com/Kingdongchan" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
+              <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO X"><SocialIcon platform="x" /></a>
+              <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Instagram"><SocialIcon platform="instagram" /></a>
+              <span className="is-unlinked" aria-label="SAME STUDIO Threads — URL required"><SocialIcon platform="threads" /></span>
+            </div>
+            <p className="footer-copyright">© 2026 SAME STUDIO</p>
+            <div className="footer-business">
+              <span>사업자명: 세임스튜디오 (SAME STUDIO)</span>
+              <span>사업자등록번호: 272-08-03608</span>
+              <span>대표자: 김동찬</span>
+              <span>이메일: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
+            </div>
           </div>
-          <small>© 2026 SAME STUDIO · DAEJEON, KOREA</small>
         </footer>
       </main>
     </>
