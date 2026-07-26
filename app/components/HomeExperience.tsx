@@ -327,18 +327,6 @@ export function HomeExperience() {
     (clientX: number, clientY: number, pointerType?: string) => void
   >(() => {});
 
-  useEffect(() => {
-    performance.mark(`same-studio-preloader:${loaderPhase}`);
-    console.info("[preloader-timing]", loaderPhase, performance.now());
-  }, [loaderPhase]);
-
-  useEffect(() => {
-    if (!loaderVisible) {
-      performance.mark("same-studio-preloader:removed");
-      console.info("[preloader-timing]", "removed", performance.now());
-    }
-  }, [loaderVisible]);
-
   const activeApp = apps[activeIndex];
 
   const moveTo = useCallback((index: number) => {
