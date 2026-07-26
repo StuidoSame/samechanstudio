@@ -136,6 +136,104 @@ button {
   transform: translate(-50%, -50%);
 }
 
+.wordmark-hover-layer,
+.wordmark-change-layer {
+  display: inline-block;
+  transform-origin: center;
+}
+
+.wordmark-hover-layer {
+  transition:
+    transform 0.22s ease-out,
+    filter 0.22s ease-out;
+}
+
+.wordmark-change-layer {
+  color: inherit;
+}
+
+.wordmark-change-layer.is-changing {
+  animation: wordmark-app-change 0.56s cubic-bezier(0.22, 0.78, 0.25, 1) both;
+}
+
+.wordmark-change-layer.is-changing.is-fast-forward {
+  animation-name: wordmark-app-change-fast;
+  animation-duration: 0.36s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wordmark:hover .wordmark-hover-layer {
+    filter: drop-shadow(0 0 10px rgba(155, 105, 255, 0.2));
+    transform: scale(1.07);
+  }
+}
+
+@keyframes wordmark-app-change {
+  0%,
+  100% {
+    color: #6d3de1;
+    text-shadow: none;
+    transform: scale(1);
+  }
+
+  44% {
+    color: #8a61ed;
+    text-shadow:
+      0 0 8px rgba(155, 105, 255, 0.25),
+      0 0 18px rgba(190, 150, 255, 0.2),
+      0 0 32px rgba(225, 205, 255, 0.12);
+    transform: scale(1.04);
+  }
+}
+
+@keyframes wordmark-app-change-fast {
+  0%,
+  100% {
+    color: #6d3de1;
+    text-shadow: none;
+    transform: scale(1);
+  }
+
+  44% {
+    color: #8055e8;
+    text-shadow:
+      0 0 7px rgba(155, 105, 255, 0.16),
+      0 0 15px rgba(190, 150, 255, 0.12);
+    transform: scale(1.018);
+  }
+}
+
+@keyframes wordmark-app-change-mobile {
+  0%,
+  100% {
+    color: #6d3de1;
+    text-shadow: none;
+    transform: scale(1);
+  }
+
+  44% {
+    color: #845aec;
+    text-shadow:
+      0 0 7px rgba(155, 105, 255, 0.2),
+      0 0 15px rgba(190, 150, 255, 0.16),
+      0 0 26px rgba(225, 205, 255, 0.09);
+    transform: scale(1.025);
+  }
+}
+
+@keyframes wordmark-reduced-highlight {
+  0%,
+  100% {
+    color: #6d3de1;
+    text-shadow: none;
+  }
+
+  50% {
+    color: #8055e8;
+    text-shadow: 0 0 7px rgba(155, 105, 255, 0.12);
+  }
+}
+
 .site-header nav {
   position: absolute;
   z-index: 1;
@@ -3024,6 +3122,11 @@ footer {
     letter-spacing: 0.1em;
   }
 
+  .wordmark-change-layer.is-changing {
+    animation-name: wordmark-app-change-mobile;
+    animation-duration: 0.52s;
+  }
+
   .menu-control {
     right: 16px;
   }
@@ -3399,6 +3502,18 @@ footer {
       opacity 0.18s ease,
       filter 0.18s ease,
       transform 0.18s ease !important;
+  }
+
+  .wordmark-hover-layer {
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .wordmark-change-layer.is-changing,
+  .wordmark-change-layer.is-changing.is-fast-forward {
+    animation-name: wordmark-reduced-highlight;
+    animation-duration: 0.18s !important;
+    animation-iteration-count: 1 !important;
   }
 }
 
