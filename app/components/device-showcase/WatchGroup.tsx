@@ -361,8 +361,16 @@ export function WatchGroup() {
             hitKey={hitCounts[pad.id]}
             isHit={activePad === pad.id}
           >
-            <span className={`watch-drum-pad${activePad === pad.id ? " is-active" : ""}`}>
-              <strong>{pad.label}</strong>
+            <span className={`watch-drum-pad watch-drum-pad--${pad.id}${activePad === pad.id ? " is-active" : ""}`}>
+              <span className="watch-drum-type">
+                {pad.id === "kick" ? "LOW" : pad.id === "snare" ? "SNAP" : "TICK"}
+              </span>
+              <span className="watch-drum-disc">
+                <span className="watch-drum-pattern" aria-hidden="true">
+                  {Array.from({ length: 6 }, (_, index) => <i key={index} />)}
+                </span>
+                <strong>{pad.label}</strong>
+              </span>
               <small>{pad.shortcut}</small>
             </span>
           </WatchFrame>

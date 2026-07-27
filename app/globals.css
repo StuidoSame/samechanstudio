@@ -4837,6 +4837,7 @@ button {
   width: 100%;
   height: 100%;
   display: block;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 27%;
   background:
@@ -4860,10 +4861,127 @@ button {
   position: relative;
   width: 100%;
   height: 100%;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border-radius: inherit;
   background: radial-gradient(circle at 50% 44%, rgba(183, 143, 229, 0.16), transparent 48%);
+}
+
+.watch-drum-type {
+  position: absolute;
+  top: 10%;
+  color: rgba(234, 221, 248, 0.58);
+  font-size: 6px;
+  font-weight: 650;
+  letter-spacing: 0.2em;
+}
+
+.watch-drum-disc {
+  position: relative;
+  width: 61%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(231, 211, 250, 0.3);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(255, 244, 255, 0.14), transparent 28%),
+    radial-gradient(circle, rgba(176, 130, 222, 0.2), rgba(96, 66, 132, 0.08) 66%, transparent 69%);
+  box-shadow:
+    inset 0 0 16px rgba(231, 206, 253, 0.06),
+    0 5px 14px rgba(8, 5, 13, 0.12);
+}
+
+.watch-drum-disc::before,
+.watch-drum-disc::after,
+.watch-drum-pattern,
+.watch-drum-pattern i {
+  position: absolute;
+  pointer-events: none;
+}
+
+.watch-drum-disc::before,
+.watch-drum-disc::after {
+  border-radius: 50%;
+  content: "";
+}
+
+.watch-drum-pad--kick .watch-drum-disc::before {
+  inset: 13%;
+  border: 1px solid rgba(225, 198, 247, 0.19);
+}
+
+.watch-drum-pad--kick .watch-drum-disc::after {
+  inset: 27%;
+  border: 1px solid rgba(235, 213, 252, 0.16);
+}
+
+.watch-drum-pattern {
+  inset: 0;
+}
+
+.watch-drum-pad--kick .watch-drum-pattern i:nth-child(-n + 3) {
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(226, 202, 248, 0.12);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.watch-drum-pad--kick .watch-drum-pattern i:nth-child(1) { width: 40%; height: 40%; }
+.watch-drum-pad--kick .watch-drum-pattern i:nth-child(2) { width: 58%; height: 58%; }
+.watch-drum-pad--kick .watch-drum-pattern i:nth-child(3) { width: 76%; height: 76%; }
+
+.watch-drum-pad--snare .watch-drum-pattern i {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(248, 225, 245, 0.58);
+  box-shadow: 0 0 4px rgba(225, 171, 226, 0.16);
+}
+
+.watch-drum-pad--snare .watch-drum-pattern i:nth-child(1) { top: 8%; left: calc(50% - 1px); }
+.watch-drum-pad--snare .watch-drum-pattern i:nth-child(2) { top: 27%; right: 13%; }
+.watch-drum-pad--snare .watch-drum-pattern i:nth-child(3) { right: 13%; bottom: 27%; }
+.watch-drum-pad--snare .watch-drum-pattern i:nth-child(4) { bottom: 8%; left: calc(50% - 1px); }
+.watch-drum-pad--snare .watch-drum-pattern i:nth-child(5) { bottom: 27%; left: 13%; }
+.watch-drum-pad--snare .watch-drum-pattern i:nth-child(6) { top: 27%; left: 13%; }
+
+.watch-drum-pad--hihat .watch-drum-disc::before {
+  inset: 15% 8% 31%;
+  border: 1px solid rgba(245, 211, 239, 0.24);
+  transform: rotate(-5deg);
+}
+
+.watch-drum-pad--hihat .watch-drum-disc::after {
+  inset: 29% 8% 17%;
+  border: 1px solid rgba(220, 195, 247, 0.22);
+  transform: rotate(5deg);
+}
+
+.watch-drum-pad--hihat .watch-drum-pattern {
+  top: 48%;
+  right: 18%;
+  bottom: auto;
+  left: 18%;
+  height: 14%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.watch-drum-pad--hihat .watch-drum-pattern i {
+  position: static;
+  width: 1px;
+  height: 45%;
+  border-radius: 2px;
+  background: rgba(239, 213, 249, 0.35);
+}
+
+.watch-drum-pad--hihat .watch-drum-pattern i:nth-child(2n) {
+  height: 100%;
 }
 
 .watch-drum-pad::after {
@@ -4885,6 +5003,8 @@ button {
 }
 
 .watch-drum-pad strong {
+  position: relative;
+  z-index: 1;
   color: rgba(244, 237, 252, 0.86);
   font-size: 11px;
   font-weight: 650;
@@ -4893,7 +5013,7 @@ button {
 
 .watch-drum-pad small {
   position: absolute;
-  bottom: 13%;
+  bottom: 9%;
   color: rgba(227, 213, 243, 0.5);
   font-size: 8px;
   letter-spacing: 0.12em;
