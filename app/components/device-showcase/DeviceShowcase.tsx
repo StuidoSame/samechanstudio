@@ -35,17 +35,20 @@ export function DeviceShowcase() {
         <DeviceSection
           {...phoneCopy}
           className="device-showcase-phone"
+          cosmosVariant="phone"
           device={<IPhoneFrame />}
         />
         <DeviceSection
           {...tabletCopy}
           className="device-showcase-tablet"
+          cosmosVariant="tablet"
           device={<IPadFrame />}
           reversed
         />
         <DeviceSection
           {...watchCopy}
           className="device-showcase-watch"
+          cosmosVariant="watch"
           device={<WatchGroup />}
         />
       </div>

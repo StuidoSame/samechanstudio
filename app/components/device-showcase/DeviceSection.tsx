@@ -4,6 +4,7 @@ import {
   TypeRevealGroup,
 } from "../type-reveal/TypeReveal";
 import { getTypeRevealDelay } from "../type-reveal/typeRevealTiming";
+import { SectionCosmos } from "../SectionCosmos";
 
 type DeviceSectionProps = {
   index: string;
@@ -13,6 +14,7 @@ type DeviceSectionProps = {
   device: ReactNode;
   reversed?: boolean;
   className?: string;
+  cosmosVariant: "phone" | "tablet" | "watch";
 };
 
 export function DeviceSection({
@@ -23,6 +25,7 @@ export function DeviceSection({
   device,
   reversed = false,
   className = "",
+  cosmosVariant,
 }: DeviceSectionProps) {
   const titleId = `device-showcase-title-${index}`;
   const revealSteps = [
@@ -37,6 +40,7 @@ export function DeviceSection({
       className={`device-showcase-row${reversed ? " is-reversed" : ""}${className ? ` ${className}` : ""}`}
       aria-labelledby={titleId}
     >
+      <SectionCosmos variant={cosmosVariant} />
       <div className="device-showcase-visual">{device}</div>
       <div className="device-showcase-copy">
         <TypeReveal

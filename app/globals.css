@@ -2287,6 +2287,398 @@ button {
   );
 }
 
+.section-cosmos {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.section-cosmos-constellation {
+  position: absolute;
+  width: clamp(132px, 13vw, 188px);
+  height: auto;
+  overflow: visible;
+  opacity: 0.2;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 7px rgba(190, 158, 245, 0.14));
+  animation: section-cosmos-drift 24s ease-in-out infinite;
+}
+
+.section-cosmos-constellation path {
+  stroke-width: 0.65;
+}
+
+.section-cosmos-constellation circle {
+  fill: rgba(255, 255, 255, 0.88);
+  stroke: rgba(218, 199, 255, 0.54);
+  stroke-width: 0.45;
+}
+
+.section-cosmos-orbit {
+  position: absolute;
+  width: clamp(52px, 5.2vw, 76px);
+  aspect-ratio: 1.5;
+  border: 0.7px solid rgba(229, 216, 255, 0.26);
+  border-radius: 50%;
+  opacity: 0.7;
+  transform: rotate(-18deg);
+  animation: section-cosmos-orbit 26s ease-in-out infinite;
+}
+
+.section-cosmos-orbit::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.82), rgba(213, 190, 250, 0.34) 46%, rgba(177, 137, 231, 0.14));
+  box-shadow: 0 0 14px rgba(203, 174, 244, 0.16);
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.section-cosmos-orbit i {
+  position: absolute;
+  top: -2px;
+  left: 56%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 245, 252, 0.72);
+  box-shadow: 0 0 8px rgba(255, 221, 241, 0.2);
+}
+
+.section-cosmos-star,
+.section-cosmos-dot,
+.section-cosmos-diamond {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.section-cosmos-star {
+  width: 7px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.58);
+  clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+  filter: drop-shadow(0 0 6px rgba(220, 196, 255, 0.18));
+  animation: section-cosmos-fade 19s ease-in-out infinite;
+}
+
+.section-cosmos-star--two {
+  width: 5px;
+  height: 5px;
+  color: rgba(255, 218, 239, 0.54);
+  background: currentColor;
+  animation-delay: -7s;
+}
+
+.section-cosmos-star--three {
+  width: 4px;
+  height: 4px;
+  background: rgba(219, 203, 255, 0.62);
+  animation-delay: -12s;
+}
+
+.section-cosmos-dot {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 7px rgba(224, 207, 255, 0.18);
+}
+
+.section-cosmos-dot--two {
+  width: 3px;
+  height: 3px;
+  background: rgba(241, 210, 232, 0.4);
+}
+
+.section-cosmos-diamond {
+  width: 7px;
+  height: 7px;
+  border: 0.7px solid rgba(224, 205, 255, 0.42);
+  border-radius: 1px;
+  opacity: 0.72;
+  transform: rotate(45deg);
+}
+
+.section-cosmos--hero {
+  --star-one-x: 10%;
+  --star-one-y: 18%;
+  --star-two-x: 87%;
+  --star-two-y: 29%;
+  --star-three-x: 13%;
+  --star-three-y: 73%;
+  --dot-one-x: 92%;
+  --dot-one-y: 68%;
+  --dot-two-x: 6%;
+  --dot-two-y: 48%;
+  --dot-three-x: 82%;
+  --dot-three-y: 84%;
+  --diamond-x: 91%;
+  --diamond-y: 51%;
+}
+
+.section-cosmos--hero .section-cosmos-constellation {
+  top: 13%;
+  left: 3.5%;
+}
+
+.section-cosmos--hero .section-cosmos-orbit {
+  right: 5%;
+  bottom: 12%;
+}
+
+.section-cosmos--phone {
+  --star-one-x: 8%;
+  --star-one-y: 16%;
+  --star-two-x: 91%;
+  --star-two-y: 63%;
+  --star-three-x: 61%;
+  --star-three-y: 12%;
+  --dot-one-x: 4%;
+  --dot-one-y: 74%;
+  --dot-two-x: 83%;
+  --dot-two-y: 22%;
+  --dot-three-x: 69%;
+  --dot-three-y: 83%;
+  --diamond-x: 94%;
+  --diamond-y: 38%;
+}
+
+.section-cosmos--phone .section-cosmos-constellation {
+  top: 9%;
+  right: 2%;
+  transform: rotate(5deg);
+}
+
+.section-cosmos--phone .section-cosmos-orbit {
+  bottom: 11%;
+  left: 4%;
+  transform: rotate(18deg);
+}
+
+.section-cosmos--tablet {
+  --star-one-x: 91%;
+  --star-one-y: 17%;
+  --star-two-x: 7%;
+  --star-two-y: 62%;
+  --star-three-x: 37%;
+  --star-three-y: 9%;
+  --dot-one-x: 96%;
+  --dot-one-y: 72%;
+  --dot-two-x: 17%;
+  --dot-two-y: 19%;
+  --dot-three-x: 28%;
+  --dot-three-y: 83%;
+  --diamond-x: 4%;
+  --diamond-y: 35%;
+}
+
+.section-cosmos--tablet .section-cosmos-constellation {
+  top: 10%;
+  left: 2%;
+  transform: rotate(-7deg);
+}
+
+.section-cosmos--tablet .section-cosmos-orbit {
+  right: 4%;
+  bottom: 13%;
+  transform: rotate(-28deg);
+}
+
+.section-cosmos--watch {
+  --star-one-x: 12%;
+  --star-one-y: 23%;
+  --star-two-x: 88%;
+  --star-two-y: 74%;
+  --star-three-x: 73%;
+  --star-three-y: 13%;
+  --dot-one-x: 5%;
+  --dot-one-y: 62%;
+  --dot-two-x: 94%;
+  --dot-two-y: 29%;
+  --dot-three-x: 49%;
+  --dot-three-y: 88%;
+  --diamond-x: 22%;
+  --diamond-y: 84%;
+}
+
+.section-cosmos--watch .section-cosmos-constellation {
+  top: 7%;
+  right: 9%;
+  transform: rotate(9deg);
+}
+
+.section-cosmos--watch .section-cosmos-orbit {
+  bottom: 14%;
+  left: 8%;
+  transform: rotate(7deg);
+}
+
+.section-cosmos--contact {
+  --star-one-x: 88%;
+  --star-one-y: 21%;
+  --star-two-x: 73%;
+  --star-two-y: 71%;
+  --star-three-x: 12%;
+  --star-three-y: 76%;
+  --dot-one-x: 94%;
+  --dot-one-y: 52%;
+  --dot-two-x: 61%;
+  --dot-two-y: 14%;
+  --dot-three-x: 8%;
+  --dot-three-y: 29%;
+  --diamond-x: 82%;
+  --diamond-y: 83%;
+}
+
+.section-cosmos--contact .section-cosmos-constellation {
+  top: 12%;
+  right: 7%;
+  transform: rotate(-4deg);
+}
+
+.section-cosmos--contact .section-cosmos-orbit {
+  right: 13%;
+  bottom: 12%;
+  transform: rotate(22deg);
+}
+
+.section-cosmos-star--one {
+  top: var(--star-one-y);
+  left: var(--star-one-x);
+}
+
+.section-cosmos-star--two {
+  top: var(--star-two-y);
+  left: var(--star-two-x);
+}
+
+.section-cosmos-star--three {
+  top: var(--star-three-y);
+  left: var(--star-three-x);
+}
+
+.section-cosmos-dot--one {
+  top: var(--dot-one-y);
+  left: var(--dot-one-x);
+}
+
+.section-cosmos-dot--two {
+  top: var(--dot-two-y);
+  left: var(--dot-two-x);
+}
+
+.section-cosmos-dot--three {
+  top: var(--dot-three-y);
+  left: var(--dot-three-x);
+}
+
+.section-cosmos-diamond {
+  top: var(--diamond-y);
+  left: var(--diamond-x);
+}
+
+@keyframes section-cosmos-drift {
+  0%,
+  100% {
+    opacity: 0.16;
+    translate: 0 0;
+  }
+  50% {
+    opacity: 0.23;
+    translate: 3px -4px;
+  }
+}
+
+@keyframes section-cosmos-orbit {
+  0%,
+  100% {
+    opacity: 0.48;
+    translate: 0 0;
+  }
+  50% {
+    opacity: 0.7;
+    translate: -2px 3px;
+  }
+}
+
+@keyframes section-cosmos-fade {
+  0%,
+  100% {
+    opacity: 0.36;
+  }
+  50% {
+    opacity: 0.68;
+  }
+}
+
+@media (max-width: 900px) {
+  .section-cosmos-constellation {
+    width: 124px;
+    opacity: 0.15;
+  }
+
+  .section-cosmos-orbit {
+    width: 48px;
+    opacity: 0.48;
+  }
+
+  .section-cosmos--phone .section-cosmos-constellation,
+  .section-cosmos--watch .section-cosmos-constellation {
+    right: -14px;
+  }
+
+  .section-cosmos--tablet .section-cosmos-constellation {
+    left: -12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .section-cosmos-constellation {
+    width: 104px;
+    opacity: 0.12;
+  }
+
+  .section-cosmos-star--three,
+  .section-cosmos-dot--three {
+    display: none;
+  }
+
+  .section-cosmos--hero .section-cosmos-constellation {
+    top: 14%;
+    left: -25px;
+  }
+
+  .section-cosmos--hero .section-cosmos-orbit {
+    right: -12px;
+    bottom: 16%;
+  }
+
+  .section-cosmos--phone .section-cosmos-orbit,
+  .section-cosmos--tablet .section-cosmos-orbit,
+  .section-cosmos--watch .section-cosmos-orbit {
+    width: 40px;
+  }
+
+  .section-cosmos--contact .section-cosmos-constellation {
+    top: 8%;
+    right: -20px;
+  }
+
+  .section-cosmos--contact .section-cosmos-orbit {
+    right: 6%;
+    bottom: 8%;
+  }
+}
+
 .type-reveal {
   position: relative;
   display: block;
@@ -2428,6 +2820,8 @@ button {
 }
 
 .device-showcase-row {
+  position: relative;
+  isolation: isolate;
   min-height: clamp(720px, 74vw, 850px);
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.78fr);
@@ -2436,6 +2830,8 @@ button {
 }
 
 .device-showcase-visual {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   display: grid;
   place-items: center;
@@ -2458,6 +2854,7 @@ button {
 
 .device-showcase-copy {
   position: relative;
+  z-index: 1;
   max-width: 470px;
 }
 

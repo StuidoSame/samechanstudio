@@ -13,6 +13,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
+import { SectionCosmos } from "./SectionCosmos";
 import {
   TypeReveal,
   TypeRevealGroup,
@@ -1984,6 +1985,7 @@ export function HomeExperience() {
               )}
             </div>
           </div>
+          <SectionCosmos variant="hero" />
 
           <div className="carousel-stage" aria-live="polite">
             <JellyCanvas
@@ -2174,6 +2176,7 @@ export function HomeExperience() {
           id="contact"
           aria-labelledby="contact-title"
         >
+          <SectionCosmos variant="contact" />
           <div className="contact-inner">
             <TypeReveal
               as="span"
