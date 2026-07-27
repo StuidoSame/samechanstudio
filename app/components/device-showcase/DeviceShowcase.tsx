@@ -44,6 +44,18 @@ export function DeviceShowcase() {
             pathLength="1"
           />
         </svg>
+        <span className="device-journey-node device-journey-node--phone is-active">
+          <span className="device-journey-node-core" />
+          <span className="device-journey-node-label">CAPTURE A MOMENT</span>
+        </span>
+        <span className="device-journey-node device-journey-node--tablet">
+          <span className="device-journey-node-core" />
+          <span className="device-journey-node-label">MAKE ROOM TO THINK</span>
+        </span>
+        <span className="device-journey-node device-journey-node--watch">
+          <span className="device-journey-node-core" />
+          <span className="device-journey-node-label">FIND A QUICK RHYTHM</span>
+        </span>
       </div>
       <div className="device-showcase-inner">
         <DeviceSection

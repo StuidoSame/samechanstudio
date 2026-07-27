@@ -3468,6 +3468,88 @@ button {
   filter: drop-shadow(0 0 3px rgba(139, 96, 211, 0.09));
 }
 
+.device-journey-node {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(232, 218, 255, 0.66);
+  border-radius: 50%;
+  background: rgba(176, 139, 230, 0.18);
+  box-shadow: 0 0 0 7px rgba(165, 119, 225, 0.035);
+  opacity: 0.54;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 340ms ease-out,
+    transform 340ms ease-out,
+    box-shadow 340ms ease-out;
+}
+
+.device-journey-node::after {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(185, 149, 236, 0.2), transparent 68%);
+  content: "";
+  opacity: 0;
+  transition: opacity 340ms ease-out;
+}
+
+.device-journey-node-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(252, 248, 255, 0.9);
+  box-shadow: 0 0 5px rgba(164, 111, 229, 0.18);
+  transform: translate(-50%, -50%);
+}
+
+.device-journey-node.is-active {
+  box-shadow: 0 0 0 9px rgba(165, 119, 225, 0.07);
+  opacity: 0.94;
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.device-journey-node.is-active::after {
+  opacity: 1;
+}
+
+.device-journey-node--phone {
+  top: 23%;
+  left: 49.7%;
+}
+
+.device-journey-node--tablet {
+  top: 60%;
+  left: 52.7%;
+}
+
+.device-journey-node--watch {
+  top: 87%;
+  left: 49.6%;
+}
+
+.device-journey-node-label {
+  position: absolute;
+  top: 50%;
+  left: 25px;
+  width: max-content;
+  color: rgba(104, 72, 164, 0.72);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.device-journey-node--tablet .device-journey-node-label {
+  right: 25px;
+  left: auto;
+}
+
 .device-showcase-row {
   position: relative;
   isolation: isolate;
