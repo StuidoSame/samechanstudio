@@ -540,7 +540,7 @@ function Loader({
 }
 
 export function HomeExperience() {
-  const { messages } = useI18n();
+  const { locale, messages, setLocale } = useI18n();
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -552,8 +552,6 @@ export function HomeExperience() {
   const [activeIndex, setActiveIndex] = useState(DEFAULT_APP_INDEX);
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] =
-    useState<Locale>("ko");
   const [darkPressKey, setDarkPressKey] = useState(0);
   const [headerUtilityHidden, setHeaderUtilityHidden] = useState(false);
   const [headerUtilityDragging, setHeaderUtilityDragging] = useState(false);
@@ -2337,9 +2335,9 @@ export function HomeExperience() {
                     type="button"
                     className="language-option"
                     role="menuitemradio"
-                    aria-checked={selectedLanguage === language.code}
+                    aria-checked={locale === language.code}
                     onClick={() => {
-                      setSelectedLanguage(language.code);
+                      setLocale(language.code);
                       setLanguageOpen(false);
                     }}
                   >
