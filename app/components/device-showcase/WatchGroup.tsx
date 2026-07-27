@@ -41,6 +41,7 @@ export function WatchGroup() {
   const [rhythm, setRhythm] = useState<RhythmEvent[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const audioBuffersRef = useRef<Partial<Record<DrumId, AudioBuffer>>>({});
@@ -72,7 +73,7 @@ export function WatchGroup() {
 
     audioContextRef.current = new AudioContextConstructor();
     const masterGain = audioContextRef.current.createGain();
-    masterGain.gain.value = 0.28;
+    masterGain.gain.value = isMuted ? 0 : 0.28;
     masterGain.connect(audioContextRef.current.destination);
     masterGainRef.current = masterGain;
     return audioContextRef.current;
@@ -250,6 +251,17 @@ export function WatchGroup() {
     setRhythm([]);
   };
 
+  const toggleMute = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+
+    const context = audioContextRef.current;
+    const masterGain = masterGainRef.current;
+    if (context && masterGain) {
+      masterGain.gain.setTargetAtTime(nextMuted ? 0 : 0.28, context.currentTime, 0.012);
+    }
+  };
+
   useEffect(() => {
     activatePadRef.current = activatePad;
   });
@@ -274,7 +286,14 @@ export function WatchGroup() {
   }, []);
 
   return (
-    <div className="device-watch-stage" aria-label="Three Apple Watch drum pads">
+    <div
+      className="device-watch-stage"
+      aria-label="Three Apple Watch drum pads"
+      aria-describedby="watch-drum-shortcuts"
+    >
+      <p id="watch-drum-shortcuts" className="watch-drum-sr-only">
+        Use A for Kick, S for Snare, and D for Hi-hat. Enter or Space plays the focused Watch.
+      </p>
       <div className="device-watch-group">
         {DRUM_PADS.map((pad) => (
           <WatchFrame
@@ -293,10 +312,11 @@ export function WatchGroup() {
         ))}
       </div>
       <div className="watch-drum-controls" role="group" aria-label="Rhythm recording controls">
-        <button type="button" aria-label="Record rhythm" aria-pressed={isRecording} onClick={startRecording}>●</button>
-        <button type="button" aria-label="Stop recording or playback" onClick={() => { stopRecording(); stopPlayback(); }}>■</button>
-        <button type="button" aria-label="Play recorded rhythm" aria-pressed={isPlaying} disabled={rhythm.length === 0} onClick={playRhythm}>▶</button>
-        <button type="button" aria-label="Clear recorded rhythm" disabled={rhythm.length === 0} onClick={clearRhythm}>×</button>
+        <button type="button" data-control="record" aria-label="Record rhythm" aria-pressed={isRecording} onClick={startRecording} />
+        <button type="button" data-control="stop" aria-label="Stop recording or playback" onClick={() => { stopRecording(); stopPlayback(); }} />
+        <button type="button" data-control="play" aria-label="Play recorded rhythm" aria-pressed={isPlaying} disabled={rhythm.length === 0} onClick={playRhythm} />
+        <button type="button" data-control="clear" aria-label="Clear recorded rhythm" disabled={rhythm.length === 0} onClick={clearRhythm} />
+        <button type="button" data-control="mute" aria-label={isMuted ? "Unmute drums" : "Mute drums"} aria-pressed={isMuted} onClick={toggleMute} />
         <span aria-live="polite">{isRecording ? `REC ${String(rhythm.length).padStart(2, "0")}` : `${String(rhythm.length).padStart(2, "0")} HITS`}</span>
       </div>
     </div>

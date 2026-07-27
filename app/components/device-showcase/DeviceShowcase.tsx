@@ -20,8 +20,8 @@ const tabletCopy = {
 const watchCopy = {
   index: "03",
   category: "WATCH",
-  title: "Small, but present.",
-  body: "Sometimes a glance is all you need.\nThe smallest screen can still hold\na thoughtful moment.",
+  title: "Tap into rhythm.",
+  body: "Three small screens.\nOne quick beat.",
 };
 
 export function DeviceShowcase() {

@@ -16,8 +16,15 @@ export function WatchFrame({ variant, ariaLabel, onActivate, hitKey, isHit, chil
     <button
       type="button"
       className={`device-watch device-watch--${variant}${isHit ? " is-hit" : ""}`}
+      data-hit-count={hitKey}
       aria-label={ariaLabel}
       onPointerDown={onActivate}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onActivate();
+        }
+      }}
       onClick={(event) => {
         if (event.detail === 0) onActivate();
       }}
