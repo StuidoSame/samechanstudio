@@ -4772,12 +4772,13 @@ button {
 .device-watch {
   position: absolute;
   top: 50%;
-  width: 145px;
+  width: 164px;
   padding: 0;
   border: 0;
   color: rgba(250, 246, 255, 0.94);
   background: transparent;
-  opacity: 0.8;
+  filter: none;
+  opacity: 0.94;
   cursor: pointer;
   transform-origin: center;
 }
