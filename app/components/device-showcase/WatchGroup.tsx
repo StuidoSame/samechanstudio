@@ -13,16 +13,29 @@ const WATCH_GLANCE_STATES = [
 export function WatchGroup() {
   const [activeState, setActiveState] = useState(0);
   const [manualComplete, setManualComplete] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    if (manualComplete) return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPreference = () => setReducedMotion(media.matches);
+    const initialSync = window.setTimeout(syncPreference, 0);
+
+    media.addEventListener("change", syncPreference);
+    return () => {
+      window.clearTimeout(initialSync);
+      media.removeEventListener("change", syncPreference);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (manualComplete || reducedMotion) return;
 
     const interval = window.setInterval(() => {
       setActiveState((state) => (state + 1) % WATCH_GLANCE_STATES.length);
     }, 3800);
 
     return () => window.clearInterval(interval);
-  }, [manualComplete]);
+  }, [manualComplete, reducedMotion]);
 
   useEffect(() => {
     if (!manualComplete) return;

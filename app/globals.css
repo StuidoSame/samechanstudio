@@ -2883,10 +2883,17 @@ button {
 }
 
 .device-phone-stage {
+  --device-float-x-start: -2px;
+  --device-float-x-mid: 3px;
+  --device-float-y-start: -7px;
+  --device-float-y-mid: 6px;
+  --device-float-rotate-start: -0.35deg;
+  --device-float-rotate-mid: 0.45deg;
   position: relative;
   display: grid;
   place-items: center;
-  animation: device-phone-float 6s ease-in-out infinite;
+  animation: device-soft-float 8.4s ease-in-out -0.8s infinite;
+  will-change: transform;
 }
 
 .device-phone-stage::before {
@@ -3113,11 +3120,18 @@ button {
 }
 
 .device-tablet-stage {
+  --device-float-x-start: -3px;
+  --device-float-x-mid: 2px;
+  --device-float-y-start: 3px;
+  --device-float-y-mid: -4px;
+  --device-float-rotate-start: 0.18deg;
+  --device-float-rotate-mid: -0.16deg;
   position: relative;
   width: 100%;
   display: grid;
   place-items: center;
-  animation: device-tablet-float 8s ease-in-out infinite;
+  animation: device-soft-float 10.8s ease-in-out -3.1s infinite reverse;
+  will-change: transform;
 }
 
 .device-tablet-stage::before {
@@ -3382,11 +3396,18 @@ button {
 }
 
 .device-watch-stage {
+  --device-float-x-start: 3px;
+  --device-float-x-mid: -2px;
+  --device-float-y-start: -5px;
+  --device-float-y-mid: 6px;
+  --device-float-rotate-start: 0.28deg;
+  --device-float-rotate-mid: -0.32deg;
   position: relative;
   width: 100%;
   display: grid;
   place-items: center;
-  animation: device-watch-float 7s ease-in-out infinite;
+  animation: device-soft-float 7.2s ease-in-out -1.9s infinite;
+  will-change: transform;
 }
 
 .device-watch-stage::before {
@@ -3636,33 +3657,21 @@ button {
   border-radius: 8px 8px 24px 24px;
 }
 
-@keyframes device-phone-float {
+@keyframes device-soft-float {
   0%,
   100% {
-    translate: 0 -5px;
+    transform: translate3d(
+      var(--device-float-x-start),
+      var(--device-float-y-start),
+      0
+    ) rotate(var(--device-float-rotate-start));
   }
   50% {
-    translate: 0 5px;
-  }
-}
-
-@keyframes device-tablet-float {
-  0%,
-  100% {
-    translate: 0 -4px;
-  }
-  50% {
-    translate: 0 4px;
-  }
-}
-
-@keyframes device-watch-float {
-  0%,
-  100% {
-    translate: 0 -4px;
-  }
-  50% {
-    translate: 0 4px;
+    transform: translate3d(
+      var(--device-float-x-mid),
+      var(--device-float-y-mid),
+      0
+    ) rotate(var(--device-float-rotate-mid));
   }
 }
 
@@ -3707,6 +3716,15 @@ button {
 
   .device-phone-frame {
     width: clamp(210px, 58vw, 240px);
+  }
+
+  .device-phone-stage {
+    --device-float-x-start: -1px;
+    --device-float-x-mid: 1.5px;
+    --device-float-y-start: -4px;
+    --device-float-y-mid: 3px;
+    --device-float-rotate-start: -0.18deg;
+    --device-float-rotate-mid: 0.2deg;
   }
 
   .phone-moment {
@@ -3754,6 +3772,15 @@ button {
   .device-tablet-frame {
     width: min(90vw, 360px);
     transform: none;
+  }
+
+  .device-tablet-stage {
+    --device-float-x-start: -1.5px;
+    --device-float-x-mid: 1px;
+    --device-float-y-start: 2px;
+    --device-float-y-mid: -2.5px;
+    --device-float-rotate-start: 0.08deg;
+    --device-float-rotate-mid: -0.08deg;
   }
 
   .idea-board {
@@ -3835,6 +3862,15 @@ button {
     width: min(104vw, 410px);
   }
 
+  .device-watch-stage {
+    --device-float-x-start: 1.5px;
+    --device-float-x-mid: -1px;
+    --device-float-y-start: -3px;
+    --device-float-y-mid: 3px;
+    --device-float-rotate-start: 0.16deg;
+    --device-float-rotate-mid: -0.18deg;
+  }
+
   .watch-glance-state {
     gap: 8px;
   }
@@ -3901,6 +3937,26 @@ button {
   .device-phone-stage,
   .device-tablet-stage,
   .device-watch-stage {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  .phone-moment-card,
+  .phone-moment-action,
+  .idea-board-card,
+  .watch-glance-state {
+    transition: none;
+  }
+
+  .idea-board-card,
+  .idea-board-card.is-active {
+    transform: rotate(var(--card-rotation));
+  }
+
+  .idea-board-sticker,
+  .watch-glance-ring,
+  .watch-glance-state--done .watch-glance-check {
     animation: none;
   }
 }
