@@ -3553,21 +3553,29 @@ button {
 
 .device-journey-node-label {
   position: absolute;
-  top: 50%;
-  left: 25px;
+  top: calc(100% + 16px);
+  left: 50%;
   width: max-content;
-  color: rgba(104, 72, 164, 0.72);
-  font-size: 9px;
+  color: rgba(104, 72, 164, 0.62);
+  font-size: 8.5px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   line-height: 1;
   white-space: nowrap;
-  transform: translateY(-50%);
+  transform: translateX(-50%);
 }
 
 .device-journey-node--tablet .device-journey-node-label {
-  right: 25px;
-  left: auto;
+  right: auto;
+  left: 50%;
+}
+
+@media (max-width: 1280px) and (min-width: 1101px) {
+  .device-journey-node-label {
+    top: calc(100% + 14px);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
 }
 
 .device-journey-progress {
