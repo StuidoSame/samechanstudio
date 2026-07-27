@@ -4256,9 +4256,9 @@ button {
   position: relative;
   z-index: 1;
   width: min(100%, 1440px);
-  min-height: clamp(650px, 76svh, 780px);
+  min-height: clamp(590px, 70svh, 700px);
   margin: 0 auto;
-  padding: clamp(116px, 11vw, 158px) clamp(44px, 7vw, 104px);
+  padding: clamp(96px, 9vw, 128px) clamp(44px, 7vw, 104px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4267,20 +4267,20 @@ button {
 .contact-panel {
   position: relative;
   isolation: isolate;
-  width: min(72vw, 900px);
+  width: min(82vw, 980px);
   margin-right: auto;
-  border-radius: 78px 112px 94px 70px / 68px 82px 102px 86px;
+  border-radius: 54px 68px 62px 50px / 50px 58px 68px 56px;
   background:
-    linear-gradient(126deg, rgba(255, 255, 255, 0.3), rgba(249, 241, 255, 0.18) 42%, rgba(223, 202, 250, 0.2)),
-    radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.34), transparent 42%);
+    linear-gradient(126deg, rgba(255, 255, 255, 0.25), rgba(249, 241, 255, 0.15) 42%, rgba(223, 202, 250, 0.17)),
+    radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.25), transparent 42%);
   box-shadow:
-    0 30px 80px rgba(106, 75, 160, 0.11),
-    0 8px 28px rgba(137, 94, 205, 0.08),
-    inset 0 1px 1px rgba(255, 255, 255, 0.72),
-    inset 0 -18px 34px rgba(112, 81, 160, 0.055);
-  -webkit-backdrop-filter: blur(18px) saturate(112%);
-  backdrop-filter: blur(18px) saturate(112%);
-  animation: contact-panel-float 10s ease-in-out infinite;
+    0 24px 68px rgba(106, 75, 160, 0.085),
+    0 7px 24px rgba(137, 94, 205, 0.055),
+    inset 0 1px 1px rgba(255, 255, 255, 0.52),
+    inset 0 -14px 28px rgba(112, 81, 160, 0.04);
+  -webkit-backdrop-filter: blur(16px) saturate(108%);
+  backdrop-filter: blur(16px) saturate(108%);
+  animation: contact-panel-float 12s ease-in-out infinite;
 }
 
 .contact-panel::before {
@@ -4289,8 +4289,8 @@ button {
   inset: 1px 5% auto 8%;
   height: 42%;
   border-radius: 999px;
-  background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.3), transparent 72%);
-  filter: blur(8px);
+  background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.2), transparent 72%);
+  filter: blur(10px);
   content: "";
   pointer-events: none;
 }
@@ -4312,23 +4312,30 @@ button {
 .contact-inner {
   position: relative;
   z-index: 2;
-  padding: clamp(62px, 6vw, 88px) clamp(54px, 7vw, 98px) clamp(64px, 6.5vw, 92px);
+  width: min(100%, 790px);
+  padding: clamp(54px, 5vw, 70px) clamp(58px, 7vw, 88px) clamp(64px, 5.8vw, 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .contact-inner h2 {
   margin: 0;
   color: #5c35b7;
-  font-size: clamp(42px, 4.2vw, 62px);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: clamp(34px, 3.2vw, 44px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 
 .contact-copy {
-  max-width: 720px;
-  margin: clamp(24px, 2.6vw, 34px) 0 0;
-  color: #655675;
-  font-size: clamp(16px, 1.4vw, 19px);
-  line-height: 1.7;
+  max-width: 650px;
+  margin: clamp(20px, 2vw, 26px) 0 0;
+  color: #5f526f;
+  font-size: clamp(15px, 1.25vw, 18px);
+  font-weight: 500;
+  line-height: 1.68;
 }
 
 .contact-copy span {
@@ -4339,16 +4346,17 @@ button {
   position: relative;
   width: max-content;
   max-width: 100%;
-  margin-top: clamp(32px, 4vw, 52px);
+  margin-top: clamp(28px, 3vw, 38px);
 }
 
 .contact-email-link {
   display: inline-block;
   max-width: 100%;
   color: #5f3bb6;
-  font-size: clamp(36px, 4.75vw, 66px);
-  line-height: 1.1;
-  letter-spacing: -0.015em;
+  font-size: clamp(46px, 4.55vw, 62px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.005em;
   white-space: nowrap;
   transform-origin: left center;
   transition:
@@ -4377,33 +4385,33 @@ button {
 }
 
 .contact-chat-decoration {
-  top: -31px;
-  left: 28px;
-  width: 78px;
-  height: 66px;
+  top: -19px;
+  left: 34px;
+  width: 62px;
+  height: 53px;
   border-radius: 48% 52% 48% 52% / 52% 48% 55% 45%;
   background:
-    radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.66), transparent 34%),
-    linear-gradient(145deg, rgba(192, 158, 255, 0.78), rgba(132, 81, 222, 0.48));
+    radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.5), transparent 34%),
+    linear-gradient(145deg, rgba(192, 158, 255, 0.62), rgba(132, 81, 222, 0.38));
   box-shadow:
-    0 12px 30px rgba(101, 61, 172, 0.14),
-    inset 0 1px 1px rgba(255, 255, 255, 0.72),
-    inset 0 -8px 14px rgba(91, 49, 162, 0.08);
+    0 9px 24px rgba(101, 61, 172, 0.09),
+    inset 0 1px 1px rgba(255, 255, 255, 0.58),
+    inset 0 -6px 12px rgba(91, 49, 162, 0.055);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  animation: contact-chat-float 9s ease-in-out -2.5s infinite;
+  gap: 6px;
+  animation: contact-chat-float 10s ease-in-out -2.5s infinite;
 }
 
 .contact-chat-decoration::after {
   position: absolute;
-  right: 4px;
-  bottom: 2px;
-  width: 18px;
-  height: 16px;
+  right: 3px;
+  bottom: 1px;
+  width: 14px;
+  height: 13px;
   border-radius: 5px 2px 12px 3px;
-  background: rgba(139, 89, 226, 0.42);
+  background: rgba(139, 89, 226, 0.32);
   content: "";
   transform: rotate(28deg);
 }
@@ -4411,40 +4419,40 @@ button {
 .contact-chat-decoration i {
   position: relative;
   z-index: 1;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 1px 5px rgba(76, 38, 146, 0.22);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 1px 4px rgba(76, 38, 146, 0.14);
 }
 
 .contact-mail-decoration {
-  right: -66px;
-  bottom: -42px;
-  width: 188px;
-  height: 126px;
+  right: -24px;
+  bottom: -20px;
+  width: 138px;
+  height: 94px;
   overflow: visible;
-  border-radius: 26px 28px 30px 24px;
+  border-radius: 21px 23px 24px 19px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.4), rgba(206, 179, 255, 0.3)),
-    rgba(143, 99, 228, 0.22);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(206, 179, 255, 0.2)),
+    rgba(143, 99, 228, 0.15);
   box-shadow:
-    0 22px 42px rgba(92, 57, 157, 0.15),
-    inset 0 1px 1px rgba(255, 255, 255, 0.7),
-    inset 0 -10px 20px rgba(89, 51, 158, 0.08);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  animation: contact-mail-float 11s ease-in-out -4s infinite;
+    0 16px 34px rgba(92, 57, 157, 0.09),
+    inset 0 1px 1px rgba(255, 255, 255, 0.52),
+    inset 0 -8px 16px rgba(89, 51, 158, 0.05);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: contact-mail-float 12.5s ease-in-out -4s infinite;
 }
 
 .contact-mail-decoration::before,
 .contact-mail-decoration::after {
   position: absolute;
-  top: 18px;
+  top: 13px;
   width: 57%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.56);
-  box-shadow: 0 1px 3px rgba(103, 67, 171, 0.1);
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 1px 2px rgba(103, 67, 171, 0.06);
   content: "";
   transform-origin: top center;
 }
@@ -4461,10 +4469,10 @@ button {
 
 .contact-mail-fold {
   position: absolute;
-  bottom: 24px;
+  bottom: 18px;
   width: 55%;
   height: 1px;
-  background: rgba(139, 99, 214, 0.16);
+  background: rgba(139, 99, 214, 0.11);
   transform-origin: bottom center;
 }
 
@@ -4480,28 +4488,18 @@ button {
 
 .contact-mail-decoration > i {
   position: absolute;
-  top: -9px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
+  top: -6px;
+  right: -5px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   background: radial-gradient(circle at 32% 26%, #fff8fc 0 10%, #f3aecf 42%, #dd7eaf 100%);
   box-shadow:
-    0 6px 14px rgba(190, 91, 145, 0.18),
-    inset 0 1px 1px rgba(255, 255, 255, 0.82);
+    0 4px 10px rgba(190, 91, 145, 0.11),
+    inset 0 1px 1px rgba(255, 255, 255, 0.68);
 }
 
 @keyframes contact-panel-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -3px, 0);
-  }
-}
-
-@keyframes contact-chat-float {
   0%,
   100% {
     transform: translate3d(0, 0, 0);
@@ -4511,13 +4509,23 @@ button {
   }
 }
 
+@keyframes contact-chat-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -1.5px, 0);
+  }
+}
+
 @keyframes contact-mail-float {
   0%,
   100% {
     transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(0, -3px, 0);
+    transform: translate3d(0, -2px, 0);
   }
 }
 
@@ -4535,12 +4543,12 @@ button {
 
 @media (max-width: 900px) {
   .contact-stage {
-    min-height: 650px;
+    min-height: 570px;
     padding-inline: clamp(36px, 7vw, 68px);
   }
 
   .contact-panel {
-    width: min(88vw, 760px);
+    width: min(88vw, 840px);
     margin-inline: auto;
   }
 
@@ -4549,13 +4557,14 @@ button {
   }
 
   .contact-email-link {
-    font-size: clamp(34px, 6.4vw, 54px);
+    font-size: clamp(40px, 6.2vw, 54px);
   }
 
   .contact-mail-decoration {
-    right: -28px;
-    width: 154px;
-    height: 104px;
+    right: -10px;
+    bottom: -16px;
+    width: 118px;
+    height: 80px;
   }
 }
 
@@ -4565,25 +4574,26 @@ button {
   }
 
   .contact-stage {
-    min-height: 560px;
-    padding: 102px 20px 104px;
+    min-height: 520px;
+    padding: 88px 20px 92px;
   }
 
   .contact-panel {
     width: 100%;
-    border-radius: 42px 54px 48px 38px / 40px 46px 56px 48px;
+    border-radius: 32px 38px 36px 30px / 30px 34px 40px 34px;
   }
 
   .contact-inner {
-    padding: 58px 24px 70px;
+    width: 100%;
+    padding: 50px 24px 58px;
   }
 
   .contact-inner h2 {
-    font-size: clamp(38px, 11vw, 46px);
+    font-size: clamp(26px, 6.7vw, 30px);
   }
 
   .contact-copy {
-    margin-top: 24px;
+    margin-top: 22px;
     font-size: 14px;
     line-height: 1.65;
     letter-spacing: -0.015em;
@@ -4591,50 +4601,56 @@ button {
 
   .contact-email-wrap {
     width: 100%;
-    margin-top: 32px;
+    margin-top: 28px;
   }
 
   .contact-email-link {
-    font-size: clamp(20px, 7.25vw, 30px);
+    font-size: clamp(25px, 7.4vw, 34px);
     white-space: normal;
     overflow-wrap: anywhere;
   }
 
   .contact-chat-decoration {
-    top: -24px;
-    left: 20px;
-    width: 62px;
-    height: 52px;
-    gap: 6px;
+    top: -16px;
+    left: 24px;
+    width: 50px;
+    height: 43px;
+    gap: 5px;
   }
 
   .contact-chat-decoration i {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   .contact-mail-decoration {
-    right: 12px;
-    bottom: -48px;
-    width: 112px;
-    height: 76px;
-    border-radius: 18px 19px 20px 16px;
+    right: 14px;
+    bottom: -12px;
+    width: 88px;
+    height: 60px;
+    border-radius: 15px 16px 17px 14px;
   }
 
   .contact-mail-decoration::before,
   .contact-mail-decoration::after {
-    top: 12px;
+    top: 9px;
   }
 
   .contact-mail-fold {
-    bottom: 16px;
+    bottom: 12px;
   }
 
   .contact-mail-decoration > i {
-    top: -7px;
-    right: -5px;
-    width: 18px;
-    height: 18px;
+    top: -4px;
+    right: -3px;
+    width: 13px;
+    height: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .contact-mail-decoration {
+    display: none;
   }
 }
 
