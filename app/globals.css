@@ -3119,28 +3119,28 @@ button {
 
 .section-cosmos--phone {
   --star-one-x: 7%; --star-one-y: 17%;
-  --star-two-x: 93%; --star-two-y: 18%;
-  --star-three-x: 89%; --star-three-y: 73%;
+  --star-two-x: 97%; --star-two-y: 10%;
+  --star-three-x: 96%; --star-three-y: 82%;
   --dot-one-x: 4%; --dot-one-y: 66%;
-  --dot-two-x: 73%; --dot-two-y: 7%;
-  --diamond-one-x: 95%; --diamond-one-y: 44%;
+  --dot-two-x: 61%; --dot-two-y: 5%;
+  --diamond-one-x: 98%; --diamond-one-y: 31%;
 }
 
 .section-cosmos--tablet {
-  --star-one-x: 92%; --star-one-y: 17%;
-  --star-two-x: 7%; --star-two-y: 67%;
-  --star-three-x: 39%; --star-three-y: 9%;
+  --star-one-x: 94%; --star-one-y: 14%;
+  --star-two-x: 2%; --star-two-y: 86%;
+  --star-three-x: 63%; --star-three-y: 7%;
   --dot-one-x: 96%; --dot-one-y: 72%;
-  --dot-two-x: 16%; --dot-two-y: 20%;
-  --diamond-one-x: 4%; --diamond-one-y: 39%;
+  --dot-two-x: 53%; --dot-two-y: 15%;
+  --diamond-one-x: 99%; --diamond-one-y: 42%;
 }
 
 .section-cosmos--watch {
   --star-one-x: 11%; --star-one-y: 23%;
-  --star-two-x: 90%; --star-two-y: 73%;
-  --star-three-x: 72%; --star-three-y: 12%;
+  --star-two-x: 97%; --star-two-y: 87%;
+  --star-three-x: 55%; --star-three-y: 6%;
   --dot-one-x: 5%; --dot-one-y: 61%;
-  --dot-two-x: 95%; --dot-two-y: 31%;
+  --dot-two-x: 99%; --dot-two-y: 16%;
   --diamond-one-x: 21%; --diamond-one-y: 84%;
 }
 
@@ -3183,14 +3183,14 @@ button {
   opacity: 0.5;
 }
 
-.section-cosmos--phone .section-cosmos-constellation--one { top: 10%; right: auto; left: -3%; transform: rotate(6deg); }
-.section-cosmos--phone .section-cosmos-orbit--one { right: 4%; bottom: 8%; left: auto; transform: rotate(16deg); }
+.section-cosmos--phone .section-cosmos-constellation--one { top: 8%; right: auto; left: -6%; transform: rotate(6deg); }
+.section-cosmos--phone .section-cosmos-orbit--one { right: -2%; bottom: 3%; left: auto; transform: rotate(16deg); }
 
-.section-cosmos--tablet .section-cosmos-constellation--one { top: 13%; left: -4%; transform: rotate(-8deg); }
-.section-cosmos--tablet .section-cosmos-orbit--one { right: 3%; bottom: 9%; transform: rotate(-27deg); }
+.section-cosmos--tablet .section-cosmos-constellation--one { top: 8%; right: -5%; left: auto; transform: rotate(8deg); }
+.section-cosmos--tablet .section-cosmos-orbit--one { right: 1%; bottom: 4%; transform: rotate(-27deg); }
 
-.section-cosmos--watch .section-cosmos-constellation--one { top: 11%; right: -3%; transform: rotate(8deg); }
-.section-cosmos--watch .section-cosmos-orbit--one { bottom: 8%; left: 4%; transform: rotate(8deg); }
+.section-cosmos--watch .section-cosmos-constellation--one { top: 8%; right: auto; left: -5%; transform: rotate(-8deg); }
+.section-cosmos--watch .section-cosmos-orbit--one { bottom: 4%; left: 1%; transform: rotate(8deg); }
 
 .section-cosmos--contact .section-cosmos-constellation--one { top: 9%; right: 3%; left: auto; transform: rotate(-5deg); }
 .section-cosmos--contact .section-cosmos-constellation--two { top: auto; right: auto; bottom: 3%; left: 0; width: clamp(118px, 11vw, 158px); transform: rotate(7deg); }
