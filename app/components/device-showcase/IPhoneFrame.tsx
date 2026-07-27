@@ -38,6 +38,51 @@ const DAILY_QUESTIONS: Record<number, string> = {
   6: "오늘 천천히 즐기고 싶은 것은 무엇인가요?",
 };
 
+const DAILY_QUESTION_EXAMPLES: Record<number, readonly string[]> = {
+  0: [
+    "이번 주도 충분히 잘 해냈어",
+    "하루씩 천천히 해도 괜찮아",
+    "쉬는 시간을 잊지 않았으면 해",
+    "작은 계획부터 시작해보자",
+  ],
+  1: [
+    "미뤄둔 책 한 권 끝까지 읽기",
+    "매일 십 분씩 가볍게 걷기",
+    "방 한쪽을 깔끔하게 정리하기",
+    "오래 미룬 약속 하나 정하기",
+  ],
+  2: [
+    "따뜻한 커피를 천천히 마신 시간",
+    "좋아하는 노래를 들으며 걸었던 순간",
+    "해야 할 일을 하나 끝낸 것",
+    "오랜만에 친구와 나눈 짧은 대화",
+  ],
+  3: [
+    "일찍 자면 아침이 한결 편하다는 것",
+    "천천히 읽을수록 오래 기억된다는 것",
+    "모르는 건 바로 물어봐도 괜찮다는 것",
+    "짧은 휴식이 집중에 도움이 된다는 것",
+  ],
+  4: [
+    "먼저 안부를 물어준 친구의 메시지",
+    "바쁜 와중에도 챙겨준 따뜻한 한마디",
+    "늦지 않게 집에 도착한 저녁",
+    "맑은 하늘을 잠깐 올려다본 순간",
+  ],
+  5: [
+    "미뤘던 일을 오늘 시작한 것",
+    "바쁜 하루에도 식사를 잘 챙긴 것",
+    "어려운 이야기를 끝까지 들어준 것",
+    "할 일을 차분히 하나씩 끝낸 것",
+  ],
+  6: [
+    "창가에 앉아 느긋하게 아침 먹기",
+    "이어 보지 못한 드라마 한 편 보기",
+    "동네를 천천히 산책하며 둘러보기",
+    "좋아하는 음악을 처음부터 다시 듣기",
+  ],
+};
+
 function formatLocalDate(date: Date) {
   return new Intl.DateTimeFormat("ko-KR", {
     month: "long",
@@ -204,6 +249,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   }, []);
 
   const question = currentDate ? DAILY_QUESTIONS[currentDate.getDay()] : "";
+  const exampleAnswers = currentDate ? DAILY_QUESTION_EXAMPLES[currentDate.getDay()] : [];
 
   useEffect(() => {
     if (!hasEntered || !question) {
@@ -374,10 +420,11 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                         ))}
                       </ol>
                     ) : (
-                      <div className="phone-daily-empty-cards" aria-hidden="true">
-                        <span />
-                        <span />
-                      </div>
+                      <ul className="phone-daily-example-list" aria-label="오늘의 답변 예시">
+                        {exampleAnswers.map((example) => (
+                          <li key={example}>{example}</li>
+                        ))}
+                      </ul>
                     )}
                   </div>
                   {showSavedState ? (
