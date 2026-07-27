@@ -2251,36 +2251,50 @@ export function HomeExperience() {
           aria-labelledby="contact-title"
         >
           <SectionCosmos variant="contact" />
-          <div className="contact-inner">
-            <TypeReveal
-              as="h2"
-              id="contact-title"
-              text={CONTACT_REVEAL_STEPS[0].text}
-              speed={CONTACT_REVEAL_STEPS[0].speed}
-              delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 0)}
-            />
-            <div className="contact-email-wrap">
-              <a
-                className="contact-email-link"
-                href="mailto:contact@samestudio.kr"
-                aria-label="contact@samestudio.kr"
-              >
+          <div className="contact-stage">
+            <div className="contact-panel">
+              <div className="contact-chat-decoration" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </div>
+              <div className="contact-inner">
                 <TypeReveal
-                  as="span"
-                  text={CONTACT_REVEAL_STEPS[1].text}
-                  speed={CONTACT_REVEAL_STEPS[1].speed}
-                  delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 1)}
+                  as="h2"
+                  id="contact-title"
+                  text={CONTACT_REVEAL_STEPS[0].text}
+                  speed={CONTACT_REVEAL_STEPS[0].speed}
+                  delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 0)}
                 />
-              </a>
+                <div className="contact-email-wrap">
+                  <a
+                    className="contact-email-link"
+                    href="mailto:contact@samestudio.kr"
+                    aria-label="contact@samestudio.kr"
+                  >
+                    <TypeReveal
+                      as="span"
+                      text={CONTACT_REVEAL_STEPS[1].text}
+                      speed={CONTACT_REVEAL_STEPS[1].speed}
+                      delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 1)}
+                    />
+                  </a>
+                </div>
+                <p className="contact-copy">
+                  <TypeReveal
+                    as="span"
+                    text={CONTACT_REVEAL_STEPS[2].text}
+                    speed={CONTACT_REVEAL_STEPS[2].speed}
+                    delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 2)}
+                  />
+                </p>
+              </div>
+              <div className="contact-mail-decoration" aria-hidden="true">
+                <span className="contact-mail-fold contact-mail-fold--left" />
+                <span className="contact-mail-fold contact-mail-fold--right" />
+                <i />
+              </div>
             </div>
-            <p className="contact-copy">
-              <TypeReveal
-                as="span"
-                text={CONTACT_REVEAL_STEPS[2].text}
-                speed={CONTACT_REVEAL_STEPS[2].speed}
-                delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 2)}
-              />
-            </p>
           </div>
         </TypeRevealGroup>
 
