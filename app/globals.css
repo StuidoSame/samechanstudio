@@ -3559,9 +3559,57 @@ button {
   left: auto;
 }
 
+.device-journey-progress {
+  position: fixed;
+  z-index: 40;
+  top: 50%;
+  right: clamp(18px, 2.2vw, 34px);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: opacity 280ms ease-out;
+}
+
+.device-journey-progress.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.device-journey-progress button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 1px solid rgba(111, 73, 176, 0.42);
+  border-radius: 50%;
+  background: rgba(244, 237, 255, 0.4);
+  box-shadow: none;
+  opacity: 0.4;
+  transition:
+    background-color 300ms ease-out,
+    box-shadow 300ms ease-out,
+    opacity 300ms ease-out,
+    transform 300ms ease-out;
+}
+
+.device-journey-progress button.is-active {
+  background: rgba(123, 77, 200, 0.92);
+  box-shadow: 0 0 8px rgba(131, 83, 205, 0.18);
+  opacity: 0.94;
+  transform: scale(1.08);
+}
+
+.device-journey-progress button:focus-visible {
+  outline: 2px solid rgba(112, 70, 190, 0.7);
+  outline-offset: 5px;
+}
+
 .device-showcase-row {
   position: relative;
   isolation: isolate;
+  scroll-margin-top: 112px;
   min-height: auto;
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.78fr);
@@ -5046,6 +5094,10 @@ button {
 }
 
 @media (max-width: 900px) {
+  .device-journey-progress {
+    display: none;
+  }
+
   .device-showcase-inner {
     padding-block: clamp(72px, 10vw, 96px);
     padding-inline: clamp(20px, 6vw, 48px);

@@ -29,10 +29,17 @@ const watchCopy = {
   body: "Three small screens.\nOne quick beat.",
 };
 
+const JOURNEY_SECTIONS: Array<{ id: DeviceJourneyId; label: string }> = [
+  { id: "phone", label: "iPhone" },
+  { id: "tablet", label: "iPad" },
+  { id: "watch", label: "Apple Watch" },
+];
+
 export function DeviceShowcase() {
   const showcaseRef = useRef<HTMLElement>(null);
   const journeyDecorationRef = useRef<HTMLDivElement>(null);
   const [activeJourneyId, setActiveJourneyId] = useState<DeviceJourneyId>("phone");
+  const [isJourneyVisible, setIsJourneyVisible] = useState(false);
 
   useEffect(() => {
     const showcase = showcaseRef.current;
@@ -74,6 +81,23 @@ export function DeviceShowcase() {
     );
 
     sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const showcase = showcaseRef.current;
+    if (!showcase || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsJourneyVisible((isVisible) =>
+          isVisible === entry.isIntersecting ? isVisible : entry.isIntersecting,
+        );
+      },
+      { threshold: 0, rootMargin: "-10% 0px" },
+    );
+
+    observer.observe(showcase);
     return () => observer.disconnect();
   }, []);
 
@@ -128,68 +152,103 @@ export function DeviceShowcase() {
     };
   }, []);
 
+  const scrollToJourneySection = (id: DeviceJourneyId) => {
+    const section = document.getElementById(`device-${id}`);
+    if (!section) return;
+
+    section.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "center",
+    });
+  };
+
   return (
-    <section
-      ref={showcaseRef}
-      className="device-showcase"
-      aria-label="SAME STUDIO device showcase"
-    >
-      <div ref={journeyDecorationRef} className="device-journey-decoration" aria-hidden="true">
-        <svg
-          className="device-journey-svg"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          fill="none"
-          focusable="false"
-        >
-          <path
-            className="device-journey-line device-journey-line--base"
-            d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
-            pathLength="1"
+    <>
+      <section
+        ref={showcaseRef}
+        className="device-showcase"
+        aria-label="SAME STUDIO device showcase"
+      >
+        <div ref={journeyDecorationRef} className="device-journey-decoration" aria-hidden="true">
+          <svg
+            className="device-journey-svg"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            fill="none"
+            focusable="false"
+          >
+            <path
+              className="device-journey-line device-journey-line--base"
+              d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
+              pathLength="1"
+            />
+            <path
+              className="device-journey-line device-journey-line--progress"
+              d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
+              pathLength="1"
+            />
+          </svg>
+          <span
+            className={`device-journey-node device-journey-node--phone${activeJourneyId === "phone" ? " is-active" : ""}`}
+          >
+            <span className="device-journey-node-core" />
+            <span className="device-journey-node-label">CAPTURE A MOMENT</span>
+          </span>
+          <span
+            className={`device-journey-node device-journey-node--tablet${activeJourneyId === "tablet" ? " is-active" : ""}`}
+          >
+            <span className="device-journey-node-core" />
+            <span className="device-journey-node-label">MAKE ROOM TO THINK</span>
+          </span>
+          <span
+            className={`device-journey-node device-journey-node--watch${activeJourneyId === "watch" ? " is-active" : ""}`}
+          >
+            <span className="device-journey-node-core" />
+            <span className="device-journey-node-label">FIND A QUICK RHYTHM</span>
+          </span>
+        </div>
+        <div className="device-showcase-inner">
+          <DeviceSection
+            {...phoneCopy}
+            journeyId="phone"
+            className="device-showcase-phone"
+            cosmosVariant="phone"
+            device={<IPhoneFrame />}
           />
-          <path
-            className="device-journey-line device-journey-line--progress"
-            d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
-            pathLength="1"
+          <DeviceSection
+            {...tabletCopy}
+            journeyId="tablet"
+            className="device-showcase-tablet"
+            cosmosVariant="tablet"
+            device={<IPadFrame />}
+            reversed
           />
-        </svg>
-        <span className={`device-journey-node device-journey-node--phone${activeJourneyId === "phone" ? " is-active" : ""}`}>
-          <span className="device-journey-node-core" />
-          <span className="device-journey-node-label">CAPTURE A MOMENT</span>
-        </span>
-        <span className={`device-journey-node device-journey-node--tablet${activeJourneyId === "tablet" ? " is-active" : ""}`}>
-          <span className="device-journey-node-core" />
-          <span className="device-journey-node-label">MAKE ROOM TO THINK</span>
-        </span>
-        <span className={`device-journey-node device-journey-node--watch${activeJourneyId === "watch" ? " is-active" : ""}`}>
-          <span className="device-journey-node-core" />
-          <span className="device-journey-node-label">FIND A QUICK RHYTHM</span>
-        </span>
-      </div>
-      <div className="device-showcase-inner">
-        <DeviceSection
-          {...phoneCopy}
-          journeyId="phone"
-          className="device-showcase-phone"
-          cosmosVariant="phone"
-          device={<IPhoneFrame />}
-        />
-        <DeviceSection
-          {...tabletCopy}
-          journeyId="tablet"
-          className="device-showcase-tablet"
-          cosmosVariant="tablet"
-          device={<IPadFrame />}
-          reversed
-        />
-        <DeviceSection
-          {...watchCopy}
-          journeyId="watch"
-          className="device-showcase-watch"
-          cosmosVariant="watch"
-          device={<WatchGroup />}
-        />
-      </div>
-    </section>
+          <DeviceSection
+            {...watchCopy}
+            journeyId="watch"
+            className="device-showcase-watch"
+            cosmosVariant="watch"
+            device={<WatchGroup />}
+          />
+        </div>
+      </section>
+      <nav
+        className={`device-journey-progress${isJourneyVisible ? " is-visible" : ""}`}
+        aria-label="Device Philosophy 섹션 이동"
+        aria-hidden={!isJourneyVisible}
+      >
+        {JOURNEY_SECTIONS.map((section) => (
+          <button
+            key={section.id}
+            type="button"
+            className={activeJourneyId === section.id ? "is-active" : ""}
+            aria-label={`${section.label} 섹션으로 이동`}
+            aria-current={activeJourneyId === section.id ? "true" : undefined}
+            tabIndex={isJourneyVisible ? 0 : -1}
+            onClick={() => scrollToJourneySection(section.id)}
+          />
+        ))}
+      </nav>
+    </>
   );
 }
