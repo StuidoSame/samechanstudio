@@ -2933,6 +2933,132 @@ button {
   box-shadow: inset 0 0 36px rgba(185, 145, 235, 0.06);
 }
 
+.phone-moment {
+  width: 100%;
+  height: 100%;
+  padding: 76px 24px 30px;
+  display: flex;
+  flex-direction: column;
+  color: rgba(250, 246, 255, 0.94);
+  cursor: default;
+  background:
+    radial-gradient(circle at 78% 14%, rgba(235, 196, 235, 0.16), transparent 28%),
+    radial-gradient(circle at 22% 78%, rgba(168, 128, 238, 0.16), transparent 34%);
+}
+
+.phone-moment-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(232, 217, 255, 0.76);
+  font-size: 10px;
+  letter-spacing: 0.19em;
+}
+
+.phone-moment-heading i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f2bedf;
+  box-shadow: 0 0 14px rgba(242, 190, 223, 0.72);
+}
+
+.phone-moment-card {
+  position: relative;
+  margin-top: auto;
+  padding: 25px 20px 23px;
+  border: 1px solid rgba(240, 226, 255, 0.12);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(119, 87, 159, 0.2), rgba(255, 255, 255, 0.055));
+  box-shadow:
+    0 20px 42px rgba(9, 6, 15, 0.22),
+    inset 0 1px rgba(255, 255, 255, 0.08);
+  opacity: 0.46;
+  transform: translateY(14px) scale(0.985);
+  transition:
+    opacity 0.7s ease,
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.7s ease;
+}
+
+.phone-moment:is(:hover, :focus-within, .is-visible) .phone-moment-card {
+  border-color: rgba(240, 226, 255, 0.21);
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.phone-moment-orb {
+  display: block;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 30px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.86), transparent 18%),
+    linear-gradient(145deg, #cbb0fa, #9c6de5 58%, #f0b8d7);
+  box-shadow: 0 8px 28px rgba(167, 119, 234, 0.3);
+}
+
+.phone-moment-card p {
+  margin: 0;
+  font-size: 23px;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+}
+
+.phone-moment-card small {
+  display: block;
+  margin-top: 14px;
+  color: rgba(232, 220, 247, 0.58);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.phone-moment-action {
+  min-height: 46px;
+  margin-top: 18px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(238, 221, 255, 0.15);
+  border-radius: 999px;
+  color: rgba(248, 242, 255, 0.86);
+  background: rgba(238, 224, 255, 0.08);
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    color 0.35s ease,
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.35s ease;
+}
+
+.phone-moment-action span {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #342643;
+  background: #d9c3fa;
+  font-size: 12px;
+}
+
+.phone-moment-action:is(:hover, :focus-visible) {
+  border-color: rgba(238, 221, 255, 0.28);
+  color: #fff;
+  background: rgba(238, 224, 255, 0.14);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.phone-moment-action.is-saved {
+  border-color: rgba(243, 192, 220, 0.28);
+  background: rgba(221, 177, 232, 0.14);
+}
+
 .device-phone-island {
   position: absolute;
   z-index: 3;
@@ -3260,6 +3386,44 @@ button {
 
   .device-phone-frame {
     width: clamp(210px, 58vw, 240px);
+  }
+
+  .phone-moment {
+    padding: 60px 16px 20px;
+  }
+
+  .phone-moment-card {
+    padding: 18px 15px 17px;
+    border-radius: 18px;
+  }
+
+  .phone-moment-orb {
+    width: 25px;
+    height: 25px;
+    margin-bottom: 20px;
+  }
+
+  .phone-moment-card p {
+    font-size: 18px;
+  }
+
+  .phone-moment-card small {
+    margin-top: 9px;
+    font-size: 8px;
+  }
+
+  .phone-moment-action {
+    min-height: 38px;
+    margin-top: 12px;
+    padding-inline: 8px;
+    gap: 6px;
+    font-size: 9px;
+  }
+
+  .phone-moment-action span {
+    width: 15px;
+    height: 15px;
+    font-size: 10px;
   }
 
   .device-phone-stage::before {
