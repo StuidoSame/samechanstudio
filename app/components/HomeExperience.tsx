@@ -22,6 +22,7 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import type { Locale } from "../i18n/types";
+import { useTheme } from "../theme/ThemeProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
@@ -541,6 +542,7 @@ function Loader({
 
 export function HomeExperience() {
   const { locale, messages, setLocale } = useI18n();
+  const { theme, toggleTheme } = useTheme();
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -2266,27 +2268,50 @@ export function HomeExperience() {
                 <button
                   type="button"
                   className="header-utility-segment dark-control"
-                  aria-label={messages.header.switchToDarkMode}
+                  aria-label={
+                    theme === "dark"
+                      ? messages.header.switchToLightMode
+                      : messages.header.switchToDarkMode
+                  }
+                  aria-pressed={theme === "dark"}
                   tabIndex={headerUtilityHidden ? -1 : 0}
-                  onClick={() => setDarkPressKey((key) => key + 1)}
+                  onClick={() => {
+                    toggleTheme();
+                    setDarkPressKey((key) => key + 1);
+                  }}
                 >
                   <span
-                    key={darkPressKey}
+                    key={`${theme}-${darkPressKey}`}
                     className={`dark-control-icon${darkPressKey > 0 ? " is-pressing" : ""}`}
                     aria-hidden="true"
                   >
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20.1 15.25A8.25 8.25 0 0 1 8.75 3.9 8.25 8.25 0 1 0 20.1 15.25Z" />
-                    </svg>
+                    {theme === "dark" ? (
+                      <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      >
+                        <circle cx="12" cy="12" r="3.6" />
+                        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" />
+                      </svg>
+                    ) : (
+                      <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20.1 15.25A8.25 8.25 0 0 1 8.75 3.9 8.25 8.25 0 1 0 20.1 15.25Z" />
+                      </svg>
+                    )}
                   </span>
                 </button>
               </div>

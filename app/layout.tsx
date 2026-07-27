@@ -1,6 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import { I18nProvider } from "./i18n/I18nProvider";
+import { ThemeProvider } from "./theme/ThemeProvider";
 import "./globals.css";
+
+const themeInitializationScript = `
+  (() => {
+    const storageKey = "same-studio-theme-v1";
+    let storedTheme = null;
+    try {
+      storedTheme = window.localStorage.getItem(storageKey);
+    } catch {}
+    const theme = storedTheme === "light" || storedTheme === "dark"
+      ? storedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  })();
+`;
 
 export const metadata: Metadata = {
   title: "SAME STUDIO",
@@ -50,9 +68,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
+      </head>
       <body>
-        <I18nProvider>{children}</I18nProvider>
+        <ThemeProvider>
+          <I18nProvider>{children}</I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
