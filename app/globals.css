@@ -3436,13 +3436,16 @@ button {
   z-index: 1;
   width: min(100%, 1280px);
   margin: 0 auto;
+  padding-block: clamp(72px, 7vw, 96px);
   padding-inline: clamp(24px, 5vw, 72px);
+  display: grid;
+  row-gap: clamp(100px, 8vw, 120px);
 }
 
 .device-showcase-row {
   position: relative;
   isolation: isolate;
-  min-height: clamp(720px, 74vw, 850px);
+  min-height: auto;
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.78fr);
   align-items: center;
@@ -4927,18 +4930,19 @@ button {
 
 @media (max-width: 900px) {
   .device-showcase-inner {
+    padding-block: clamp(72px, 10vw, 96px);
     padding-inline: clamp(20px, 6vw, 48px);
+    row-gap: clamp(64px, 9vw, 88px);
   }
 
   .device-showcase-row,
   .device-showcase-row.is-reversed {
     min-height: auto;
-    padding-block: clamp(96px, 18vw, 150px);
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "device"
       "copy";
-    row-gap: clamp(70px, 13vw, 110px);
+    row-gap: clamp(40px, 7vw, 60px);
   }
 
   .device-showcase-visual {
@@ -5221,6 +5225,16 @@ button {
   .device-showcase {
     scroll-margin-top: 16px;
   }
+
+  .device-showcase-inner {
+    padding-block: clamp(60px, 17vw, 72px);
+    row-gap: clamp(48px, 14vw, 68px);
+  }
+
+  .device-showcase-row,
+  .device-showcase-row.is-reversed {
+    row-gap: clamp(32px, 9vw, 44px);
+  }
 }
 
 @media (max-width: 359px) {
@@ -5230,8 +5244,7 @@ button {
 
   .device-showcase-row,
   .device-showcase-row.is-reversed {
-    padding-block: 88px;
-    row-gap: 62px;
+    row-gap: 32px;
   }
 
   .device-showcase-copy h2 {
