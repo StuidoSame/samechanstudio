@@ -475,6 +475,7 @@ export function HomeExperience() {
   const headerUtilityRef = useRef<HTMLDivElement>(null);
   const headerLanguageButtonRef = useRef<HTMLButtonElement>(null);
   const languagePanelRef = useRef<HTMLDivElement>(null);
+  const languagePanelWasOpenRef = useRef(false);
   const headerUtilityHandleRef = useRef<HTMLButtonElement>(null);
   const headerUtilityWasHiddenRef = useRef(false);
   const headerUtilitySuppressClickRef = useRef(false);
@@ -1086,6 +1087,26 @@ export function HomeExperience() {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [languageOpen, menuOpen]);
+
+  useEffect(() => {
+    if (languageOpen) {
+      languagePanelWasOpenRef.current = true;
+      const focusTimer = window.setTimeout(() => {
+        languagePanelRef.current
+          ?.querySelector<HTMLButtonElement>(
+            '[role="menuitemradio"][aria-checked="true"]',
+          )
+          ?.focus({ preventScroll: true });
+      }, 0);
+
+      return () => window.clearTimeout(focusTimer);
+    }
+
+    if (languagePanelWasOpenRef.current) {
+      languagePanelWasOpenRef.current = false;
+      headerLanguageButtonRef.current?.focus({ preventScroll: true });
+    }
+  }, [languageOpen]);
 
   useEffect(() => {
     if (!headerUtilityHidden || reducedMotion) return;
@@ -2164,6 +2185,37 @@ export function HomeExperience() {
                 role="menu"
                 aria-label="언어 선택 옵션"
                 aria-hidden={!languageOpen}
+                onKeyDown={(event) => {
+                  if (
+                    event.key !== "ArrowDown" &&
+                    event.key !== "ArrowUp" &&
+                    event.key !== "Home" &&
+                    event.key !== "End"
+                  ) {
+                    return;
+                  }
+
+                  const options = Array.from(
+                    event.currentTarget.querySelectorAll<HTMLButtonElement>(
+                      '[role="menuitemradio"]',
+                    ),
+                  );
+                  const currentIndex = options.indexOf(
+                    document.activeElement as HTMLButtonElement,
+                  );
+                  const nextIndex =
+                    event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? options.length - 1
+                        : event.key === "ArrowDown"
+                          ? (currentIndex + 1) % options.length
+                          : (currentIndex - 1 + options.length) %
+                            options.length;
+
+                  event.preventDefault();
+                  options[nextIndex]?.focus({ preventScroll: true });
+                }}
               >
                 {LANGUAGE_OPTIONS.map((language) => (
                   <button

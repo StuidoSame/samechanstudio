@@ -422,7 +422,7 @@ button {
   transform-origin: top right;
   transition:
     opacity 0.2s ease,
-    visibility 0.2s ease,
+    visibility 0s linear 0.2s,
     transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -431,6 +431,7 @@ button {
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0) scale(1);
+  transition-delay: 0s;
 }
 
 .language-panel button {
