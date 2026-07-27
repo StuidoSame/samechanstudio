@@ -4665,6 +4665,7 @@ button {
   z-index: 5;
   margin-top: -18px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 9px;
@@ -5582,25 +5583,43 @@ button {
   }
 
   .device-watch-group {
-    width: min(100%, 310px);
-    height: 230px;
+    width: min(100%, 360px);
+    height: 250px;
   }
 
   .device-watch {
-    width: clamp(90px, 25vw, 105px);
+    width: clamp(100px, 27vw, 118px);
   }
 
   .device-watch--left {
-    left: 17%;
+    left: 18%;
   }
 
   .device-watch--center {
     left: 50%;
-    width: clamp(115px, 31vw, 130px);
+    width: clamp(112px, 30vw, 128px);
   }
 
   .device-watch--right {
-    left: 83%;
+    left: 82%;
+  }
+
+  .watch-drum-pad strong {
+    font-size: 8px;
+    letter-spacing: 0.09em;
+  }
+
+  .watch-drum-type {
+    font-size: 5px;
+  }
+
+  .watch-drum-pad small {
+    font-size: 6px;
+  }
+
+  .watch-drum-controls {
+    width: min(100%, 360px);
+    margin-inline: auto;
   }
 
   .device-watch-stage::before {
@@ -5682,6 +5701,11 @@ button {
   .device-showcase-row.is-reversed {
     row-gap: clamp(32px, 9vw, 44px);
   }
+
+  .watch-drum-controls button {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 @media (max-width: 359px) {
@@ -5733,6 +5757,19 @@ button {
     animation: none;
     transform: none;
     will-change: auto;
+  }
+
+  .watch-drum-droplets {
+    display: none;
+  }
+
+  .watch-drum-rings i {
+    display: none;
+  }
+
+  .watch-drum-rings i:first-child {
+    display: block;
+    animation: watch-drum-reduced-wave 180ms ease-out forwards;
   }
 
   .phone-daily-splash,
@@ -5796,6 +5833,17 @@ button {
 
   .watch-drum-controls button {
     transition: none;
+  }
+}
+
+@keyframes watch-drum-reduced-wave {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.08);
   }
 }
 

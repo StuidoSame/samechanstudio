@@ -20,9 +20,9 @@ const DRUM_PADS: Array<{
   audioSrc: string;
   shortcut: "A" | "S" | "D";
 }> = [
-  { id: "kick", label: "KICK", ariaLabel: "Kick drum", variant: "left", audioSrc: "/assets/mp3/kick.mp3", shortcut: "A" },
-  { id: "snare", label: "SNARE", ariaLabel: "Snare drum", variant: "center", audioSrc: "/assets/mp3/snare.mp3", shortcut: "S" },
-  { id: "hihat", label: "HI-HAT", ariaLabel: "Hi-hat", variant: "right", audioSrc: "/assets/mp3/hihat.mp3", shortcut: "D" },
+  { id: "kick", label: "KICK", ariaLabel: "킥 드럼 연주", variant: "left", audioSrc: "/assets/mp3/kick.mp3", shortcut: "A" },
+  { id: "snare", label: "SNARE", ariaLabel: "스네어 드럼 연주", variant: "center", audioSrc: "/assets/mp3/snare.mp3", shortcut: "S" },
+  { id: "hihat", label: "HI-HAT", ariaLabel: "하이햇 연주", variant: "right", audioSrc: "/assets/mp3/hihat.mp3", shortcut: "D" },
 ];
 
 const DRUM_GAIN: Record<DrumId, number> = {
@@ -38,6 +38,8 @@ const KEY_TO_DRUM: Partial<Record<string, DrumId>> = {
   KeyS: "snare",
   KeyD: "hihat",
 };
+
+const getInteractionTime = () => performance.now();
 
 function createNoiseBuffer(context: AudioContext, duration: number) {
   const frameCount = Math.ceil(context.sampleRate * duration);
@@ -125,6 +127,7 @@ export function WatchGroup() {
   useEffect(() => {
     const preloadController = new AbortController();
     const context = getAudioContext();
+    const effectTimers = effectTimersRef.current;
 
     if (context) {
       DRUM_PADS.forEach((pad) => {
@@ -145,8 +148,8 @@ export function WatchGroup() {
       if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
       playbackTimersRef.current.forEach((timer) => window.clearTimeout(timer));
       playbackTimersRef.current = [];
-      effectTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-      effectTimersRef.current.clear();
+      effectTimers.forEach((timer) => window.clearTimeout(timer));
+      effectTimers.clear();
     };
   }, [getAudioContext, loadAudioBuffer]);
 
@@ -258,7 +261,7 @@ export function WatchGroup() {
     void playSample(pad);
 
     if (shouldRecord && isRecording) {
-      const elapsed = Math.min(8000, Math.round(performance.now() - recordingStartedAtRef.current));
+      const elapsed = Math.min(8000, Math.round(getInteractionTime() - recordingStartedAtRef.current));
       setRhythm((currentRhythm) =>
         currentRhythm.length >= 32
           ? currentRhythm
@@ -294,7 +297,7 @@ export function WatchGroup() {
     if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
     setRhythm([]);
     setIsRecording(true);
-    recordingStartedAtRef.current = performance.now();
+    recordingStartedAtRef.current = getInteractionTime();
     recordingStopTimerRef.current = window.setTimeout(stopRecording, 8000);
   };
 
@@ -378,7 +381,7 @@ export function WatchGroup() {
           <WatchFrame
             key={pad.id}
             variant={pad.variant}
-            ariaLabel={`${pad.ariaLabel}, ${pad.shortcut} key`}
+            ariaLabel={`${pad.ariaLabel}, 단축키 ${pad.shortcut}`}
             onActivate={() => activatePad(pad)}
             hitKey={hitCounts[pad.id]}
             isHit={activePad === pad.id}
