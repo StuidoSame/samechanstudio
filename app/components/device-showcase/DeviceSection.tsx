@@ -15,6 +15,7 @@ type DeviceSectionProps = {
   reversed?: boolean;
   className?: string;
   cosmosVariant: "phone" | "tablet" | "watch";
+  journeyId: "phone" | "tablet" | "watch";
 };
 
 export function DeviceSection({
@@ -26,6 +27,7 @@ export function DeviceSection({
   reversed = false,
   className = "",
   cosmosVariant,
+  journeyId,
 }: DeviceSectionProps) {
   const titleId = `device-showcase-title-${index}`;
   const revealSteps = [
@@ -37,8 +39,10 @@ export function DeviceSection({
   return (
     <TypeRevealGroup
       as="section"
+      id={`device-${journeyId}`}
       className={`device-showcase-row${reversed ? " is-reversed" : ""}${className ? ` ${className}` : ""}`}
       aria-labelledby={titleId}
+      data-device-journey-section={journeyId}
     >
       <SectionCosmos variant={cosmosVariant} />
       <div className="device-showcase-visual">{device}</div>
