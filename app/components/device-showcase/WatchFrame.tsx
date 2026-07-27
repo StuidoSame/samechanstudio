@@ -11,7 +11,9 @@ export function WatchFrame({ variant, children }: WatchFrameProps) {
   return (
     <div
       className={`device-watch device-watch--${variant}`}
-      aria-label={`Empty Apple Watch ${variant} device frame`}
+      aria-label={children
+        ? `Interactive Apple Watch ${variant} device frame`
+        : `Empty Apple Watch ${variant} device frame`}
     >
       <span className="device-watch-strap device-watch-strap--top" aria-hidden="true" />
       <span className="device-watch-strap device-watch-strap--bottom" aria-hidden="true" />

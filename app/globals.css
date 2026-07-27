@@ -3470,6 +3470,129 @@ button {
   background: linear-gradient(155deg, #4c394f, #251d2b 52%, #5b405b);
 }
 
+.watch-glance {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  color: rgba(250, 246, 255, 0.94);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(170, 121, 234, 0.2), transparent 38%),
+    radial-gradient(circle at 28% 16%, rgba(241, 197, 226, 0.1), transparent 28%);
+  cursor: pointer;
+}
+
+.watch-glance::after {
+  position: absolute;
+  inset: 12%;
+  border: 1px solid rgba(230, 209, 255, 0.07);
+  border-radius: 28%;
+  content: "";
+  pointer-events: none;
+}
+
+.watch-glance-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  transform: scale(0.965);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.watch-glance-state.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.watch-glance-state small {
+  max-width: 78%;
+  color: rgba(244, 237, 252, 0.86);
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.watch-glance-state--ring small {
+  color: rgba(228, 213, 245, 0.58);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.watch-glance-ring {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border: 2px solid rgba(216, 191, 249, 0.2);
+  border-top-color: #d6b7f8;
+  border-right-color: rgba(241, 190, 221, 0.76);
+  border-radius: 50%;
+  box-shadow:
+    0 0 20px rgba(168, 116, 232, 0.18),
+    inset 0 0 14px rgba(175, 127, 232, 0.08);
+  animation: watch-glance-ring-turn 5.4s linear infinite;
+}
+
+.watch-glance-ring::after {
+  position: absolute;
+  inset: 35%;
+  border-radius: 50%;
+  background: #efbddb;
+  box-shadow: 0 0 12px rgba(239, 189, 219, 0.58);
+  content: "";
+}
+
+.watch-glance-check {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(233, 216, 252, 0.22);
+  border-radius: 50%;
+  color: #322440;
+  background: linear-gradient(145deg, #d9c0f8, #efbad9);
+  box-shadow: 0 10px 24px rgba(160, 111, 217, 0.2);
+  font-size: 20px;
+  font-style: normal;
+}
+
+.watch-glance-state--done .watch-glance-check {
+  animation: watch-glance-complete 0.48s ease-out both;
+}
+
+.watch-glance:focus-visible {
+  outline: 2px solid rgba(226, 202, 255, 0.42);
+  outline-offset: -7px;
+}
+
+@keyframes watch-glance-ring-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes watch-glance-complete {
+  0% {
+    transform: scale(0.92);
+  }
+  55% {
+    transform: scale(1.035);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .device-watch-crown {
   position: absolute;
   top: 28%;
@@ -3710,6 +3833,29 @@ button {
 
   .device-watch-stage::before {
     width: min(104vw, 410px);
+  }
+
+  .watch-glance-state {
+    gap: 8px;
+  }
+
+  .watch-glance-state small {
+    font-size: 9px;
+  }
+
+  .watch-glance-state--ring small {
+    font-size: 7px;
+  }
+
+  .watch-glance-ring {
+    width: 34px;
+    height: 34px;
+  }
+
+  .watch-glance-check {
+    width: 31px;
+    height: 31px;
+    font-size: 15px;
   }
 }
 
