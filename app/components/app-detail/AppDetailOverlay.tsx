@@ -6,7 +6,7 @@ import type { AppItem } from "../../lib/apps";
 import {
   getAppDetailContent,
   getAvailableDetailDevices,
-  getAvailableDetailStores,
+  isDetailStoreAvailable,
   type DetailDevice,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
@@ -25,13 +25,13 @@ const STORE_LABELS: Record<DetailStore, string> = {
   google: "Google Play",
 };
 
+const DETAIL_STORES: DetailStore[] = ["apple", "google"];
+
 const DEVICE_LABELS: Record<DetailDevice, string> = {
   iphone: "iPhone",
   ipad: "iPad",
   appleWatch: "Apple Watch",
   androidPhone: "Android Phone",
-  androidTablet: "Tablet",
-  wearOsWatch: "Wear OS Watch",
 };
 
 function StoreIcon({ store }: { store: DetailStore }) {
@@ -70,31 +70,20 @@ export function AppDetailOverlay({
 }: AppDetailOverlayProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const availableStores = useMemo(
-    () => getAvailableDetailStores(app.id),
+  const availableDevices = useMemo(
+    () => getAvailableDetailDevices(app.id),
     [app.id],
   );
-  const [selectedStore, setSelectedStore] = useState<DetailStore>(
-    availableStores[0],
-  );
   const [selectedDevice, setSelectedDevice] = useState<DetailDevice | null>(
-    getAvailableDetailDevices(app.id, availableStores[0])[0] ?? null,
-  );
-  const availableDevices = useMemo(
-    () => getAvailableDetailDevices(app.id, selectedStore),
-    [app.id, selectedStore],
+    availableDevices[0] ?? null,
   );
   const selectedContent = selectedDevice
     ? getAppDetailContent(app.id, selectedDevice)
     : null;
 
   useEffect(() => {
-    const firstStore = availableStores[0];
-    setSelectedStore(firstStore);
-    setSelectedDevice(
-      getAvailableDetailDevices(app.id, firstStore)[0] ?? null,
-    );
-  }, [app.id, availableStores]);
+    setSelectedDevice(availableDevices[0] ?? null);
+  }, [app.id, availableDevices]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -194,9 +183,10 @@ export function AppDetailOverlay({
 
         <div className="app-detail-content">
           <div className="app-detail-store-selector" aria-label="스토어 선택">
-            {availableStores.map((store) => {
+            {DETAIL_STORES.map((store) => {
               const storeUrl =
                 store === "apple" ? app.appStoreUrl : app.googlePlayUrl;
+              const storeAvailable = isDetailStoreAvailable(app.id, store);
               const ariaLabel = `${STORE_LABELS[store]}에서 ${app.name} 보기`;
               const icon = (
                 <span className="app-detail-store-icon-slot">
@@ -204,7 +194,7 @@ export function AppDetailOverlay({
                 </span>
               );
 
-              if (!storeUrl) {
+              if (!storeAvailable || !storeUrl) {
                 return (
                   <button
                     className="app-detail-store-button"
@@ -226,12 +216,6 @@ export function AppDetailOverlay({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={ariaLabel}
-                  onClick={() => {
-                    setSelectedStore(store);
-                    setSelectedDevice(
-                      getAvailableDetailDevices(app.id, store)[0] ?? null,
-                    );
-                  }}
                 >
                   {icon}
                 </a>
@@ -240,8 +224,8 @@ export function AppDetailOverlay({
           </div>
           <div
             className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
-            aria-label={`${app.name} ${STORE_LABELS[selectedStore]} ${selectedDevice ? DEVICE_LABELS[selectedDevice] : ""} preview area`}
-            data-preview-key={`${app.id}:${selectedStore}:${selectedDevice ?? "none"}`}
+            aria-label={`${app.name} ${selectedDevice ? DEVICE_LABELS[selectedDevice] : ""} preview area`}
+            data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
           >
             {selectedDevice && (
               <span className="app-detail-preview-marker">
@@ -251,7 +235,7 @@ export function AppDetailOverlay({
           </div>
           <div
             className="device-detail-copy"
-            data-description-key={`${app.id}:${selectedStore}:${selectedDevice ?? "none"}`}
+            data-description-key={`${app.id}:${selectedDevice ?? "none"}`}
             aria-live="polite"
           >
             <div className="device-keywords">

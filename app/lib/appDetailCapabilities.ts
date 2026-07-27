@@ -1,102 +1,98 @@
 export type DetailStore = "apple" | "google";
-export type AppleDetailDevice = "iphone" | "ipad" | "appleWatch";
-export type GoogleDetailDevice =
-  | "androidPhone"
-  | "androidTablet"
-  | "wearOsWatch";
-export type DetailDevice = AppleDetailDevice | GoogleDetailDevice;
-
-type StoreDeviceCapabilities = {
-  apple: Record<AppleDetailDevice, boolean>;
-  google: Record<GoogleDetailDevice, boolean>;
-};
+export type DetailDevice = "iphone" | "ipad" | "appleWatch" | "androidPhone";
 
 export type AppDetailCapability = {
-  devices: StoreDeviceCapabilities;
+  devices: Record<DetailDevice, boolean>;
+  stores: Record<DetailStore, boolean>;
 };
 
-const applePhoneOnly = (): StoreDeviceCapabilities["apple"] => ({
-  iphone: true,
-  ipad: false,
-  appleWatch: false,
+const devices = (
+  iphone: boolean,
+  ipad: boolean,
+  appleWatch: boolean,
+  androidPhone: boolean,
+): Record<DetailDevice, boolean> => ({
+  iphone,
+  ipad,
+  appleWatch,
+  androidPhone,
 });
 
-const googlePhoneOnly = (): StoreDeviceCapabilities["google"] => ({
-  androidPhone: true,
-  androidTablet: false,
-  wearOsWatch: false,
-});
+const stores = (
+  apple: boolean,
+  google: boolean,
+): Record<DetailStore, boolean> => ({ apple, google });
 
-const noGoogleDevices = (): StoreDeviceCapabilities["google"] => ({
-  androidPhone: false,
-  androidTablet: false,
-  wearOsWatch: false,
-});
+const iphoneOnly = (): Record<DetailDevice, boolean> =>
+  devices(true, false, false, false);
 
 export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
   mapary: {
-    devices: { apple: applePhoneOnly(), google: googlePhoneOnly() },
+    devices: devices(true, true, true, true),
+    stores: stores(true, true),
   },
   runtronome: {
-    devices: {
-      apple: { iphone: true, ipad: false, appleWatch: true },
-      google: { androidPhone: true, androidTablet: false, wearOsWatch: true },
-    },
+    devices: devices(true, false, true, true),
+    stores: stores(true, true),
   },
   odow: {
-    devices: { apple: applePhoneOnly(), google: googlePhoneOnly() },
+    devices: devices(true, true, false, true),
+    stores: stores(true, true),
   },
   locaunt: {
-    devices: { apple: applePhoneOnly(), google: noGoogleDevices() },
+    devices: iphoneOnly(),
+    stores: stores(true, false),
   },
   pepesnap: {
-    devices: { apple: applePhoneOnly(), google: googlePhoneOnly() },
+    devices: devices(true, true, false, false),
+    stores: stores(true, false),
   },
   tocklist: {
-    devices: { apple: applePhoneOnly(), google: googlePhoneOnly() },
+    devices: devices(true, true, false, false),
+    stores: stores(true, false),
   },
   skkoo: {
-    devices: { apple: applePhoneOnly(), google: googlePhoneOnly() },
+    devices: devices(true, true, false, false),
+    stores: stores(true, false),
   },
   terubozu: {
-    devices: { apple: applePhoneOnly(), google: googlePhoneOnly() },
+    devices: iphoneOnly(),
+    stores: stores(true, false),
   },
   feeloo: {
-    devices: { apple: applePhoneOnly(), google: noGoogleDevices() },
+    devices: iphoneOnly(),
+    stores: stores(false, false),
   },
 };
 
-const STORE_DEVICE_ORDER: Record<DetailStore, DetailDevice[]> = {
-  apple: ["iphone", "ipad", "appleWatch"],
-  google: ["androidPhone", "androidTablet", "wearOsWatch"],
-};
+const DETAIL_DEVICE_ORDER: DetailDevice[] = [
+  "iphone",
+  "ipad",
+  "appleWatch",
+  "androidPhone",
+];
 
 export const HERO_ANDROID_APP_IDS = new Set(
   Object.entries(APP_DETAIL_CAPABILITIES)
-    .filter(([, capability]) =>
-      Object.values(capability.devices.google).some(Boolean),
-    )
+    .filter(([, capability]) => capability.devices.androidPhone)
     .map(([appId]) => appId),
 );
 
-export function getAvailableDetailStores(appId: string): DetailStore[] {
+export function isDetailStoreAvailable(
+  appId: string,
+  store: DetailStore,
+): boolean {
   const capability = APP_DETAIL_CAPABILITIES[appId];
-  if (!capability) return [];
-
-  return (["apple", "google"] as const).filter((store) =>
-    Object.values(capability.devices[store]).some(Boolean),
-  );
+  return capability?.stores[store] ?? false;
 }
 
 export function getAvailableDetailDevices(
   appId: string,
-  store: DetailStore,
 ): DetailDevice[] {
   const capability = APP_DETAIL_CAPABILITIES[appId];
   if (!capability) return [];
 
-  const deviceFlags = capability.devices[store] as Record<string, boolean>;
-  return STORE_DEVICE_ORDER[store].filter((device) => deviceFlags[device]);
+  return DETAIL_DEVICE_ORDER.filter((device) => capability.devices[device]);
 }
 
 export type AppDetailDeviceContent = {
@@ -145,10 +141,6 @@ export const APP_DETAIL_CONTENT: AppDetailContentMap = {
     androidPhone: detail(
       ["러닝 리듬", "템포 설정", "Android 실행"],
       "Android 스마트폰에서 달리기 리듬을 빠르게 설정하고, 운동 중 필요한 정보만 확인하며 페이스에 집중할 수 있습니다.",
-    ),
-    wearOsWatch: detail(
-      ["손목 템포", "빠른 실행", "러닝 집중"],
-      "Wear OS 시계에서 달리기 리듬을 손쉽게 시작하고 확인해 스마트폰을 꺼내지 않고 운동을 이어갈 수 있습니다.",
     ),
   },
   odow: {
