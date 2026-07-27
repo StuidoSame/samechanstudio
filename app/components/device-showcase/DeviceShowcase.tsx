@@ -30,6 +30,7 @@ export function DeviceShowcase() {
       className="device-showcase"
       aria-label="SAME STUDIO device showcase"
     >
+      <div className="device-journey-decoration" aria-hidden="true" />
       <div className="device-showcase-inner">
         <DeviceSection
           {...phoneCopy}
