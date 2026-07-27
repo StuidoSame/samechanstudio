@@ -32,17 +32,20 @@ function createNoiseBuffer(context: AudioContext, duration: number) {
 
 export function WatchGroup() {
   const [activePad, setActivePad] = useState<string | null>(null);
+  const [hitCounts, setHitCounts] = useState<Record<DrumId, number>>({ kick: 0, snare: 0, hihat: 0 });
   const audioContextRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const audioBuffersRef = useRef<Partial<Record<DrumId, AudioBuffer>>>({});
   const bufferPromisesRef = useRef<Partial<Record<DrumId, Promise<AudioBuffer>>>>({});
   const activatePadRef = useRef<(pad: (typeof DRUM_PADS)[number]) => void>(() => undefined);
+  const hitRecoveryTimerRef = useRef<number | null>(null);
 
   useEffect(
     () => () => {
       if (audioContextRef.current && audioContextRef.current.state !== "closed") {
         void audioContextRef.current.close();
       }
+      if (hitRecoveryTimerRef.current) window.clearTimeout(hitRecoveryTimerRef.current);
     },
     [],
   );
@@ -162,7 +165,14 @@ export function WatchGroup() {
 
   const activatePad = (pad: (typeof DRUM_PADS)[number]) => {
     setActivePad(pad.id);
+    setHitCounts((currentCounts) => ({ ...currentCounts, [pad.id]: currentCounts[pad.id] + 1 }));
     void playSample(pad);
+
+    if (hitRecoveryTimerRef.current) window.clearTimeout(hitRecoveryTimerRef.current);
+    hitRecoveryTimerRef.current = window.setTimeout(() => {
+      setActivePad(null);
+      hitRecoveryTimerRef.current = null;
+    }, 170);
   };
 
   useEffect(() => {
@@ -197,6 +207,8 @@ export function WatchGroup() {
             variant={pad.variant}
             ariaLabel={`${pad.ariaLabel}, ${pad.shortcut} key`}
             onActivate={() => activatePad(pad)}
+            hitKey={hitCounts[pad.id]}
+            isHit={activePad === pad.id}
           >
             <span className={`watch-drum-pad${activePad === pad.id ? " is-active" : ""}`}>
               <strong>{pad.label}</strong>
