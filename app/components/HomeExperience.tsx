@@ -73,17 +73,12 @@ const ABOUT_REVEAL_STEPS = [
   },
 ] as const;
 const CONTACT_REVEAL_STEPS = [
-  { text: "CONTACT", speed: 32 },
-  { text: "Say hello.", speed: 45 },
+  { text: "Contact", speed: 45 },
+  { text: "contact@samestudio.kr", speed: 32 },
   {
     text: "앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요.",
     speed: 18,
   },
-  {
-    text: "필요한 내용을 확인한 뒤 순차적으로 답변드립니다.",
-    speed: 18,
-  },
-  { text: "contact@samestudio.kr", speed: 32 },
 ] as const;
 const HEADER_LANGUAGES = [
   { code: "ko", label: "한국어" },
@@ -2179,33 +2174,12 @@ export function HomeExperience() {
           <SectionCosmos variant="contact" />
           <div className="contact-inner">
             <TypeReveal
-              as="span"
-              className="contact-label"
+              as="h2"
+              id="contact-title"
               text={CONTACT_REVEAL_STEPS[0].text}
               speed={CONTACT_REVEAL_STEPS[0].speed}
               delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 0)}
             />
-            <TypeReveal
-              as="h2"
-              id="contact-title"
-              text={CONTACT_REVEAL_STEPS[1].text}
-              speed={CONTACT_REVEAL_STEPS[1].speed}
-              delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 1)}
-            />
-            <p className="contact-copy">
-              <TypeReveal
-                as="span"
-                text={CONTACT_REVEAL_STEPS[2].text}
-                speed={CONTACT_REVEAL_STEPS[2].speed}
-                delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 2)}
-              />
-              <TypeReveal
-                as="span"
-                text={CONTACT_REVEAL_STEPS[3].text}
-                speed={CONTACT_REVEAL_STEPS[3].speed}
-                delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 3)}
-              />
-            </p>
             <div className="contact-email-wrap">
               <a
                 className="contact-email-link"
@@ -2214,16 +2188,20 @@ export function HomeExperience() {
               >
                 <TypeReveal
                   as="span"
-                  text={CONTACT_REVEAL_STEPS[4].text}
-                  speed={CONTACT_REVEAL_STEPS[4].speed}
-                  delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 4)}
+                  text={CONTACT_REVEAL_STEPS[1].text}
+                  speed={CONTACT_REVEAL_STEPS[1].speed}
+                  delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 1)}
                 />
               </a>
-              <span className="contact-star contact-star-one" aria-hidden="true" />
-              <span className="contact-star contact-star-two" aria-hidden="true" />
-              <span className="contact-star contact-star-three" aria-hidden="true" />
-              <span className="contact-star contact-star-four" aria-hidden="true" />
             </div>
+            <p className="contact-copy">
+              <TypeReveal
+                as="span"
+                text={CONTACT_REVEAL_STEPS[2].text}
+                speed={CONTACT_REVEAL_STEPS[2].speed}
+                delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 2)}
+              />
+            </p>
           </div>
         </TypeRevealGroup>
 
