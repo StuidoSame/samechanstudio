@@ -30,7 +30,21 @@ export function DeviceShowcase() {
       className="device-showcase"
       aria-label="SAME STUDIO device showcase"
     >
-      <div className="device-journey-decoration" aria-hidden="true" />
+      <div className="device-journey-decoration" aria-hidden="true">
+        <svg
+          className="device-journey-svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          fill="none"
+          focusable="false"
+        >
+          <path
+            className="device-journey-line"
+            d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
+            pathLength="1"
+          />
+        </svg>
+      </div>
       <div className="device-showcase-inner">
         <DeviceSection
           {...phoneCopy}
