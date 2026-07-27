@@ -413,12 +413,24 @@ export function WatchGroup() {
         ))}
       </div>
       <div className="watch-drum-controls" role="group" aria-label="Rhythm recording controls">
-        <button type="button" data-control="record" aria-label="Record rhythm" aria-pressed={isRecording} onClick={startRecording} />
-        <button type="button" data-control="stop" aria-label="Stop recording or playback" onClick={() => { stopRecording(); stopPlayback(); }} />
-        <button type="button" data-control="play" aria-label="Play recorded rhythm" aria-pressed={isPlaying} disabled={rhythm.length === 0} onClick={playRhythm} />
-        <button type="button" data-control="clear" aria-label="Clear recorded rhythm" disabled={rhythm.length === 0} onClick={clearRhythm} />
-        <button type="button" data-control="mute" aria-label={isMuted ? "Unmute drums" : "Mute drums"} aria-pressed={isMuted} onClick={toggleMute} />
-        <span aria-live="polite">{isRecording ? `REC ${String(rhythm.length).padStart(2, "0")}` : `${String(rhythm.length).padStart(2, "0")} HITS`}</span>
+        <button type="button" data-control="record" aria-label="Record rhythm" aria-pressed={isRecording} disabled={isRecording} onClick={startRecording}>
+          <span className="watch-drum-control-tooltip">Record</span>
+        </button>
+        <button type="button" data-control="stop" aria-label="Stop recording or playback" disabled={!isRecording && !isPlaying} onClick={() => { stopRecording(); stopPlayback(); }}>
+          <span className="watch-drum-control-tooltip">Stop</span>
+        </button>
+        <button type="button" data-control="play" aria-label="Play recorded rhythm" aria-pressed={isPlaying} disabled={rhythm.length === 0} onClick={playRhythm}>
+          <span className="watch-drum-control-tooltip">Play</span>
+        </button>
+        <button type="button" data-control="clear" aria-label="Clear recorded rhythm" disabled={rhythm.length === 0} onClick={clearRhythm}>
+          <span className="watch-drum-control-tooltip">Clear</span>
+        </button>
+        <button type="button" data-control="mute" aria-label={isMuted ? "Unmute drums" : "Mute drums"} aria-pressed={isMuted} onClick={toggleMute}>
+          <span className="watch-drum-control-tooltip">{isMuted ? "Unmute" : "Mute"}</span>
+        </button>
+        <span className="watch-drum-status" aria-live="polite">
+          {isRecording ? `REC ${String(rhythm.length).padStart(2, "0")}` : `${String(rhythm.length).padStart(2, "0")} HITS`}
+        </span>
       </div>
     </div>
   );

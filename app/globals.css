@@ -4667,14 +4667,14 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 13px;
+  gap: 9px;
   color: rgba(78, 42, 122, 0.96);
 }
 
 .watch-drum-controls button {
   position: relative;
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   display: grid;
   place-items: center;
@@ -4735,10 +4735,19 @@ button {
 }
 
 .watch-drum-controls button[data-control="mute"]::before {
-  content: "M";
-  font-size: 9px;
+  content: "♪";
+  font-size: 13px;
   font-weight: 750;
   line-height: 1;
+}
+
+.watch-drum-controls button[data-control="mute"][aria-pressed="true"]::before {
+  content: "×";
+  font-size: 15px;
+}
+
+.watch-drum-controls button[data-control="record"][aria-pressed="true"] {
+  color: rgba(211, 83, 133, 0.96);
 }
 
 .watch-drum-controls button:hover,
@@ -4761,10 +4770,39 @@ button {
   opacity: 0.28;
 }
 
-.watch-drum-controls span {
-  min-width: 48px;
+.watch-drum-controls button[data-control="record"][aria-pressed="true"]:disabled {
+  opacity: 1;
+}
+
+.watch-drum-control-tooltip {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  padding: 3px 5px;
+  border-radius: 5px;
+  color: rgba(250, 246, 255, 0.96);
+  background: rgba(62, 43, 83, 0.78);
+  font-size: 7px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 2px);
+  transition: opacity 140ms ease-out, transform 140ms ease-out;
+}
+
+.watch-drum-controls button:hover .watch-drum-control-tooltip,
+.watch-drum-controls button:focus-visible .watch-drum-control-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.watch-drum-status {
+  min-width: 54px;
   color: rgba(82, 52, 119, 0.68);
-  font-size: 8px;
+  font-size: 9px;
+  font-weight: 650;
   letter-spacing: 0.1em;
   font-variant-numeric: tabular-nums;
 }
