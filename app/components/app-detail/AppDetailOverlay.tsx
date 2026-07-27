@@ -30,6 +30,13 @@ const DETAIL_STORES: DetailStore[] = ["apple", "google"];
 const DEVICE_LABELS: Record<DetailDevice, string> = {
   iphone: "iPhone",
   ipad: "iPad",
+  appleWatch: "Watch",
+  androidPhone: "Android",
+};
+
+const DEVICE_ARIA_LABELS: Record<DetailDevice, string> = {
+  iphone: "iPhone",
+  ipad: "iPad",
   appleWatch: "Apple Watch",
   androidPhone: "Android Phone",
 };
@@ -167,6 +174,7 @@ export function AppDetailOverlay({
               alt={`${app.name} 앱 아이콘`}
               width={52}
               height={52}
+              unoptimized
             />
             <span>{app.name}</span>
           </h2>
@@ -224,7 +232,7 @@ export function AppDetailOverlay({
           </div>
           <div
             className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
-            aria-label={`${app.name} ${selectedDevice ? DEVICE_LABELS[selectedDevice] : ""} preview area`}
+            aria-label={`${app.name} ${selectedDevice ? DEVICE_ARIA_LABELS[selectedDevice] : ""} preview area`}
             data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
           >
             {selectedDevice && (
@@ -232,6 +240,27 @@ export function AppDetailOverlay({
                 <DeviceSilhouette device={selectedDevice} />
               </span>
             )}
+          </div>
+          <div
+            className="app-detail-device-selector"
+            role="group"
+            aria-label="디바이스 선택"
+          >
+            {availableDevices.map((device) => (
+              <button
+                className="app-detail-device-button"
+                type="button"
+                key={device}
+                aria-label={DEVICE_ARIA_LABELS[device]}
+                aria-pressed={selectedDevice === device}
+                onClick={() => setSelectedDevice(device)}
+              >
+                <DeviceSilhouette device={device} />
+                <span className="app-detail-device-label">
+                  {DEVICE_LABELS[device]}
+                </span>
+              </button>
+            ))}
           </div>
           <div
             className="device-detail-copy"
@@ -244,23 +273,6 @@ export function AppDetailOverlay({
               ))}
             </div>
             <p>{selectedContent?.description}</p>
-          </div>
-          <div className="app-detail-device-selector" aria-label="디바이스 선택">
-            {availableDevices.map((device) => (
-              <button
-                className="app-detail-device-button"
-                type="button"
-                key={device}
-                aria-label={DEVICE_LABELS[device]}
-                aria-pressed={selectedDevice === device}
-                onClick={() => setSelectedDevice(device)}
-              >
-                <DeviceSilhouette device={device} />
-                <span className="app-detail-device-label">
-                  {DEVICE_LABELS[device]}
-                </span>
-              </button>
-            ))}
           </div>
           <span className="app-detail-screenshot-count" aria-hidden="true">
             {selectedContent?.screenshots.length ?? 0}

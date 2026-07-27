@@ -1899,8 +1899,9 @@ button {
   min-height: 0;
   padding: clamp(26px, 4vw, 56px);
   display: grid;
-  grid-template-rows: auto minmax(250px, 1fr) auto auto;
-  gap: clamp(24px, 3vw, 38px);
+  grid-template-rows: auto minmax(230px, 320px) auto auto;
+  align-content: center;
+  gap: clamp(18px, 2.2vw, 28px);
   overflow-y: auto;
 }
 
@@ -1984,14 +1985,14 @@ button {
   left: 50%;
   display: grid;
   place-items: center;
-  color: rgba(113, 76, 174, 0.14);
-  transform: translate(-50%, -50%) scale(2.4);
+  color: rgba(113, 76, 174, 0.22);
+  transform: translate(-50%, -50%) scale(3.4);
   pointer-events: none;
 }
 
 .device-detail-copy {
   width: min(100%, 760px);
-  min-height: 104px;
+  min-height: 98px;
   margin-inline: auto;
   color: rgba(90, 68, 126, 0.68);
   font-size: clamp(14px, 1.3vw, 17px);
@@ -2021,15 +2022,17 @@ button {
 }
 
 .app-detail-device-selector {
-  display: flex;
-  align-items: flex-start;
+  width: min(100%, 500px);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(86px, 104px));
   justify-content: center;
-  gap: clamp(14px, 2.2vw, 28px);
+  gap: clamp(10px, 1.5vw, 16px);
 }
 
 .app-detail-device-button {
-  width: 84px;
-  min-height: 90px;
+  width: 100%;
+  min-height: 84px;
   margin: 0;
   padding: 9px 6px 8px;
   display: flex;
@@ -2052,9 +2055,15 @@ button {
     transform 0.2s ease;
 }
 
-.app-detail-device-button:hover {
+.app-detail-device-button:hover,
+.app-detail-device-button:focus-visible {
   opacity: 0.9;
   border-color: rgba(109, 73, 171, 0.24);
+}
+
+.app-detail-device-button:focus-visible {
+  outline: 2px solid rgba(112, 69, 214, 0.5);
+  outline-offset: 3px;
 }
 
 .app-detail-device-button[aria-pressed="true"] {
@@ -2065,7 +2074,7 @@ button {
   box-shadow:
     0 10px 24px rgba(103, 65, 174, 0.14),
     0 0 20px rgba(144, 94, 225, 0.12);
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
 .app-detail-device-silhouette {
@@ -2100,24 +2109,42 @@ button {
   transform: translateX(-50%);
 }
 
-.app-detail-device-silhouette.is-ipad,
-.app-detail-device-silhouette.is-androidTablet {
+.app-detail-device-silhouette.is-androidPhone {
+  border-radius: 7px;
+}
+
+.app-detail-device-silhouette.is-androidPhone::before {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.app-detail-device-silhouette.is-androidPhone > span {
+  width: 10px;
+  height: 2px;
+  border-radius: 999px;
+}
+
+.app-detail-device-silhouette.is-ipad {
   width: 48px;
   height: 36px;
   border-radius: 7px;
 }
 
-.app-detail-device-silhouette.is-appleWatch,
-.app-detail-device-silhouette.is-wearOsWatch {
+.app-detail-device-silhouette.is-appleWatch {
   width: 36px;
   height: 40px;
   border-radius: 12px;
 }
 
 .app-detail-device-silhouette.is-appleWatch::before,
-.app-detail-device-silhouette.is-appleWatch::after,
-.app-detail-device-silhouette.is-wearOsWatch::before,
-.app-detail-device-silhouette.is-wearOsWatch::after {
+.app-detail-device-silhouette.is-appleWatch::after {
   position: absolute;
   left: 50%;
   width: 17px;
@@ -2127,22 +2154,16 @@ button {
   transform: translateX(-50%);
 }
 
-.app-detail-device-silhouette.is-appleWatch::before,
-.app-detail-device-silhouette.is-wearOsWatch::before {
+.app-detail-device-silhouette.is-appleWatch::before {
   top: -10px;
   border-bottom: 0;
   border-radius: 6px 6px 0 0;
 }
 
-.app-detail-device-silhouette.is-appleWatch::after,
-.app-detail-device-silhouette.is-wearOsWatch::after {
+.app-detail-device-silhouette.is-appleWatch::after {
   bottom: -10px;
   border-top: 0;
   border-radius: 0 0 6px 6px;
-}
-
-.app-detail-device-silhouette.is-wearOsWatch {
-  border-radius: 50%;
 }
 
 .app-detail-device-label {
@@ -2179,6 +2200,10 @@ button {
     padding: 14px 18px 12px 22px;
   }
 
+  .app-detail-header h2 {
+    font-size: clamp(24px, 8vw, 34px);
+  }
+
   .app-detail-close {
     width: 46px;
     height: 46px;
@@ -2192,8 +2217,9 @@ button {
 
   .app-detail-content {
     padding: 20px;
-    grid-template-rows: auto minmax(200px, 1fr) auto auto;
-    gap: 20px;
+    grid-template-rows: auto minmax(190px, 230px) auto auto;
+    align-content: start;
+    gap: 18px;
   }
 
   .app-detail-store-selector {
@@ -2211,16 +2237,27 @@ button {
     border-radius: 24px;
   }
 
+  .app-detail-preview-marker {
+    transform: translate(-50%, -50%) scale(2.8);
+  }
+
   .app-detail-device-selector {
+    width: min(100%, 260px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
   .app-detail-device-button {
-    width: 64px;
-    min-height: 74px;
+    min-height: 72px;
     padding: 7px 3px 6px;
     gap: 6px;
     border-radius: 18px;
+  }
+
+  .app-detail-device-button:last-child:nth-child(odd) {
+    width: calc((100% - 10px) / 2);
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 
   .app-detail-device-silhouette {
@@ -2228,8 +2265,27 @@ button {
   }
 
   .app-detail-device-label {
-    max-width: 58px;
-    font-size: 8px;
+    max-width: 72px;
+    font-size: 9px;
+  }
+
+  .device-detail-copy {
+    min-height: 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .device-keywords {
+    gap: 6px;
+  }
+
+  .device-keywords span {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .device-detail-copy p {
+    margin-top: 13px;
   }
 }
 
