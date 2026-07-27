@@ -1,10 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 
 type IPhoneFrameProps = {
   children?: ReactNode;
+};
+
+type DailyAnswer = {
+  id: string;
+  text: string;
+  createdAt: string;
 };
 
 const DAILY_QUESTIONS: Record<number, string> = {
@@ -41,6 +54,10 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const [questionStarted, setQuestionStarted] = useState(false);
   const [typedQuestion, setTypedQuestion] = useState("");
   const [typingComplete, setTypingComplete] = useState(false);
+  const [answers, setAnswers] = useState<DailyAnswer[]>([]);
+  const [answerDraft, setAnswerDraft] = useState("");
+  const [showSavedState, setShowSavedState] = useState(false);
+  const savedStateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setCurrentDate(new Date());
@@ -123,6 +140,52 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
     };
   }, [hasEntered, prefersReducedMotion, question]);
 
+  useEffect(
+    () => () => {
+      if (savedStateTimerRef.current) {
+        clearTimeout(savedStateTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  const submitAnswer = (event?: FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    const text = answerDraft.trim();
+
+    if (!text || answers.length >= 3 || showSavedState) {
+      return;
+    }
+
+    const nextAnswer: DailyAnswer = {
+      id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}`,
+      text,
+      createdAt: new Date().toISOString(),
+    };
+
+    setAnswers((currentAnswers) => [nextAnswer, ...currentAnswers].slice(0, 3));
+    setAnswerDraft("");
+    setShowSavedState(true);
+
+    if (savedStateTimerRef.current) {
+      clearTimeout(savedStateTimerRef.current);
+    }
+
+    savedStateTimerRef.current = setTimeout(() => {
+      setShowSavedState(false);
+      savedStateTimerRef.current = null;
+    }, 1100);
+  };
+
+  const handleAnswerKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      submitAnswer();
+    }
+  };
+
+  const answerLimitReached = answers.length >= 3;
+
   return (
     <div ref={stageRef} className="device-phone-stage" aria-label="Interactive iPhone moment">
       <div className="device-phone-frame">
@@ -161,11 +224,37 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                   </h3>
                 </header>
                 <div className="phone-daily-after-typing">
-                  <div className="phone-daily-answer-space" aria-hidden="true" />
-                  <div className="phone-daily-input-placeholder" aria-hidden="true">
-                    <span>오늘의 답변</span>
-                    <i>✓</i>
+                  <div className="phone-daily-answer-space">
+                    {answers.map((answer) => (
+                      <p key={answer.id}>{answer.text}</p>
+                    ))}
                   </div>
+                  {showSavedState ? (
+                    <div className="phone-daily-saved-state" role="status" aria-live="polite">
+                      <span aria-hidden="true">✓</span>
+                      저장했어요
+                    </div>
+                  ) : (
+                    <form className="phone-daily-form" onSubmit={submitAnswer}>
+                      <textarea
+                        value={answerDraft}
+                        maxLength={120}
+                        rows={2}
+                        aria-label="오늘의 질문 답변"
+                        placeholder={answerLimitReached ? "오늘 기록 완료" : "오늘의 답변"}
+                        disabled={answerLimitReached}
+                        onChange={(event) => setAnswerDraft(event.target.value)}
+                        onKeyDown={handleAnswerKeyDown}
+                      />
+                      <button
+                        type="submit"
+                        aria-label="답변 저장"
+                        disabled={answerLimitReached || !answerDraft.trim()}
+                      >
+                        <span aria-hidden="true">✓</span>
+                      </button>
+                    </form>
+                  )}
                 </div>
               </div>
             </div>

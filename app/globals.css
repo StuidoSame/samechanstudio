@@ -3681,34 +3681,108 @@ button {
   min-height: 40px;
 }
 
-.phone-daily-input-placeholder {
-  min-height: 48px;
-  padding: 0 9px 0 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid rgba(238, 224, 255, 0.12);
-  border-radius: 18px;
-  color: rgba(232, 220, 247, 0.42);
-  background: rgba(238, 224, 255, 0.075);
+.phone-daily-answer-space p {
+  margin: 0 0 7px;
+  color: rgba(248, 242, 255, 0.82);
   font-size: 10px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
-.phone-daily-input-placeholder i {
+.phone-daily-form,
+.phone-daily-saved-state {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(238, 224, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(238, 224, 255, 0.075);
+}
+
+.phone-daily-form {
+  padding: 6px 7px 6px 14px;
+  gap: 6px;
+}
+
+.phone-daily-form textarea {
+  min-width: 0;
+  height: 34px;
+  flex: 1;
+  resize: none;
+  border: 0;
+  outline: 0;
+  color: rgba(250, 246, 255, 0.9);
+  background: transparent;
+  font: inherit;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.phone-daily-form textarea::placeholder {
+  color: rgba(232, 220, 247, 0.42);
+}
+
+.phone-daily-form button {
   width: 30px;
   height: 30px;
+  flex: 0 0 auto;
   display: grid;
   place-items: center;
+  border: 0;
   border-radius: 50%;
   color: rgba(52, 38, 67, 0.68);
   background: rgba(217, 195, 250, 0.68);
   font-size: 12px;
-  font-style: normal;
+  cursor: pointer;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.phone-daily-form button:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.phone-daily-form button:not(:disabled):is(:hover, :focus-visible) {
+  outline: 2px solid rgba(242, 220, 255, 0.62);
+  outline-offset: 2px;
+  transform: scale(1.04);
+}
+
+.phone-daily-saved-state {
+  justify-content: center;
+  gap: 7px;
+  color: rgba(248, 242, 255, 0.88);
+  font-size: 10px;
+}
+
+.phone-daily-saved-state span {
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #423050;
+  background: #dac4f7;
+  animation: phone-daily-save-in 0.34s ease-out;
 }
 
 @keyframes phone-daily-cursor-blink {
   50% {
     opacity: 0.24;
+  }
+}
+
+@keyframes phone-daily-save-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -4387,14 +4461,18 @@ button {
     font-size: 17px;
   }
 
-  .phone-daily-input-placeholder {
+  .phone-daily-form,
+  .phone-daily-saved-state {
     min-height: 40px;
-    padding-left: 12px;
     border-radius: 15px;
     font-size: 9px;
   }
 
-  .phone-daily-input-placeholder i {
+  .phone-daily-form {
+    padding-left: 11px;
+  }
+
+  .phone-daily-form button {
     width: 25px;
     height: 25px;
   }
@@ -4585,6 +4663,12 @@ button {
   }
 
   .phone-daily-cursor {
+    animation: none;
+  }
+
+  .phone-daily-form button,
+  .phone-daily-saved-state span {
+    transition: none;
     animation: none;
   }
 
