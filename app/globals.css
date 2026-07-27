@@ -3160,6 +3160,204 @@ button {
   box-shadow: inset 0 0 46px rgba(192, 153, 239, 0.055);
 }
 
+.idea-board {
+  --board-tilt-x: 0deg;
+  --board-tilt-y: 0deg;
+  width: 100%;
+  height: 100%;
+  padding: 28px 34px 30px;
+  color: rgba(250, 247, 255, 0.94);
+  background:
+    linear-gradient(rgba(240, 228, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 228, 255, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 76% 24%, rgba(214, 179, 240, 0.14), transparent 28%);
+  background-size: 34px 34px, 34px 34px, auto;
+  transform: translateZ(1px);
+}
+
+.idea-board-heading {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.idea-board-heading span {
+  color: rgba(230, 213, 255, 0.78);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+
+.idea-board-heading small {
+  color: rgba(230, 220, 243, 0.54);
+  font-size: 9px;
+}
+
+.idea-board-canvas {
+  position: relative;
+  height: calc(100% - 20px);
+  perspective: 720px;
+}
+
+.idea-board-card {
+  --card-rotation: 0deg;
+  position: absolute;
+  z-index: 2;
+  width: 36%;
+  min-height: 42%;
+  padding: 20px 18px 17px;
+  border: 1px solid rgba(240, 226, 255, 0.12);
+  border-radius: 19px;
+  color: rgba(251, 247, 255, 0.92);
+  background: linear-gradient(145deg, rgba(122, 91, 158, 0.32), rgba(74, 55, 91, 0.42));
+  box-shadow:
+    0 15px 30px rgba(10, 7, 15, 0.16),
+    inset 0 1px rgba(255, 255, 255, 0.075);
+  text-align: left;
+  cursor: pointer;
+  transform:
+    perspective(720px)
+    rotateX(var(--board-tilt-y))
+    rotateY(var(--board-tilt-x))
+    rotate(var(--card-rotation))
+    translate3d(0, 0, 0);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease,
+    border-color 0.45s ease,
+    box-shadow 0.55s ease;
+}
+
+.idea-board-card--one {
+  --card-rotation: -2deg;
+  top: 15%;
+  left: 3%;
+  background: linear-gradient(145deg, rgba(111, 79, 155, 0.42), rgba(73, 53, 93, 0.48));
+}
+
+.idea-board-card--two {
+  --card-rotation: 1.6deg;
+  top: 5%;
+  left: 34%;
+  background: linear-gradient(145deg, rgba(128, 94, 152, 0.42), rgba(78, 55, 87, 0.48));
+}
+
+.idea-board-card--three {
+  --card-rotation: -1deg;
+  z-index: 3;
+  top: 50%;
+  left: 44%;
+  background: linear-gradient(145deg, rgba(92, 91, 151, 0.4), rgba(56, 56, 91, 0.5));
+}
+
+.idea-board-card.is-active {
+  z-index: 4;
+  border-color: rgba(242, 218, 255, 0.3);
+  box-shadow:
+    0 25px 42px rgba(8, 5, 14, 0.24),
+    0 0 28px rgba(187, 139, 237, 0.11),
+    inset 0 1px rgba(255, 255, 255, 0.11);
+  transform:
+    perspective(720px)
+    rotateX(var(--board-tilt-y))
+    rotateY(var(--board-tilt-x))
+    rotate(var(--card-rotation))
+    translate3d(0, -8px, 18px)
+    scale(1.045);
+}
+
+.idea-board-card:focus-visible {
+  border-color: rgba(242, 218, 255, 0.38);
+  outline: 2px solid rgba(225, 198, 255, 0.3);
+  outline-offset: 2px;
+}
+
+.idea-board-card > span {
+  display: block;
+  font-size: 15px;
+}
+
+.idea-board-card p {
+  max-width: 13em;
+  margin: 13px 0 0;
+  color: rgba(232, 220, 246, 0.62);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.idea-board-card i {
+  position: absolute;
+  right: 15px;
+  bottom: 14px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #efbdda;
+  box-shadow: 0 0 12px rgba(239, 189, 218, 0.52);
+}
+
+.idea-board-path {
+  position: absolute;
+  z-index: 1;
+  right: 9%;
+  bottom: 14%;
+  width: 40%;
+  height: 30%;
+  border: 1px solid rgba(226, 205, 249, 0.1);
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-12deg);
+}
+
+.idea-board-sticker {
+  position: absolute;
+  z-index: 5;
+  top: 4%;
+  right: 5%;
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid rgba(247, 224, 245, 0.18);
+  border-radius: 12px;
+  color: #f2c1df;
+  background: rgba(119, 83, 139, 0.36);
+  box-shadow: 0 10px 24px rgba(17, 9, 22, 0.16);
+  animation: idea-board-sticker-float 7.5s ease-in-out infinite;
+}
+
+.idea-board-dot {
+  position: absolute;
+  z-index: 1;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(222, 197, 247, 0.38);
+}
+
+.idea-board-dot--one {
+  right: 14%;
+  bottom: 16%;
+}
+
+.idea-board-dot--two {
+  left: 25%;
+  bottom: 8%;
+}
+
+@keyframes idea-board-sticker-float {
+  0%,
+  100% {
+    transform: translate3d(0, -2px, 0) rotate(-3deg);
+  }
+  50% {
+    transform: translate3d(2px, 3px, 0) rotate(2deg);
+  }
+}
+
 .device-tablet-camera {
   position: absolute;
   z-index: 2;
@@ -3432,6 +3630,56 @@ button {
 
   .device-tablet-frame {
     width: min(90vw, 360px);
+    transform: none;
+  }
+
+  .idea-board {
+    padding: 16px 18px 17px;
+    background-size: 22px 22px, 22px 22px, auto;
+    pointer-events: none;
+  }
+
+  .idea-board-heading span {
+    font-size: 7px;
+  }
+
+  .idea-board-heading small {
+    font-size: 6px;
+  }
+
+  .idea-board-card {
+    padding: 11px 10px 9px;
+    border-radius: 12px;
+    pointer-events: auto;
+    transform: rotate(var(--card-rotation));
+    transform-style: flat;
+  }
+
+  .idea-board-card.is-active {
+    transform: rotate(var(--card-rotation)) translate3d(0, -4px, 10px) scale(1.035);
+  }
+
+  .idea-board-card > span {
+    font-size: 9px;
+  }
+
+  .idea-board-card p {
+    margin-top: 7px;
+    font-size: 6px;
+  }
+
+  .idea-board-card i {
+    right: 8px;
+    bottom: 7px;
+    width: 4px;
+    height: 4px;
+  }
+
+  .idea-board-sticker {
+    width: 22px;
+    height: 22px;
+    border-radius: 8px;
+    font-size: 10px;
   }
 
   .device-tablet-stage::before {
