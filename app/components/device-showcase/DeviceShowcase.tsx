@@ -28,7 +28,6 @@ export function DeviceShowcase() {
   return (
     <section
       className="device-showcase"
-      id="about"
       aria-label="SAME STUDIO device showcase"
     >
       <div className="device-showcase-inner">

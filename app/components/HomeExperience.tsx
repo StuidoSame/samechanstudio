@@ -2123,7 +2123,7 @@ export function HomeExperience() {
 
         </section>
 
-        <TypeRevealGroup as="section" className="studio-about">
+        <TypeRevealGroup as="section" className="studio-about" id="about">
           <div className="studio-about-content">
             <TypeReveal
               as="span"
