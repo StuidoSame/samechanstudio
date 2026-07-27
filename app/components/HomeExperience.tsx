@@ -22,7 +22,6 @@ import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
-const JellyCanvas = dynamic(() => import("./JellyCanvas"), { ssr: false });
 const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
   ssr: false,
   loading: () => (
@@ -1975,10 +1974,10 @@ export function HomeExperience() {
           <SectionCosmos variant="hero" />
 
           <div className="carousel-stage" aria-live="polite">
-            <JellyCanvas
-              interactionRef={interactionRef}
-              reducedMotion={reducedMotion}
-            />
+            <div key={activeApp.id} className="focus-halo" aria-hidden="true">
+              <span className="focus-halo-glow" />
+              <span className="focus-halo-surface" />
+            </div>
             <div className="cards-space">
               {apps.map((app, index) => (
                 <AppCard
