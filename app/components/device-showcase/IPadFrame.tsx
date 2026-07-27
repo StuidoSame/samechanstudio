@@ -3,6 +3,20 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { DAILY_PUZZLES, WEEK_PROGRESS_BY_DAY } from "./dailyPuzzles";
 
+const DAILY_PUZZLE_STORAGE_KEY = "same-studio-daily-puzzle-v1";
+
+type StoredPuzzleDay = {
+  board: boolean[];
+  moves: number;
+  completed: boolean;
+  completedAt: string | null;
+};
+
+type DailyPuzzleStorage = {
+  version: 1;
+  days: Record<string, StoredPuzzleDay>;
+};
+
 function toggleTileAndNeighbors(board: boolean[], tileIndex: number) {
   const row = Math.floor(tileIndex / 3);
   const column = tileIndex % 3;
@@ -20,34 +34,110 @@ function isUniformBoard(board: boolean[]) {
   return board.length === 9 && board.every((tile) => tile === board[0]);
 }
 
+function getLocalDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function isStoredPuzzleDay(value: unknown): value is StoredPuzzleDay {
+  if (!value || typeof value !== "object") return false;
+
+  const storedDay = value as Partial<StoredPuzzleDay>;
+  return (
+    Array.isArray(storedDay.board) &&
+    storedDay.board.length === 9 &&
+    storedDay.board.every((tile) => typeof tile === "boolean") &&
+    typeof storedDay.moves === "number" &&
+    Number.isInteger(storedDay.moves) &&
+    storedDay.moves >= 0 &&
+    typeof storedDay.completed === "boolean" &&
+    (storedDay.completedAt === null || typeof storedDay.completedAt === "string")
+  );
+}
+
+function readPuzzleStorage(): DailyPuzzleStorage {
+  try {
+    const storedValue = window.localStorage.getItem(DAILY_PUZZLE_STORAGE_KEY);
+    if (!storedValue) return { version: 1, days: {} };
+
+    const parsedValue = JSON.parse(storedValue) as Partial<DailyPuzzleStorage>;
+    if (parsedValue.version !== 1 || !parsedValue.days || typeof parsedValue.days !== "object") {
+      return { version: 1, days: {} };
+    }
+
+    const days = Object.fromEntries(
+      Object.entries(parsedValue.days).filter((entry): entry is [string, StoredPuzzleDay] => isStoredPuzzleDay(entry[1])),
+    );
+    return { version: 1, days };
+  } catch {
+    return { version: 1, days: {} };
+  }
+}
+
+function writePuzzleDay(dateKey: string, day: StoredPuzzleDay) {
+  try {
+    const storage = readPuzzleStorage();
+    storage.days[dateKey] = day;
+    window.localStorage.setItem(DAILY_PUZZLE_STORAGE_KEY, JSON.stringify(storage));
+  } catch {
+    // The puzzle remains playable in memory when storage is unavailable.
+  }
+}
+
 type IPadFrameProps = {
   children?: ReactNode;
 };
 
 export function IPadFrame({ children }: IPadFrameProps) {
-  const [weekday, setWeekday] = useState<number | null>(null);
+  const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [board, setBoard] = useState<boolean[]>([]);
   const [moves, setMoves] = useState(0);
+  const weekday = currentDate?.getDay() ?? null;
+  const currentDateKey = currentDate ? getLocalDateKey(currentDate) : "";
   const isCompleted = isUniformBoard(board);
 
   useEffect(() => {
-    const dateFrame = window.requestAnimationFrame(() => {
-      const localWeekday = new Date().getDay();
-      setWeekday(localWeekday);
-      setBoard([...DAILY_PUZZLES[localWeekday].board]);
-      setMoves(0);
-    });
+    const dateFrame = window.requestAnimationFrame(() => setCurrentDate(new Date()));
 
     return () => window.cancelAnimationFrame(dateFrame);
   }, []);
+
+  useEffect(() => {
+    if (!currentDate || !currentDateKey) return;
+
+    const storageFrame = window.requestAnimationFrame(() => {
+      const savedDay = readPuzzleStorage().days[currentDateKey];
+      setBoard(savedDay ? [...savedDay.board] : [...DAILY_PUZZLES[currentDate.getDay()].board]);
+      setMoves(savedDay?.moves ?? 0);
+    });
+
+    return () => window.cancelAnimationFrame(storageFrame);
+  }, [currentDate, currentDateKey]);
 
   const handleTileClick = (tileIndex: number) => {
     if (isCompleted) {
       return;
     }
 
-    setBoard((currentBoard) => toggleTileAndNeighbors(currentBoard, tileIndex));
-    setMoves((currentMoves) => currentMoves + 1);
+    const nextBoard = toggleTileAndNeighbors(board, tileIndex);
+    const nextMoves = moves + 1;
+    const nextCompleted = isUniformBoard(nextBoard);
+    const nextCompletedAt = nextCompleted ? new Date().toISOString() : null;
+
+    setBoard(nextBoard);
+    setMoves(nextMoves);
+
+    if (currentDateKey) {
+      writePuzzleDay(currentDateKey, {
+        board: nextBoard,
+        moves: nextMoves,
+        completed: nextCompleted,
+        completedAt: nextCompletedAt,
+      });
+    }
   };
 
   const resetPuzzle = () => {
@@ -55,8 +145,18 @@ export function IPadFrame({ children }: IPadFrameProps) {
       return;
     }
 
-    setBoard([...DAILY_PUZZLES[weekday].board]);
+    const initialBoard = [...DAILY_PUZZLES[weekday].board];
+    setBoard(initialBoard);
     setMoves(0);
+
+    if (currentDateKey) {
+      writePuzzleDay(currentDateKey, {
+        board: initialBoard,
+        moves: 0,
+        completed: false,
+        completedAt: null,
+      });
+    }
   };
 
   return (
