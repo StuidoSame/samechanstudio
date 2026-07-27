@@ -398,12 +398,17 @@ button {
 
 .language-panel {
   position: absolute;
+  z-index: 12;
   top: 54px;
   right: 0;
-  width: 190px;
-  padding: 10px;
-  display: grid;
-  gap: 2px;
+  width: 210px;
+  height: auto;
+  max-height: none;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: visible;
   border: 1px solid rgba(120, 75, 220, 0.14);
   border-radius: 18px;
   background: rgba(248, 243, 255, 0.88);
@@ -429,20 +434,28 @@ button {
 }
 
 .language-panel button {
-  min-height: 38px;
+  width: 100%;
+  min-height: 48px;
+  flex: 0 0 48px;
   border: 0;
-  border-radius: 11px;
-  padding: 0 10px;
+  border-radius: 10px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   background: transparent;
   color: #7557b8;
-  font-size: 13px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
   cursor: pointer;
+  -webkit-tap-highlight-color: rgba(126, 82, 216, 0.08);
   transition:
     background-color 0.16s ease,
-    color 0.16s ease;
+    color 0.16s ease,
+    filter 0.12s ease;
 }
 
 .language-panel button[aria-checked="true"] {
@@ -450,17 +463,38 @@ button {
   background: rgba(126, 82, 216, 0.08);
 }
 
-.language-panel button i {
-  width: 5px;
-  height: 5px;
+.language-label {
+  min-width: 0;
+  flex: 1;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.language-selected-indicator {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: grid;
+  place-items: center;
+}
+
+.language-selected-indicator::before {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: currentColor;
+  content: "";
   opacity: 0;
   box-shadow: 0 0 8px rgba(137, 92, 224, 0.24);
 }
 
-.language-panel button[aria-checked="true"] i {
+.language-panel button[aria-checked="true"]
+  .language-selected-indicator::before {
   opacity: 1;
+}
+
+.language-panel button:active {
+  filter: brightness(0.97);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -7152,6 +7186,8 @@ footer {
     top: 48px;
     right: auto;
     left: 0;
+    width: clamp(190px, 55vw, 220px);
+    max-width: calc(100vw - 32px);
   }
 
   .menu-control {
@@ -7406,7 +7442,7 @@ footer {
 
   .language-panel {
     top: 44px;
-    width: 168px;
+    width: min(210px, calc(100vw - 20px));
   }
 
   .menu-control {

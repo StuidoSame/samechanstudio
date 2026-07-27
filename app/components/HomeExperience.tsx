@@ -2153,8 +2153,11 @@ export function HomeExperience() {
                       setLanguageOpen(false);
                     }}
                   >
-                    <span>{language.label}</span>
-                    <i aria-hidden="true" />
+                    <span className="language-label">{language.label}</span>
+                    <span
+                      className="language-selected-indicator"
+                      aria-hidden="true"
+                    />
                   </button>
                 ))}
               </div>
