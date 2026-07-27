@@ -37,9 +37,23 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const [hasEntered, setHasEntered] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [questionStarted, setQuestionStarted] = useState(false);
+  const [typedQuestion, setTypedQuestion] = useState("");
+  const [typingComplete, setTypingComplete] = useState(false);
 
   useEffect(() => {
     setCurrentDate(new Date());
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+
+    return () => mediaQuery.removeEventListener("change", updatePreference);
   }, []);
 
   useEffect(() => {
@@ -64,6 +78,51 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
     return () => observer.disconnect();
   }, []);
 
+  const question = currentDate ? DAILY_QUESTIONS[currentDate.getDay()] : "";
+
+  useEffect(() => {
+    if (!hasEntered || !question) {
+      return;
+    }
+
+    let typingTimer: ReturnType<typeof setTimeout> | undefined;
+    let characterIndex = 0;
+
+    const typeNextCharacter = () => {
+      characterIndex += 1;
+      setTypedQuestion(question.slice(0, characterIndex));
+
+      if (characterIndex < question.length) {
+        typingTimer = setTimeout(typeNextCharacter, 48);
+      } else {
+        setTypingComplete(true);
+      }
+    };
+
+    const revealTimer = setTimeout(
+      () => {
+        setQuestionStarted(true);
+
+        if (prefersReducedMotion) {
+          setTypedQuestion(question);
+          setTypingComplete(true);
+          return;
+        }
+
+        typeNextCharacter();
+      },
+      prefersReducedMotion ? 0 : 520,
+    );
+
+    return () => {
+      clearTimeout(revealTimer);
+
+      if (typingTimer) {
+        clearTimeout(typingTimer);
+      }
+    };
+  }, [hasEntered, prefersReducedMotion, question]);
+
   return (
     <div ref={stageRef} className="device-phone-stage" aria-label="Interactive iPhone moment">
       <div className="device-phone-frame">
@@ -73,7 +132,9 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
         <span className="device-phone-button device-phone-button--power" aria-hidden="true" />
         <div className="device-screen device-phone-screen">
           {children ?? (
-            <div className={`phone-daily-experience${hasEntered ? " is-entered" : ""}`}>
+            <div
+              className={`phone-daily-experience${hasEntered ? " is-entered" : ""}${questionStarted ? " is-question-started" : ""}${typingComplete ? " is-typing-complete" : ""}`}
+            >
               <div className="phone-daily-splash">
                 <Image
                   className="phone-daily-logo"
@@ -86,17 +147,25 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                 />
                 <span>SAME STUDIO</span>
               </div>
-              <div className="phone-daily-content" aria-hidden={!hasEntered}>
+              <div className="phone-daily-content" aria-hidden={!questionStarted}>
                 <header className="phone-daily-header">
                   <time dateTime={currentDate ? getLocalDateKey(currentDate) : undefined}>
                     {currentDate ? formatLocalDate(currentDate) : "오늘"}
                   </time>
-                  <h3>{currentDate ? DAILY_QUESTIONS[currentDate.getDay()] : ""}</h3>
+                  <h3>
+                    <span className="phone-daily-sr-only">{question}</span>
+                    <span aria-hidden="true">
+                      {typedQuestion}
+                      {!typingComplete && <i className="phone-daily-cursor" />}
+                    </span>
+                  </h3>
                 </header>
-                <div className="phone-daily-answer-space" aria-hidden="true" />
-                <div className="phone-daily-input-placeholder" aria-hidden="true">
-                  <span>오늘의 답변</span>
-                  <i>✓</i>
+                <div className="phone-daily-after-typing">
+                  <div className="phone-daily-answer-space" aria-hidden="true" />
+                  <div className="phone-daily-input-placeholder" aria-hidden="true">
+                    <span>오늘의 답변</span>
+                    <i>✓</i>
+                  </div>
                 </div>
               </div>
             </div>

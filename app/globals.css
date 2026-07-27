@@ -3613,9 +3613,20 @@ button {
   transform: scale(0.97);
 }
 
-.phone-daily-experience.is-entered .phone-daily-content {
+.phone-daily-experience.is-question-started .phone-daily-content {
   opacity: 1;
   transform: scale(1);
+}
+
+.phone-daily-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .phone-daily-header time {
@@ -3634,6 +3645,35 @@ button {
   line-height: 1.36;
   letter-spacing: -0.04em;
   word-break: keep-all;
+}
+
+.phone-daily-cursor {
+  width: 1px;
+  height: 0.95em;
+  margin-left: 3px;
+  display: inline-block;
+  vertical-align: -0.06em;
+  background: rgba(240, 207, 242, 0.8);
+  animation: phone-daily-cursor-blink 0.8s ease-in-out infinite;
+}
+
+.phone-daily-after-typing {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(5px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.phone-daily-experience.is-typing-complete .phone-daily-after-typing {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .phone-daily-answer-space {
@@ -3664,6 +3704,12 @@ button {
   background: rgba(217, 195, 250, 0.68);
   font-size: 12px;
   font-style: normal;
+}
+
+@keyframes phone-daily-cursor-blink {
+  50% {
+    opacity: 0.24;
+  }
 }
 
 .device-phone-island {
@@ -4532,9 +4578,14 @@ button {
 
   .phone-daily-splash,
   .phone-daily-content,
+  .phone-daily-after-typing,
   .idea-board-card,
   .watch-glance-state {
     transition: none;
+  }
+
+  .phone-daily-cursor {
+    animation: none;
   }
 
   .idea-board-card,
