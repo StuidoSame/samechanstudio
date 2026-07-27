@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
 import { DAILY_PUZZLES, WEEK_PROGRESS_BY_DAY } from "./dailyPuzzles";
 
 const DAILY_PUZZLE_STORAGE_KEY = "same-studio-daily-puzzle-v1";
@@ -93,6 +101,8 @@ type IPadFrameProps = {
 
 export function IPadFrame({ children }: IPadFrameProps) {
   const stageRef = useRef<HTMLDivElement>(null);
+  const resetButtonRef = useRef<HTMLButtonElement>(null);
+  const tileButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [hasEntered, setHasEntered] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [board, setBoard] = useState<boolean[]>([]);
@@ -217,10 +227,45 @@ export function IPadFrame({ children }: IPadFrameProps) {
     }
   };
 
+  const handleScreenPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget || !resetButtonRef.current) return;
+
+    const resetBounds = resetButtonRef.current.getBoundingClientRect();
+    if (
+      event.clientX >= resetBounds.left &&
+      event.clientX <= resetBounds.right &&
+      event.clientY >= resetBounds.top &&
+      event.clientY <= resetBounds.bottom
+    ) {
+      resetPuzzle();
+      return;
+    }
+
+    const tileIndex = tileButtonRefs.current.findIndex((tile) => {
+      if (!tile) return false;
+      const tileBounds = tile.getBoundingClientRect();
+      return (
+        event.clientX >= tileBounds.left &&
+        event.clientX <= tileBounds.right &&
+        event.clientY >= tileBounds.top &&
+        event.clientY <= tileBounds.bottom
+      );
+    });
+
+    if (tileIndex >= 0) handleTileClick(tileIndex);
+  };
+
+  const handleResetKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      resetPuzzle();
+    }
+  };
+
   return (
-    <div ref={stageRef} className="device-tablet-stage" aria-label="Interactive iPad daily puzzle">
+    <div ref={stageRef} className="device-tablet-stage" role="group" aria-label="THINK SPACE 하루 퍼즐">
       <div className="device-tablet-frame">
-        <div className="device-screen device-tablet-screen">
+        <div className="device-screen device-tablet-screen" onPointerUp={handleScreenPointerUp}>
           {children ?? (
             <div className={`tablet-puzzle${hasEntered ? " is-entered" : ""}`}>
               <header className="tablet-puzzle-header">
@@ -229,10 +274,18 @@ export function IPadFrame({ children }: IPadFrameProps) {
               </header>
               <main className="tablet-puzzle-main">
                 <p id="tablet-puzzle-instructions">Make every light feel the same.</p>
-                <div className={`tablet-puzzle-board${isCompleted ? " is-complete" : ""}`} aria-labelledby="tablet-puzzle-instructions">
+                <div
+                  className={`tablet-puzzle-board${isCompleted ? " is-complete" : ""}`}
+                  role="group"
+                  aria-label="3×3 하루 패턴 퍼즐"
+                  aria-describedby="tablet-puzzle-instructions"
+                >
                   {board.map((isOn, index) => (
                     <button
                       key={index}
+                      ref={(element) => {
+                        tileButtonRefs.current[index] = element;
+                      }}
                       type="button"
                       className={`tablet-puzzle-tile${isOn ? " is-on" : ""}`}
                       aria-label={`${Math.floor(index / 3) + 1}행 ${(index % 3) + 1}열 타일, ${isOn ? "켜짐" : "꺼짐"}`}
@@ -243,6 +296,17 @@ export function IPadFrame({ children }: IPadFrameProps) {
                     />
                   ))}
                 </div>
+                <button
+                  ref={resetButtonRef}
+                  type="button"
+                  className={`tablet-puzzle-reset${hasEntered ? " is-visible" : ""}`}
+                  disabled={weekday === null}
+                  onClick={resetPuzzle}
+                  onKeyDown={handleResetKeyDown}
+                  aria-label="오늘의 퍼즐 초기화"
+                >
+                  Reset
+                </button>
                 <div
                   className={`tablet-puzzle-completion${isCompleted ? " is-visible" : ""}`}
                   aria-live="polite"
@@ -257,11 +321,11 @@ export function IPadFrame({ children }: IPadFrameProps) {
                   ) : null}
                 </div>
               </main>
-              <footer className="tablet-puzzle-footer">
+              <div className="tablet-puzzle-footer">
                 <span>Moves {String(moves).padStart(2, "0")}</span>
-                <button type="button" disabled={weekday === null} onClick={resetPuzzle} aria-label="오늘의 퍼즐 초기화">Reset</button>
+                <span aria-hidden="true" />
                 <span className="tablet-puzzle-status" aria-hidden="true" />
-              </footer>
+              </div>
             </div>
           )}
         </div>
