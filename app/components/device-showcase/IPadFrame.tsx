@@ -1,12 +1,29 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+
+const INITIAL_PUZZLE = [true, false, true, false, true, false, true, false, false];
+
+function toggleTileAndNeighbors(board: boolean[], tileIndex: number) {
+  const row = Math.floor(tileIndex / 3);
+  const column = tileIndex % 3;
+  const affectedTiles = [tileIndex];
+
+  if (row > 0) affectedTiles.push(tileIndex - 3);
+  if (row < 2) affectedTiles.push(tileIndex + 3);
+  if (column > 0) affectedTiles.push(tileIndex - 1);
+  if (column < 2) affectedTiles.push(tileIndex + 1);
+
+  return board.map((isOn, index) => affectedTiles.includes(index) ? !isOn : isOn);
+}
 
 type IPadFrameProps = {
   children?: ReactNode;
 };
 
 export function IPadFrame({ children }: IPadFrameProps) {
+  const [board, setBoard] = useState(INITIAL_PUZZLE);
+
   return (
     <div className="device-tablet-stage" aria-label="Interactive iPad daily puzzle">
       <div className="device-tablet-frame">
@@ -20,8 +37,15 @@ export function IPadFrame({ children }: IPadFrameProps) {
               <main className="tablet-puzzle-main">
                 <p id="tablet-puzzle-instructions">Make every light feel the same.</p>
                 <div className="tablet-puzzle-board" aria-labelledby="tablet-puzzle-instructions">
-                  {Array.from({ length: 9 }, (_, index) => (
-                    <span key={index} className="tablet-puzzle-tile" aria-hidden="true" />
+                  {board.map((isOn, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className={`tablet-puzzle-tile${isOn ? " is-on" : ""}`}
+                      aria-label={`${Math.floor(index / 3) + 1}행 ${(index % 3) + 1}열 타일, ${isOn ? "켜짐" : "꺼짐"}`}
+                      aria-pressed={isOn}
+                      onClick={() => setBoard((currentBoard) => toggleTileAndNeighbors(currentBoard, index))}
+                    />
                   ))}
                 </div>
               </main>
