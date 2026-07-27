@@ -4814,10 +4814,6 @@ button {
   transform-origin: center;
 }
 
-.drum-hit-wrapper.is-struck {
-  animation: watch-drum-hit 140ms ease-out;
-}
-
 .device-watch-body {
   position: relative;
   width: 100%;
@@ -5104,12 +5100,6 @@ button {
   border-radius: 31%;
   outline: 2px solid rgba(226, 202, 255, 0.58);
   outline-offset: 5px;
-}
-
-@keyframes watch-drum-hit {
-  50% {
-    transform: translateY(2px) scale(0.96);
-  }
 }
 
 .watch-glance {
@@ -5759,10 +5749,6 @@ button {
   .idea-board-sticker,
   .watch-glance-ring,
   .watch-glance-state--done .watch-glance-check {
-    animation: none;
-  }
-
-  .drum-hit-wrapper.is-struck {
     animation: none;
   }
 
