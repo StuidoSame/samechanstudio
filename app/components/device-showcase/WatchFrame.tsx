@@ -15,7 +15,10 @@ export function WatchFrame({ variant, ariaLabel, onActivate, children }: WatchFr
       type="button"
       className={`device-watch device-watch--${variant}`}
       aria-label={ariaLabel}
-      onClick={onActivate}
+      onPointerDown={onActivate}
+      onClick={(event) => {
+        if (event.detail === 0) onActivate();
+      }}
     >
       <span className="device-watch-strap device-watch-strap--top" aria-hidden="true" />
       <span className="device-watch-strap device-watch-strap--bottom" aria-hidden="true" />

@@ -4548,6 +4548,14 @@ button {
   letter-spacing: 0.13em;
 }
 
+.watch-drum-pad small {
+  position: absolute;
+  bottom: 13%;
+  color: rgba(227, 213, 243, 0.5);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
 .watch-drum-pad.is-active strong {
   color: rgba(255, 250, 255, 0.98);
 }

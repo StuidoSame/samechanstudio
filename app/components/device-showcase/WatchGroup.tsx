@@ -11,10 +11,11 @@ const DRUM_PADS: Array<{
   ariaLabel: string;
   variant: WatchVariant;
   audioSrc: string;
+  shortcut: "A" | "S" | "D";
 }> = [
-  { id: "kick", label: "KICK", ariaLabel: "Kick drum", variant: "left", audioSrc: "/assets/mp3/kick.mp3" },
-  { id: "snare", label: "SNARE", ariaLabel: "Snare drum", variant: "center", audioSrc: "/assets/mp3/snare.mp3" },
-  { id: "hihat", label: "HI-HAT", ariaLabel: "Hi-hat", variant: "right", audioSrc: "/assets/mp3/hihat.mp3" },
+  { id: "kick", label: "KICK", ariaLabel: "Kick drum", variant: "left", audioSrc: "/assets/mp3/kick.mp3", shortcut: "A" },
+  { id: "snare", label: "SNARE", ariaLabel: "Snare drum", variant: "center", audioSrc: "/assets/mp3/snare.mp3", shortcut: "S" },
+  { id: "hihat", label: "HI-HAT", ariaLabel: "Hi-hat", variant: "right", audioSrc: "/assets/mp3/hihat.mp3", shortcut: "D" },
 ];
 
 function createNoiseBuffer(context: AudioContext, duration: number) {
@@ -35,6 +36,7 @@ export function WatchGroup() {
   const masterGainRef = useRef<GainNode | null>(null);
   const audioBuffersRef = useRef<Partial<Record<DrumId, AudioBuffer>>>({});
   const bufferPromisesRef = useRef<Partial<Record<DrumId, Promise<AudioBuffer>>>>({});
+  const activatePadRef = useRef<(pad: (typeof DRUM_PADS)[number]) => void>(() => undefined);
 
   useEffect(
     () => () => {
@@ -163,6 +165,29 @@ export function WatchGroup() {
     void playSample(pad);
   };
 
+  useEffect(() => {
+    activatePadRef.current = activatePad;
+  });
+
+  useEffect(() => {
+    const handleShortcut = (event: globalThis.KeyboardEvent) => {
+      const target = event.target;
+      if (
+        event.repeat ||
+        (target instanceof HTMLElement &&
+          (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)))
+      ) {
+        return;
+      }
+
+      const pad = DRUM_PADS.find((candidate) => candidate.shortcut.toLowerCase() === event.key.toLowerCase());
+      if (pad) activatePadRef.current(pad);
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
+
   return (
     <div className="device-watch-stage" aria-label="Three Apple Watch drum pads">
       <div className="device-watch-group">
@@ -170,11 +195,12 @@ export function WatchGroup() {
           <WatchFrame
             key={pad.id}
             variant={pad.variant}
-            ariaLabel={pad.ariaLabel}
+            ariaLabel={`${pad.ariaLabel}, ${pad.shortcut} key`}
             onActivate={() => activatePad(pad)}
           >
             <span className={`watch-drum-pad${activePad === pad.id ? " is-active" : ""}`}>
               <strong>{pad.label}</strong>
+              <small>{pad.shortcut}</small>
             </span>
           </WatchFrame>
         ))}
