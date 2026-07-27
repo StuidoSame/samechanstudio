@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { DAILY_PUZZLES, WEEK_PROGRESS_BY_DAY } from "./dailyPuzzles";
 
 const DAILY_PUZZLE_STORAGE_KEY = "same-studio-daily-puzzle-v1";
@@ -92,6 +92,8 @@ type IPadFrameProps = {
 };
 
 export function IPadFrame({ children }: IPadFrameProps) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [hasEntered, setHasEntered] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [board, setBoard] = useState<boolean[]>([]);
   const [moves, setMoves] = useState(0);
@@ -103,6 +105,24 @@ export function IPadFrame({ children }: IPadFrameProps) {
     const dateFrame = window.requestAnimationFrame(() => setCurrentDate(new Date()));
 
     return () => window.cancelAnimationFrame(dateFrame);
+  }, []);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    observer.observe(stage);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -198,11 +218,11 @@ export function IPadFrame({ children }: IPadFrameProps) {
   };
 
   return (
-    <div className="device-tablet-stage" aria-label="Interactive iPad daily puzzle">
+    <div ref={stageRef} className="device-tablet-stage" aria-label="Interactive iPad daily puzzle">
       <div className="device-tablet-frame">
         <div className="device-screen device-tablet-screen">
           {children ?? (
-            <div className="tablet-puzzle">
+            <div className={`tablet-puzzle${hasEntered ? " is-entered" : ""}`}>
               <header className="tablet-puzzle-header">
                 <span>THINK SPACE</span>
                 <time>{weekday === null ? "-- / 07" : WEEK_PROGRESS_BY_DAY[weekday]}</time>
@@ -218,6 +238,7 @@ export function IPadFrame({ children }: IPadFrameProps) {
                       aria-label={`${Math.floor(index / 3) + 1}행 ${(index % 3) + 1}열 타일, ${isOn ? "켜짐" : "꺼짐"}`}
                       aria-pressed={isOn}
                       disabled={isCompleted}
+                      style={{ "--tile-index": index } as CSSProperties}
                       onClick={() => handleTileClick(index)}
                     />
                   ))}
