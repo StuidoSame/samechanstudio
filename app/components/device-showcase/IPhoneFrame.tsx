@@ -225,9 +225,18 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                 </header>
                 <div className="phone-daily-after-typing">
                   <div className="phone-daily-answer-space">
-                    {answers.map((answer) => (
-                      <p key={answer.id}>{answer.text}</p>
-                    ))}
+                    {answers.length > 0 ? (
+                      <ol className="phone-daily-answer-list">
+                        {answers.map((answer) => (
+                          <li key={answer.id}>{answer.text}</li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <div className="phone-daily-empty-cards" aria-hidden="true">
+                        <span />
+                        <span />
+                      </div>
+                    )}
                   </div>
                   {showSavedState ? (
                     <div className="phone-daily-saved-state" role="status" aria-live="polite">

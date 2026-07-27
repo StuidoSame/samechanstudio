@@ -3679,14 +3679,53 @@ button {
 .phone-daily-answer-space {
   flex: 1;
   min-height: 40px;
+  padding-block: 18px 12px;
+  display: flex;
+  align-items: center;
 }
 
-.phone-daily-answer-space p {
-  margin: 0 0 7px;
-  color: rgba(248, 242, 255, 0.82);
+.phone-daily-answer-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+
+.phone-daily-answer-list li {
+  min-height: 42px;
+  padding: 8px 11px;
+  display: -webkit-box;
+  overflow: hidden;
+  border: 1px solid rgba(237, 219, 255, 0.08);
+  border-radius: 13px;
+  color: rgba(248, 242, 255, 0.84);
+  background: linear-gradient(135deg, rgba(190, 158, 232, 0.13), rgba(255, 255, 255, 0.045));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
   font-size: 10px;
   line-height: 1.4;
   overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.phone-daily-empty-cards {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  opacity: 0.48;
+}
+
+.phone-daily-empty-cards span {
+  height: 38px;
+  border: 1px solid rgba(237, 219, 255, 0.055);
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(190, 158, 232, 0.06), rgba(255, 255, 255, 0.025));
+}
+
+.phone-daily-empty-cards span:last-child {
+  width: 78%;
 }
 
 .phone-daily-form,
@@ -4459,6 +4498,27 @@ button {
   .phone-daily-header h3 {
     margin-top: 10px;
     font-size: 17px;
+  }
+
+  .phone-daily-answer-space {
+    padding-block: 11px 8px;
+  }
+
+  .phone-daily-answer-list,
+  .phone-daily-empty-cards {
+    gap: 5px;
+  }
+
+  .phone-daily-answer-list li {
+    min-height: 34px;
+    padding: 6px 9px;
+    border-radius: 11px;
+    font-size: 8.5px;
+  }
+
+  .phone-daily-empty-cards span {
+    height: 30px;
+    border-radius: 11px;
   }
 
   .phone-daily-form,
