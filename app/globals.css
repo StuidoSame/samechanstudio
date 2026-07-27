@@ -647,19 +647,19 @@ button {
   will-change: transform;
 }
 
-.pointer-glow {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 50%;
+.main-pointer-glow {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
   width: clamp(480px, 42vw, 700px);
   aspect-ratio: 1;
   pointer-events: none;
-  opacity: var(--hero-pointer-strength, 0);
+  opacity: var(--main-pointer-strength, 0);
   transform: translate3d(
-    calc(-50% + var(--hero-pointer-offset-x, 0px)),
-    calc(-50% + var(--hero-pointer-offset-y, 0px)),
-    8px
+    calc(var(--main-pointer-x, 50vw) - 50%),
+    calc(var(--main-pointer-y, 50vh) - 50%),
+    0
   );
   background: radial-gradient(
     circle,
@@ -5309,7 +5309,7 @@ footer {
 }
 
 @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .pointer-glow {
+  .main-pointer-glow {
     display: none;
   }
 

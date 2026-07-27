@@ -463,6 +463,8 @@ export function HomeExperience() {
   const [detailOverlayOpen, setDetailOverlayOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  const mainPointerGlowRef = useRef<HTMLDivElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const headerUtilityRef = useRef<HTMLDivElement>(null);
@@ -1225,6 +1227,100 @@ export function HomeExperience() {
   }, [loaderVisible, reducedMotion]);
 
   useEffect(() => {
+    const main = mainRef.current;
+    const glow = mainPointerGlowRef.current;
+    if (!main || !glow) return;
+    const header = main.querySelector<HTMLElement>(".site-header");
+    const footer = main.nextElementSibling?.matches("footer")
+      ? main.nextElementSibling as HTMLElement
+      : null;
+
+    const pointerQuery = window.matchMedia(
+      "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    );
+    let animationFrame = 0;
+    let enabled = pointerQuery.matches && !reducedMotion;
+    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2, opacity: 0 };
+    const current = { ...target };
+
+    const applyGlow = () => {
+      glow.style.setProperty("--main-pointer-x", `${current.x}px`);
+      glow.style.setProperty("--main-pointer-y", `${current.y}px`);
+      glow.style.setProperty("--main-pointer-strength", String(current.opacity));
+    };
+
+    const renderGlow = () => {
+      const distance = Math.hypot(target.x - current.x, target.y - current.y);
+      const follow = distance > 180 ? 0.52 : distance > 70 ? 0.42 : 0.34;
+      current.x += (target.x - current.x) * follow;
+      current.y += (target.y - current.y) * follow;
+      current.opacity += (target.opacity - current.opacity) * 0.28;
+      applyGlow();
+
+      const settling =
+        Math.abs(target.x - current.x) > 0.35 ||
+        Math.abs(target.y - current.y) > 0.35 ||
+        Math.abs(target.opacity - current.opacity) > 0.008;
+      animationFrame = settling ? window.requestAnimationFrame(renderGlow) : 0;
+    };
+
+    const requestGlowFrame = () => {
+      if (!enabled || animationFrame) return;
+      animationFrame = window.requestAnimationFrame(renderGlow);
+    };
+
+    const hideGlow = () => {
+      target.opacity = 0;
+      requestGlowFrame();
+    };
+
+    const onMainPointerMove = (event: PointerEvent) => {
+      if (!enabled || event.pointerType === "touch") return;
+      const eventTarget = event.target;
+      if (
+        eventTarget instanceof Element &&
+        eventTarget.closest(".site-header, #site-menu")
+      ) {
+        hideGlow();
+        return;
+      }
+
+      target.x = event.clientX;
+      target.y = event.clientY;
+      target.opacity = 1;
+      requestGlowFrame();
+    };
+
+    const updateEnabled = () => {
+      enabled = pointerQuery.matches && !reducedMotion;
+      if (enabled) return;
+      target.opacity = 0;
+      current.opacity = 0;
+      applyGlow();
+    };
+
+    applyGlow();
+    main.addEventListener("pointermove", onMainPointerMove, { passive: true });
+    main.addEventListener("pointerleave", hideGlow);
+    header?.addEventListener("pointerenter", hideGlow);
+    footer?.addEventListener("pointerenter", hideGlow);
+    footer?.addEventListener("pointermove", hideGlow, { passive: true });
+    window.addEventListener("blur", hideGlow);
+    pointerQuery.addEventListener("change", updateEnabled);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      main.removeEventListener("pointermove", onMainPointerMove);
+      main.removeEventListener("pointerleave", hideGlow);
+      header?.removeEventListener("pointerenter", hideGlow);
+      footer?.removeEventListener("pointerenter", hideGlow);
+      footer?.removeEventListener("pointermove", hideGlow);
+      window.removeEventListener("blur", hideGlow);
+      pointerQuery.removeEventListener("change", updateEnabled);
+    };
+  }, [reducedMotion]);
+
+  useEffect(() => {
     let frame = 0;
     let previousTime = performance.now();
     let settleStartedAt = -1;
@@ -1755,9 +1851,15 @@ export function HomeExperience() {
         />
       )}
       <main
+        ref={mainRef}
         className={`site-shell ${loaderVisible && loaderPhase !== "leaving" ? "is-loading" : "is-ready"}`}
         style={accentStyle}
       >
+        <div
+          ref={mainPointerGlowRef}
+          className="main-pointer-glow"
+          aria-hidden="true"
+        />
         <section
           className="hero"
           id="apps"
@@ -1945,7 +2047,6 @@ export function HomeExperience() {
           </header>
 
           <div className="ambient-glow" aria-hidden="true" />
-          <div className="pointer-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
           <div className="decorations" aria-hidden="true">
             <div className="decorations-far">
@@ -2183,24 +2284,24 @@ export function HomeExperience() {
           </div>
         </TypeRevealGroup>
 
-        <footer>
-          <div className="footer-inner">
-            <div className="footer-social" aria-label="SAME STUDIO social links">
-              <a href="https://github.com/StuidoSame" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
-              <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO X"><SocialIcon platform="x" /></a>
-              <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Instagram"><SocialIcon platform="instagram" /></a>
-              <a href="https://www.threads.com/@do.ob0909?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Threads"><SocialIcon platform="threads" /></a>
-            </div>
-            <p className="footer-copyright">© 2026 SAME STUDIO</p>
-            <div className="footer-business">
-              <span>사업자명: 세임스튜디오 (SAME STUDIO)</span>
-              <span>사업자등록번호: 272-08-03608</span>
-              <span>대표자: 김동찬</span>
-              <span>이메일: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
-            </div>
-          </div>
-        </footer>
       </main>
+      <footer>
+        <div className="footer-inner">
+          <div className="footer-social" aria-label="SAME STUDIO social links">
+            <a href="https://github.com/StuidoSame" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
+            <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO X"><SocialIcon platform="x" /></a>
+            <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Instagram"><SocialIcon platform="instagram" /></a>
+            <a href="https://www.threads.com/@do.ob0909?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Threads"><SocialIcon platform="threads" /></a>
+          </div>
+          <p className="footer-copyright">© 2026 SAME STUDIO</p>
+          <div className="footer-business">
+            <span>사업자명: 세임스튜디오 (SAME STUDIO)</span>
+            <span>사업자등록번호: 272-08-03608</span>
+            <span>대표자: 김동찬</span>
+            <span>이메일: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
+          </div>
+        </div>
+      </footer>
       {detailApp && (
         <AppDetailOverlay
           app={detailApp}
