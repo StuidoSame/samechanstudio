@@ -14,7 +14,7 @@ const tabletCopy = {
   index: "02",
   category: "TABLET",
   title: "Room to think.",
-  body: "A little more space for ideas,\nmemories, and everything in between.",
+  body: "A small puzzle for a quieter moment.\nOne simple pattern, refreshed each day.",
 };
 
 const watchCopy = {
