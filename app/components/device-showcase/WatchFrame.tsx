@@ -4,16 +4,18 @@ export type WatchVariant = "left" | "center" | "right";
 
 type WatchFrameProps = {
   variant: WatchVariant;
+  ariaLabel: string;
+  onActivate: () => void;
   children?: ReactNode;
 };
 
-export function WatchFrame({ variant, children }: WatchFrameProps) {
+export function WatchFrame({ variant, ariaLabel, onActivate, children }: WatchFrameProps) {
   return (
-    <div
+    <button
+      type="button"
       className={`device-watch device-watch--${variant}`}
-      aria-label={children
-        ? `Interactive Apple Watch ${variant} device frame`
-        : `Empty Apple Watch ${variant} device frame`}
+      aria-label={ariaLabel}
+      onClick={onActivate}
     >
       <span className="device-watch-strap device-watch-strap--top" aria-hidden="true" />
       <span className="device-watch-strap device-watch-strap--bottom" aria-hidden="true" />
@@ -23,6 +25,6 @@ export function WatchFrame({ variant, children }: WatchFrameProps) {
         <span className="device-watch-button" aria-hidden="true" />
         <span className="device-frame-highlight" aria-hidden="true" />
       </div>
-    </div>
+    </button>
   );
 }
