@@ -13,6 +13,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
+import { PageSectionNavigation } from "./PageSectionNavigation";
 import { SectionCosmos } from "./SectionCosmos";
 import {
   TypeReveal,
@@ -2060,6 +2061,9 @@ export function HomeExperience() {
           ref={mainPointerGlowRef}
           className="main-pointer-glow"
           aria-hidden="true"
+        />
+        <PageSectionNavigation
+          hidden={loaderVisible || menuOpen || Boolean(detailApp)}
         />
         <section
           className="hero"
