@@ -71,14 +71,19 @@ const CONTACT_REVEAL_STEPS = [
     speed: 18,
   },
 ] as const;
-const HEADER_LANGUAGES = [
+type LanguageCode = "ko" | "en" | "ja" | "zh-CN" | "zh-TW";
+type LanguageOption = {
+  code: LanguageCode;
+  label: string;
+};
+
+const LANGUAGE_OPTIONS = [
   { code: "ko", label: "한국어" },
   { code: "en", label: "English" },
   { code: "ja", label: "日本語" },
   { code: "zh-CN", label: "简体中文" },
   { code: "zh-TW", label: "繁體中文" },
-] as const;
-type HeaderLanguageCode = (typeof HEADER_LANGUAGES)[number]["code"];
+] as const satisfies readonly LanguageOption[];
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -440,7 +445,7 @@ export function HomeExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] =
-    useState<HeaderLanguageCode>("ko");
+    useState<LanguageCode>("ko");
   const [darkPressKey, setDarkPressKey] = useState(0);
   const [headerUtilityHidden, setHeaderUtilityHidden] = useState(false);
   const [headerUtilityDragging, setHeaderUtilityDragging] = useState(false);
@@ -2137,7 +2142,7 @@ export function HomeExperience() {
                 aria-label="언어 선택 옵션"
                 aria-hidden={!languageOpen}
               >
-                {HEADER_LANGUAGES.map((language) => (
+                {LANGUAGE_OPTIONS.map((language) => (
                   <button
                     key={language.code}
                     type="button"
