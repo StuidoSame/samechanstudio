@@ -3625,9 +3625,9 @@ button {
   min-height: auto;
   overflow: visible;
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.78fr);
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
   align-items: center;
-  column-gap: clamp(60px, 9vw, 150px);
+  column-gap: clamp(72px, 8vw, 140px);
 }
 
 .device-showcase-visual {
@@ -3639,7 +3639,7 @@ button {
 }
 
 .device-showcase-row.is-reversed {
-  grid-template-columns: minmax(300px, 0.78fr) minmax(0, 0.92fr);
+  grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.05fr);
 }
 
 .device-showcase-row.is-reversed .device-showcase-visual {
@@ -3656,10 +3656,20 @@ button {
 .device-showcase-copy {
   position: relative;
   z-index: 2;
+  width: 100%;
+  min-width: 0;
   height: auto;
   max-height: none;
-  max-width: 520px;
+  max-width: 680px;
   overflow: visible;
+}
+
+.device-showcase-row:not(.is-reversed) .device-showcase-copy {
+  padding-left: clamp(52px, 5vw, 76px);
+}
+
+.device-showcase-row.is-reversed .device-showcase-copy {
+  padding-right: clamp(52px, 5vw, 76px);
 }
 
 .device-showcase-body,
@@ -5488,6 +5498,11 @@ button {
     grid-area: copy;
     justify-self: center;
     text-align: center;
+  }
+
+  .device-showcase-row:not(.is-reversed) .device-showcase-copy,
+  .device-showcase-row.is-reversed .device-showcase-copy {
+    padding-inline: 0;
   }
 
   .device-showcase-row.is-reversed .device-showcase-visual {
