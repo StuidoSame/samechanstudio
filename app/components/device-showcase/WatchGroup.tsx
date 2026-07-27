@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { WatchFrame, type WatchVariant } from "./WatchFrame";
 
 type DrumId = "kick" | "snare" | "hihat";
@@ -22,6 +22,14 @@ const DRUM_PADS: Array<{
   { id: "snare", label: "SNARE", ariaLabel: "Snare drum", variant: "center", audioSrc: "/assets/mp3/snare.mp3", shortcut: "S" },
   { id: "hihat", label: "HI-HAT", ariaLabel: "Hi-hat", variant: "right", audioSrc: "/assets/mp3/hihat.mp3", shortcut: "D" },
 ];
+
+const DRUM_GAIN: Record<DrumId, number> = {
+  kick: 0.9,
+  snare: 0.72,
+  hihat: 0.48,
+};
+
+const MASTER_GAIN = 0.28;
 
 function createNoiseBuffer(context: AudioContext, duration: number) {
   const frameCount = Math.ceil(context.sampleRate * duration);
@@ -52,20 +60,10 @@ export function WatchGroup() {
   const recordingStopTimerRef = useRef<number | null>(null);
   const playbackTimersRef = useRef<number[]>([]);
 
-  useEffect(
-    () => () => {
-      if (audioContextRef.current && audioContextRef.current.state !== "closed") {
-        void audioContextRef.current.close();
-      }
-      if (hitRecoveryTimerRef.current) window.clearTimeout(hitRecoveryTimerRef.current);
-      if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
-      playbackTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-    },
-    [],
-  );
-
-  const getAudioContext = () => {
-    if (audioContextRef.current) return audioContextRef.current;
+  const getAudioContext = useCallback(() => {
+    if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+      return audioContextRef.current;
+    }
 
     const AudioContextConstructor = window.AudioContext ??
       (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
@@ -73,40 +71,81 @@ export function WatchGroup() {
 
     audioContextRef.current = new AudioContextConstructor();
     const masterGain = audioContextRef.current.createGain();
-    masterGain.gain.value = isMuted ? 0 : 0.28;
+    masterGain.gain.value = MASTER_GAIN;
     masterGain.connect(audioContextRef.current.destination);
     masterGainRef.current = masterGain;
     return audioContextRef.current;
-  };
+  }, []);
 
-  const loadAudioBuffer = (context: AudioContext, pad: (typeof DRUM_PADS)[number]) => {
+  const loadAudioBuffer = useCallback((
+    context: AudioContext,
+    pad: (typeof DRUM_PADS)[number],
+    signal?: AbortSignal,
+  ) => {
     const cachedBuffer = audioBuffersRef.current[pad.id];
     if (cachedBuffer) return Promise.resolve(cachedBuffer);
 
     const pendingBuffer = bufferPromisesRef.current[pad.id];
     if (pendingBuffer) return pendingBuffer;
 
-    const bufferPromise = fetch(pad.audioSrc)
+    const bufferPromise = fetch(pad.audioSrc, { signal })
       .then((response) => {
         if (!response.ok) throw new Error(`Unable to load ${pad.id} drum sample`);
         return response.arrayBuffer();
       })
       .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
       .then((buffer) => {
-        audioBuffersRef.current[pad.id] = buffer;
+        if (!signal?.aborted && context === audioContextRef.current) {
+          audioBuffersRef.current[pad.id] = buffer;
+        }
         return buffer;
       })
       .catch((error) => {
-        delete bufferPromisesRef.current[pad.id];
+        if (bufferPromisesRef.current[pad.id] === bufferPromise) {
+          delete bufferPromisesRef.current[pad.id];
+        }
         throw error;
       });
 
     bufferPromisesRef.current[pad.id] = bufferPromise;
     return bufferPromise;
+  }, []);
+
+  useEffect(() => {
+    const preloadController = new AbortController();
+    const context = getAudioContext();
+
+    if (context) {
+      DRUM_PADS.forEach((pad) => {
+        void loadAudioBuffer(context, pad, preloadController.signal).catch(() => undefined);
+      });
+    }
+
+    return () => {
+      preloadController.abort();
+      if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+        void audioContextRef.current.close();
+      }
+      audioContextRef.current = null;
+      masterGainRef.current = null;
+      audioBuffersRef.current = {};
+      bufferPromisesRef.current = {};
+      if (hitRecoveryTimerRef.current) window.clearTimeout(hitRecoveryTimerRef.current);
+      if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
+      playbackTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      playbackTimersRef.current = [];
+    };
+  }, [getAudioContext, loadAudioBuffer]);
+
+  const createDrumOutput = (context: AudioContext, drum: DrumId) => {
+    const drumGain = context.createGain();
+    drumGain.gain.value = DRUM_GAIN[drum];
+    drumGain.connect(masterGainRef.current ?? context.destination);
+    return drumGain;
   };
 
   const playSynthesizedDrum = (context: AudioContext, drum: DrumId) => {
-    const output = masterGainRef.current ?? context.destination;
+    const output = createDrumOutput(context, drum);
     const now = context.currentTime;
 
     if (drum === "kick") {
@@ -164,17 +203,22 @@ export function WatchGroup() {
     const context = getAudioContext();
     if (!context) return;
 
-    if (context.state === "suspended") await context.resume();
-
     try {
-      const buffer = await loadAudioBuffer(context, pad);
-      const source = context.createBufferSource();
-      source.buffer = buffer;
-      source.connect(masterGainRef.current ?? context.destination);
-      source.start();
+      if (context.state === "suspended") await context.resume();
     } catch {
-      playSynthesizedDrum(context, pad.id);
+      return;
     }
+
+    const buffer = audioBuffersRef.current[pad.id];
+    if (!buffer) {
+      playSynthesizedDrum(context, pad.id);
+      return;
+    }
+
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(createDrumOutput(context, pad.id));
+    source.start();
   };
 
   const performPad = (pad: (typeof DRUM_PADS)[number], shouldRecord = true) => {
@@ -258,7 +302,7 @@ export function WatchGroup() {
     const context = audioContextRef.current;
     const masterGain = masterGainRef.current;
     if (context && masterGain) {
-      masterGain.gain.setTargetAtTime(nextMuted ? 0 : 0.28, context.currentTime, 0.012);
+      masterGain.gain.setTargetAtTime(nextMuted ? 0 : MASTER_GAIN, context.currentTime, 0.012);
     }
   };
 
