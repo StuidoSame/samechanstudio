@@ -20,6 +20,13 @@ type DailyAnswer = {
   createdAt: string;
 };
 
+type DailyQuestionStorage = {
+  version: 1;
+  days: Record<string, DailyAnswer[]>;
+};
+
+const DAILY_QUESTION_STORAGE_KEY = "same-studio-daily-question-v1";
+
 const DAILY_QUESTIONS: Record<number, string> = {
   0: "다음 주의 나에게 남기고 싶은 말은 무엇인가요?",
   1: "이번 주에 꼭 이루고 싶은 한 가지는 무엇인가요?",
@@ -46,6 +53,59 @@ function getLocalDateKey(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+function isDailyAnswer(value: unknown): value is DailyAnswer {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const answer = value as Partial<DailyAnswer>;
+
+  return (
+    typeof answer.id === "string" &&
+    typeof answer.text === "string" &&
+    answer.text.trim().length > 0 &&
+    answer.text.length <= 120 &&
+    typeof answer.createdAt === "string"
+  );
+}
+
+function readDailyStorage(): DailyQuestionStorage {
+  try {
+    const storedValue = window.localStorage.getItem(DAILY_QUESTION_STORAGE_KEY);
+
+    if (!storedValue) {
+      return { version: 1, days: {} };
+    }
+
+    const parsedValue = JSON.parse(storedValue) as Partial<DailyQuestionStorage>;
+
+    if (parsedValue.version !== 1 || !parsedValue.days || typeof parsedValue.days !== "object") {
+      return { version: 1, days: {} };
+    }
+
+    const days = Object.fromEntries(
+      Object.entries(parsedValue.days).map(([dateKey, storedAnswers]) => [
+        dateKey,
+        Array.isArray(storedAnswers) ? storedAnswers.filter(isDailyAnswer).slice(0, 3) : [],
+      ]),
+    );
+
+    return { version: 1, days };
+  } catch {
+    return { version: 1, days: {} };
+  }
+}
+
+function writeDailyAnswers(dateKey: string, answers: DailyAnswer[]) {
+  try {
+    const storage = readDailyStorage();
+    storage.days[dateKey] = answers.slice(0, 3);
+    window.localStorage.setItem(DAILY_QUESTION_STORAGE_KEY, JSON.stringify(storage));
+  } catch {
+    // The in-memory experience remains available when storage is blocked.
+  }
+}
+
 export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const [hasEntered, setHasEntered] = useState(false);
@@ -58,6 +118,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const [answerDraft, setAnswerDraft] = useState("");
   const [showSavedState, setShowSavedState] = useState(false);
   const savedStateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentDateKey = currentDate ? getLocalDateKey(currentDate) : "";
 
   useEffect(() => {
     setCurrentDate(new Date());
@@ -140,6 +201,15 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
     };
   }, [hasEntered, prefersReducedMotion, question]);
 
+  useEffect(() => {
+    if (!currentDateKey) {
+      return;
+    }
+
+    const storage = readDailyStorage();
+    setAnswers(storage.days[currentDateKey] ?? []);
+  }, [currentDateKey]);
+
   useEffect(
     () => () => {
       if (savedStateTimerRef.current) {
@@ -153,7 +223,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
     event?.preventDefault();
     const text = answerDraft.trim();
 
-    if (!text || answers.length >= 3 || showSavedState) {
+    if (!text || !currentDateKey || answers.length >= 3 || showSavedState) {
       return;
     }
 
@@ -163,7 +233,9 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
       createdAt: new Date().toISOString(),
     };
 
-    setAnswers((currentAnswers) => [nextAnswer, ...currentAnswers].slice(0, 3));
+    const nextAnswers = [nextAnswer, ...answers].slice(0, 3);
+    setAnswers(nextAnswers);
+    writeDailyAnswers(currentDateKey, nextAnswers);
     setAnswerDraft("");
     setShowSavedState(true);
 
