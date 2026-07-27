@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-
-const INITIAL_PUZZLE = [true, false, true, false, true, false, true, false, false];
+import { useEffect, useState, type ReactNode } from "react";
+import { DAILY_PUZZLES, WEEK_PROGRESS_BY_DAY } from "./dailyPuzzles";
 
 function toggleTileAndNeighbors(board: boolean[], tileIndex: number) {
   const row = Math.floor(tileIndex / 3);
@@ -22,7 +21,18 @@ type IPadFrameProps = {
 };
 
 export function IPadFrame({ children }: IPadFrameProps) {
-  const [board, setBoard] = useState(INITIAL_PUZZLE);
+  const [weekday, setWeekday] = useState<number | null>(null);
+  const [board, setBoard] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    const dateFrame = window.requestAnimationFrame(() => {
+      const localWeekday = new Date().getDay();
+      setWeekday(localWeekday);
+      setBoard([...DAILY_PUZZLES[localWeekday].board]);
+    });
+
+    return () => window.cancelAnimationFrame(dateFrame);
+  }, []);
 
   return (
     <div className="device-tablet-stage" aria-label="Interactive iPad daily puzzle">
@@ -32,7 +42,7 @@ export function IPadFrame({ children }: IPadFrameProps) {
             <div className="tablet-puzzle">
               <header className="tablet-puzzle-header">
                 <span>THINK SPACE</span>
-                <time>01 / 07</time>
+                <time>{weekday === null ? "-- / 07" : WEEK_PROGRESS_BY_DAY[weekday]}</time>
               </header>
               <main className="tablet-puzzle-main">
                 <p id="tablet-puzzle-instructions">Make every light feel the same.</p>
