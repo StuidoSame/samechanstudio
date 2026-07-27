@@ -242,6 +242,18 @@ export function AppDetailOverlay({
             )}
           </div>
           <div
+            className="device-detail-copy"
+            data-description-key={`${app.id}:${selectedDevice ?? "none"}`}
+            aria-live="polite"
+          >
+            <div className="device-keywords">
+              {selectedContent?.keywords.map((keyword) => (
+                <span key={keyword}>{keyword}</span>
+              ))}
+            </div>
+            <p>{selectedContent?.description}</p>
+          </div>
+          <div
             className="app-detail-device-selector"
             role="group"
             aria-label="디바이스 선택"
@@ -261,18 +273,6 @@ export function AppDetailOverlay({
                 </span>
               </button>
             ))}
-          </div>
-          <div
-            className="device-detail-copy"
-            data-description-key={`${app.id}:${selectedDevice ?? "none"}`}
-            aria-live="polite"
-          >
-            <div className="device-keywords">
-              {selectedContent?.keywords.map((keyword) => (
-                <span key={keyword}>{keyword}</span>
-              ))}
-            </div>
-            <p>{selectedContent?.description}</p>
           </div>
           <span className="app-detail-screenshot-count" aria-hidden="true">
             {selectedContent?.screenshots.length ?? 0}

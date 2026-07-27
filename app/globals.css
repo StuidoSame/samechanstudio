@@ -1881,7 +1881,7 @@ button {
   display: grid;
   grid-template-rows: auto minmax(230px, 320px) auto auto;
   align-content: center;
-  gap: clamp(18px, 2.2vw, 28px);
+  gap: clamp(16px, 1.8vw, 24px);
   overflow-y: auto;
 }
 
