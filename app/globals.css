@@ -1977,11 +1977,13 @@ button {
   color: rgba(90, 68, 126, 0.68);
   font-size: clamp(14px, 1.3vw, 17px);
   line-height: 1.65;
+  text-align: center;
 }
 
 .device-keywords {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -1994,11 +1996,13 @@ button {
   font-size: clamp(11px, 1vw, 13px);
   font-weight: 700;
   line-height: 1;
+  text-align: center;
 }
 
 .device-detail-copy p {
-  margin: 16px 0 0;
-  max-width: 70ch;
+  width: min(100%, 60ch);
+  margin: 16px auto 0;
+  overflow-wrap: break-word;
 }
 
 .app-detail-device-selector {
