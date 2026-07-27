@@ -73,13 +73,15 @@ const vertexShader = `
   uniform float uPointerStrength;
   varying vec3 vNormalW;
   varying vec3 vPosition;
-  varying float vBulge;
+  varying vec3 vLocalPosition;
+  varying float vReaction;
 
-  float organic(vec3 p, float t) {
-    float lobes = sin(atan(p.y, p.x) * 7.0 + t * 0.34) * 0.034;
-    lobes += sin(atan(p.z, p.x) * 5.0 - t * 0.27) * 0.022;
-    lobes += sin((p.x * 2.1 + p.y * 1.7 + p.z * 1.2) * 3.0 + t * 0.45) * 0.015;
-    return lobes;
+  float heroSurface(vec3 p, float t) {
+    float angle = atan(p.y, p.x);
+    float primaryCurve = sin(angle * 2.0 + t * 0.43) * 0.050;
+    float secondaryCurve = sin(angle * 3.0 - t * 0.42 + p.y * 0.7) * 0.024;
+    float verticalDrift = sin(p.y * 1.45 + t * 0.47 + p.x * 0.35) * 0.014;
+    return (primaryCurve + secondaryCurve + verticalDrift) * uIdleStrength;
   }
 
   float loaderSurface(vec3 p, float t) {
@@ -95,52 +97,60 @@ const vertexShader = `
 
   void main() {
     vec3 n = normalize(position);
-    float idleScale = mix(1.0, uIdleStrength * 0.32, uHeroMode);
-    float idle = organic(n, uTime) * idleScale + loaderSurface(n, uTime);
+    float heroBreath = sin(uTime * 0.43) * 0.012;
+    heroBreath += sin(uTime * 0.29 + 1.15) * 0.004;
+    float idle = mix(loaderSurface(n, uTime), heroSurface(n, uTime), uHeroMode);
     float directionalFace = pow(max(0.0, dot(n, vec3(uDirection, 0.0, 0.0))), 2.25);
     float releaseFace = pow(max(0.0, dot(n, vec3(-uDirection, 0.0, 0.0))), 3.0);
     float legacyMembrane = directionalFace * uStretch * 0.34;
     legacyMembrane -= releaseFace * uTransition * 0.075;
-    float enterFace = pow(max(0.0, dot(n, vec3(uEnterDirection, 0.0, 0.0))), 2.4);
-    float exitFace = pow(max(0.0, dot(n, vec3(uExitDirection, 0.0, 0.0))), 2.15);
+    float enterFace = pow(max(0.0, dot(n, vec3(uEnterDirection, 0.0, 0.0))), 1.7);
+    float exitFace = pow(max(0.0, dot(n, vec3(uExitDirection, 0.0, 0.0))), 1.7);
+    float reaction = clamp(max(
+      max(uEnterStrength, uExitStrength),
+      max(uReleaseStrength, abs(uSpringResponse) * 3.0)
+    ) * uMotionScale, 0.0, 1.0);
     float directionalMembrane = (
-      enterFace * uEnterStrength * 0.17 +
-      exitFace * uExitStrength * 0.20
+      enterFace * uEnterStrength * 0.030 +
+      exitFace * uExitStrength * 0.034 -
+      reaction * 0.012
     ) * uMotionScale;
-    float releaseSurface = (
-      -exitFace * uReleaseStrength * 0.12 +
-      enterFace * uReleaseStrength * 0.045
-    ) * uMotionScale;
-    float settlePrimary = uSpringResponse * (0.52 + n.y * 0.14);
-    float settleSecondary = sin(n.z * 2.15 + n.y * 0.9) * uSpringResponse * 0.18;
-    float settleSurface = (settlePrimary + settleSecondary) * uMotionScale;
+    float releaseSurface = (enterFace - exitFace) * uReleaseStrength * 0.012 * uMotionScale;
+    float settleSurface = uSpringResponse * (0.10 + n.y * 0.018) * uMotionScale;
     float membrane = mix(
       legacyMembrane,
       directionalMembrane + releaseSurface + settleSurface,
       uHeroMode
     );
-    float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * mix(0.018, 0.006, uHeroMode);
+    float wobble = sin(uTime * 3.0 + n.y * 4.0) * uTransition * 0.018 * (1.0 - uHeroMode);
     float loaderSqueeze = sin(uTime * 2.05) * uLoaderMotion;
     vec3 pointerDirection = normalize(vec3(uPointer.x, uPointer.y * 0.86, 0.72));
     float pointerFace = pow(max(0.0, dot(n, pointerDirection)), 3.2);
-    float pointerSurface = pointerFace * uPointerStrength;
+    float pointerSurface = pointerFace * uPointerStrength * mix(1.0, 0.18, uHeroMode);
 
-    vec3 displaced = position + n * (idle + membrane + wobble + pointerSurface);
-    displaced += pointerDirection * pointerSurface * 0.06;
-    displaced.x *= 1.0 + mix(uStretch * 0.08, (uEnterStrength + uExitStrength) * 0.025 * uMotionScale, uHeroMode) + loaderSqueeze * 0.045;
+    vec3 displaced = position + n * (
+      idle + membrane + wobble + pointerSurface + heroBreath * uHeroMode
+    );
+    displaced += pointerDirection * pointerSurface * mix(0.06, 0.018, uHeroMode);
+    displaced.x *= 1.0 + mix(
+      uStretch * 0.08,
+      (uEnterStrength + uExitStrength) * 0.010 * uMotionScale,
+      uHeroMode
+    ) + loaderSqueeze * 0.045;
     float legacyShift = uDirection * uStretch * (0.09 + directionalFace * 0.08);
     float directionalShift = (
-      uEnterDirection * enterFace * uEnterStrength * 0.13 +
-      uExitDirection * exitFace * uExitStrength * 0.16 +
-      uReleaseDirection * uReleaseStrength * (0.11 + enterFace * 0.04)
+      uEnterDirection * enterFace * uEnterStrength * 0.018 +
+      uExitDirection * exitFace * uExitStrength * 0.020 +
+      uReleaseDirection * uReleaseStrength * 0.012
     ) * uMotionScale;
     displaced.x += mix(legacyShift, directionalShift, uHeroMode);
-    float idleBreath = sin(uTime * 0.45) * mix(0.008, 0.004, uHeroMode);
-    displaced.y *= 0.94 + idleBreath - loaderSqueeze * 0.035;
-    displaced.z *= 0.91;
+    float loaderBreath = sin(uTime * 0.45) * 0.008;
+    displaced.y *= mix(0.94 + loaderBreath - loaderSqueeze * 0.035, 0.955, uHeroMode);
+    displaced.z *= mix(0.91, 0.935, uHeroMode);
 
-    vBulge = membrane + idle + pointerSurface;
-    vPosition = displaced;
+    vReaction = reaction;
+    vLocalPosition = displaced;
+    vPosition = (modelMatrix * vec4(displaced, 1.0)).xyz;
     vNormalW = normalize(normalMatrix * n);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
   }
@@ -155,31 +165,83 @@ const fragmentShader = `
   uniform float uPointerStrength;
   varying vec3 vNormalW;
   varying vec3 vPosition;
-  varying float vBulge;
+  varying vec3 vLocalPosition;
+  varying float vReaction;
 
   void main() {
+    vec3 normal = normalize(vNormalW);
     vec3 viewDir = normalize(cameraPosition - vPosition);
-    float fresnel = pow(1.0 - abs(dot(normalize(vNormalW), viewDir)), 2.25);
-    float upperLight = smoothstep(-0.75, 0.85, vNormalW.y);
-    float leftPearl = pow(max(0.0, dot(normalize(vNormalW), normalize(vec3(-0.7, 0.8, 0.9)))), 12.0);
-    float pinkPearl = pow(max(0.0, dot(normalize(vNormalW), normalize(vec3(0.8, -0.15, 0.7)))), 8.0);
+    float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.35);
+
+    vec2 highlightDrift = vec2(
+      cos(uTime * 0.41) * 0.055,
+      sin(uTime * 0.44) * 0.045
+    );
+    vec2 highlightCenter = vec2(-0.34, 0.42) + highlightDrift;
+    float highlightDistance = length(
+      vec2(vLocalPosition.x * 0.82, vLocalPosition.y) - highlightCenter
+    );
+    float diffusedHighlight = 1.0 - smoothstep(0.16, 0.95, highlightDistance);
+    diffusedHighlight *= smoothstep(-0.25, 0.92, normal.z);
+
+    vec2 shadowDrift = vec2(
+      sin(uTime * 0.40 - 0.75) * 0.035,
+      cos(uTime * 0.43 - 0.75) * 0.025
+    );
+    float bottomShadow = 1.0 - smoothstep(
+      0.20,
+      1.08,
+      length(vec2(vLocalPosition.x * 0.86, vLocalPosition.y) - vec2(0.34, -0.52) - shadowDrift)
+    );
+
+    float gradientAngle = uTime * 0.45;
+    vec2 gradientDirection = vec2(cos(gradientAngle), sin(gradientAngle));
+    float gradientDrift = dot(vLocalPosition.xy, gradientDirection) * 0.5 + 0.5;
+    float innerLight = 1.0 - smoothstep(
+      0.12,
+      1.05,
+      length(vLocalPosition.xy - vec2(-0.10, 0.06 + sin(uTime * 0.42) * 0.05))
+    );
+    float upperLeftWash = clamp(
+      0.52 + vLocalPosition.y * 0.22 - vLocalPosition.x * 0.16,
+      0.0,
+      1.0
+    );
+    float softKeyLight = smoothstep(
+      -0.62,
+      0.88,
+      dot(normal, normalize(vec3(-0.56, 0.72, 0.42)))
+    );
+    float softLowerShade = smoothstep(
+      -0.45,
+      0.86,
+      dot(normal, normalize(vec3(0.48, -0.68, 0.34)))
+    );
+
     vec3 pointerDirection = normalize(vec3(uPointer.x, uPointer.y * 0.86, 0.72));
-    float pointerPearl = pow(max(0.0, dot(normalize(vNormalW), pointerDirection)), 11.0) * uPointerStrength;
-    float inner = 0.5 + 0.5 * sin(vPosition.y * 3.0 - vPosition.x * 2.2 + uTime * 0.17);
+    float pointerLight = pow(max(0.0, dot(normal, pointerDirection)), 7.0);
+    pointerLight *= uPointerStrength * 0.22;
 
-    vec3 lavender = vec3(0.658, 0.451, 1.0);
-    vec3 lilac = vec3(0.847, 0.718, 1.0);
-    vec3 blue = vec3(0.725, 0.867, 1.0);
-    vec3 pink = vec3(1.0, 0.714, 0.875);
-    vec3 color = mix(lavender, lilac, upperLight * 0.54);
-    color = mix(color, blue, fresnel * 0.20);
-    color = mix(color, pink, pinkPearl * 0.22);
-    color = mix(color, uAccentColor, (0.055 + uTransition * 0.05) * inner);
-    color += vec3(1.0) * leftPearl * 0.55;
-    color += vec3(0.88, 0.78, 1.0) * pointerPearl * 1.15;
-    color += vec3(0.17, 0.06, 0.28) * max(0.0, vBulge) * 0.5;
+    vec3 baseDeep = vec3(0.42, 0.20, 0.75);
+    vec3 baseLavender = vec3(0.72, 0.49, 0.98);
+    vec3 innerLavender = vec3(0.88, 0.76, 1.0);
+    vec3 edgeLavender = vec3(0.84, 0.70, 1.0);
+    vec3 color = mix(baseDeep, baseLavender, 0.46 + gradientDrift * 0.34);
+    color = mix(color, innerLavender, innerLight * 0.28);
+    color = mix(color, innerLavender, upperLeftWash * 0.18);
+    color = mix(color, vec3(0.94, 0.84, 1.0), softKeyLight * 0.28);
+    color = mix(color, vec3(0.98, 0.96, 1.0), diffusedHighlight * 0.42);
+    color = mix(color, vec3(0.29, 0.13, 0.49), bottomShadow * 0.18);
+    color = mix(color, baseDeep, softLowerShade * 0.10);
+    color = mix(color, edgeLavender, fresnel * 0.12);
+    color = mix(color, uAccentColor, (0.025 + vReaction * 0.018) * innerLight);
+    color += vec3(0.88, 0.80, 1.0) * pointerLight;
 
-    float alpha = 0.60 + fresnel * 0.27 + leftPearl * 0.08 + pointerPearl * 0.08;
+    float alpha = 0.44;
+    alpha += innerLight * 0.045;
+    alpha += fresnel * 0.17;
+    alpha += bottomShadow * 0.025;
+    alpha -= diffusedHighlight * 0.025;
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -370,24 +432,40 @@ function JellyMesh({
     const springResponse = loader
       ? 0
       : material.uniforms.uSpringResponse.value * (detail === 4 ? 0.75 : 1);
-    meshRef.current.scale.set(
-      finalScale *
-        (1 +
-          largeWave * motionAmplitude +
-          preparationWidth +
-          springResponse * 0.42),
-      finalScale *
-        (1 -
-          largeWave * motionAmplitude * 0.84 +
-          secondaryWave * motionAmplitude * 0.34 -
-          preparationWidth * 0.48 -
-          springResponse * 0.32) *
-        (loader && detail === 4 ? 0.9 : 1),
-      finalScale *
-        (1 +
-          secondaryWave * motionAmplitude * 0.42 +
-          springResponse * 0.16),
-    );
+    if (loader) {
+      meshRef.current.scale.set(
+        finalScale *
+          (1 +
+            largeWave * motionAmplitude +
+            preparationWidth +
+            springResponse * 0.42),
+        finalScale *
+          (1 -
+            largeWave * motionAmplitude * 0.84 +
+            secondaryWave * motionAmplitude * 0.34 -
+            preparationWidth * 0.48 -
+            springResponse * 0.32) *
+          (detail === 4 ? 0.9 : 1),
+        finalScale *
+          (1 +
+            secondaryWave * motionAmplitude * 0.42 +
+            springResponse * 0.16),
+      );
+    } else {
+      const heroBreath = reducedMotion
+        ? 0
+        : Math.sin(material.uniforms.uTime.value * 0.43) * 0.009 +
+          Math.sin(material.uniforms.uTime.value * 0.47 + 1.1) * 0.003;
+      const transitionCompression = reducedMotion
+        ? 0
+        : material.uniforms.uTransition.value * 0.026 +
+          Math.abs(material.uniforms.uSpringResponse.value) * 0.08;
+      meshRef.current.scale.set(
+        1 + heroBreath - transitionCompression,
+        1 + heroBreath * 0.72 + transitionCompression * 0.34,
+        1 + heroBreath * 0.46 + transitionCompression * 0.18,
+      );
+    }
     meshRef.current.position.set(
       loader
         ? (Math.sin(material.uniforms.uTime.value * 0.68 + 0.55) * 0.026 +
@@ -408,20 +486,27 @@ function JellyMesh({
     meshRef.current.rotation.z = loader
       ? Math.sin(material.uniforms.uTime.value * 0.42 + 0.8) *
         THREE.MathUtils.degToRad(reducedMotion ? 0.5 : 3)
-      : Math.sin(material.uniforms.uTime.value * 0.23) * 0.012;
+      : Math.sin(material.uniforms.uTime.value * 0.41) *
+        (reducedMotion ? 0 : 0.008);
     state.gl.setClearColor(0x000000, 0);
   });
 
   return (
     <mesh ref={meshRef} scale={loader ? 0.5 : 1}>
-      <icosahedronGeometry args={[1, detail]} />
+      {loader ? (
+        <icosahedronGeometry args={[1, detail]} />
+      ) : (
+        <sphereGeometry
+          args={[1, detail === 4 ? 64 : 80, detail === 4 ? 48 : 56]}
+        />
+      )}
       <shaderMaterial
         ref={materialRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         transparent
         depthWrite={false}
-        side={THREE.DoubleSide}
+        side={loader ? THREE.DoubleSide : THREE.FrontSide}
         uniforms={uniforms}
       />
     </mesh>
@@ -451,7 +536,10 @@ function JellyFallback({
     : 1;
 
   return (
-    <div className={`jelly-fallback ${className}`} aria-hidden="true">
+    <div
+      className={`jelly-fallback${loader ? " is-loader-fallback" : ""} ${className}`}
+      aria-hidden="true"
+    >
       <span
         style={
           {
