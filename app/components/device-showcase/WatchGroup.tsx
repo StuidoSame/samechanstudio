@@ -31,6 +31,12 @@ const DRUM_GAIN: Record<DrumId, number> = {
 
 const MASTER_GAIN = 0.28;
 
+const KEY_TO_DRUM: Partial<Record<string, DrumId>> = {
+  KeyA: "kick",
+  KeyS: "snare",
+  KeyD: "hihat",
+};
+
 function createNoiseBuffer(context: AudioContext, duration: number) {
   const frameCount = Math.ceil(context.sampleRate * duration);
   const buffer = context.createBuffer(1, frameCount, context.sampleRate);
@@ -54,7 +60,7 @@ export function WatchGroup() {
   const masterGainRef = useRef<GainNode | null>(null);
   const audioBuffersRef = useRef<Partial<Record<DrumId, AudioBuffer>>>({});
   const bufferPromisesRef = useRef<Partial<Record<DrumId, Promise<AudioBuffer>>>>({});
-  const activatePadRef = useRef<(pad: (typeof DRUM_PADS)[number]) => void>(() => undefined);
+  const triggerDrumRef = useRef<(drumId: DrumId, shouldRecord?: boolean) => void>(() => undefined);
   const hitRecoveryTimerRef = useRef<number | null>(null);
   const recordingStartedAtRef = useRef(0);
   const recordingStopTimerRef = useRef<number | null>(null);
@@ -221,7 +227,10 @@ export function WatchGroup() {
     source.start();
   };
 
-  const performPad = (pad: (typeof DRUM_PADS)[number], shouldRecord = true) => {
+  const triggerDrum = (drumId: DrumId, shouldRecord = true) => {
+    const pad = DRUM_PADS.find((candidate) => candidate.id === drumId);
+    if (!pad) return;
+
     setActivePad(pad.id);
     setHitCounts((currentCounts) => ({ ...currentCounts, [pad.id]: currentCounts[pad.id] + 1 }));
     void playSample(pad);
@@ -242,7 +251,7 @@ export function WatchGroup() {
     }, 170);
   };
 
-  const activatePad = (pad: (typeof DRUM_PADS)[number]) => performPad(pad, true);
+  const activatePad = (pad: (typeof DRUM_PADS)[number]) => triggerDrum(pad.id, true);
 
   const stopRecording = () => {
     setIsRecording(false);
@@ -276,8 +285,7 @@ export function WatchGroup() {
 
     rhythm.forEach((rhythmEvent) => {
       const timer = window.setTimeout(() => {
-        const pad = DRUM_PADS.find((candidate) => candidate.id === rhythmEvent.drum);
-        if (pad) performPad(pad, false);
+        triggerDrum(rhythmEvent.drum, false);
       }, rhythmEvent.time);
       playbackTimersRef.current.push(timer);
     });
@@ -307,7 +315,7 @@ export function WatchGroup() {
   };
 
   useEffect(() => {
-    activatePadRef.current = activatePad;
+    triggerDrumRef.current = triggerDrum;
   });
 
   useEffect(() => {
@@ -315,14 +323,19 @@ export function WatchGroup() {
       const target = event.target;
       if (
         event.repeat ||
-        (target instanceof HTMLElement &&
-          (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)))
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        (target instanceof HTMLElement && target.isContentEditable)
       ) {
         return;
       }
 
-      const pad = DRUM_PADS.find((candidate) => candidate.shortcut.toLowerCase() === event.key.toLowerCase());
-      if (pad) activatePadRef.current(pad);
+      const drumId = KEY_TO_DRUM[event.code];
+      if (!drumId) return;
+
+      event.preventDefault();
+      triggerDrumRef.current(drumId, true);
     };
 
     window.addEventListener("keydown", handleShortcut);
