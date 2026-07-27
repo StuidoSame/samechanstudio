@@ -3119,28 +3119,28 @@ button {
 
 .section-cosmos--phone {
   --star-one-x: 7%; --star-one-y: 17%;
-  --star-two-x: 97%; --star-two-y: 10%;
-  --star-three-x: 96%; --star-three-y: 82%;
+  --star-two-x: 31%; --star-two-y: 10%;
+  --star-three-x: 42%; --star-three-y: 82%;
   --dot-one-x: 4%; --dot-one-y: 66%;
-  --dot-two-x: 61%; --dot-two-y: 5%;
-  --diamond-one-x: 98%; --diamond-one-y: 31%;
+  --dot-two-x: 38%; --dot-two-y: 5%;
+  --diamond-one-x: 18%; --diamond-one-y: 31%;
 }
 
 .section-cosmos--tablet {
   --star-one-x: 94%; --star-one-y: 14%;
-  --star-two-x: 2%; --star-two-y: 86%;
+  --star-two-x: 82%; --star-two-y: 86%;
   --star-three-x: 63%; --star-three-y: 7%;
   --dot-one-x: 96%; --dot-one-y: 72%;
-  --dot-two-x: 53%; --dot-two-y: 15%;
+  --dot-two-x: 72%; --dot-two-y: 15%;
   --diamond-one-x: 99%; --diamond-one-y: 42%;
 }
 
 .section-cosmos--watch {
   --star-one-x: 11%; --star-one-y: 23%;
-  --star-two-x: 97%; --star-two-y: 87%;
-  --star-three-x: 55%; --star-three-y: 6%;
+  --star-two-x: 3%; --star-two-y: 87%;
+  --star-three-x: 40%; --star-three-y: 6%;
   --dot-one-x: 5%; --dot-one-y: 61%;
-  --dot-two-x: 99%; --dot-two-y: 16%;
+  --dot-two-x: 38%; --dot-two-y: 16%;
   --diamond-one-x: 21%; --diamond-one-y: 84%;
 }
 
@@ -3213,6 +3213,17 @@ button {
 }
 
 @media (max-width: 900px) {
+  .section-cosmos--phone,
+  .section-cosmos--tablet,
+  .section-cosmos--watch {
+    --star-one-y: 8%;
+    --star-two-y: 18%;
+    --star-three-y: 29%;
+    --dot-one-y: 24%;
+    --dot-two-y: 10%;
+    --diamond-one-y: 34%;
+  }
+
   .section-cosmos-constellation {
     width: 142px;
     opacity: 0.86;
@@ -3242,6 +3253,13 @@ button {
   .section-cosmos--tablet .section-cosmos-constellation--one {
     top: 4%;
     left: -8px;
+  }
+
+  .section-cosmos--phone .section-cosmos-orbit--one,
+  .section-cosmos--tablet .section-cosmos-orbit--one,
+  .section-cosmos--watch .section-cosmos-orbit--one {
+    top: 30%;
+    bottom: auto;
   }
 }
 
@@ -3720,6 +3738,25 @@ button {
 .device-showcase-body p {
   width: 100%;
   margin: 0;
+}
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .device-showcase-row {
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 0.92fr);
+    column-gap: clamp(56px, 6vw, 84px);
+  }
+
+  .device-showcase-row.is-reversed {
+    grid-template-columns: minmax(340px, 0.92fr) minmax(0, 1fr);
+  }
+
+  .device-showcase-row:not(.is-reversed) .device-showcase-copy {
+    padding-left: clamp(36px, 4vw, 48px);
+  }
+
+  .device-showcase-row.is-reversed .device-showcase-copy {
+    padding-right: clamp(36px, 4vw, 48px);
+  }
 }
 
 @media (max-width: 1100px) {
@@ -5511,7 +5548,7 @@ button {
   }
 
   .device-showcase-copy {
-    width: min(100%, 560px);
+    width: min(100%, 620px);
     max-width: none;
     grid-area: copy;
     justify-self: center;
@@ -5858,6 +5895,22 @@ button {
     row-gap: clamp(32px, 9vw, 44px);
   }
 
+  .device-showcase-copy {
+    width: 100%;
+  }
+
+  .device-showcase-copy h2 {
+    margin-top: 18px;
+    font-size: clamp(34px, 9.5vw, 40px);
+    line-height: 1.2;
+  }
+
+  .device-showcase-body {
+    margin-top: 24px;
+    font-size: clamp(15px, 4vw, 17px);
+    line-height: 1.82;
+  }
+
   .watch-drum-controls button {
     width: 36px;
     height: 36px;
@@ -5875,7 +5928,7 @@ button {
   }
 
   .device-showcase-copy h2 {
-    font-size: 38px;
+    font-size: 34px;
   }
 
   .device-showcase-body {
