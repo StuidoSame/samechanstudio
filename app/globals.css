@@ -3621,7 +3621,9 @@ button {
   position: relative;
   isolation: isolate;
   scroll-margin-top: 112px;
+  height: auto;
   min-height: auto;
+  overflow: visible;
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.78fr);
   align-items: center;
@@ -3654,7 +3656,17 @@ button {
 .device-showcase-copy {
   position: relative;
   z-index: 2;
+  height: auto;
+  max-height: none;
   max-width: 520px;
+  overflow: visible;
+}
+
+.device-showcase-body,
+.device-showcase-copy .type-reveal {
+  height: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .device-showcase-eyebrow {
