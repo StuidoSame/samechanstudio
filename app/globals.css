@@ -5479,7 +5479,7 @@ button {
 }
 
 .contact-chat-decoration,
-.contact-mail-decoration {
+.contact-paper-plane-decoration {
   position: absolute;
   z-index: 3;
   pointer-events: none;
@@ -5527,77 +5527,27 @@ button {
   box-shadow: 0 1px 4px rgba(76, 38, 146, 0.14);
 }
 
-.contact-mail-decoration {
-  right: -24px;
-  bottom: -20px;
-  width: 138px;
-  height: 94px;
+.contact-paper-plane-decoration {
+  right: -20px;
+  bottom: -28px;
+  width: 58px;
+  height: 50px;
+  color: rgba(250, 246, 255, 0.72);
+  filter: drop-shadow(0 4px 8px rgba(103, 70, 160, 0.08));
+  transform-origin: center;
+  animation: contact-paper-plane-float 12.5s ease-in-out -4s infinite;
+}
+
+.contact-paper-plane-decoration svg {
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: visible;
-  border-radius: 21px 23px 24px 19px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(206, 179, 255, 0.2)),
-    rgba(143, 99, 228, 0.15);
-  box-shadow:
-    0 16px 34px rgba(92, 57, 157, 0.09),
-    inset 0 1px 1px rgba(255, 255, 255, 0.52),
-    inset 0 -8px 16px rgba(89, 51, 158, 0.05);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  animation: contact-mail-float 12.5s ease-in-out -4s infinite;
-}
-
-.contact-mail-decoration::before,
-.contact-mail-decoration::after {
-  position: absolute;
-  top: 13px;
-  width: 57%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.38);
-  box-shadow: 0 1px 2px rgba(103, 67, 171, 0.06);
-  content: "";
-  transform-origin: top center;
-}
-
-.contact-mail-decoration::before {
-  left: 3px;
-  transform: rotate(35deg);
-}
-
-.contact-mail-decoration::after {
-  right: 3px;
-  transform: rotate(-35deg);
-}
-
-.contact-mail-fold {
-  position: absolute;
-  bottom: 18px;
-  width: 55%;
-  height: 1px;
-  background: rgba(139, 99, 214, 0.11);
-  transform-origin: bottom center;
-}
-
-.contact-mail-fold--left {
-  left: 5px;
-  transform: rotate(-31deg);
-}
-
-.contact-mail-fold--right {
-  right: 5px;
-  transform: rotate(31deg);
-}
-
-.contact-mail-decoration > i {
-  position: absolute;
-  top: -6px;
-  right: -5px;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 26%, #fff8fc 0 10%, #f3aecf 42%, #dd7eaf 100%);
-  box-shadow:
-    0 4px 10px rgba(190, 91, 145, 0.11),
-    inset 0 1px 1px rgba(255, 255, 255, 0.68);
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
 @keyframes contact-panel-float {
@@ -5620,13 +5570,13 @@ button {
   }
 }
 
-@keyframes contact-mail-float {
+@keyframes contact-paper-plane-float {
   0%,
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) rotate(-2deg);
   }
   50% {
-    transform: translate3d(0, -2px, 0);
+    transform: translate3d(0, -4px, 0) rotate(2deg);
   }
 }
 
@@ -5661,11 +5611,11 @@ button {
     font-size: clamp(40px, 6.2vw, 54px);
   }
 
-  .contact-mail-decoration {
-    right: -10px;
-    bottom: -16px;
-    width: 118px;
-    height: 80px;
+  .contact-paper-plane-decoration {
+    right: -12px;
+    bottom: -24px;
+    width: 52px;
+    height: 45px;
   }
 }
 
@@ -5724,33 +5674,16 @@ button {
     height: 5px;
   }
 
-  .contact-mail-decoration {
-    right: 14px;
-    bottom: -12px;
-    width: 88px;
-    height: 60px;
-    border-radius: 15px 16px 17px 14px;
-  }
-
-  .contact-mail-decoration::before,
-  .contact-mail-decoration::after {
-    top: 9px;
-  }
-
-  .contact-mail-fold {
-    bottom: 12px;
-  }
-
-  .contact-mail-decoration > i {
-    top: -4px;
-    right: -3px;
-    width: 13px;
-    height: 13px;
+  .contact-paper-plane-decoration {
+    right: 8px;
+    bottom: -20px;
+    width: 46px;
+    height: 40px;
   }
 }
 
 @media (max-width: 360px) {
-  .contact-mail-decoration {
+  .contact-paper-plane-decoration {
     display: none;
   }
 }
@@ -5758,7 +5691,7 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .contact-panel,
   .contact-chat-decoration,
-  .contact-mail-decoration {
+  .contact-paper-plane-decoration {
     animation: none;
     transform: none;
   }

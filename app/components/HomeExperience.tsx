@@ -2291,10 +2291,11 @@ export function HomeExperience() {
                   />
                 </p>
               </div>
-              <div className="contact-mail-decoration" aria-hidden="true">
-                <span className="contact-mail-fold contact-mail-fold--left" />
-                <span className="contact-mail-fold contact-mail-fold--right" />
-                <i />
+              <div className="contact-paper-plane-decoration" aria-hidden="true">
+                <svg viewBox="0 0 48 42" fill="none" focusable="false">
+                  <path d="M44 20 4 4l13 34 10-14 17-4Z" />
+                  <path d="M4 4 27 24" />
+                </svg>
               </div>
             </div>
           </div>
