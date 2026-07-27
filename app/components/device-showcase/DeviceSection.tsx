@@ -60,6 +60,7 @@ export function DeviceSection({
           text={revealSteps[1].text}
           speed={revealSteps[1].speed}
           delay={getTypeRevealDelay(revealSteps, 1, 160, 190)}
+          preserveLineBreaks
         />
         <div className="device-showcase-body">
           <TypeReveal

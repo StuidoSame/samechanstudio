@@ -10,23 +10,23 @@ type DeviceJourneyId = "phone" | "tablet" | "watch";
 
 const phoneCopy = {
   index: "01",
-  category: "PHONE",
-  title: "Close to you.",
-  body: "Made for everyday moments.\nSmall experiences designed\nto stay close at hand.",
+  category: "순간",
+  title: "작은 순간을\n놓치지 않도록.",
+  body: "하루를 바꾸는 건 거창한 결심보다\n짧게 남긴 한 줄일 때가 많습니다.\n오늘의 마음을 기록하는 작은 성공이\n내일의 나를 조금 더 선명하게 만듭니다.",
 };
 
 const tabletCopy = {
   index: "02",
-  category: "TABLET",
-  title: "Room to think.",
-  body: "A small puzzle for a quieter moment.\nOne simple pattern, refreshed each day.",
+  category: "사유",
+  title: "잠시 멈춰\n생각할 수 있도록.",
+  body: "복잡한 하루에도 잠깐의 여백은 필요합니다.\n작은 문제 하나를 천천히 풀어가며\n생각이 정리되는 순간을 만나고,\n또 하나의 작은 성공을 완성합니다.",
 };
 
 const watchCopy = {
   index: "03",
-  category: "WATCH",
-  title: "Tap into rhythm.",
-  body: "Three small screens.\nOne quick beat.",
+  category: "박자",
+  title: "나만의 박자를\n찾을 수 있도록.",
+  body: "완벽한 연주보다 중요한 건\n직접 두드려보는 짧은 시작입니다.\n세 개의 작은 화면이 하나의 리듬이 되고,\n그 한 번의 박자가 작은 성공으로 남습니다.",
 };
 
 const JOURNEY_SECTIONS: Array<{ id: DeviceJourneyId; label: string }> = [
