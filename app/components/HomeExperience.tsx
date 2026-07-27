@@ -62,15 +62,7 @@ const FAST_FORWARD_GAP_MS = 70;
 const REDUCED_MOTION_FAST_FORWARD_TRANSITION_MS = 360;
 const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
-  { text: "Small apps, made with a lot of care.", speed: 45 },
-  {
-    text: "SAME STUDIO is an independent mobile app studio based in Daejeon, Korea. We build gentle tools for records, places, rhythm, and focus.",
-    speed: 18,
-  },
-  {
-    text: "Soft on first impression, dependable in daily use. Each app is designed to make a small recurring moment feel a little clearer.",
-    speed: 18,
-  },
+  { text: "Small apps, made\nwith a lot of care.", speed: 45 },
 ] as const;
 const CONTACT_REVEAL_STEPS = [
   { text: "Contact", speed: 45 },
@@ -2132,7 +2124,7 @@ export function HomeExperience() {
         </section>
 
         <TypeRevealGroup as="section" className="studio-about">
-          <div>
+          <div className="studio-about-content">
             <TypeReveal
               as="span"
               className="section-label"
@@ -2145,20 +2137,7 @@ export function HomeExperience() {
               text={ABOUT_REVEAL_STEPS[1].text}
               speed={ABOUT_REVEAL_STEPS[1].speed}
               delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 1)}
-            />
-          </div>
-          <div className="about-copy">
-            <TypeReveal
-              as="p"
-              text={ABOUT_REVEAL_STEPS[2].text}
-              speed={ABOUT_REVEAL_STEPS[2].speed}
-              delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 2)}
-            />
-            <TypeReveal
-              as="p"
-              text={ABOUT_REVEAL_STEPS[3].text}
-              speed={ABOUT_REVEAL_STEPS[3].speed}
-              delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 3)}
+              preserveLineBreaks
             />
           </div>
         </TypeRevealGroup>
