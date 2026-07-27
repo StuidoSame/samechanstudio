@@ -10,6 +10,8 @@ type RhythmEvent = {
   time: number;
 };
 
+type HitEffects = Record<DrumId, number[]>;
+
 const DRUM_PADS: Array<{
   id: DrumId;
   label: string;
@@ -52,6 +54,7 @@ function createNoiseBuffer(context: AudioContext, duration: number) {
 export function WatchGroup() {
   const [activePad, setActivePad] = useState<string | null>(null);
   const [hitCounts, setHitCounts] = useState<Record<DrumId, number>>({ kick: 0, snare: 0, hihat: 0 });
+  const [hitEffects, setHitEffects] = useState<HitEffects>({ kick: [], snare: [], hihat: [] });
   const [rhythm, setRhythm] = useState<RhythmEvent[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -65,6 +68,8 @@ export function WatchGroup() {
   const recordingStartedAtRef = useRef(0);
   const recordingStopTimerRef = useRef<number | null>(null);
   const playbackTimersRef = useRef<number[]>([]);
+  const effectSequenceRef = useRef(0);
+  const effectTimersRef = useRef<Set<number>>(new Set());
 
   const getAudioContext = useCallback(() => {
     if (audioContextRef.current && audioContextRef.current.state !== "closed") {
@@ -140,6 +145,8 @@ export function WatchGroup() {
       if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
       playbackTimersRef.current.forEach((timer) => window.clearTimeout(timer));
       playbackTimersRef.current = [];
+      effectTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      effectTimersRef.current.clear();
     };
   }, [getAudioContext, loadAudioBuffer]);
 
@@ -233,6 +240,21 @@ export function WatchGroup() {
 
     setActivePad(pad.id);
     setHitCounts((currentCounts) => ({ ...currentCounts, [pad.id]: currentCounts[pad.id] + 1 }));
+    effectSequenceRef.current += 1;
+    const effectId = effectSequenceRef.current;
+    setHitEffects((currentEffects) => ({
+      ...currentEffects,
+      [pad.id]: [...currentEffects[pad.id], effectId].slice(-6),
+    }));
+
+    const effectTimer = window.setTimeout(() => {
+      setHitEffects((currentEffects) => ({
+        ...currentEffects,
+        [pad.id]: currentEffects[pad.id].filter((id) => id !== effectId),
+      }));
+      effectTimersRef.current.delete(effectTimer);
+    }, 620);
+    effectTimersRef.current.add(effectTimer);
     void playSample(pad);
 
     if (shouldRecord && isRecording) {
@@ -370,6 +392,20 @@ export function WatchGroup() {
                   {Array.from({ length: 6 }, (_, index) => <i key={index} />)}
                 </span>
                 <strong>{pad.label}</strong>
+              </span>
+              <span className="watch-drum-splashes" aria-hidden="true">
+                {hitEffects[pad.id].map((effectId) => (
+                  <span className="watch-drum-splash" key={effectId}>
+                    <span className="watch-drum-rings">
+                      <i />
+                      <i />
+                      <i />
+                    </span>
+                    <span className="watch-drum-droplets">
+                      {Array.from({ length: 6 }, (_, index) => <i key={index} />)}
+                    </span>
+                  </span>
+                ))}
               </span>
               <small>{pad.shortcut}</small>
             </span>

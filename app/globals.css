@@ -4984,22 +4984,98 @@ button {
   height: 100%;
 }
 
-.watch-drum-pad::after {
+.watch-drum-splashes,
+.watch-drum-splash,
+.watch-drum-rings,
+.watch-drum-droplets {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.watch-drum-splashes {
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.watch-drum-rings i {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 38%;
+  width: 42%;
   aspect-ratio: 1;
-  border: 1px solid rgba(230, 205, 252, 0.48);
+  border: 1px solid rgba(234, 201, 249, 0.72);
   border-radius: 50%;
   opacity: 0;
-  content: "";
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(0.55);
+  transform: translate(-50%, -50%) scale(0.3);
+  animation: watch-drum-splash-ring 480ms ease-out forwards;
 }
 
-.drum-hit-wrapper.is-struck .watch-drum-pad::after {
-  animation: watch-drum-ripple 260ms ease-out;
+.watch-drum-rings i:nth-child(2) { animation-delay: 55ms; }
+.watch-drum-rings i:nth-child(3) { animation-delay: 105ms; }
+
+.watch-drum-droplets i {
+  --drop-x: 0px;
+  --drop-y: -20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(245, 218, 248, 0.78);
+  box-shadow: 0 0 4px rgba(219, 167, 235, 0.18);
+  opacity: 0;
+  animation: watch-drum-droplet 430ms ease-out forwards;
+}
+
+.watch-drum-droplets i:nth-child(1) { --drop-x: -21px; --drop-y: -14px; }
+.watch-drum-droplets i:nth-child(2) { --drop-x: 4px; --drop-y: -23px; width: 2px; height: 2px; }
+.watch-drum-droplets i:nth-child(3) { --drop-x: 22px; --drop-y: -9px; }
+.watch-drum-droplets i:nth-child(4) { --drop-x: 20px; --drop-y: 15px; width: 2px; height: 2px; }
+.watch-drum-droplets i:nth-child(5) { --drop-x: -3px; --drop-y: 23px; }
+.watch-drum-droplets i:nth-child(6) { --drop-x: -22px; --drop-y: 11px; width: 2px; height: 2px; }
+
+.watch-drum-pad--kick .watch-drum-rings i {
+  width: 48%;
+  animation-duration: 540ms;
+}
+
+.watch-drum-pad--kick .watch-drum-rings i:nth-child(3),
+.watch-drum-pad--kick .watch-drum-droplets i:nth-child(n + 5) {
+  display: none;
+}
+
+.watch-drum-pad--hihat .watch-drum-rings i {
+  width: 34%;
+  animation-duration: 330ms;
+}
+
+.watch-drum-pad--hihat .watch-drum-rings i:nth-child(2) { animation-delay: 35ms; }
+.watch-drum-pad--hihat .watch-drum-rings i:nth-child(3) { animation-delay: 65ms; }
+.watch-drum-pad--hihat .watch-drum-droplets i { animation-duration: 300ms; }
+
+@keyframes watch-drum-splash-ring {
+  0% {
+    opacity: 0.74;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.65);
+  }
+}
+
+@keyframes watch-drum-droplet {
+  0% {
+    opacity: 0.82;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--drop-x)), calc(-50% + var(--drop-y))) scale(0.5);
+  }
 }
 
 .watch-drum-pad strong {
@@ -5033,17 +5109,6 @@ button {
 @keyframes watch-drum-hit {
   50% {
     transform: translateY(2px) scale(0.96);
-  }
-}
-
-@keyframes watch-drum-ripple {
-  0% {
-    opacity: 0.68;
-    transform: translate(-50%, -50%) scale(0.55);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.35);
   }
 }
 
@@ -5697,8 +5762,7 @@ button {
     animation: none;
   }
 
-  .drum-hit-wrapper.is-struck,
-  .drum-hit-wrapper.is-struck .watch-drum-pad::after {
+  .drum-hit-wrapper.is-struck {
     animation: none;
   }
 

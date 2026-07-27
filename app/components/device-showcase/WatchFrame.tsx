@@ -29,7 +29,7 @@ export function WatchFrame({ variant, ariaLabel, onActivate, hitKey, isHit, chil
         if (event.detail === 0) onActivate();
       }}
     >
-      <span key={hitKey} className={`drum-hit-wrapper${hitKey > 0 ? " is-struck" : ""}`}>
+      <span className={`drum-hit-wrapper${hitKey > 0 ? " is-struck" : ""}`}>
         <span className="device-watch-strap device-watch-strap--top" aria-hidden="true" />
         <span className="device-watch-strap device-watch-strap--bottom" aria-hidden="true" />
         <span className="device-watch-body">
