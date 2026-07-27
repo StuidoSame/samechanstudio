@@ -3538,17 +3538,17 @@ button {
 
 .device-journey-node--phone {
   top: 23%;
-  left: 49.7%;
+  left: 49.6%;
 }
 
 .device-journey-node--tablet {
   top: 60%;
-  left: 52.7%;
+  left: 50.7%;
 }
 
 .device-journey-node--watch {
   top: 87%;
-  left: 49.6%;
+  left: 49.3%;
 }
 
 .device-journey-node-label {
@@ -3676,6 +3676,12 @@ button {
   color: #75678e;
   font-size: clamp(16px, 1.45vw, 19px);
   line-height: 1.72;
+}
+
+@media (max-width: 1100px) {
+  .device-journey-node-label {
+    display: none;
+  }
 }
 
 .device-phone-stage {
@@ -5109,6 +5115,25 @@ button {
     display: none;
   }
 
+  .device-journey-svg {
+    transform: translateX(-43%);
+  }
+
+  .device-journey-node--phone {
+    top: 23%;
+    left: 6.9%;
+  }
+
+  .device-journey-node--tablet {
+    top: 58%;
+    left: 7.8%;
+  }
+
+  .device-journey-node--watch {
+    top: 85%;
+    left: 6.3%;
+  }
+
   .device-showcase-inner {
     padding-block: clamp(72px, 10vw, 96px);
     padding-inline: clamp(20px, 6vw, 48px);
@@ -5411,6 +5436,34 @@ button {
     row-gap: clamp(48px, 14vw, 68px);
   }
 
+  .device-journey-svg {
+    transform: translateX(-45%);
+  }
+
+  .device-journey-line {
+    stroke-width: 1;
+  }
+
+  .device-journey-node {
+    width: 14px;
+    height: 14px;
+  }
+
+  .device-journey-node--phone {
+    top: 26%;
+    left: 4.9%;
+  }
+
+  .device-journey-node--tablet {
+    top: 58%;
+    left: 5.8%;
+  }
+
+  .device-journey-node--watch {
+    top: 85%;
+    left: 4.3%;
+  }
+
   .device-showcase-row,
   .device-showcase-row.is-reversed {
     row-gap: clamp(32px, 9vw, 44px);
@@ -5451,6 +5504,13 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .device-journey-line--progress {
     stroke-dashoffset: 0;
+  }
+
+  .device-journey-node,
+  .device-journey-node::after,
+  .device-journey-progress,
+  .device-journey-progress button {
+    transition: none;
   }
 
   .device-phone-stage,

@@ -90,11 +90,12 @@ export function DeviceShowcase() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        const nextVisible = entry.isIntersecting && entry.intersectionRatio > 0.01;
         setIsJourneyVisible((isVisible) =>
-          isVisible === entry.isIntersecting ? isVisible : entry.isIntersecting,
+          isVisible === nextVisible ? isVisible : nextVisible,
         );
       },
-      { threshold: 0, rootMargin: "-10% 0px" },
+      { threshold: [0, 0.01], rootMargin: "-10% 0px" },
     );
 
     observer.observe(showcase);
@@ -179,12 +180,12 @@ export function DeviceShowcase() {
           >
             <path
               className="device-journey-line device-journey-line--base"
-              d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
+              d="M50.5 4C48.5 22 49 36 50 49C51 64 50.5 77 49 96"
               pathLength="1"
             />
             <path
               className="device-journey-line device-journey-line--progress"
-              d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
+              d="M50.5 4C48.5 22 49 36 50 49C51 64 50.5 77 49 96"
               pathLength="1"
             />
           </svg>
