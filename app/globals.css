@@ -16,6 +16,7 @@
   --purple: #7045df;
   --active-accent: #ff5559;
   --active-accent-rgb: 255, 85, 89;
+  --content-lavender-flow: #f2ebff;
 }
 
 * {
@@ -2779,7 +2780,13 @@ button {
   background:
     radial-gradient(circle at 18% 18%, rgba(150, 103, 231, 0.1), transparent 24rem),
     radial-gradient(circle at 82% 38%, rgba(217, 171, 239, 0.12), transparent 28rem),
-    linear-gradient(180deg, #faf8ff 0%, #f5f0ff 48%, #f2ebff 100%);
+    linear-gradient(
+      180deg,
+      #faf8ff 0%,
+      #f6f1ff 24%,
+      var(--content-lavender-flow) 42%,
+      var(--content-lavender-flow) 100%
+    );
 }
 
 .device-showcase::before,
@@ -3348,23 +3355,20 @@ button {
   position: relative;
   scroll-margin-top: 100px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 78% 32%, rgba(177, 132, 236, 0.12), transparent 25rem),
-    radial-gradient(ellipse 80% 24% at 50% 100%, rgba(103, 86, 129, 0.12), transparent 74%),
-    linear-gradient(180deg, #f2ebff 0%, #eee6f8 58%, #e7dcef 100%);
+  background-color: var(--content-lavender-flow);
+  background-image: none;
 }
 
 .contact-section::before {
   position: absolute;
-  top: 18%;
-  left: 11%;
-  width: min(36vw, 480px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(165, 116, 235, 0.11), transparent 68%);
-  filter: blur(18px);
+  inset: 0;
+  background:
+    radial-gradient(circle at 78% 36%, rgba(177, 132, 236, 0.1), transparent 25rem),
+    radial-gradient(ellipse 80% 24% at 50% 100%, rgba(103, 86, 129, 0.08), transparent 74%);
   content: "";
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 28%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 28%, black 100%);
 }
 
 .contact-inner {
