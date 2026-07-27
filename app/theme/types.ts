@@ -7,4 +7,3 @@ export type Theme = (typeof THEMES)[number];
 export function isTheme(value: unknown): value is Theme {
   return typeof value === "string" && THEMES.includes(value as Theme);
 }
-

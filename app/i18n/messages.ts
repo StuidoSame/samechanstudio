@@ -67,4 +67,3 @@ export function formatMessage(
     key in values ? String(values[key]) : match,
   );
 }
-
