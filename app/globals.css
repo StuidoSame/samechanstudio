@@ -1840,39 +1840,44 @@ button {
 }
 
 .app-detail-close {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   margin: 0;
   padding: 0;
   display: grid;
   place-items: center;
-  flex: 0 0 48px;
-  border: 1px solid rgba(104, 68, 165, 0.2);
-  border-radius: 50%;
+  flex: 0 0 52px;
+  border: 0;
+  border-radius: 0;
   color: #6946b8;
-  background: rgba(255, 255, 255, 0.38);
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
   transition:
     color 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease,
+    opacity 0.2s ease,
     transform 0.2s ease;
 }
 
 .app-detail-close span {
   display: block;
   font-family: Arial, sans-serif;
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 300;
   line-height: 1;
   transform: translateY(-1px);
 }
 
 .app-detail-close:hover {
-  border-color: rgba(104, 68, 165, 0.38);
   color: #57309f;
-  background: rgba(255, 255, 255, 0.62);
-  transform: scale(1.04);
+  opacity: 0.82;
+  transform: scale(0.96);
+}
+
+.app-detail-close:focus-visible {
+  outline: 2px solid rgba(112, 69, 214, 0.58);
+  outline-offset: 2px;
+  border-radius: 50%;
 }
 
 .app-detail-content {
@@ -2192,9 +2197,13 @@ button {
   }
 
   .app-detail-close {
-    width: 46px;
-    height: 46px;
-    flex-basis: 46px;
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+  }
+
+  .app-detail-close span {
+    font-size: 28px;
   }
 
   .app-detail-title-icon {

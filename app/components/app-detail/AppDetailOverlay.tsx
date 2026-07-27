@@ -184,7 +184,7 @@ export function AppDetailOverlay({
             className="app-detail-close"
             ref={closeButtonRef}
             type="button"
-            aria-label="상세 보기 닫기"
+            aria-label="앱 상세 닫기"
             onClick={onRequestClose}
           >
             <span aria-hidden="true">×</span>
