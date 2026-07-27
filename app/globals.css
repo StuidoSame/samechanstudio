@@ -1893,30 +1893,27 @@ button {
 }
 
 .app-detail-store-button {
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   margin: 0;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(111, 75, 176, 0.16);
-  border-radius: 17px;
+  border: 0;
+  border-radius: 0;
   color: #704bb8;
-  background: rgba(244, 237, 255, 0.72);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
   transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease,
+    opacity 0.2s ease,
     transform 0.2s ease;
 }
 
 .app-detail-store-button:hover {
-  border-color: rgba(111, 75, 176, 0.3);
-  background: rgba(248, 243, 255, 0.9);
+  opacity: 0.82;
+  transform: translateY(-1px);
 }
 
 .app-detail-store-button:focus-visible {
@@ -1925,23 +1922,29 @@ button {
 }
 
 .app-detail-store-button:disabled {
-  color: rgba(112, 75, 184, 0.34);
+  color: rgba(112, 75, 184, 0.38);
   cursor: not-allowed;
-  opacity: 0.52;
+  opacity: 0.36;
+  transform: none;
 }
 
 .app-detail-store-icon-slot {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
-  flex: 0 0 28px;
+  flex: 0 0 36px;
 }
 
 .app-detail-store-icon {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: block;
+}
+
+.app-detail-store-icon.is-apple {
+  width: 34px;
+  height: 34px;
 }
 
 .app-detail-preview {
@@ -2213,7 +2216,18 @@ button {
   .app-detail-store-button {
     width: 48px;
     height: 48px;
-    border-radius: 15px;
+  }
+
+  .app-detail-store-icon-slot,
+  .app-detail-store-icon {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+  }
+
+  .app-detail-store-icon.is-apple {
+    width: 30px;
+    height: 30px;
   }
 
   .app-detail-preview {
@@ -2288,9 +2302,9 @@ button {
 
   .app-detail-store-icon-slot,
   .app-detail-store-icon {
-    width: 26px;
-    height: 26px;
-    flex-basis: 26px;
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
   }
 }
 

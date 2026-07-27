@@ -44,16 +44,18 @@ const DEVICE_ARIA_LABELS: Record<DetailDevice, string> = {
 function StoreIcon({ store }: { store: DetailStore }) {
   if (store === "apple") {
     return (
-      <svg className="app-detail-store-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <svg className="app-detail-store-icon is-apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M16.72 12.76c.02-2.08 1.7-3.08 1.78-3.13a3.82 3.82 0 0 0-3.01-1.63c-1.27-.13-2.51.76-3.16.76-.67 0-1.67-.75-2.76-.73a4.02 4.02 0 0 0-3.39 2.07c-1.47 2.54-.37 6.28 1.03 8.33.7 1 1.52 2.11 2.6 2.07 1.05-.04 1.44-.67 2.71-.67 1.25 0 1.62.67 2.72.64 1.13-.02 1.84-1 2.51-2.01a8.3 8.3 0 0 0 1.15-2.34 3.6 3.6 0 0 1-2.18-3.36ZM14.66 6.65a3.67 3.67 0 0 0 .84-2.64 3.75 3.75 0 0 0-2.43 1.26 3.5 3.5 0 0 0-.86 2.54 3.1 3.1 0 0 0 2.45-1.16Z" />
       </svg>
     );
   }
 
   return (
-    <svg className="app-detail-store-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4.3 3.4 15.2 12 4.3 20.6V3.4Z" fill="currentColor" opacity=".92" />
-      <path d="m15.2 12 2.7-2.13c1.45 1.08 2.18 1.68 2.18 2.13s-.73 1.05-2.18 2.13L15.2 12Z" fill="currentColor" opacity=".72" />
+    <svg className="app-detail-store-icon is-google" viewBox="0 0 32 36" fill="none" aria-hidden="true">
+      <path d="M3.7 2.9c-.45.5-.7 1.25-.7 2.18v25.84c0 .93.25 1.68.7 2.18L18.25 18 3.7 2.9Z" fill="#34A853" />
+      <path d="m18.25 18 4.86-5.04L6.54 3.47A4.02 4.02 0 0 0 3.7 2.9L18.25 18Z" fill="#4285F4" />
+      <path d="M18.25 18 3.7 33.1c.76.82 1.86.77 2.84.21l16.57-9.5L18.25 18Z" fill="#EA4335" />
+      <path d="m28.47 16.03-5.36-3.07L18.25 18l4.86 5.04 5.36-3.07c1.52-.87 1.52-3.07 0-3.94Z" fill="#FBBC04" />
     </svg>
   );
 }
