@@ -85,7 +85,7 @@ export function AppDetailOverlay({
     [app.id, selectedStore],
   );
   const selectedContent = selectedDevice
-    ? getAppDetailContent(app.id, selectedStore, selectedDevice)
+    ? getAppDetailContent(app.id, selectedDevice)
     : null;
 
   useEffect(() => {
@@ -250,14 +250,16 @@ export function AppDetailOverlay({
             )}
           </div>
           <div
-            className="app-detail-description"
+            className="device-detail-copy"
             data-description-key={`${app.id}:${selectedStore}:${selectedDevice ?? "none"}`}
             aria-live="polite"
           >
-            <p>
-              {selectedDevice ? DEVICE_LABELS[selectedDevice] : "Device"} —{` `}
-              {selectedContent?.description}
-            </p>
+            <div className="device-keywords">
+              {selectedContent?.keywords.map((keyword) => (
+                <span key={keyword}>{keyword}</span>
+              ))}
+            </div>
+            <p>{selectedContent?.description}</p>
           </div>
           <div className="app-detail-device-selector" aria-label="디바이스 선택">
             {availableDevices.map((device) => (

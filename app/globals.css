@@ -1989,18 +1989,35 @@ button {
   pointer-events: none;
 }
 
-.app-detail-description {
-  min-height: 76px;
-  display: grid;
-  place-items: center;
+.device-detail-copy {
+  width: min(100%, 760px);
+  min-height: 104px;
+  margin-inline: auto;
   color: rgba(90, 68, 126, 0.68);
   font-size: clamp(14px, 1.3vw, 17px);
   line-height: 1.65;
-  text-align: center;
 }
 
-.app-detail-description p {
-  margin: 0;
+.device-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.device-keywords span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: rgba(91, 57, 151, 0.82);
+  background: rgba(225, 211, 250, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64);
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.device-detail-copy p {
+  margin: 16px 0 0;
+  max-width: 70ch;
 }
 
 .app-detail-device-selector {
