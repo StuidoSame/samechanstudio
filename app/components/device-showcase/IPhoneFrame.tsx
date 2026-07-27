@@ -121,7 +121,9 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const currentDateKey = currentDate ? getLocalDateKey(currentDate) : "";
 
   useEffect(() => {
-    setCurrentDate(new Date());
+    const initialDateFrame = window.requestAnimationFrame(() => setCurrentDate(new Date()));
+
+    return () => window.cancelAnimationFrame(initialDateFrame);
   }, []);
 
   useEffect(() => {
@@ -249,18 +251,22 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
       return;
     }
 
-    const storage = readDailyStorage();
-    setAnswers(storage.days[currentDateKey] ?? []);
-    setAnswerDraft("");
-    setShowSavedState(false);
-    setQuestionStarted(false);
-    setTypedQuestion("");
-    setTypingComplete(false);
+    const dateChangeFrame = window.requestAnimationFrame(() => {
+      const storage = readDailyStorage();
+      setAnswers(storage.days[currentDateKey] ?? []);
+      setAnswerDraft("");
+      setShowSavedState(false);
+      setQuestionStarted(false);
+      setTypedQuestion("");
+      setTypingComplete(false);
 
-    if (savedStateTimerRef.current) {
-      clearTimeout(savedStateTimerRef.current);
-      savedStateTimerRef.current = null;
-    }
+      if (savedStateTimerRef.current) {
+        clearTimeout(savedStateTimerRef.current);
+        savedStateTimerRef.current = null;
+      }
+    });
+
+    return () => window.cancelAnimationFrame(dateChangeFrame);
   }, [currentDateKey]);
 
   useEffect(
@@ -312,7 +318,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const answerLimitReached = answers.length >= 3;
 
   return (
-    <div ref={stageRef} className="device-phone-stage" aria-label="Interactive iPhone moment">
+    <div ref={stageRef} className="device-phone-stage" aria-label="SAME STUDIO 하루 질문">
       <div className="device-phone-frame">
         <span className="device-phone-button device-phone-button--action" aria-hidden="true" />
         <span className="device-phone-button device-phone-button--volume-up" aria-hidden="true" />
@@ -327,7 +333,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                 <Image
                   className="phone-daily-logo"
                   src="/assets/favicon/favicon.ico"
-                  alt="SAME STUDIO"
+                  alt=""
                   width={64}
                   height={64}
                   priority
@@ -376,7 +382,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                         rows={2}
                         aria-label="오늘의 질문 답변"
                         placeholder={answerLimitReached ? "오늘 기록 완료" : "오늘의 답변"}
-                        disabled={answerLimitReached}
+                        disabled={answerLimitReached || !typingComplete}
                         onChange={(event) => setAnswerDraft(event.target.value)}
                         onKeyDown={handleAnswerKeyDown}
                       />
