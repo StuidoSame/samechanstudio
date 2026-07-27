@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useI18n } from "../i18n/I18nProvider";
 
 type PageSectionId = "apps" | "about" | "devices" | "contact";
 
@@ -8,27 +9,22 @@ const PAGE_SECTIONS = [
   {
     id: "apps",
     label: "APPS",
-    summary: "SAME STUDIO가 만든 앱들을 둘러보세요.",
   },
   {
     id: "about",
     label: "ABOUT",
-    summary: "작은 앱을 정성껏 만드는 SAME STUDIO의 이야기.",
   },
   {
     id: "devices",
     label: "DEVICES",
-    summary: "순간, 사유, 박자로 이어지는 작은 성공의 경험.",
   },
   {
     id: "contact",
     label: "CONTACT",
-    summary: "앱 문의와 제휴, 오류 제보를 이메일로 보내주세요.",
   },
 ] as const satisfies ReadonlyArray<{
   id: PageSectionId;
   label: string;
-  summary: string;
 }>;
 
 type PageSectionNavigationProps = {
@@ -38,6 +34,7 @@ type PageSectionNavigationProps = {
 export function PageSectionNavigation({
   hidden,
 }: PageSectionNavigationProps) {
+  const { messages, format } = useI18n();
   const [activeSectionId, setActiveSectionId] =
     useState<PageSectionId>("apps");
   const [footerVisible, setFooterVisible] = useState(false);
@@ -140,20 +137,26 @@ export function PageSectionNavigation({
   return (
     <nav
       className={`page-section-navigation${navigationHidden ? " is-hidden" : ""}`}
-      aria-label="페이지 주요 섹션 이동"
+      aria-label={messages.sectionNavigation.navigationLabel}
       aria-hidden={navigationHidden}
       inert={navigationHidden ? true : undefined}
     >
       {PAGE_SECTIONS.map((section) => {
         const active = activeSectionId === section.id;
         const summaryId = `page-section-summary-${section.id}`;
+        const summary =
+          section.id === "devices"
+            ? messages.sectionNavigation.summaries.device
+            : messages.sectionNavigation.summaries[section.id];
 
         return (
           <button
             key={section.id}
             type="button"
             className={active ? "is-active" : ""}
-            aria-label={`${section.label} 섹션으로 이동`}
+            aria-label={format(messages.sectionNavigation.moveToSection, {
+              section: section.label,
+            })}
             aria-describedby={summaryId}
             aria-current={active ? "location" : undefined}
             tabIndex={navigationHidden ? -1 : 0}
@@ -162,13 +165,13 @@ export function PageSectionNavigation({
             <span className="page-section-navigation-dot" aria-hidden="true" />
             <span className="page-section-navigation-tooltip" aria-hidden="true">
               <strong>{section.label}</strong>
-              <span>{section.summary}</span>
+              <span>{summary}</span>
             </span>
             <span
               id={summaryId}
               className="page-section-navigation-sr-only"
             >
-              {section.summary}
+              {summary}
             </span>
           </button>
         );

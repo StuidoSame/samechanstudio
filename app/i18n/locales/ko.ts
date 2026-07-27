@@ -1,0 +1,189 @@
+import type { TranslationMessages } from "../types";
+
+export const ko = {
+  header: {
+    controlsLabel: "언어 및 테마 컨트롤",
+    languageButtonLabel: "언어 선택",
+    languageOptionsLabel: "언어 선택 옵션",
+    languageNames: {
+      ko: "한국어",
+      en: "English",
+      ja: "日本語",
+      "zh-CN": "简体中文",
+      "zh-TW": "繁體中文",
+    },
+    controlsButtonLabel: "언어 및 테마 버튼 열기",
+    switchToDarkMode: "다크모드로 전환",
+    switchToLightMode: "라이트모드로 전환",
+  },
+  carousel: {
+    pauseAutoplay: "자동 재생 일시정지",
+    startAutoplay: "자동 재생 시작",
+    fastForward: "앱 빠르게 넘기기",
+  },
+  sectionNavigation: {
+    navigationLabel: "페이지 주요 섹션 이동",
+    moveToSection: "{section} 섹션으로 이동",
+    summaries: {
+      apps: "SAME STUDIO가 만든 앱들을 둘러보세요.",
+      about: "작은 앱을 정성껏 만드는 SAME STUDIO의 이야기.",
+      device: "순간, 사유, 박자로 이어지는 작은 성공의 경험.",
+      contact: "앱 문의와 제휴, 오류 제보를 이메일로 보내주세요.",
+    },
+  },
+  devicePhilosophy: {
+    phone: {
+      category: "순간",
+      title: "작은 순간을\n놓치지 않도록.",
+      body: "하루를 바꾸는 건 거창한 결심보다\n짧게 남긴 한 줄일 때가 많습니다.\n오늘의 마음을 기록하는 작은 성공이\n내일의 나를 조금 더 선명하게 만듭니다.",
+    },
+    tablet: {
+      category: "사유",
+      title: "잠시 멈춰\n생각할 수 있도록.",
+      body: "복잡한 하루에도 잠깐의 여백은 필요합니다.\n작은 문제 하나를 천천히 풀어가며\n생각이 정리되는 순간을 만나고,\n또 하나의 작은 성공을 완성합니다.",
+    },
+    watch: {
+      category: "박자",
+      title: "나만의 박자를\n찾을 수 있도록.",
+      body: "완벽한 연주보다 중요한 건\n직접 두드려보는 짧은 시작입니다.\n세 개의 작은 화면이 하나의 리듬이 되고,\n그 한 번의 박자가 작은 성공으로 남습니다.",
+    },
+  },
+  dailyQuestion: {
+    questions: [
+      "다음 주의 나에게 남기고 싶은 말은 무엇인가요?",
+      "이번 주에 꼭 이루고 싶은 한 가지는 무엇인가요?",
+      "오늘 나를 조금 더 편안하게 만든 것은 무엇인가요?",
+      "최근에 새롭게 알게 된 것은 무엇인가요?",
+      "오늘 고마웠던 순간은 무엇인가요?",
+      "이번 주에 가장 잘했다고 생각하는 일은 무엇인가요?",
+      "오늘 천천히 즐기고 싶은 것은 무엇인가요?",
+    ],
+    examples: [
+      [
+        "이번 주도 충분히 잘 해냈어",
+        "하루씩 천천히 해도 괜찮아",
+        "쉬는 시간을 잊지 않았으면 해",
+        "작은 계획부터 시작해보자",
+      ],
+      [
+        "미뤄둔 책 한 권 끝까지 읽기",
+        "매일 십 분씩 가볍게 걷기",
+        "방 한쪽을 깔끔하게 정리하기",
+        "오래 미룬 약속 하나 정하기",
+      ],
+      [
+        "따뜻한 커피를 천천히 마신 시간",
+        "좋아하는 노래를 들으며 걸었던 순간",
+        "해야 할 일을 하나 끝낸 것",
+        "오랜만에 친구와 나눈 짧은 대화",
+      ],
+      [
+        "일찍 자면 아침이 한결 편하다는 것",
+        "천천히 읽을수록 오래 기억된다는 것",
+        "모르는 건 바로 물어봐도 괜찮다는 것",
+        "짧은 휴식이 집중에 도움이 된다는 것",
+      ],
+      [
+        "먼저 안부를 물어준 친구의 메시지",
+        "바쁜 와중에도 챙겨준 따뜻한 한마디",
+        "늦지 않게 집에 도착한 저녁",
+        "맑은 하늘을 잠깐 올려다본 순간",
+      ],
+      [
+        "미뤘던 일을 오늘 시작한 것",
+        "바쁜 하루에도 식사를 잘 챙긴 것",
+        "어려운 이야기를 끝까지 들어준 것",
+        "할 일을 차분히 하나씩 끝낸 것",
+      ],
+      [
+        "창가에 앉아 느긋하게 아침 먹기",
+        "이어 보지 못한 드라마 한 편 보기",
+        "동네를 천천히 산책하며 둘러보기",
+        "좋아하는 음악을 처음부터 다시 듣기",
+      ],
+    ],
+    dateLocale: "ko-KR",
+    stageLabel: "SAME STUDIO 하루 질문",
+    todayFallback: "오늘",
+    examplesLabel: "오늘의 답변 예시",
+    savedStatus: "저장했어요",
+    inputLabel: "오늘의 답변 입력",
+    completedPlaceholder: "오늘 기록 완료",
+    inputPlaceholder: "오늘의 답변",
+    saveButtonLabel: "오늘의 답변 저장",
+  },
+  puzzle: {
+    stageLabel: "THINK SPACE 하루 퍼즐",
+    boardLabel: "3×3 하루 패턴 퍼즐",
+    tileLabel: "{row}행 {column}열 타일, {state}",
+    tileOn: "켜짐",
+    tileOff: "꺼짐",
+    resetButtonLabel: "오늘의 퍼즐 초기화",
+  },
+  drum: {
+    kickLabel: "킥 드럼 연주",
+    snareLabel: "스네어 드럼 연주",
+    hiHatLabel: "하이햇 연주",
+    padShortcutLabel: "{pad}, 단축키 {shortcut}",
+  },
+  contact: {
+    description: "앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요.",
+  },
+  appDetail: {
+    appIconAlt: "{app} 앱 아이콘",
+    closeLabel: "앱 상세 닫기",
+    storeSelectorLabel: "스토어 선택",
+    storeLinkLabel: "{store}에서 {app} 보기",
+    previewAlt: "{app} {device} 미리보기",
+    deviceSelectorLabel: "디바이스 선택",
+    fallback: {
+      keywords: ["핵심 경험", "간결한 흐름", "기기 최적화"],
+      description: "선택한 기기에서 앱의 핵심 기능을 간결한 흐름으로 확인하고 사용할 수 있습니다.",
+    },
+    apps: {
+      mapary: {
+        iphone: { keywords: ["지도 기록", "장소 메모", "빠른 탐색"], description: "기억하고 싶은 장소와 메모를 지도 위에 바로 남기고, 이동 중에도 가까운 기록을 빠르게 다시 찾아볼 수 있습니다." },
+        ipad: { keywords: ["넓은 지도", "기록 정리", "상세 탐색"], description: "넓은 화면에서 지도와 장소 기록의 흐름을 한눈에 살피고, 쌓인 메모를 여유 있게 열어보며 정리할 수 있습니다." },
+        watch: { keywords: ["손목 확인", "주변 기록", "빠른 접근"], description: "휴대폰을 꺼내지 않고도 손목에서 가까운 장소 기록을 간결하게 확인해 이동 중의 흐름을 이어갈 수 있습니다." },
+        android: { keywords: ["지도 기록", "장소 메모", "Android 최적화"], description: "Android 스마트폰에서도 장소와 메모를 지도 중심으로 기록하고, 필요한 순간에 익숙한 모바일 흐름으로 확인할 수 있습니다." },
+      },
+      runtronome: {
+        iphone: { keywords: ["러닝 리듬", "템포 설정", "집중 운동"], description: "달리기 전에 원하는 리듬을 맞추고, 운동 중에는 간결한 화면으로 템포에 집중하며 일정한 페이스를 이어갈 수 있습니다." },
+        watch: { keywords: ["손목 템포", "즉시 시작", "러닝 집중"], description: "달리는 동안 휴대폰 조작을 줄이고 Apple Watch에서 리듬을 바로 시작하고 확인해 운동 흐름을 유지할 수 있습니다." },
+        android: { keywords: ["러닝 리듬", "템포 설정", "Android 실행"], description: "Android 스마트폰에서 달리기 리듬을 빠르게 설정하고, 운동 중 필요한 정보만 확인하며 페이스에 집중할 수 있습니다." },
+      },
+      odow: {
+        iphone: { keywords: ["하루 한 단어", "조용한 기록", "간결한 답변"], description: "하루에 하나의 단어와 질문을 마주하고, 부담 없는 짧은 답변으로 그날의 생각을 차분하게 남길 수 있습니다." },
+        ipad: { keywords: ["넓은 기록", "차분한 집중", "지난 답변"], description: "넓은 화면에서 오늘의 질문에 집중하고, 여유 있는 문장 폭으로 답변을 적으며 이전 기록을 돌아볼 수 있습니다." },
+        android: { keywords: ["하루 한 단어", "짧은 답변", "Android 기록"], description: "Android 스마트폰에서도 매일 하나의 질문을 확인하고, 그날의 생각을 짧고 조용하게 기록할 수 있습니다." },
+      },
+      locaunt: {
+        iphone: { keywords: ["장소 기억", "지도 기록", "나만의 알림"], description: "잊고 싶지 않은 장소와 필요한 내용을 지도 위에 남겨두고, 장소를 중심으로 개인적인 기록을 다시 확인할 수 있습니다." },
+      },
+      pepesnap: {
+        iphone: { keywords: ["도형 찾기", "오늘의 미션", "사진 기록"], description: "주변에서 오늘의 도형을 발견하고 사진으로 남기며, 일상 속 익숙한 장면을 새로운 시선으로 바라볼 수 있습니다." },
+        ipad: { keywords: ["큰 사진", "미션 모아보기", "도형 관찰"], description: "더 큰 화면으로 촬영한 도형과 미션 기록을 살펴보고, 일상에서 발견한 형태를 여유 있게 비교해 볼 수 있습니다." },
+      },
+      tocklist: {
+        iphone: { keywords: ["오늘 계획", "리듬 관리", "하루 회고"], description: "하루의 할 일을 내 리듬에 맞춰 계획하고, 진행 상황을 간단히 확인한 뒤 하루를 차분하게 돌아볼 수 있습니다." },
+        ipad: { keywords: ["넓은 계획", "일정 정리", "기록 회고"], description: "넓은 화면에서 하루 계획과 진행 흐름을 함께 살피고, 할 일과 회고를 보다 여유롭게 정리할 수 있습니다." },
+      },
+      skkoo: {
+        iphone: { keywords: ["오늘의 일기", "간편 기록", "일상 보관"], description: "그날의 이야기를 부담 없이 적고, 매일의 작은 순간을 나만의 기록으로 차곡차곡 남길 수 있습니다." },
+        ipad: { keywords: ["넓은 일기", "기록 정리", "하루 돌아보기"], description: "넓은 화면에서 하루의 이야기를 편안하게 풀어 쓰고, 지나온 일기와 일상의 흐름을 여유 있게 돌아볼 수 있습니다." },
+      },
+      terubozu: {
+        iphone: { keywords: ["오늘의 날씨", "작은 소원", "간편 확인"], description: "오늘의 날씨를 가볍게 확인하고 테루테루보즈와 함께 작은 소원을 남기며 하루를 기분 좋게 시작할 수 있습니다." },
+      },
+      feeloo: {
+        iphone: { keywords: ["감정 기록", "오늘의 기분", "차분한 회고"], description: "오늘 느낀 감정을 짧게 기록하고, 쌓인 기분의 흐름을 돌아보며 하루를 차분하게 정리할 수 있습니다." },
+      },
+    },
+  },
+  footer: {
+    businessNameLabel: "사업자명",
+    businessRegistrationLabel: "사업자등록번호",
+    representativeLabel: "대표자",
+    emailLabel: "이메일",
+  },
+} satisfies TranslationMessages;

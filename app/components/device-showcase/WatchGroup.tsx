@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useI18n } from "../../i18n/I18nProvider";
 import { WatchFrame, type WatchVariant } from "./WatchFrame";
 
 type DrumId = "kick" | "snare" | "hihat";
@@ -15,14 +16,13 @@ type HitEffects = Record<DrumId, number[]>;
 const DRUM_PADS: Array<{
   id: DrumId;
   label: string;
-  ariaLabel: string;
   variant: WatchVariant;
   audioSrc: string;
   shortcut: "A" | "S" | "D";
 }> = [
-  { id: "kick", label: "KICK", ariaLabel: "킥 드럼 연주", variant: "left", audioSrc: "/assets/mp3/kick.mp3", shortcut: "A" },
-  { id: "snare", label: "SNARE", ariaLabel: "스네어 드럼 연주", variant: "center", audioSrc: "/assets/mp3/snare.mp3", shortcut: "S" },
-  { id: "hihat", label: "HI-HAT", ariaLabel: "하이햇 연주", variant: "right", audioSrc: "/assets/mp3/hihat.mp3", shortcut: "D" },
+  { id: "kick", label: "KICK", variant: "left", audioSrc: "/assets/mp3/kick.mp3", shortcut: "A" },
+  { id: "snare", label: "SNARE", variant: "center", audioSrc: "/assets/mp3/snare.mp3", shortcut: "S" },
+  { id: "hihat", label: "HI-HAT", variant: "right", audioSrc: "/assets/mp3/hihat.mp3", shortcut: "D" },
 ];
 
 const DRUM_GAIN: Record<DrumId, number> = {
@@ -54,6 +54,7 @@ function createNoiseBuffer(context: AudioContext, duration: number) {
 }
 
 export function WatchGroup() {
+  const { messages, format } = useI18n();
   const [activePad, setActivePad] = useState<string | null>(null);
   const [hitCounts, setHitCounts] = useState<Record<DrumId, number>>({ kick: 0, snare: 0, hihat: 0 });
   const [hitEffects, setHitEffects] = useState<HitEffects>({ kick: [], snare: [], hihat: [] });
@@ -381,7 +382,15 @@ export function WatchGroup() {
           <WatchFrame
             key={pad.id}
             variant={pad.variant}
-            ariaLabel={`${pad.ariaLabel}, 단축키 ${pad.shortcut}`}
+            ariaLabel={format(messages.drum.padShortcutLabel, {
+              pad:
+                pad.id === "kick"
+                  ? messages.drum.kickLabel
+                  : pad.id === "snare"
+                    ? messages.drum.snareLabel
+                    : messages.drum.hiHatLabel,
+              shortcut: pad.shortcut,
+            })}
             onActivate={() => activatePad(pad)}
             hitKey={hitCounts[pad.id]}
             isHit={activePad === pad.id}

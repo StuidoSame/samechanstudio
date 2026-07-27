@@ -10,6 +10,7 @@ import {
   type MouseEvent,
   type ReactNode,
 } from "react";
+import { useI18n } from "../../i18n/I18nProvider";
 
 type IPhoneFrameProps = {
   children?: ReactNode;
@@ -28,63 +29,8 @@ type DailyQuestionStorage = {
 
 const DAILY_QUESTION_STORAGE_KEY = "same-studio-daily-question-v1";
 
-const DAILY_QUESTIONS: Record<number, string> = {
-  0: "다음 주의 나에게 남기고 싶은 말은 무엇인가요?",
-  1: "이번 주에 꼭 이루고 싶은 한 가지는 무엇인가요?",
-  2: "오늘 나를 조금 더 편안하게 만든 것은 무엇인가요?",
-  3: "최근에 새롭게 알게 된 것은 무엇인가요?",
-  4: "오늘 고마웠던 순간은 무엇인가요?",
-  5: "이번 주에 가장 잘했다고 생각하는 일은 무엇인가요?",
-  6: "오늘 천천히 즐기고 싶은 것은 무엇인가요?",
-};
-
-const DAILY_QUESTION_EXAMPLES: Record<number, readonly string[]> = {
-  0: [
-    "이번 주도 충분히 잘 해냈어",
-    "하루씩 천천히 해도 괜찮아",
-    "쉬는 시간을 잊지 않았으면 해",
-    "작은 계획부터 시작해보자",
-  ],
-  1: [
-    "미뤄둔 책 한 권 끝까지 읽기",
-    "매일 십 분씩 가볍게 걷기",
-    "방 한쪽을 깔끔하게 정리하기",
-    "오래 미룬 약속 하나 정하기",
-  ],
-  2: [
-    "따뜻한 커피를 천천히 마신 시간",
-    "좋아하는 노래를 들으며 걸었던 순간",
-    "해야 할 일을 하나 끝낸 것",
-    "오랜만에 친구와 나눈 짧은 대화",
-  ],
-  3: [
-    "일찍 자면 아침이 한결 편하다는 것",
-    "천천히 읽을수록 오래 기억된다는 것",
-    "모르는 건 바로 물어봐도 괜찮다는 것",
-    "짧은 휴식이 집중에 도움이 된다는 것",
-  ],
-  4: [
-    "먼저 안부를 물어준 친구의 메시지",
-    "바쁜 와중에도 챙겨준 따뜻한 한마디",
-    "늦지 않게 집에 도착한 저녁",
-    "맑은 하늘을 잠깐 올려다본 순간",
-  ],
-  5: [
-    "미뤘던 일을 오늘 시작한 것",
-    "바쁜 하루에도 식사를 잘 챙긴 것",
-    "어려운 이야기를 끝까지 들어준 것",
-    "할 일을 차분히 하나씩 끝낸 것",
-  ],
-  6: [
-    "창가에 앉아 느긋하게 아침 먹기",
-    "이어 보지 못한 드라마 한 편 보기",
-    "동네를 천천히 산책하며 둘러보기",
-    "좋아하는 음악을 처음부터 다시 듣기",
-  ],
-};
-
-function formatLocalDate(date: Date) {
-  return new Intl.DateTimeFormat("ko-KR", {
+function formatLocalDate(date: Date, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
     month: "long",
     day: "numeric",
     weekday: "long",
@@ -153,6 +99,7 @@ function writeDailyAnswers(dateKey: string, answers: DailyAnswer[]) {
 }
 
 export function IPhoneFrame({ children }: IPhoneFrameProps) {
+  const { messages } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
   const answerInputRef = useRef<HTMLTextAreaElement>(null);
   const [hasEntered, setHasEntered] = useState(false);
@@ -250,8 +197,12 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
     return () => observer.disconnect();
   }, []);
 
-  const question = currentDate ? DAILY_QUESTIONS[currentDate.getDay()] : "";
-  const exampleAnswers = currentDate ? DAILY_QUESTION_EXAMPLES[currentDate.getDay()] : [];
+  const question = currentDate
+    ? messages.dailyQuestion.questions[currentDate.getDay()] ?? ""
+    : "";
+  const exampleAnswers = currentDate
+    ? messages.dailyQuestion.examples[currentDate.getDay()] ?? []
+    : [];
 
   useEffect(() => {
     if (!hasEntered || !question) {
@@ -397,7 +348,11 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   };
 
   return (
-    <div ref={stageRef} className="device-phone-stage" aria-label="SAME STUDIO 하루 질문">
+    <div
+      ref={stageRef}
+      className="device-phone-stage"
+      aria-label={messages.dailyQuestion.stageLabel}
+    >
       <div className="device-phone-frame">
         <span className="device-phone-button device-phone-button--action" aria-hidden="true" />
         <span className="device-phone-button device-phone-button--volume-up" aria-hidden="true" />
@@ -423,7 +378,12 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
               <div className="phone-daily-content" aria-hidden={!questionStarted}>
                 <header className="phone-daily-header">
                   <time dateTime={currentDate ? getLocalDateKey(currentDate) : undefined}>
-                    {currentDate ? formatLocalDate(currentDate) : "오늘"}
+                    {currentDate
+                      ? formatLocalDate(
+                          currentDate,
+                          messages.dailyQuestion.dateLocale,
+                        )
+                      : messages.dailyQuestion.todayFallback}
                   </time>
                   <h3>
                     <span className="phone-daily-sr-only">{question}</span>
@@ -444,7 +404,10 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                         ))}
                       </ol>
                     ) : (
-                      <ul className="phone-daily-example-list" aria-label="오늘의 답변 예시">
+                      <ul
+                        className="phone-daily-example-list"
+                        aria-label={messages.dailyQuestion.examplesLabel}
+                      >
                         {exampleAnswers.map((example) => (
                           <li key={example}>{example}</li>
                         ))}
@@ -454,7 +417,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                   {showSavedState ? (
                     <div className="phone-daily-saved-state" role="status" aria-live="polite">
                       <span aria-hidden="true">✓</span>
-                      저장했어요
+                      {messages.dailyQuestion.savedStatus}
                     </div>
                   ) : (
                     <form
@@ -467,15 +430,19 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                         value={answerDraft}
                         maxLength={120}
                         rows={2}
-                        aria-label="오늘의 답변 입력"
-                        placeholder={answerLimitReached ? "오늘 기록 완료" : "오늘의 답변"}
+                        aria-label={messages.dailyQuestion.inputLabel}
+                        placeholder={
+                          answerLimitReached
+                            ? messages.dailyQuestion.completedPlaceholder
+                            : messages.dailyQuestion.inputPlaceholder
+                        }
                         disabled={answerInputDisabled}
                         onChange={(event) => setAnswerDraft(event.target.value)}
                         onKeyDown={handleAnswerKeyDown}
                       />
                       <button
                         type="submit"
-                        aria-label="오늘의 답변 저장"
+                        aria-label={messages.dailyQuestion.saveButtonLabel}
                         disabled={answerLimitReached || !answerDraft.trim()}
                         onClick={(event) => event.stopPropagation()}
                       >

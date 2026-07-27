@@ -20,6 +20,8 @@ import {
   TypeRevealGroup,
 } from "./type-reveal/TypeReveal";
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
+import { useI18n } from "../i18n/I18nProvider";
+import type { Locale } from "../i18n/types";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
@@ -64,26 +66,16 @@ const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
   { text: "Small apps, made\nwith a lot of care.", speed: 45 },
 ] as const;
-const CONTACT_REVEAL_STEPS = [
-  { text: "Contact", speed: 45 },
-  { text: "contact@samestudio.kr", speed: 32 },
-  {
-    text: "앱 이용 문의, 제휴, 오류 제보는 이메일로 연락해주세요.",
-    speed: 18,
-  },
-] as const;
-type LanguageCode = "ko" | "en" | "ja" | "zh-CN" | "zh-TW";
 type LanguageOption = {
-  code: LanguageCode;
-  label: string;
+  code: Locale;
 };
 
 const LANGUAGE_OPTIONS = [
-  { code: "ko", label: "한국어" },
-  { code: "en", label: "English" },
-  { code: "ja", label: "日本語" },
-  { code: "zh-CN", label: "简体中文" },
-  { code: "zh-TW", label: "繁體中文" },
+  { code: "ko" },
+  { code: "en" },
+  { code: "ja" },
+  { code: "zh-CN" },
+  { code: "zh-TW" },
 ] as const satisfies readonly LanguageOption[];
 type LoaderPhase =
   | "loading"
@@ -548,11 +540,20 @@ function Loader({
 }
 
 export function HomeExperience() {
+  const { messages } = useI18n();
+  const contactRevealSteps = useMemo(
+    () => [
+      { text: "Contact", speed: 45 },
+      { text: "contact@samestudio.kr", speed: 32 },
+      { text: messages.contact.description, speed: 18 },
+    ],
+    [messages.contact.description],
+  );
   const [activeIndex, setActiveIndex] = useState(DEFAULT_APP_INDEX);
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] =
-    useState<LanguageCode>("ko");
+    useState<Locale>("ko");
   const [darkPressKey, setDarkPressKey] = useState(0);
   const [headerUtilityHidden, setHeaderUtilityHidden] = useState(false);
   const [headerUtilityDragging, setHeaderUtilityDragging] = useState(false);
@@ -2230,12 +2231,15 @@ export function HomeExperience() {
                 headerUtilitySuppressClickRef.current = false;
               }}
             >
-              <div className="header-utility-bar" aria-label="언어 및 테마 컨트롤">
+              <div
+                className="header-utility-bar"
+                aria-label={messages.header.controlsLabel}
+              >
                 <button
                   ref={headerLanguageButtonRef}
                   type="button"
                   className="header-utility-segment language-control"
-                  aria-label="언어 선택"
+                  aria-label={messages.header.languageButtonLabel}
                   aria-expanded={languageOpen}
                   aria-controls="language-panel"
                   aria-haspopup="menu"
@@ -2264,7 +2268,7 @@ export function HomeExperience() {
                 <button
                   type="button"
                   className="header-utility-segment dark-control"
-                  aria-label="다크 모드 준비 중"
+                  aria-label={messages.header.switchToDarkMode}
                   tabIndex={headerUtilityHidden ? -1 : 0}
                   onClick={() => setDarkPressKey((key) => key + 1)}
                 >
@@ -2293,7 +2297,7 @@ export function HomeExperience() {
                 id="language-panel"
                 className={`language-panel${languageOpen ? " is-open" : ""}`}
                 role="menu"
-                aria-label="언어 선택 옵션"
+                aria-label={messages.header.languageOptionsLabel}
                 aria-hidden={!languageOpen}
                 onKeyDown={(event) => {
                   if (
@@ -2339,7 +2343,9 @@ export function HomeExperience() {
                       setLanguageOpen(false);
                     }}
                   >
-                    <span className="language-label">{language.label}</span>
+                    <span className="language-label">
+                      {messages.header.languageNames[language.code]}
+                    </span>
                     <span
                       className="language-selected-indicator"
                       aria-hidden="true"
@@ -2354,7 +2360,7 @@ export function HomeExperience() {
               className={`header-utility-handle${
                 headerUtilityHidden ? " is-visible" : ""
               }`}
-              aria-label="언어 및 테마 버튼 열기"
+              aria-label={messages.header.controlsButtonLabel}
               aria-hidden={!headerUtilityHidden}
               tabIndex={headerUtilityHidden ? 0 : -1}
               onClick={() => {
@@ -2526,7 +2532,11 @@ export function HomeExperience() {
               <button
                 className={`autoplay-control ${isPlaying ? "is-playing" : "is-paused"}`}
                 type="button"
-                aria-label={isPlaying ? "자동 재생 일시정지" : "자동 재생 시작"}
+                aria-label={
+                  isPlaying
+                    ? messages.carousel.pauseAutoplay
+                    : messages.carousel.startAutoplay
+                }
                 disabled={(isTransitioning && !isFastForwarding) || reducedMotion}
                 data-playing={isPlaying ? "true" : "false"}
                 onPointerDown={(event) => event.stopPropagation()}
@@ -2553,7 +2563,7 @@ export function HomeExperience() {
                 <button
                   className="autoplay-control fast-forward-control"
                   type="button"
-                  aria-label="앱 빠르게 넘기기"
+                  aria-label={messages.carousel.fastForward}
                   aria-pressed={isFastForwarding}
                   disabled={(isTransitioning && !isFastForwarding) || reducedMotion}
                   onPointerDown={startFastForward}
@@ -2685,9 +2695,9 @@ export function HomeExperience() {
                 <TypeReveal
                   as="h2"
                   id="contact-title"
-                  text={CONTACT_REVEAL_STEPS[0].text}
-                  speed={CONTACT_REVEAL_STEPS[0].speed}
-                  delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 0)}
+                  text={contactRevealSteps[0].text}
+                  speed={contactRevealSteps[0].speed}
+                  delay={getTypeRevealDelay(contactRevealSteps, 0)}
                 />
                 <div className="contact-email-wrap">
                   <a
@@ -2697,18 +2707,18 @@ export function HomeExperience() {
                   >
                     <TypeReveal
                       as="span"
-                      text={CONTACT_REVEAL_STEPS[1].text}
-                      speed={CONTACT_REVEAL_STEPS[1].speed}
-                      delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 1)}
+                      text={contactRevealSteps[1].text}
+                      speed={contactRevealSteps[1].speed}
+                      delay={getTypeRevealDelay(contactRevealSteps, 1)}
                     />
                   </a>
                 </div>
                 <p className="contact-copy">
                   <TypeReveal
                     as="span"
-                    text={CONTACT_REVEAL_STEPS[2].text}
-                    speed={CONTACT_REVEAL_STEPS[2].speed}
-                    delay={getTypeRevealDelay(CONTACT_REVEAL_STEPS, 2)}
+                    text={contactRevealSteps[2].text}
+                    speed={contactRevealSteps[2].speed}
+                    delay={getTypeRevealDelay(contactRevealSteps, 2)}
                   />
                 </p>
               </div>
@@ -2824,10 +2834,10 @@ export function HomeExperience() {
           </div>
           <p className="footer-copyright">© 2026 SAME STUDIO</p>
           <div className="footer-business">
-            <span>사업자명: 세임스튜디오 (SAME STUDIO)</span>
-            <span>사업자등록번호: 272-08-03608</span>
-            <span>대표자: 김동찬</span>
-            <span>이메일: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
+            <span>{messages.footer.businessNameLabel}: 세임스튜디오 (SAME STUDIO)</span>
+            <span>{messages.footer.businessRegistrationLabel}: 272-08-03608</span>
+            <span>{messages.footer.representativeLabel}: 김동찬</span>
+            <span>{messages.footer.emailLabel}: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
           </div>
         </div>
       </footer>

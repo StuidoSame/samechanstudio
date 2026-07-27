@@ -10,13 +10,17 @@ import {
   type ReactNode,
 } from "react";
 import { resolveInitialLocale } from "./locale";
+import { formatMessage, getMessages } from "./messages";
 import {
   LOCALE_STORAGE_KEY,
   type Locale,
+  type TranslationMessages,
 } from "./types";
 
 type I18nContextValue = {
   locale: Locale;
+  messages: TranslationMessages;
+  format: typeof formatMessage;
   setLocale: (locale: Locale) => void;
 };
 
@@ -63,9 +67,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(initializationTimer);
   }, [applyLocale]);
 
+  const messages = useMemo(() => getMessages(locale), [locale]);
   const value = useMemo(
-    () => ({ locale, setLocale }),
-    [locale, setLocale],
+    () => ({ locale, messages, format: formatMessage, setLocale }),
+    [locale, messages, setLocale],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

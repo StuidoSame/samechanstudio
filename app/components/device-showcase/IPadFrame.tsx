@@ -9,6 +9,7 @@ import {
   type PointerEvent,
   type ReactNode,
 } from "react";
+import { useI18n } from "../../i18n/I18nProvider";
 import { DAILY_PUZZLES, WEEK_PROGRESS_BY_DAY } from "./dailyPuzzles";
 
 const DAILY_PUZZLE_STORAGE_KEY = "same-studio-daily-puzzle-v1";
@@ -100,6 +101,7 @@ type IPadFrameProps = {
 };
 
 export function IPadFrame({ children }: IPadFrameProps) {
+  const { messages, format } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
   const resetButtonRef = useRef<HTMLButtonElement>(null);
   const tileButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -263,7 +265,12 @@ export function IPadFrame({ children }: IPadFrameProps) {
   };
 
   return (
-    <div ref={stageRef} className="device-tablet-stage" role="group" aria-label="THINK SPACE 하루 퍼즐">
+    <div
+      ref={stageRef}
+      className="device-tablet-stage"
+      role="group"
+      aria-label={messages.puzzle.stageLabel}
+    >
       <div className="device-tablet-frame">
         <div className="device-screen device-tablet-screen" onPointerUp={handleScreenPointerUp}>
           {children ?? (
@@ -277,7 +284,7 @@ export function IPadFrame({ children }: IPadFrameProps) {
                 <div
                   className={`tablet-puzzle-board${isCompleted ? " is-complete" : ""}`}
                   role="group"
-                  aria-label="3×3 하루 패턴 퍼즐"
+                  aria-label={messages.puzzle.boardLabel}
                   aria-describedby="tablet-puzzle-instructions"
                 >
                   {board.map((isOn, index) => (
@@ -288,7 +295,13 @@ export function IPadFrame({ children }: IPadFrameProps) {
                       }}
                       type="button"
                       className={`tablet-puzzle-tile${isOn ? " is-on" : ""}`}
-                      aria-label={`${Math.floor(index / 3) + 1}행 ${(index % 3) + 1}열 타일, ${isOn ? "켜짐" : "꺼짐"}`}
+                      aria-label={format(messages.puzzle.tileLabel, {
+                        row: Math.floor(index / 3) + 1,
+                        column: (index % 3) + 1,
+                        state: isOn
+                          ? messages.puzzle.tileOn
+                          : messages.puzzle.tileOff,
+                      })}
                       aria-pressed={isOn}
                       disabled={isCompleted}
                       style={{ "--tile-index": index } as CSSProperties}
@@ -303,7 +316,7 @@ export function IPadFrame({ children }: IPadFrameProps) {
                   disabled={weekday === null}
                   onClick={resetPuzzle}
                   onKeyDown={handleResetKeyDown}
-                  aria-label="오늘의 퍼즐 초기화"
+                  aria-label={messages.puzzle.resetButtonLabel}
                 >
                   Reset
                 </button>

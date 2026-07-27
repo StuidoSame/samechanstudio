@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useI18n } from "../../i18n/I18nProvider";
+import type { AppTranslationId, TranslationDevice } from "../../i18n/types";
 import type { AppItem } from "../../lib/apps";
 import {
-  getAppDetailContent,
   getAvailableDetailDevices,
   isDetailStoreAvailable,
   type DetailDevice,
@@ -39,6 +40,16 @@ const DEVICE_ARIA_LABELS: Record<DetailDevice, string> = {
   ipad: "iPad",
   appleWatch: "Apple Watch",
   androidPhone: "Android Phone",
+};
+
+const TRANSLATION_DEVICE_BY_DETAIL_DEVICE: Record<
+  DetailDevice,
+  TranslationDevice
+> = {
+  iphone: "iphone",
+  ipad: "ipad",
+  appleWatch: "watch",
+  androidPhone: "android",
 };
 
 function StoreIcon({ store }: { store: DetailStore }) {
@@ -77,6 +88,7 @@ export function AppDetailOverlay({
   onRequestClose,
   onExited,
 }: AppDetailOverlayProps) {
+  const { messages, format } = useI18n();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const availableDevices = useMemo(
@@ -87,11 +99,12 @@ export function AppDetailOverlay({
     availableDevices[0] ?? null,
   );
   const selectedContent = selectedDevice
-    ? getAppDetailContent(app.id, selectedDevice)
+    ? messages.appDetail.apps[app.id as AppTranslationId]?.[
+        TRANSLATION_DEVICE_BY_DETAIL_DEVICE[selectedDevice]
+      ] ?? messages.appDetail.fallback
     : null;
-  const previewImage =
-    selectedContent?.previewImage ?? selectedContent?.screenshots[0] ?? null;
-  const previewFit = selectedContent?.previewFit ?? "contain";
+  const previewImage = null;
+  const previewFit = "contain";
   const [previewFailed, setPreviewFailed] = useState(false);
 
   useEffect(() => {
@@ -181,7 +194,7 @@ export function AppDetailOverlay({
             <Image
               className="app-detail-title-icon"
               src={app.icon}
-              alt={`${app.name} 앱 아이콘`}
+              alt={format(messages.appDetail.appIconAlt, { app: app.name })}
               width={52}
               height={52}
               unoptimized
@@ -192,7 +205,7 @@ export function AppDetailOverlay({
             className="app-detail-close"
             ref={closeButtonRef}
             type="button"
-            aria-label="앱 상세 닫기"
+            aria-label={messages.appDetail.closeLabel}
             onClick={onRequestClose}
           >
             <span aria-hidden="true">×</span>
@@ -200,12 +213,18 @@ export function AppDetailOverlay({
         </header>
 
         <div className="app-detail-content">
-          <div className="app-detail-store-selector" aria-label="스토어 선택">
+          <div
+            className="app-detail-store-selector"
+            aria-label={messages.appDetail.storeSelectorLabel}
+          >
             {DETAIL_STORES.map((store) => {
               const storeUrl =
                 store === "apple" ? app.appStoreUrl : app.googlePlayUrl;
               const storeAvailable = isDetailStoreAvailable(app.id, store);
-              const ariaLabel = `${STORE_LABELS[store]}에서 ${app.name} 보기`;
+              const ariaLabel = format(messages.appDetail.storeLinkLabel, {
+                store: STORE_LABELS[store],
+                app: app.name,
+              });
               const icon = (
                 <span className="app-detail-store-icon-slot">
                   <StoreIcon store={store} />
@@ -254,7 +273,12 @@ export function AppDetailOverlay({
                 <Image
                   className="app-detail-preview-image"
                   src={previewImage}
-                  alt={`${app.name} ${selectedDevice ? DEVICE_ARIA_LABELS[selectedDevice] : ""} 미리보기`}
+                  alt={format(messages.appDetail.previewAlt, {
+                    app: app.name,
+                    device: selectedDevice
+                      ? DEVICE_ARIA_LABELS[selectedDevice]
+                      : "",
+                  })}
                   fill
                   sizes="(max-width: 767px) calc(100vw - 72px), min(80vw, 1060px)"
                   style={{ objectFit: previewFit }}
@@ -283,7 +307,7 @@ export function AppDetailOverlay({
           <div
             className="app-detail-device-selector"
             role="group"
-            aria-label="디바이스 선택"
+            aria-label={messages.appDetail.deviceSelectorLabel}
           >
             {availableDevices.map((device) => (
               <button
@@ -302,7 +326,7 @@ export function AppDetailOverlay({
             ))}
           </div>
           <span className="app-detail-screenshot-count" aria-hidden="true">
-            {selectedContent?.screenshots.length ?? 0}
+            0
           </span>
         </div>
       </div>

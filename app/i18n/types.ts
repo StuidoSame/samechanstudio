@@ -32,6 +32,7 @@ export type TranslationMessages = {
     controlsLabel: string;
     languageButtonLabel: string;
     languageOptionsLabel: string;
+    languageNames: Record<Locale, string>;
     controlsButtonLabel: string;
     switchToDarkMode: string;
     switchToLightMode: string;
@@ -128,4 +129,3 @@ export type DeepPartial<T> = T extends readonly (infer Item)[]
 export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && SUPPORTED_LOCALES.includes(value as Locale);
 }
-
