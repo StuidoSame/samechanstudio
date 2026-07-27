@@ -847,86 +847,74 @@ button {
   z-index: 3;
   top: 50%;
   left: 50%;
-  width: clamp(500px, 40vw, 570px);
-  height: clamp(350px, 29vw, 410px);
+  width: clamp(375px, 31.5vw, 450px);
+  height: clamp(345px, 28.7vw, 410px);
   pointer-events: none;
   transform: translate3d(-50%, -50%, 0);
   transform-origin: center;
-  animation: focus-halo-app-change 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: focus-halo-app-change 0.72s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.focus-halo-glow,
-.focus-halo-surface {
+.focus-halo-ambient,
+.focus-halo-core,
+.focus-halo-shadow {
   position: absolute;
-  inset: 0;
   display: block;
-}
-
-.focus-halo-glow {
-  inset: -5%;
-  border-radius: 49% 51% 52% 48% / 52% 48% 52% 48%;
-  background: radial-gradient(ellipse at center, rgba(144, 82, 224, 0.24), rgba(185, 139, 243, 0.1) 54%, transparent 74%);
-  filter: blur(18px);
-  opacity: 0.66;
-  animation: focus-halo-glow-breathe 8.2s ease-in-out infinite;
-}
-
-.focus-halo-surface {
-  overflow: hidden;
-  border: 1px solid rgba(230, 207, 255, 0.2);
-  border-radius: 49% 51% 52% 48% / 52% 48% 52% 48%;
-  background:
-    radial-gradient(ellipse at 48% 49%, rgba(112, 43, 198, 0.94) 0%, rgba(132, 61, 211, 0.88) 42%, rgba(171, 113, 230, 0.66) 62%, rgba(207, 172, 244, 0.38) 82%, rgba(226, 207, 251, 0.16) 100%),
-    linear-gradient(145deg, rgba(188, 142, 239, 0.5), rgba(104, 43, 181, 0.62));
-  box-shadow:
-    inset 18px 16px 34px rgba(255, 255, 255, 0.1),
-    inset -12px -18px 34px rgba(60, 22, 112, 0.14),
-    0 24px 48px rgba(91, 39, 166, 0.15),
-    0 0 30px rgba(184, 131, 245, 0.12);
-  opacity: 0.88;
-  transform-origin: center;
-  animation: focus-halo-breathe 7.2s ease-in-out infinite;
-}
-
-.focus-halo-surface::before,
-.focus-halo-surface::after {
-  position: absolute;
+  border: 0;
   border-radius: 50%;
-  content: "";
   pointer-events: none;
+  transform-origin: center;
 }
 
-.focus-halo-surface::before {
-  top: -7%;
-  left: 2%;
-  width: 66%;
-  height: 48%;
-  background: radial-gradient(ellipse at 38% 64%, rgba(255, 250, 255, 0.34), rgba(240, 223, 255, 0.13) 42%, transparent 72%);
+.focus-halo-ambient {
+  inset: -3%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(153, 101, 228, 0.16) 0%,
+    rgba(183, 139, 239, 0.09) 42%,
+    rgba(215, 190, 248, 0.035) 62%,
+    transparent 78%
+  );
+  filter: blur(20px);
+  opacity: 0.62;
+  animation: focus-halo-ambient-breathe 9.2s ease-in-out infinite;
+}
+
+.focus-halo-core {
+  inset: 5% 4%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(122, 62, 207, 0.36) 0%,
+    rgba(145, 88, 219, 0.24) 34%,
+    rgba(181, 137, 235, 0.105) 56%,
+    rgba(211, 185, 246, 0.035) 69%,
+    transparent 80%
+  );
+  filter: blur(13px);
+  opacity: 0.76;
+  animation: focus-halo-core-breathe 8.4s ease-in-out infinite;
+}
+
+.focus-halo-shadow {
+  right: 23%;
+  bottom: 10%;
+  left: 23%;
+  height: 15%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(70, 38, 124, 0.12),
+    rgba(92, 57, 150, 0.045) 48%,
+    transparent 74%
+  );
   filter: blur(11px);
-  opacity: 0.68;
-  transform: rotate(-8deg);
-  animation: focus-halo-highlight 8.6s ease-in-out infinite;
-}
-
-.focus-halo-surface::after {
-  right: 18%;
-  bottom: -9%;
-  width: 62%;
-  height: 34%;
-  background: radial-gradient(ellipse, rgba(53, 18, 103, 0.22), rgba(72, 26, 126, 0.08) 48%, transparent 74%);
-  filter: blur(14px);
-  opacity: 0.68;
-  animation: focus-halo-shadow 7.8s 0.35s ease-in-out infinite;
+  opacity: 0.52;
+  animation: focus-halo-shadow-breathe 8.9s 0.4s ease-in-out infinite;
 }
 
 @keyframes focus-halo-app-change {
   0% {
-    opacity: 0.94;
-    transform: translate3d(-50%, -50%, 0) scale(1);
-  }
-  18% {
-    opacity: 0.86;
-    transform: translate3d(-50%, -50%, 0) scale(0.985);
+    opacity: 0.18;
+    transform: translate3d(-50%, -50%, 0) scale(0.97);
   }
   100% {
     opacity: 1;
@@ -934,47 +922,39 @@ button {
   }
 }
 
-@keyframes focus-halo-breathe {
+@keyframes focus-halo-core-breathe {
   0%,
   100% {
-    opacity: 0.87;
+    opacity: 0.73;
     transform: scale(1);
   }
   50% {
-    opacity: 0.91;
-    transform: scale(1.022);
-  }
-}
-
-@keyframes focus-halo-glow-breathe {
-  0%,
-  100% {
-    opacity: 0.56;
-    transform: scale(0.99);
-  }
-  50% {
-    opacity: 0.72;
+    opacity: 0.78;
     transform: scale(1.025);
   }
 }
 
-@keyframes focus-halo-highlight {
+@keyframes focus-halo-ambient-breathe {
   0%,
   100% {
     opacity: 0.58;
+    transform: scale(1);
   }
   50% {
-    opacity: 0.76;
+    opacity: 0.64;
+    transform: scale(1.02);
   }
 }
 
-@keyframes focus-halo-shadow {
+@keyframes focus-halo-shadow-breathe {
   0%,
   100% {
-    opacity: 0.58;
+    opacity: 0.46;
+    transform: scale(0.98);
   }
   50% {
-    opacity: 0.72;
+    opacity: 0.54;
+    transform: scale(1.02);
   }
 }
 
@@ -5150,8 +5130,8 @@ footer {
   }
 
   .focus-halo {
-    width: clamp(420px, 56vw, 520px);
-    height: clamp(300px, 40vw, 370px);
+    width: clamp(325px, 47vw, 375px);
+    height: clamp(300px, 44vw, 350px);
   }
 
   .app-info {
@@ -5234,8 +5214,8 @@ footer {
   }
 
   .focus-halo {
-    width: clamp(300px, 84vw, 350px);
-    height: clamp(220px, 62vw, 270px);
+    width: clamp(285px, 86vw, 335px);
+    height: clamp(265px, 79.5vw, 310px);
   }
 
   .preloader-jelly {
@@ -5489,8 +5469,8 @@ footer {
   }
 
   .focus-halo {
-    width: 270px;
-    height: 202px;
+    width: 275px;
+    height: 255px;
   }
 
   .card-eyebrow {
@@ -5555,8 +5535,8 @@ footer {
   }
 
   .focus-halo {
-    width: 460px;
-    height: 326px;
+    width: 360px;
+    height: 330px;
   }
 
   .app-info {
@@ -5591,8 +5571,8 @@ footer {
   }
 
   .focus-halo {
-    width: clamp(260px, 80vw, 300px);
-    height: clamp(190px, 59vw, 220px);
+    width: clamp(250px, 80vw, 290px);
+    height: clamp(232px, 74vw, 270px);
   }
 
   .app-info {
@@ -5640,6 +5620,13 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .focus-halo,
+  .focus-halo-ambient,
+  .focus-halo-core,
+  .focus-halo-shadow {
+    animation: none !important;
   }
 
   *,

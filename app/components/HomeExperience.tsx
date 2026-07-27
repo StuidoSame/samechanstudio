@@ -2076,8 +2076,9 @@ export function HomeExperience() {
 
           <div className="carousel-stage" aria-live="polite">
             <div key={activeApp.id} className="focus-halo" aria-hidden="true">
-              <span className="focus-halo-glow" />
-              <span className="focus-halo-surface" />
+              <span className="focus-halo-ambient" />
+              <span className="focus-halo-core" />
+              <span className="focus-halo-shadow" />
             </div>
             <div className="cards-space">
               {apps.map((app, index) => (
