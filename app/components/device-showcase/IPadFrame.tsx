@@ -106,6 +106,44 @@ export function IPadFrame({ children }: IPadFrameProps) {
   }, []);
 
   useEffect(() => {
+    let midnightTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const refreshLocalDate = () => {
+      const nextDate = new Date();
+      setCurrentDate((displayedDate) =>
+        displayedDate && getLocalDateKey(displayedDate) === getLocalDateKey(nextDate)
+          ? displayedDate
+          : nextDate,
+      );
+    };
+
+    const scheduleNextMidnight = () => {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24, 0, 0, 0);
+
+      midnightTimer = setTimeout(() => {
+        refreshLocalDate();
+        scheduleNextMidnight();
+      }, Math.max(0, nextMidnight.getTime() - now.getTime()) + 50);
+    };
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) refreshLocalDate();
+    };
+
+    scheduleNextMidnight();
+    window.addEventListener("focus", refreshLocalDate);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      if (midnightTimer) clearTimeout(midnightTimer);
+      window.removeEventListener("focus", refreshLocalDate);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!currentDate || !currentDateKey) return;
 
     const storageFrame = window.requestAnimationFrame(() => {
