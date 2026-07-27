@@ -71,7 +71,7 @@ export function IPadFrame({ children }: IPadFrameProps) {
               </header>
               <main className="tablet-puzzle-main">
                 <p id="tablet-puzzle-instructions">Make every light feel the same.</p>
-                <div className="tablet-puzzle-board" aria-labelledby="tablet-puzzle-instructions">
+                <div className={`tablet-puzzle-board${isCompleted ? " is-complete" : ""}`} aria-labelledby="tablet-puzzle-instructions">
                   {board.map((isOn, index) => (
                     <button
                       key={index}
@@ -83,6 +83,19 @@ export function IPadFrame({ children }: IPadFrameProps) {
                       onClick={() => handleTileClick(index)}
                     />
                   ))}
+                </div>
+                <div
+                  className={`tablet-puzzle-completion${isCompleted ? " is-visible" : ""}`}
+                  aria-live="polite"
+                  aria-atomic="true"
+                >
+                  {isCompleted ? (
+                    <div>
+                      <span aria-hidden="true">✓</span>
+                      <strong>A little clearer.</strong>
+                      <small>Tomorrow, another thought.</small>
+                    </div>
+                  ) : null}
                 </div>
               </main>
               <footer className="tablet-puzzle-footer">

@@ -3995,6 +3995,7 @@ button {
 }
 
 .tablet-puzzle-main {
+  position: relative;
   display: grid;
   align-content: center;
   place-items: center;
@@ -4050,6 +4051,71 @@ button {
 .tablet-puzzle-tile:focus-visible {
   outline: 2px solid rgba(244, 222, 255, 0.68);
   outline-offset: 2px;
+}
+
+.tablet-puzzle-board.is-complete .tablet-puzzle-tile {
+  animation: tablet-puzzle-complete-flash 360ms ease-out;
+}
+
+.tablet-puzzle-completion {
+  position: absolute;
+  inset: 22px 0 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.tablet-puzzle-completion > div {
+  padding: 12px 18px;
+  display: grid;
+  justify-items: center;
+  border: 1px solid rgba(239, 220, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(39, 29, 51, 0.82);
+  box-shadow: 0 12px 28px rgba(12, 8, 17, 0.2);
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.tablet-puzzle-completion.is-visible > div {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.tablet-puzzle-completion span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  color: #392b48;
+  background: rgba(225, 197, 244, 0.92);
+  font-size: 12px;
+}
+
+.tablet-puzzle-completion strong,
+.tablet-puzzle-completion small {
+  display: block;
+  font-weight: 600;
+}
+
+.tablet-puzzle-completion strong {
+  font-size: 11px;
+}
+
+.tablet-puzzle-completion small {
+  margin-top: 3px;
+  color: rgba(229, 215, 243, 0.62);
+  font-size: 7px;
+}
+
+@keyframes tablet-puzzle-complete-flash {
+  50% {
+    filter: brightness(1.16);
+  }
 }
 
 .tablet-puzzle-footer {
