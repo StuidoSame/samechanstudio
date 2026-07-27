@@ -16,6 +16,10 @@ function toggleTileAndNeighbors(board: boolean[], tileIndex: number) {
   return board.map((isOn, index) => affectedTiles.includes(index) ? !isOn : isOn);
 }
 
+function isUniformBoard(board: boolean[]) {
+  return board.length === 9 && board.every((tile) => tile === board[0]);
+}
+
 type IPadFrameProps = {
   children?: ReactNode;
 };
@@ -23,16 +27,37 @@ type IPadFrameProps = {
 export function IPadFrame({ children }: IPadFrameProps) {
   const [weekday, setWeekday] = useState<number | null>(null);
   const [board, setBoard] = useState<boolean[]>([]);
+  const [moves, setMoves] = useState(0);
+  const isCompleted = isUniformBoard(board);
 
   useEffect(() => {
     const dateFrame = window.requestAnimationFrame(() => {
       const localWeekday = new Date().getDay();
       setWeekday(localWeekday);
       setBoard([...DAILY_PUZZLES[localWeekday].board]);
+      setMoves(0);
     });
 
     return () => window.cancelAnimationFrame(dateFrame);
   }, []);
+
+  const handleTileClick = (tileIndex: number) => {
+    if (isCompleted) {
+      return;
+    }
+
+    setBoard((currentBoard) => toggleTileAndNeighbors(currentBoard, tileIndex));
+    setMoves((currentMoves) => currentMoves + 1);
+  };
+
+  const resetPuzzle = () => {
+    if (weekday === null) {
+      return;
+    }
+
+    setBoard([...DAILY_PUZZLES[weekday].board]);
+    setMoves(0);
+  };
 
   return (
     <div className="device-tablet-stage" aria-label="Interactive iPad daily puzzle">
@@ -54,14 +79,15 @@ export function IPadFrame({ children }: IPadFrameProps) {
                       className={`tablet-puzzle-tile${isOn ? " is-on" : ""}`}
                       aria-label={`${Math.floor(index / 3) + 1}행 ${(index % 3) + 1}열 타일, ${isOn ? "켜짐" : "꺼짐"}`}
                       aria-pressed={isOn}
-                      onClick={() => setBoard((currentBoard) => toggleTileAndNeighbors(currentBoard, index))}
+                      disabled={isCompleted}
+                      onClick={() => handleTileClick(index)}
                     />
                   ))}
                 </div>
               </main>
               <footer className="tablet-puzzle-footer">
-                <span>Moves 00</span>
-                <button type="button" disabled>Reset</button>
+                <span>Moves {String(moves).padStart(2, "0")}</span>
+                <button type="button" disabled={weekday === null} onClick={resetPuzzle} aria-label="오늘의 퍼즐 초기화">Reset</button>
                 <span className="tablet-puzzle-status" aria-hidden="true" />
               </footer>
             </div>
