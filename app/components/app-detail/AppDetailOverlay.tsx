@@ -89,10 +89,18 @@ export function AppDetailOverlay({
   const selectedContent = selectedDevice
     ? getAppDetailContent(app.id, selectedDevice)
     : null;
+  const previewImage =
+    selectedContent?.previewImage ?? selectedContent?.screenshots[0] ?? null;
+  const previewFit = selectedContent?.previewFit ?? "contain";
+  const [previewFailed, setPreviewFailed] = useState(false);
 
   useEffect(() => {
     setSelectedDevice(availableDevices[0] ?? null);
   }, [app.id, availableDevices]);
+
+  useEffect(() => {
+    setPreviewFailed(false);
+  }, [app.id, previewImage, selectedDevice]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -237,11 +245,28 @@ export function AppDetailOverlay({
             aria-label={`${app.name} ${selectedDevice ? DEVICE_ARIA_LABELS[selectedDevice] : ""} preview area`}
             data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
           >
-            {selectedDevice && (
-              <span className="app-detail-preview-marker">
-                <DeviceSilhouette device={selectedDevice} />
-              </span>
-            )}
+            <div
+              className="app-detail-preview-media"
+              key={`${app.id}:${selectedDevice ?? "none"}:${previewImage ?? "placeholder"}`}
+              data-preview-fit={previewFit}
+            >
+              {previewImage && !previewFailed ? (
+                <Image
+                  className="app-detail-preview-image"
+                  src={previewImage}
+                  alt={`${app.name} ${selectedDevice ? DEVICE_ARIA_LABELS[selectedDevice] : ""} 미리보기`}
+                  fill
+                  sizes="(max-width: 767px) calc(100vw - 72px), min(80vw, 1060px)"
+                  style={{ objectFit: previewFit }}
+                  onError={() => setPreviewFailed(true)}
+                  unoptimized
+                />
+              ) : selectedDevice ? (
+                <span className="app-detail-preview-marker">
+                  <DeviceSilhouette device={selectedDevice} />
+                </span>
+              ) : null}
+            </div>
           </div>
           <div
             className="device-detail-copy"

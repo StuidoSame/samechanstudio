@@ -97,6 +97,8 @@ export function getAvailableDetailDevices(
 
 export type AppDetailDeviceContent = {
   screenshots: string[];
+  previewImage?: string;
+  previewFit?: "contain" | "cover";
   keywords: string[];
   description: string;
 };
