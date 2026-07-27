@@ -474,6 +474,7 @@ export function HomeExperience() {
   const headerRef = useRef<HTMLElement>(null);
   const headerUtilityRef = useRef<HTMLDivElement>(null);
   const headerLanguageButtonRef = useRef<HTMLButtonElement>(null);
+  const languagePanelRef = useRef<HTMLDivElement>(null);
   const headerUtilityHandleRef = useRef<HTMLButtonElement>(null);
   const headerUtilityWasHiddenRef = useRef(false);
   const headerUtilitySuppressClickRef = useRef(false);
@@ -1057,9 +1058,18 @@ export function HomeExperience() {
     if (!menuOpen && !languageOpen) return;
 
     const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) {
-        setMenuOpen(false);
+      if (!(event.target instanceof Node)) return;
+
+      if (
+        languageOpen &&
+        !languagePanelRef.current?.contains(event.target) &&
+        !headerLanguageButtonRef.current?.contains(event.target)
+      ) {
         setLanguageOpen(false);
+      }
+
+      if (menuOpen && !headerRef.current?.contains(event.target)) {
+        setMenuOpen(false);
       }
     };
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -1817,6 +1827,12 @@ export function HomeExperience() {
     event: ReactPointerEvent<HTMLDivElement>,
   ) => {
     if (headerUtilityHidden || !event.isPrimary || event.button !== 0) return;
+    if (
+      event.target instanceof Node &&
+      languagePanelRef.current?.contains(event.target)
+    ) {
+      return;
+    }
 
     const drag = headerUtilityDragRef.current;
     drag.id = event.pointerId;
@@ -2072,6 +2088,12 @@ export function HomeExperience() {
               }
               onClickCapture={(event) => {
                 if (!headerUtilitySuppressClickRef.current) return;
+                if (
+                  event.target instanceof Node &&
+                  languagePanelRef.current?.contains(event.target)
+                ) {
+                  return;
+                }
                 event.preventDefault();
                 event.stopPropagation();
                 headerUtilitySuppressClickRef.current = false;
@@ -2136,6 +2158,7 @@ export function HomeExperience() {
                 </button>
               </div>
               <div
+                ref={languagePanelRef}
                 id="language-panel"
                 className={`language-panel${languageOpen ? " is-open" : ""}`}
                 role="menu"
@@ -2146,6 +2169,7 @@ export function HomeExperience() {
                   <button
                     key={language.code}
                     type="button"
+                    className="language-option"
                     role="menuitemradio"
                     aria-checked={selectedLanguage === language.code}
                     onClick={() => {
