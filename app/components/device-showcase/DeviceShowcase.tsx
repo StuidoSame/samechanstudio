@@ -31,6 +31,7 @@ const watchCopy = {
 
 export function DeviceShowcase() {
   const showcaseRef = useRef<HTMLElement>(null);
+  const journeyDecorationRef = useRef<HTMLDivElement>(null);
   const [activeJourneyId, setActiveJourneyId] = useState<DeviceJourneyId>("phone");
 
   useEffect(() => {
@@ -76,13 +77,64 @@ export function DeviceShowcase() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const showcase = showcaseRef.current;
+    const decoration = journeyDecorationRef.current;
+    if (!showcase || !decoration) return;
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frameId: number | null = null;
+
+    const updateJourneyProgress = () => {
+      frameId = null;
+      if (reducedMotionQuery.matches) {
+        decoration.style.setProperty("--device-journey-progress", "1");
+        return;
+      }
+
+      const watchSection = showcase.querySelector<HTMLElement>(
+        '[data-device-journey-section="watch"]',
+      );
+      if (!watchSection) return;
+
+      const scrollTop = window.scrollY;
+      const showcaseRect = showcase.getBoundingClientRect();
+      const watchRect = watchSection.getBoundingClientRect();
+      const startScroll = scrollTop + showcaseRect.top - window.innerHeight;
+      const endScroll = scrollTop + watchRect.top + watchRect.height / 2 - window.innerHeight / 2;
+      const progress = Math.min(
+        1,
+        Math.max(0, (scrollTop - startScroll) / Math.max(1, endScroll - startScroll)),
+      );
+
+      decoration.style.setProperty("--device-journey-progress", progress.toFixed(4));
+    };
+
+    const requestProgressUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateJourneyProgress);
+    };
+
+    updateJourneyProgress();
+    window.addEventListener("scroll", requestProgressUpdate, { passive: true });
+    window.addEventListener("resize", requestProgressUpdate);
+    reducedMotionQuery.addEventListener("change", requestProgressUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestProgressUpdate);
+      window.removeEventListener("resize", requestProgressUpdate);
+      reducedMotionQuery.removeEventListener("change", requestProgressUpdate);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
   return (
     <section
       ref={showcaseRef}
       className="device-showcase"
       aria-label="SAME STUDIO device showcase"
     >
-      <div className="device-journey-decoration" aria-hidden="true">
+      <div ref={journeyDecorationRef} className="device-journey-decoration" aria-hidden="true">
         <svg
           className="device-journey-svg"
           viewBox="0 0 100 100"
@@ -91,7 +143,12 @@ export function DeviceShowcase() {
           focusable="false"
         >
           <path
-            className="device-journey-line"
+            className="device-journey-line device-journey-line--base"
+            d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
+            pathLength="1"
+          />
+          <path
+            className="device-journey-line device-journey-line--progress"
             d="M52 4C47 22 48 36 51 49C54 64 53 77 48 96"
             pathLength="1"
           />
