@@ -1106,53 +1106,58 @@ export function HomeExperience() {
       return;
     }
 
-    if (reducedMotion) {
-      setTypedNameLength(activeApp.name.length);
-      setActiveSequencePhase("complete");
-      return;
-    }
-
     const timers: number[] = [];
-    const typingDuration = activeApp.name.length * TYPE_CHAR_INTERVAL_MS;
-    setTypedNameLength(0);
-    setActiveSequencePhase("typing");
+    const sequenceFrame = window.requestAnimationFrame(() => {
+      if (reducedMotion) {
+        setTypedNameLength(activeApp.name.length);
+        setActiveSequencePhase("complete");
+        return;
+      }
 
-    for (let length = 1; length <= activeApp.name.length; length += 1) {
+      const typingDuration = activeApp.name.length * TYPE_CHAR_INTERVAL_MS;
+      setTypedNameLength(0);
+      setActiveSequencePhase("typing");
+
+      for (let length = 1; length <= activeApp.name.length; length += 1) {
+        timers.push(
+          window.setTimeout(
+            () => setTypedNameLength(length),
+            length * TYPE_CHAR_INTERVAL_MS,
+          ),
+        );
+      }
+
+      const nameEmphasisStart = typingDuration;
+      const platformRevealStart = nameEmphasisStart + NAME_EMPHASIS_MS;
+      const detailRevealStart = platformRevealStart + PLATFORM_REVEAL_MS;
+      const holdStart = detailRevealStart + DETAIL_REVEAL_MS;
+      const completeAt = holdStart + ACTIVE_COMPLETE_HOLD_MS;
+
       timers.push(
         window.setTimeout(
-          () => setTypedNameLength(length),
-          length * TYPE_CHAR_INTERVAL_MS,
+          () => setActiveSequencePhase("name-emphasis"),
+          nameEmphasisStart,
         ),
+        window.setTimeout(
+          () => setActiveSequencePhase("platform-reveal"),
+          platformRevealStart,
+        ),
+        window.setTimeout(
+          () => setActiveSequencePhase("detail-reveal"),
+          detailRevealStart,
+        ),
+        window.setTimeout(() => setActiveSequencePhase("hold"), holdStart),
+        window.setTimeout(() => {
+          setActiveSequencePhase("complete");
+          queueAutoplayAdvance();
+        }, completeAt),
       );
-    }
+    });
 
-    const nameEmphasisStart = typingDuration;
-    const platformRevealStart = nameEmphasisStart + NAME_EMPHASIS_MS;
-    const detailRevealStart = platformRevealStart + PLATFORM_REVEAL_MS;
-    const holdStart = detailRevealStart + DETAIL_REVEAL_MS;
-    const completeAt = holdStart + ACTIVE_COMPLETE_HOLD_MS;
-
-    timers.push(
-      window.setTimeout(
-        () => setActiveSequencePhase("name-emphasis"),
-        nameEmphasisStart,
-      ),
-      window.setTimeout(
-        () => setActiveSequencePhase("platform-reveal"),
-        platformRevealStart,
-      ),
-      window.setTimeout(
-        () => setActiveSequencePhase("detail-reveal"),
-        detailRevealStart,
-      ),
-      window.setTimeout(() => setActiveSequencePhase("hold"), holdStart),
-      window.setTimeout(() => {
-        setActiveSequencePhase("complete");
-        queueAutoplayAdvance();
-      }, completeAt),
-    );
-
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
+    return () => {
+      window.cancelAnimationFrame(sequenceFrame);
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
   }, [
     activeApp.id,
     activeApp.name,
@@ -1712,7 +1717,6 @@ export function HomeExperience() {
       });
 
       const v = velocityRef.current;
-      const distance = Math.abs(targetRef.current - progress);
       const direction =
         Math.abs(v) > 0.002
           ? Math.sign(v)

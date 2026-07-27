@@ -73,7 +73,7 @@ export function PageSectionNavigation({
     ).filter((section): section is HTMLElement => Boolean(section));
     if (sections.length === 0) return;
 
-    updateActiveSection();
+    const initialUpdateFrame = window.requestAnimationFrame(updateActiveSection);
 
     const Observer = (
       window as Window & {
@@ -85,6 +85,7 @@ export function PageSectionNavigation({
       window.addEventListener("scroll", updateActiveSection, { passive: true });
       window.addEventListener("resize", updateActiveSection);
       return () => {
+        window.cancelAnimationFrame(initialUpdateFrame);
         window.removeEventListener("scroll", updateActiveSection);
         window.removeEventListener("resize", updateActiveSection);
       };
@@ -98,6 +99,7 @@ export function PageSectionNavigation({
     window.addEventListener("resize", updateActiveSection);
 
     return () => {
+      window.cancelAnimationFrame(initialUpdateFrame);
       observer.disconnect();
       window.removeEventListener("resize", updateActiveSection);
     };

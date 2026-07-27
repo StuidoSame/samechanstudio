@@ -28,13 +28,12 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(
-    html,
-    /<title>SAME STUDIO — Apps for thoughtful days \| SAME STUDIO<\/title>/i,
-  );
+  assert.match(html, /<html[^>]*lang="ko"/i);
+  assert.match(html, /<title>SAME STUDIO<\/title>/i);
+  assert.match(html, /same-studio-theme-v1/);
   assert.match(html, /SAME STUDIO/);
-  assert.match(html, /RUNTRONOME/);
-  assert.match(html, /Small apps, made with a lot of care/);
+  assert.match(html, /Mapary_icon\.png/);
+  assert.match(html, /페이지 주요 섹션 이동/);
   assert.match(html, /contact@samestudio\.kr/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });

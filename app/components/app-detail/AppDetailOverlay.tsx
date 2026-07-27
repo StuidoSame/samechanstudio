@@ -108,11 +108,17 @@ export function AppDetailOverlay({
   const [previewFailed, setPreviewFailed] = useState(false);
 
   useEffect(() => {
-    setSelectedDevice(availableDevices[0] ?? null);
+    const deviceResetFrame = window.requestAnimationFrame(() => {
+      setSelectedDevice(availableDevices[0] ?? null);
+    });
+    return () => window.cancelAnimationFrame(deviceResetFrame);
   }, [app.id, availableDevices]);
 
   useEffect(() => {
-    setPreviewFailed(false);
+    const previewResetFrame = window.requestAnimationFrame(() => {
+      setPreviewFailed(false);
+    });
+    return () => window.cancelAnimationFrame(previewResetFrame);
   }, [app.id, previewImage, selectedDevice]);
 
   useEffect(() => {
