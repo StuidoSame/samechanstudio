@@ -115,6 +115,112 @@ type SpaceObject = {
   driftY: number;
   rotation: number;
 };
+type GalaxyLayer = "far" | "mid" | "near";
+type GalaxyStar = {
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  color: string;
+  shape: "dot" | "cross";
+  twinkle: boolean;
+  floating: boolean;
+  twinkleDuration: number;
+  twinkleDelay: number;
+  floatDuration: number;
+  floatDelay: number;
+};
+
+const GALAXY_LAYER_CONFIG = {
+  far: { count: 44, seed: 404, size: [1, 2], opacity: [0.18, 0.34] },
+  mid: { count: 16, seed: 808, size: [2, 4], opacity: [0.3, 0.5] },
+  near: { count: 6, seed: 1212, size: [4, 7], opacity: [0.42, 0.62] },
+} as const satisfies Record<
+  GalaxyLayer,
+  {
+    count: number;
+    seed: number;
+    size: readonly [number, number];
+    opacity: readonly [number, number];
+  }
+>;
+
+const GALAXY_COLORS = ["#ffffff", "#e7dcff", "#f2d6f5", "#d2beff"] as const;
+
+const createGalaxyStars = (layer: GalaxyLayer): GalaxyStar[] => {
+  const config = GALAXY_LAYER_CONFIG[layer];
+  let state = config.seed;
+  const next = () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+  const stars: GalaxyStar[] = [];
+
+  while (stars.length < config.count) {
+    const x = next() * 100;
+    const followsGalaxyBand = next() < 0.72;
+    const y = followsGalaxyBand
+      ? Math.min(96, Math.max(4, 8 + x * 0.76 + (next() - 0.5) * 26))
+      : 4 + next() * 92;
+    const insideIconSafeArea = x > 31 && x < 69 && y > 12 && y < 68;
+    const insideInformationSafeArea = x > 26 && x < 74 && y >= 64;
+
+    if (insideIconSafeArea || insideInformationSafeArea) continue;
+
+    const index = stars.length;
+    const size = config.size[0] + next() * (config.size[1] - config.size[0]);
+    const opacity =
+      config.opacity[0] + next() * (config.opacity[1] - config.opacity[0]);
+    const twinkle =
+      layer === "far"
+        ? index % 6 === 2
+        : layer === "mid"
+          ? index % 3 === 1
+          : index % 3 === 0;
+
+    stars.push({
+      x: Number(x.toFixed(2)),
+      y: Number(y.toFixed(2)),
+      size: Number(size.toFixed(2)),
+      opacity: Number(opacity.toFixed(3)),
+      color: GALAXY_COLORS[Math.floor(next() * GALAXY_COLORS.length)],
+      shape:
+        layer === "far" || index % (layer === "mid" ? 4 : 3) !== 0
+          ? "dot"
+          : "cross",
+      twinkle,
+      floating: layer === "near" && (index === 1 || index === 4),
+      twinkleDuration: Number((4.8 + next() * 4.1).toFixed(2)),
+      twinkleDelay: Number((next() * 8.4).toFixed(2)),
+      floatDuration: Number((9 + next() * 5).toFixed(2)),
+      floatDelay: Number((next() * 7).toFixed(2)),
+    });
+  }
+
+  return stars;
+};
+
+const APPS_GALAXY_STARS = {
+  far: createGalaxyStars("far"),
+  mid: createGalaxyStars("mid"),
+  near: createGalaxyStars("near"),
+} as const;
+
+const getGalaxyStarStyle = (star: GalaxyStar) =>
+  ({
+    left: `${star.x}%`,
+    top: `${star.y}%`,
+    width: `${star.size}px`,
+    height: `${star.size}px`,
+    color: star.color,
+    "--galaxy-opacity": star.opacity,
+    "--galaxy-twinkle-opacity": Math.min(star.opacity + 0.14, 0.68),
+    "--galaxy-twinkle-duration": `${star.twinkleDuration}s`,
+    "--galaxy-twinkle-delay": `-${star.twinkleDelay}s`,
+    "--galaxy-float-duration": `${star.floatDuration}s`,
+    "--galaxy-float-delay": `-${star.floatDelay}s`,
+  }) as CSSProperties;
+
 const SPACE_OBJECTS: SpaceObject[] = [
   { depth: "far", type: "dot", motion: "a", x: 5, y: 13, size: 2, color: "#ffffff", opacity: 0.42, duration: 7.3, delay: 1.1, driftX: 8, driftY: 5, rotation: 4 },
   { depth: "far", type: "ring", motion: "b", x: 93, y: 15, size: 10, color: "#d9cbff", opacity: 0.34, duration: 10.8, delay: 4.2, driftX: -4, driftY: 11, rotation: -7 },
@@ -2295,6 +2401,57 @@ export function HomeExperience() {
 
           <div className="ambient-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
+          <div
+            className="apps-galaxy"
+            aria-hidden="true"
+            data-parallax-section=""
+          >
+            <div className="apps-galaxy-layer apps-galaxy-far">
+              {APPS_GALAXY_STARS.far.map((star, index) => (
+                <i
+                  key={`galaxy-far-${index}`}
+                  className={`apps-galaxy-star is-${star.shape}${star.twinkle ? " is-twinkle" : ""}`}
+                  style={getGalaxyStarStyle(star)}
+                />
+              ))}
+            </div>
+            <div
+              className="decoration-parallax-wrapper apps-galaxy-parallax"
+              data-parallax-item=""
+              data-parallax-kind="dot"
+              data-parallax-speed="0.08"
+              data-parallax-max="5"
+              data-parallax-direction="1"
+            >
+              <div className="apps-galaxy-layer apps-galaxy-mid">
+                {APPS_GALAXY_STARS.mid.map((star, index) => (
+                  <i
+                    key={`galaxy-mid-${index}`}
+                    className={`apps-galaxy-star is-${star.shape}${star.twinkle ? " is-twinkle" : ""}`}
+                    style={getGalaxyStarStyle(star)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div
+              className="decoration-parallax-wrapper apps-galaxy-parallax"
+              data-parallax-item=""
+              data-parallax-kind="star"
+              data-parallax-speed="0.11"
+              data-parallax-max="8"
+              data-parallax-direction="-1"
+            >
+              <div className="apps-galaxy-layer apps-galaxy-near">
+                {APPS_GALAXY_STARS.near.map((star, index) => (
+                  <i
+                    key={`galaxy-near-${index}`}
+                    className={`apps-galaxy-star is-${star.shape}${star.twinkle ? " is-twinkle" : ""}${star.floating ? " is-floating" : ""}`}
+                    style={getGalaxyStarStyle(star)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
           <div
             className="decorations"
             aria-hidden="true"
