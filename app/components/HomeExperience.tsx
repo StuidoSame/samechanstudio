@@ -756,6 +756,165 @@ export function HomeExperience() {
   }, []);
 
   useEffect(() => {
+    const main = mainRef.current;
+    if (!main) return;
+
+    const sectionEntries = Array.from(
+      main.querySelectorAll<HTMLElement>("[data-parallax-section]"),
+    ).map((section) => ({
+      items: Array.from(
+        section.querySelectorAll<HTMLElement>("[data-parallax-item]"),
+      ),
+      section,
+    }));
+    if (sectionEntries.length === 0) return;
+
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    const coarsePointerQuery = window.matchMedia(
+      "(hover: none), (pointer: coarse)",
+    );
+    const activeSections = new Set<HTMLElement>();
+    const currentOffsets = new WeakMap<HTMLElement, number>();
+    const initialProgress = new WeakMap<HTMLElement, number>();
+    let frameId: number | null = null;
+
+    const getSectionProgress = (section: HTMLElement) => {
+      const rect = section.getBoundingClientRect();
+      return clamp(
+        (window.innerHeight - rect.top) / (window.innerHeight + rect.height),
+        0,
+        1,
+      );
+    };
+
+    sectionEntries.forEach(({ section }) => {
+      const rect = section.getBoundingClientRect();
+      initialProgress.set(
+        section,
+        rect.top <= 0 && rect.bottom > 0 ? getSectionProgress(section) : 0,
+      );
+    });
+
+    const getViewportScale = (kind: string) => {
+      const responsiveScale =
+        window.innerWidth < 768 ? 0.34 : window.innerWidth < 1200 ? 0.7 : 1;
+
+      if (!coarsePointerQuery.matches) return responsiveScale;
+      if (kind === "star" || kind === "dot" || kind === "diamond") return 0;
+      return Math.min(responsiveScale, 0.3);
+    };
+
+    const resetParallax = () => {
+      sectionEntries.forEach(({ items }) => {
+        items.forEach((item) => {
+          currentOffsets.set(item, 0);
+          item.style.setProperty("--parallax-y", "0px");
+        });
+      });
+    };
+
+    const updateParallax = () => {
+      frameId = null;
+
+      if (reducedMotionQuery.matches) {
+        resetParallax();
+        return;
+      }
+
+      const viewportHeight = window.innerHeight;
+      let needsAnotherFrame = false;
+
+      sectionEntries.forEach(({ items, section }) => {
+        if (!activeSections.has(section)) return;
+
+        const rect = section.getBoundingClientRect();
+        if (
+          rect.bottom < -viewportHeight * 0.2 ||
+          rect.top > viewportHeight * 1.2
+        ) {
+          return;
+        }
+
+        const progress = getSectionProgress(section);
+        const relativeProgress = progress - (initialProgress.get(section) ?? 0);
+
+        items.forEach((item) => {
+          const speed = Number(item.dataset.parallaxSpeed ?? 0.08);
+          const maxOffset = Number(item.dataset.parallaxMax ?? 16);
+          const direction = Number(item.dataset.parallaxDirection ?? 1);
+          const viewportScale = getViewportScale(
+            item.dataset.parallaxKind ?? "dot",
+          );
+          const target = relativeProgress * maxOffset * viewportScale * direction;
+          const previous = currentOffsets.get(item);
+          const current = previous ?? target;
+          const next = current + (target - current) * speed;
+
+          currentOffsets.set(item, next);
+          item.style.setProperty("--parallax-y", `${next.toFixed(3)}px`);
+          if (Math.abs(target - next) > 0.05) needsAnotherFrame = true;
+        });
+      });
+
+      if (needsAnotherFrame) {
+        frameId = window.requestAnimationFrame(updateParallax);
+      }
+    };
+
+    const requestParallaxUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateParallax);
+    };
+
+    const observer =
+      "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                const section = entry.target as HTMLElement;
+                if (entry.isIntersecting) {
+                  activeSections.add(section);
+                  section.classList.add("is-parallax-active");
+                } else {
+                  activeSections.delete(section);
+                  section.classList.remove("is-parallax-active");
+                }
+              });
+              requestParallaxUpdate();
+            },
+            { rootMargin: "20% 0px 20% 0px", threshold: 0 },
+          )
+        : null;
+
+    sectionEntries.forEach(({ section }) => {
+      if (observer) {
+        observer.observe(section);
+      } else {
+        activeSections.add(section);
+        section.classList.add("is-parallax-active");
+      }
+    });
+
+    requestParallaxUpdate();
+    window.addEventListener("scroll", requestParallaxUpdate, { passive: true });
+    window.addEventListener("resize", requestParallaxUpdate);
+    reducedMotionQuery.addEventListener("change", requestParallaxUpdate);
+    coarsePointerQuery.addEventListener("change", requestParallaxUpdate);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("scroll", requestParallaxUpdate);
+      window.removeEventListener("resize", requestParallaxUpdate);
+      reducedMotionQuery.removeEventListener("change", requestParallaxUpdate);
+      coarsePointerQuery.removeEventListener("change", requestParallaxUpdate);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+      resetParallax();
+    };
+  }, []);
+
+  useEffect(() => {
     autoplayEnabledRef.current = !loaderVisible && !reducedMotion;
     if (reducedMotion && isFastForwardingRef.current) {
       stopFastForward(true);
@@ -2048,28 +2207,50 @@ export function HomeExperience() {
 
           <div className="ambient-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
-          <div className="decorations" aria-hidden="true">
-            <div className="decorations-far">
-              {SPACE_OBJECTS.filter((object) => object.depth === "far").map(
-                (object, index) => (
-                  <i
-                    key={`far-${index}`}
-                    className={`decoration is-${object.type} motion-${object.motion}`}
-                    style={getSpaceObjectStyle(object)}
-                  />
-                ),
-              )}
+          <div
+            className="decorations"
+            aria-hidden="true"
+            data-parallax-section=""
+          >
+            <div
+              className="decoration-parallax-wrapper hero-space-parallax"
+              data-parallax-item=""
+              data-parallax-kind="dot"
+              data-parallax-speed="0.08"
+              data-parallax-max="14"
+              data-parallax-direction="1"
+            >
+              <div className="decorations-far">
+                {SPACE_OBJECTS.filter((object) => object.depth === "far").map(
+                  (object, index) => (
+                    <i
+                      key={`far-${index}`}
+                      className={`decoration is-${object.type} motion-${object.motion}`}
+                      style={getSpaceObjectStyle(object)}
+                    />
+                  ),
+                )}
+              </div>
             </div>
-            <div className="decorations-near">
-              {SPACE_OBJECTS.filter((object) => object.depth === "near").map(
-                (object, index) => (
-                  <i
-                    key={`near-${index}`}
-                    className={`decoration is-${object.type} motion-${object.motion}`}
-                    style={getSpaceObjectStyle(object)}
-                  />
-                ),
-              )}
+            <div
+              className="decoration-parallax-wrapper hero-space-parallax"
+              data-parallax-item=""
+              data-parallax-kind="star"
+              data-parallax-speed="0.14"
+              data-parallax-max="22"
+              data-parallax-direction="1"
+            >
+              <div className="decorations-near">
+                {SPACE_OBJECTS.filter((object) => object.depth === "near").map(
+                  (object, index) => (
+                    <i
+                      key={`near-${index}`}
+                      className={`decoration is-${object.type} motion-${object.motion}`}
+                      style={getSpaceObjectStyle(object)}
+                    />
+                  ),
+                )}
+              </div>
             </div>
           </div>
           <SectionCosmos variant="hero" />
@@ -2286,32 +2467,100 @@ export function HomeExperience() {
                   />
                 </p>
               </div>
-              <div className="contact-scene" aria-hidden="true">
-                <svg className="contact-constellation" viewBox="0 0 220 118" fill="none" focusable="false">
-                  <path d="M12 91 52 58 96 70 134 30 177 48 210 12" />
-                  <circle cx="12" cy="91" r="2.5" />
-                  <circle cx="52" cy="58" r="2" />
-                  <circle cx="96" cy="70" r="2.5" />
-                  <circle cx="134" cy="30" r="2" />
-                  <circle cx="177" cy="48" r="2.4" />
-                  <circle cx="210" cy="12" r="2" />
-                </svg>
-                <span className="contact-orb"><i /></span>
-                <span className="contact-scene-particle contact-scene-particle--one" />
-                <span className="contact-scene-particle contact-scene-particle--two" />
-                <span className="contact-scene-particle contact-scene-particle--three" />
-                <span className="contact-scene-particle contact-scene-particle--four" />
-                <span className="contact-scene-particle contact-scene-particle--five" />
-                <span className="contact-scene-particle contact-scene-particle--six" />
-                <div className="contact-flight">
-                  <svg className="contact-flight-trail" viewBox="0 0 190 90" fill="none" focusable="false">
-                    <path d="M5 78C42 72 52 38 91 43c28 4 41 27 76 6" />
+              <div
+                className="contact-scene"
+                aria-hidden="true"
+                data-parallax-section=""
+              >
+                <div
+                  className="decoration-parallax-wrapper"
+                  data-parallax-item=""
+                  data-parallax-kind="constellation"
+                  data-parallax-speed="0.08"
+                  data-parallax-max="36"
+                  data-parallax-direction="1"
+                >
+                  <svg
+                    className="contact-constellation"
+                    viewBox="0 0 220 118"
+                    fill="none"
+                    focusable="false"
+                  >
+                    <path d="M12 91 52 58 96 70 134 30 177 48 210 12" />
+                    <circle cx="12" cy="91" r="2.5" />
+                    <circle cx="52" cy="58" r="2" />
+                    <circle cx="96" cy="70" r="2.5" />
+                    <circle cx="134" cy="30" r="2" />
+                    <circle cx="177" cy="48" r="2.4" />
+                    <circle cx="210" cy="12" r="2" />
                   </svg>
-                  <div className="contact-paper-plane-decoration">
-                    <svg viewBox="0 0 68 56" fill="none" focusable="false">
-                      <path d="M62 8 7 27l23 7 9 16L62 8Z" />
-                      <path d="m30 34 32-26-23 31" />
+                </div>
+                <div
+                  className="decoration-parallax-wrapper"
+                  data-parallax-item=""
+                  data-parallax-kind="orbit"
+                  data-parallax-speed="0.14"
+                  data-parallax-max="46"
+                  data-parallax-direction="1"
+                >
+                  <span className="contact-orb"><i /></span>
+                </div>
+                <div
+                  className="decoration-parallax-wrapper"
+                  data-parallax-item=""
+                  data-parallax-kind="dot"
+                  data-parallax-speed="0.08"
+                  data-parallax-max="12"
+                  data-parallax-direction="1"
+                >
+                  <span className="contact-scene-particle contact-scene-particle--one" />
+                  <span className="contact-scene-particle contact-scene-particle--four" />
+                </div>
+                <div
+                  className="decoration-parallax-wrapper"
+                  data-parallax-item=""
+                  data-parallax-kind="diamond"
+                  data-parallax-speed="0.11"
+                  data-parallax-max="16"
+                  data-parallax-direction="-1"
+                >
+                  <span className="contact-scene-particle contact-scene-particle--two" />
+                  <span className="contact-scene-particle contact-scene-particle--five" />
+                </div>
+                <div
+                  className="decoration-parallax-wrapper"
+                  data-parallax-item=""
+                  data-parallax-kind="dot"
+                  data-parallax-speed="0.14"
+                  data-parallax-max="10"
+                  data-parallax-direction="1"
+                >
+                  <span className="contact-scene-particle contact-scene-particle--three" />
+                  <span className="contact-scene-particle contact-scene-particle--six" />
+                </div>
+                <div
+                  className="decoration-parallax-wrapper"
+                  data-parallax-item=""
+                  data-parallax-kind="flight"
+                  data-parallax-speed="0.08"
+                  data-parallax-max="18"
+                  data-parallax-direction="1"
+                >
+                  <div className="contact-flight">
+                    <svg
+                      className="contact-flight-trail"
+                      viewBox="0 0 190 90"
+                      fill="none"
+                      focusable="false"
+                    >
+                      <path d="M5 78C42 72 52 38 91 43c28 4 41 27 76 6" />
                     </svg>
+                    <div className="contact-paper-plane-decoration">
+                      <svg viewBox="0 0 68 56" fill="none" focusable="false">
+                        <path d="M62 8 7 27l23 7 9 16L62 8Z" />
+                        <path d="m30 34 32-26-23 31" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 type SectionCosmosVariant =
   | "hero"
   | "about"
@@ -21,6 +23,21 @@ type CosmosComposition = {
   starCount: number;
   dotCount: number;
   diamondCount: number;
+};
+
+type ParallaxKind =
+  | "constellation"
+  | "orbit"
+  | "star"
+  | "dot"
+  | "diamond";
+
+type ParallaxLayerProps = {
+  children: ReactNode;
+  kind: ParallaxKind;
+  maxOffset: number;
+  reverse?: boolean;
+  speed: number;
 };
 
 const COSMOS_COMPOSITIONS: Record<SectionCosmosVariant, CosmosComposition> = {
@@ -108,6 +125,96 @@ const COSMOS_COMPOSITIONS: Record<SectionCosmosVariant, CosmosComposition> = {
 
 const ORDINALS = ["one", "two", "three", "four"] as const;
 
+const PARALLAX_SPEEDS: Record<ParallaxKind, readonly number[]> = {
+  constellation: [0.08, 0.11],
+  orbit: [0.14, 0.18],
+  star: [0.08, 0.14, 0.11, 0.18],
+  dot: [0.08, 0.11, 0.14, 0.08],
+  diamond: [0.14, 0.11],
+};
+
+const PARALLAX_LIMITS: Record<
+  SectionCosmosVariant,
+  Record<ParallaxKind, readonly number[]>
+> = {
+  hero: {
+    constellation: [28, 22],
+    orbit: [40],
+    star: [18, 24, 16, 20],
+    dot: [10, 14, 12, 16],
+    diamond: [22, 18],
+  },
+  about: {
+    constellation: [42],
+    orbit: [52],
+    star: [16, 22, 14],
+    dot: [10, 16, 12],
+    diamond: [20],
+  },
+  phone: {
+    constellation: [30],
+    orbit: [44],
+    star: [16, 22, 14],
+    dot: [10, 16],
+    diamond: [20],
+  },
+  tablet: {
+    constellation: [34],
+    orbit: [48],
+    star: [18, 24, 14],
+    dot: [12, 18],
+    diamond: [22],
+  },
+  watch: {
+    constellation: [28],
+    orbit: [42],
+    star: [16, 22, 14],
+    dot: [10, 16],
+    diamond: [20],
+  },
+  contact: {
+    constellation: [38, 28],
+    orbit: [44, 32],
+    star: [16, 22, 14],
+    dot: [10, 16, 12],
+    diamond: [20],
+  },
+};
+
+const getParallaxSpec = (
+  variant: SectionCosmosVariant,
+  kind: ParallaxKind,
+  index: number,
+) => ({
+  maxOffset: PARALLAX_LIMITS[variant][kind][index] ?? 16,
+  reverse:
+    (kind === "constellation" && index === 1) ||
+    (kind === "star" && index === 2) ||
+    (kind === "dot" && index === 1),
+  speed: PARALLAX_SPEEDS[kind][index] ?? 0.08,
+});
+
+function ParallaxLayer({
+  children,
+  kind,
+  maxOffset,
+  reverse = false,
+  speed,
+}: ParallaxLayerProps) {
+  return (
+    <span
+      className="section-cosmos-parallax"
+      data-parallax-item=""
+      data-parallax-kind={kind}
+      data-parallax-max={maxOffset}
+      data-parallax-direction={reverse ? -1 : 1}
+      data-parallax-speed={speed}
+    >
+      {children}
+    </span>
+  );
+}
+
 export function SectionCosmos({ variant }: SectionCosmosProps) {
   const composition = COSMOS_COMPOSITIONS[variant];
 
@@ -115,54 +222,88 @@ export function SectionCosmos({ variant }: SectionCosmosProps) {
     <div
       className={`section-cosmos section-cosmos--${variant}`}
       aria-hidden="true"
+      data-parallax-section=""
     >
-      {composition.constellations.map((constellation, constellationIndex) => (
-        <svg
-          className={`section-cosmos-constellation section-cosmos-constellation--${ORDINALS[constellationIndex]}`}
-          viewBox="0 0 168 72"
-          fill="none"
-          key={constellation.path}
-        >
-          <path d={constellation.path} />
-          {constellation.points.map(([cx, cy], pointIndex) => (
-            <circle
-              key={`${cx}-${cy}`}
-              cx={cx}
-              cy={cy}
-              r={pointIndex % 3 === 0 ? 2.7 : pointIndex % 2 === 0 ? 2.1 : 1.55}
+      {composition.constellations.map((constellation, constellationIndex) => {
+        const spec = getParallaxSpec(
+          variant,
+          "constellation",
+          constellationIndex,
+        );
+
+        return (
+          <ParallaxLayer kind="constellation" key={constellation.path} {...spec}>
+            <svg
+              className={`section-cosmos-constellation section-cosmos-constellation--${ORDINALS[constellationIndex]}`}
+              viewBox="0 0 168 72"
+              fill="none"
+            >
+              <path d={constellation.path} />
+              {constellation.points.map(([cx, cy], pointIndex) => (
+                <circle
+                  key={`${cx}-${cy}`}
+                  cx={cx}
+                  cy={cy}
+                  r={pointIndex % 3 === 0 ? 2.7 : pointIndex % 2 === 0 ? 2.1 : 1.55}
+                />
+              ))}
+            </svg>
+          </ParallaxLayer>
+        );
+      })}
+
+      {Array.from({ length: composition.orbitCount }, (_, index) => {
+        const spec = getParallaxSpec(variant, "orbit", index);
+
+        return (
+          <ParallaxLayer kind="orbit" key={`orbit-${ORDINALS[index]}`} {...spec}>
+            <span
+              className={`section-cosmos-orbit section-cosmos-orbit--${ORDINALS[index]}`}
+            >
+              <i />
+              <b />
+            </span>
+          </ParallaxLayer>
+        );
+      })}
+
+      {Array.from({ length: composition.starCount }, (_, index) => {
+        const spec = getParallaxSpec(variant, "star", index);
+
+        return (
+          <ParallaxLayer kind="star" key={`star-${ORDINALS[index]}`} {...spec}>
+            <span
+              className={`section-cosmos-star section-cosmos-star--${ORDINALS[index]}`}
             />
-          ))}
-        </svg>
-      ))}
+          </ParallaxLayer>
+        );
+      })}
+      {Array.from({ length: composition.dotCount }, (_, index) => {
+        const spec = getParallaxSpec(variant, "dot", index);
 
-      {Array.from({ length: composition.orbitCount }, (_, index) => (
-        <span
-          className={`section-cosmos-orbit section-cosmos-orbit--${ORDINALS[index]}`}
-          key={`orbit-${ORDINALS[index]}`}
-        >
-          <i />
-          <b />
-        </span>
-      ))}
+        return (
+          <ParallaxLayer kind="dot" key={`dot-${ORDINALS[index]}`} {...spec}>
+            <span
+              className={`section-cosmos-dot section-cosmos-dot--${ORDINALS[index]}`}
+            />
+          </ParallaxLayer>
+        );
+      })}
+      {Array.from({ length: composition.diamondCount }, (_, index) => {
+        const spec = getParallaxSpec(variant, "diamond", index);
 
-      {Array.from({ length: composition.starCount }, (_, index) => (
-        <span
-          className={`section-cosmos-star section-cosmos-star--${ORDINALS[index]}`}
-          key={`star-${ORDINALS[index]}`}
-        />
-      ))}
-      {Array.from({ length: composition.dotCount }, (_, index) => (
-        <span
-          className={`section-cosmos-dot section-cosmos-dot--${ORDINALS[index]}`}
-          key={`dot-${ORDINALS[index]}`}
-        />
-      ))}
-      {Array.from({ length: composition.diamondCount }, (_, index) => (
-        <span
-          className={`section-cosmos-diamond section-cosmos-diamond--${ORDINALS[index]}`}
-          key={`diamond-${ORDINALS[index]}`}
-        />
-      ))}
+        return (
+          <ParallaxLayer
+            kind="diamond"
+            key={`diamond-${ORDINALS[index]}`}
+            {...spec}
+          >
+            <span
+              className={`section-cosmos-diamond section-cosmos-diamond--${ORDINALS[index]}`}
+            />
+          </ParallaxLayer>
+        );
+      })}
     </div>
   );
 }

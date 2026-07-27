@@ -3321,6 +3321,29 @@ button {
   }
 }
 
+.section-cosmos-parallax,
+.decoration-parallax-wrapper {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  transform-origin: center;
+  will-change: auto;
+}
+
+[data-parallax-section].is-parallax-active
+  > [data-parallax-kind="constellation"],
+[data-parallax-section].is-parallax-active > [data-parallax-kind="orbit"],
+[data-parallax-section].is-parallax-active > [data-parallax-kind="flight"],
+[data-parallax-section].is-parallax-active > .hero-space-parallax {
+  will-change: transform;
+}
+
+.hero-space-parallax {
+  transform-style: preserve-3d;
+}
+
 .type-reveal {
   position: relative;
   display: block;
@@ -7562,6 +7585,12 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  [data-parallax-item] {
+    --parallax-y: 0px !important;
+    transform: translate3d(0, 0, 0) !important;
+    will-change: auto !important;
   }
 
   .section-cosmos-constellation,
