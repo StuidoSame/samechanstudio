@@ -3916,6 +3916,28 @@ button {
   font-size: clamp(8.5px, 0.78vw, 10px);
   line-height: 1.4;
   overflow-wrap: anywhere;
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+}
+
+.phone-daily-experience.is-typing-complete .phone-daily-example-list li {
+  animation: phone-daily-example-in 520ms cubic-bezier(0.2, 0.76, 0.3, 1) forwards;
+}
+
+.phone-daily-experience.is-typing-complete .phone-daily-example-list li:nth-child(2) {
+  animation-delay: 130ms;
+}
+
+.phone-daily-experience.is-typing-complete .phone-daily-example-list li:nth-child(3) {
+  animation-delay: 260ms;
+}
+
+.phone-daily-experience.is-typing-complete .phone-daily-example-list li:nth-child(4) {
+  animation-delay: 390ms;
+}
+
+.phone-daily-answer-list li.is-new {
+  animation: phone-daily-answer-in 480ms cubic-bezier(0.2, 0.76, 0.3, 1) both;
 }
 
 .phone-daily-answer-list li {
@@ -3951,6 +3973,14 @@ button {
   padding: 4px 5px 4px 14px;
   gap: 6px;
   cursor: text;
+}
+
+.phone-daily-form.is-after-examples {
+  opacity: 0;
+}
+
+.phone-daily-experience.is-typing-complete .phone-daily-form.is-after-examples {
+  animation: phone-daily-input-in 420ms ease-out 920ms forwards;
 }
 
 .phone-daily-form.is-disabled {
@@ -4054,6 +4084,56 @@ button {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes phone-daily-example-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(-1px) scale(1.025);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes phone-daily-input-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes phone-daily-answer-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0) scale(1.018);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes phone-daily-answer-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -5811,6 +5891,17 @@ button {
   .phone-daily-saved-state span {
     transition: none;
     animation: none;
+  }
+
+  .phone-daily-example-list li,
+  .phone-daily-form.is-after-examples {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .phone-daily-answer-list li.is-new {
+    animation: phone-daily-answer-fade 180ms ease-out both;
   }
 
   .tablet-puzzle-main p,

@@ -164,7 +164,9 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const [answers, setAnswers] = useState<DailyAnswer[]>([]);
   const [answerDraft, setAnswerDraft] = useState("");
   const [showSavedState, setShowSavedState] = useState(false);
+  const [newAnswerId, setNewAnswerId] = useState<string | null>(null);
   const savedStateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const newAnswerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentDateKey = currentDate ? getLocalDateKey(currentDate) : "";
 
   useEffect(() => {
@@ -304,6 +306,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
       setAnswers(storage.days[currentDateKey] ?? []);
       setAnswerDraft("");
       setShowSavedState(false);
+      setNewAnswerId(null);
       setQuestionStarted(false);
       setTypedQuestion("");
       setTypingComplete(false);
@@ -311,6 +314,11 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
       if (savedStateTimerRef.current) {
         clearTimeout(savedStateTimerRef.current);
         savedStateTimerRef.current = null;
+      }
+
+      if (newAnswerTimerRef.current) {
+        clearTimeout(newAnswerTimerRef.current);
+        newAnswerTimerRef.current = null;
       }
     });
 
@@ -321,6 +329,10 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
     () => () => {
       if (savedStateTimerRef.current) {
         clearTimeout(savedStateTimerRef.current);
+      }
+
+      if (newAnswerTimerRef.current) {
+        clearTimeout(newAnswerTimerRef.current);
       }
     },
     [],
@@ -342,6 +354,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
 
     const nextAnswers = [nextAnswer, ...answers].slice(0, 3);
     setAnswers(nextAnswers);
+    setNewAnswerId(nextAnswer.id);
     writeDailyAnswers(currentDateKey, nextAnswers);
     setAnswerDraft("");
     setShowSavedState(true);
@@ -354,6 +367,15 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
       setShowSavedState(false);
       savedStateTimerRef.current = null;
     }, 1100);
+
+    if (newAnswerTimerRef.current) {
+      clearTimeout(newAnswerTimerRef.current);
+    }
+
+    newAnswerTimerRef.current = setTimeout(() => {
+      setNewAnswerId(null);
+      newAnswerTimerRef.current = null;
+    }, 620);
   };
 
   const handleAnswerKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -416,7 +438,9 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                     {answers.length > 0 ? (
                       <ol className="phone-daily-answer-list">
                         {answers.map((answer) => (
-                          <li key={answer.id}>{answer.text}</li>
+                          <li className={answer.id === newAnswerId ? "is-new" : undefined} key={answer.id}>
+                            {answer.text}
+                          </li>
                         ))}
                       </ol>
                     ) : (
@@ -434,7 +458,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                     </div>
                   ) : (
                     <form
-                      className={`phone-daily-form${answerInputDisabled ? " is-disabled" : ""}`}
+                      className={`phone-daily-form${answers.length === 0 ? " is-after-examples" : ""}${answerInputDisabled ? " is-disabled" : ""}`}
                       onClick={focusAnswerInput}
                       onSubmit={submitAnswer}
                     >
