@@ -1836,9 +1836,27 @@ button {
 
 .app-detail-header h2 {
   margin: 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 18px);
   font-size: clamp(28px, 3.2vw, 46px);
   line-height: 1;
   letter-spacing: -0.035em;
+}
+
+.app-detail-header h2 > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-detail-title-icon {
+  width: clamp(44px, 4.4vw, 52px);
+  height: clamp(44px, 4.4vw, 52px);
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 22%;
+  object-fit: cover;
 }
 
 .app-detail-close {
@@ -1894,21 +1912,19 @@ button {
 }
 
 .app-detail-store-button {
-  min-height: 46px;
+  width: 54px;
+  height: 54px;
   margin: 0;
-  padding: 0 20px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
   border: 1px solid rgba(111, 75, 176, 0.16);
-  border-radius: 999px;
+  border-radius: 17px;
   color: #704bb8;
   background: rgba(244, 237, 255, 0.72);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  font-size: 10px;
-  letter-spacing: 0.1em;
   transition:
     color 0.2s ease,
     border-color 0.2s ease,
@@ -1922,27 +1938,28 @@ button {
   background: rgba(248, 243, 255, 0.9);
 }
 
-.app-detail-store-button[aria-pressed="true"] {
-  border-color: rgba(114, 72, 204, 0.55);
-  color: #fff;
-  background: linear-gradient(120deg, #7045d6, #9360e9);
-  box-shadow:
-    0 10px 24px rgba(102, 61, 183, 0.2),
-    0 0 22px rgba(143, 91, 223, 0.14);
-  transform: scale(1.02);
+.app-detail-store-button:focus-visible {
+  outline: 2px solid rgba(112, 69, 214, 0.58);
+  outline-offset: 4px;
+}
+
+.app-detail-store-button:disabled {
+  color: rgba(112, 75, 184, 0.34);
+  cursor: not-allowed;
+  opacity: 0.52;
 }
 
 .app-detail-store-icon-slot {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
-  flex: 0 0 20px;
+  flex: 0 0 28px;
 }
 
 .app-detail-store-icon {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   display: block;
 }
 
@@ -2151,6 +2168,11 @@ button {
     flex-basis: 46px;
   }
 
+  .app-detail-title-icon {
+    width: 40px;
+    height: 40px;
+  }
+
   .app-detail-content {
     padding: 20px;
     grid-template-rows: auto minmax(200px, 1fr) auto auto;
@@ -2162,10 +2184,9 @@ button {
   }
 
   .app-detail-store-button {
-    min-height: 44px;
-    padding-inline: 14px;
-    gap: 7px;
-    font-size: 8px;
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
   }
 
   .app-detail-preview {
@@ -2205,23 +2226,14 @@ button {
   }
 
   .app-detail-store-button {
-    min-width: 0;
-    padding-inline: 8px;
-    flex: 1 1 0;
-    gap: 5px;
-    font-size: 7px;
-  }
-
-  .app-detail-store-button:only-child {
-    max-width: 190px;
-    flex-basis: 190px;
+    flex: 0 0 48px;
   }
 
   .app-detail-store-icon-slot,
   .app-detail-store-icon {
-    width: 17px;
-    height: 17px;
-    flex-basis: 17px;
+    width: 26px;
+    height: 26px;
+    flex-basis: 26px;
   }
 }
 

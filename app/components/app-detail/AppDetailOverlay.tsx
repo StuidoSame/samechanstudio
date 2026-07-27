@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AppItem } from "../../lib/apps";
 import {
@@ -20,8 +21,8 @@ type AppDetailOverlayProps = {
 };
 
 const STORE_LABELS: Record<DetailStore, string> = {
-  apple: "APPLE APP STORE",
-  google: "GOOGLE PLAY STORE",
+  apple: "Apple App Store",
+  google: "Google Play",
 };
 
 const DEVICE_LABELS: Record<DetailDevice, string> = {
@@ -170,7 +171,16 @@ export function AppDetailOverlay({
         aria-labelledby="app-detail-title"
       >
         <header className="app-detail-header">
-          <h2 id="app-detail-title">{app.name}</h2>
+          <h2 id="app-detail-title">
+            <Image
+              className="app-detail-title-icon"
+              src={app.icon}
+              alt={`${app.name} 앱 아이콘`}
+              width={52}
+              height={52}
+            />
+            <span>{app.name}</span>
+          </h2>
           <button
             className="app-detail-close"
             ref={closeButtonRef}
@@ -184,25 +194,49 @@ export function AppDetailOverlay({
 
         <div className="app-detail-content">
           <div className="app-detail-store-selector" aria-label="스토어 선택">
-            {availableStores.map((store) => (
-              <button
-                className="app-detail-store-button"
-                type="button"
-                key={store}
-                aria-pressed={selectedStore === store}
-                onClick={() => {
-                  setSelectedStore(store);
-                  setSelectedDevice(
-                    getAvailableDetailDevices(app.id, store)[0] ?? null,
-                  );
-                }}
-              >
+            {availableStores.map((store) => {
+              const storeUrl =
+                store === "apple" ? app.appStoreUrl : app.googlePlayUrl;
+              const ariaLabel = `${STORE_LABELS[store]}에서 ${app.name} 보기`;
+              const icon = (
                 <span className="app-detail-store-icon-slot">
                   <StoreIcon store={store} />
                 </span>
-                <span>{STORE_LABELS[store]}</span>
-              </button>
-            ))}
+              );
+
+              if (!storeUrl) {
+                return (
+                  <button
+                    className="app-detail-store-button"
+                    type="button"
+                    key={store}
+                    aria-label={ariaLabel}
+                    disabled
+                  >
+                    {icon}
+                  </button>
+                );
+              }
+
+              return (
+                <a
+                  className="app-detail-store-button"
+                  href={storeUrl}
+                  key={store}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={ariaLabel}
+                  onClick={() => {
+                    setSelectedStore(store);
+                    setSelectedDevice(
+                      getAvailableDetailDevices(app.id, store)[0] ?? null,
+                    );
+                  }}
+                >
+                  {icon}
+                </a>
+              );
+            })}
           </div>
           <div
             className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
