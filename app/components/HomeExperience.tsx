@@ -2254,12 +2254,7 @@ export function HomeExperience() {
         >
           <SectionCosmos variant="contact" />
           <div className="contact-stage">
-            <div className="contact-panel">
-              <div className="contact-chat-decoration" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </div>
+            <div className="contact-layout">
               <div className="contact-inner">
                 <TypeReveal
                   as="h2"
@@ -2291,11 +2286,34 @@ export function HomeExperience() {
                   />
                 </p>
               </div>
-              <div className="contact-paper-plane-decoration" aria-hidden="true">
-                <svg viewBox="0 0 48 42" fill="none" focusable="false">
-                  <path d="M44 20 4 4l13 34 10-14 17-4Z" />
-                  <path d="M4 4 27 24" />
+              <div className="contact-scene" aria-hidden="true">
+                <svg className="contact-constellation" viewBox="0 0 220 118" fill="none" focusable="false">
+                  <path d="M12 91 52 58 96 70 134 30 177 48 210 12" />
+                  <circle cx="12" cy="91" r="2.5" />
+                  <circle cx="52" cy="58" r="2" />
+                  <circle cx="96" cy="70" r="2.5" />
+                  <circle cx="134" cy="30" r="2" />
+                  <circle cx="177" cy="48" r="2.4" />
+                  <circle cx="210" cy="12" r="2" />
                 </svg>
+                <span className="contact-orb"><i /></span>
+                <span className="contact-scene-particle contact-scene-particle--one" />
+                <span className="contact-scene-particle contact-scene-particle--two" />
+                <span className="contact-scene-particle contact-scene-particle--three" />
+                <span className="contact-scene-particle contact-scene-particle--four" />
+                <span className="contact-scene-particle contact-scene-particle--five" />
+                <span className="contact-scene-particle contact-scene-particle--six" />
+                <div className="contact-flight">
+                  <svg className="contact-flight-trail" viewBox="0 0 190 90" fill="none" focusable="false">
+                    <path d="M5 78C42 72 52 38 91 43c28 4 41 27 76 6" />
+                  </svg>
+                  <div className="contact-paper-plane-decoration">
+                    <svg viewBox="0 0 68 56" fill="none" focusable="false">
+                      <path d="M62 8 7 27l23 7 9 16L62 8Z" />
+                      <path d="m30 34 32-26-23 31" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
