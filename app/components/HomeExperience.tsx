@@ -2225,6 +2225,7 @@ export function HomeExperience() {
         </section>
 
         <TypeRevealGroup as="section" className="studio-about" id="about">
+          <SectionCosmos variant="about" />
           <div className="studio-about-content">
             <TypeReveal
               as="span"
