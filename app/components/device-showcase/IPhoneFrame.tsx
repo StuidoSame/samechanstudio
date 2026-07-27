@@ -7,6 +7,7 @@ import {
   useState,
   type FormEvent,
   type KeyboardEvent,
+  type MouseEvent,
   type ReactNode,
 } from "react";
 
@@ -108,6 +109,7 @@ function writeDailyAnswers(dateKey: string, answers: DailyAnswer[]) {
 
 export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const stageRef = useRef<HTMLDivElement>(null);
+  const answerInputRef = useRef<HTMLTextAreaElement>(null);
   const [hasEntered, setHasEntered] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -316,6 +318,15 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   };
 
   const answerLimitReached = answers.length >= 3;
+  const answerInputDisabled = answerLimitReached || !typingComplete;
+
+  const focusAnswerInput = (event: MouseEvent<HTMLFormElement>) => {
+    if (answerInputDisabled || (event.target as HTMLElement).closest("button")) {
+      return;
+    }
+
+    answerInputRef.current?.focus();
+  };
 
   return (
     <div ref={stageRef} className="device-phone-stage" aria-label="SAME STUDIO 하루 질문">
@@ -375,21 +386,27 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                       저장했어요
                     </div>
                   ) : (
-                    <form className="phone-daily-form" onSubmit={submitAnswer}>
+                    <form
+                      className={`phone-daily-form${answerInputDisabled ? " is-disabled" : ""}`}
+                      onClick={focusAnswerInput}
+                      onSubmit={submitAnswer}
+                    >
                       <textarea
+                        ref={answerInputRef}
                         value={answerDraft}
                         maxLength={120}
                         rows={2}
-                        aria-label="오늘의 질문 답변"
+                        aria-label="오늘의 답변 입력"
                         placeholder={answerLimitReached ? "오늘 기록 완료" : "오늘의 답변"}
-                        disabled={answerLimitReached || !typingComplete}
+                        disabled={answerInputDisabled}
                         onChange={(event) => setAnswerDraft(event.target.value)}
                         onKeyDown={handleAnswerKeyDown}
                       />
                       <button
                         type="submit"
-                        aria-label="답변 저장"
+                        aria-label="오늘의 답변 저장"
                         disabled={answerLimitReached || !answerDraft.trim()}
+                        onClick={(event) => event.stopPropagation()}
                       >
                         <span aria-hidden="true">✓</span>
                       </button>

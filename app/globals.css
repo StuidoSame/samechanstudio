@@ -3940,14 +3940,25 @@ button {
 }
 
 .phone-daily-form {
-  padding: 6px 7px 6px 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 4px 5px 4px 14px;
   gap: 6px;
+  cursor: text;
+}
+
+.phone-daily-form.is-disabled {
+  cursor: default;
+  opacity: 0.72;
 }
 
 .phone-daily-form textarea {
+  width: 100%;
   min-width: 0;
-  height: 34px;
+  min-height: 44px;
+  height: 100%;
   flex: 1;
+  padding-block: 8px;
   resize: none;
   border: 0;
   outline: 0;
@@ -3973,8 +3984,8 @@ button {
 }
 
 .phone-daily-form button {
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   flex: 0 0 auto;
   display: grid;
   place-items: center;
@@ -5443,18 +5454,18 @@ button {
 
   .phone-daily-form,
   .phone-daily-saved-state {
-    min-height: 40px;
+    min-height: 48px;
     border-radius: 15px;
     font-size: clamp(8px, 2.35vw, 9px);
   }
 
   .phone-daily-form {
-    padding-left: 11px;
+    padding: 2px 2px 2px 11px;
   }
 
   .phone-daily-form button {
-    width: 25px;
-    height: 25px;
+    width: 44px;
+    height: 44px;
   }
 
   .device-phone-stage::before {
