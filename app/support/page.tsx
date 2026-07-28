@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { PolicyPageLayout } from "../components/PolicyPageLayout";
 import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
+import { createPageMetadata } from "../lib/seo";
 import { SupportContent } from "./SupportContent";
 import { SupportCosmosBackground } from "./SupportCosmosBackground";
 import { SupportHero } from "./SupportHero";
 
-export const metadata: Metadata = { title: "Support — SAME STUDIO" };
+export const metadata: Metadata = createPageMetadata("support");
 
 export default function SupportPage() {
   return (

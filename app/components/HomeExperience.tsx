@@ -15,6 +15,7 @@ import type {
   PointerEvent as ReactPointerEvent,
 } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
+import { AppCatalog } from "./AppCatalog";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
@@ -29,6 +30,7 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
+import { SEO_CONTENT } from "../lib/seo";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 import {
   consumeInternalHomeNavigation,
@@ -547,8 +549,9 @@ function Loader({
 }
 
 export function HomeExperience() {
-  const { messages } = useI18n();
+  const { locale, messages } = useI18n();
   const { pageTransitionActive } = usePageTransition();
+  const homeSeo = SEO_CONTENT[locale].home;
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -1149,7 +1152,10 @@ export function HomeExperience() {
     const started = performance.now();
     let previousTick = started;
     let displayedProgress = 0;
-    const assets = apps.map(
+    // Only warm the icons that can appear in the first carousel viewport.
+    // Remaining app icons keep the browser's native lazy-loading behavior.
+    const initialViewportApps = apps.slice(0, Math.min(5, apps.length));
+    const assets = initialViewportApps.map(
       (app) =>
         new Promise<void>((resolve) => {
           const image = new window.Image();
@@ -2003,7 +2009,7 @@ export function HomeExperience() {
           id="apps"
           data-cursor="drag"
           ref={heroRef}
-          aria-label="SAME STUDIO app explorer"
+          aria-labelledby="home-title"
           onPointerEnter={updateHeroDepth}
           onPointerLeave={resetHeroDepth}
           onPointerDown={(event) => {
@@ -2021,6 +2027,12 @@ export function HomeExperience() {
             homePage
             onMenuOpenChange={setMenuOpen}
           />
+
+          <header className="home-seo-intro">
+            <span aria-hidden="true">INDEPENDENT APP STUDIO</span>
+            <h1 id="home-title">{homeSeo.heading}</h1>
+            <p>{homeSeo.introduction}</p>
+          </header>
 
           <div className="ambient-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
@@ -2209,12 +2221,12 @@ export function HomeExperience() {
               <span className="app-count">
                 {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
               </span>
-              <h1 aria-label={activeApp.name}>
+              <h2 aria-label={activeApp.name}>
                 {activeApp.name.slice(
                   0,
                   isFastForwarding ? activeApp.name.length : typedNameLength,
                 )}
-              </h1>
+              </h2>
               <PlatformIcons app={activeApp} />
               <span className="view-app-sequence">
                 {activeApp.appStoreUrl ? (
@@ -2276,6 +2288,8 @@ export function HomeExperience() {
           </button>
 
         </section>
+
+        <AppCatalog />
 
         <TypeRevealGroup as="section" className="studio-about" id="about">
           <SectionCosmos variant="about" />

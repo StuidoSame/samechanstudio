@@ -44,13 +44,6 @@ export function DeleteAccountContent() {
 
   const selectedApp = ACCOUNT_DELETION_APPS.find((app) => app.id === appId);
 
-  useEffect(() => {
-    document.title = messages.metadataTitle;
-    document
-      .querySelector<HTMLMetaElement>('meta[name="description"]')
-      ?.setAttribute("content", messages.metadataDescription);
-  }, [messages]);
-
   useEffect(
     () => () => {
       if (submitTimerRef.current !== null) {

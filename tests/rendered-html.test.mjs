@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { DELETE_ACCOUNT_MESSAGES } from "../app/delete-account/deleteAccountMessages.ts";
@@ -14,7 +15,31 @@ async function render(pathname = "/") {
     }),
     {
       ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
+        fetch: async (request) => {
+          const assetPath = new URL(request.url).pathname;
+          if (assetPath.includes("..")) {
+            return new Response("Not found", { status: 404 });
+          }
+
+          try {
+            const body = await readFile(
+              new URL(`../dist/client${assetPath}`, import.meta.url),
+            );
+            const contentType = assetPath.endsWith(".xml")
+              ? "application/xml; charset=utf-8"
+              : assetPath.endsWith(".txt")
+                ? "text/plain; charset=utf-8"
+                : assetPath.endsWith(".webmanifest")
+                  ? "application/manifest+json; charset=utf-8"
+                  : "application/octet-stream";
+            return new Response(body, {
+              status: 200,
+              headers: { "content-type": contentType },
+            });
+          } catch {
+            return new Response("Not found", { status: 404 });
+          }
+        },
       },
     },
     {
@@ -31,12 +56,46 @@ test("server-renders the SAME STUDIO app explorer", async () => {
 
   const html = await response.text();
   assert.match(html, /<html[^>]*lang="ko"/i);
-  assert.match(html, /<title>SAME STUDIO<\/title>/i);
+  assert.match(
+    html,
+    /<title>SAME STUDIO \| iOS·Android 인디 앱 개발 스튜디오<\/title>/i,
+  );
   assert.match(html, /same-studio-theme-v1/);
   assert.match(html, /same-studio-font-size/);
   assert.match(html, /aria-controls="font-size-panel"/);
   assert.match(html, /SAME STUDIO/);
   assert.match(html, /Mapary_icon\.png/);
+  assert.match(html, /<h1[^>]*>SAME STUDIO 인디 앱 개발 스튜디오<\/h1>/i);
+  assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
+  assert.equal((html.match(/class="app-catalog-card"/g) ?? []).length, 9);
+  assert.match(html, /지도 메모 앱/);
+  assert.match(html, /러닝 메트로놈 앱/);
+  assert.match(html, /하루 질문 기록 앱/);
+  assert.match(html, /Lacaunt\(LOCAUNT\)/);
+  assert.match(html, /사진 미션 앱/);
+  assert.match(html, /24시간 투두 앱/);
+  assert.match(html, /다꾸 앱이자 디지털 다이어리/);
+  assert.match(html, /날씨 소원 앱/);
+  assert.match(html, /감정 위젯 앱/);
+  assert.match(html, /Mapary[\s\S]{0,80}App Store에서 보기/);
+  assert.match(html, /Mapary[\s\S]{0,80}Google Play에서 보기/);
+  assert.match(html, /type="application\/ld\+json"/);
+  assert.match(html, /"@type":"Organization"/);
+  assert.match(html, /"@type":"WebSite"/);
+  assert.match(html, /"@type":"SoftwareApplication"/);
+  const structuredData = html.match(
+    /<script type="application\/ld\+json">([\s\S]*?)<\/script>/,
+  );
+  assert.ok(structuredData);
+  const jsonLd = JSON.parse(structuredData[1]);
+  assert.equal(jsonLd["@context"], "https://schema.org");
+  assert.ok(jsonLd["@graph"].some((item) => item["@type"] === "Organization"));
+  assert.match(
+    html,
+    /rel="manifest" href="https:\/\/samestudio\.kr\/site\.webmanifest"/,
+  );
+  assert.match(html, /rel="apple-touch-icon"/);
+  assert.doesNotMatch(html, /\/og\.png/);
   assert.match(html, /페이지 주요 섹션 이동/);
   assert.match(html, /contact@samestudio\.kr/);
   assert.match(html, /watch-hit-counter/);
@@ -46,6 +105,86 @@ test("server-renders the SAME STUDIO app explorer", async () => {
     /Rhythm recording controls|Record rhythm|Stop recording|Play recorded rhythm|Clear recorded rhythm|Mute drums/,
   );
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
+});
+
+test("renders unique page metadata, canonical URLs, and social cards", async () => {
+  const pages = [
+    [
+      "/",
+      "SAME STUDIO | iOS·Android 인디 앱 개발 스튜디오",
+      "SAME STUDIO는 지도 메모, 러닝 메트로놈, 하루 질문 기록, 다꾸 등 일상에 도움이 되는 iOS·Android 앱을 제작하는 인디 앱 개발 스튜디오입니다.",
+      "https://samestudio.kr/",
+    ],
+    [
+      "/support/",
+      "앱 고객지원 및 문의 | SAME STUDIO",
+      "SAME STUDIO 앱의 이용 방법, 오류, 결제, 계정 및 개인정보 관련 문의를 확인하고 고객지원 요청을 보낼 수 있습니다.",
+      "https://samestudio.kr/support/",
+    ],
+    [
+      "/privacy/",
+      "개인정보처리방침 | SAME STUDIO",
+      "SAME STUDIO 앱과 서비스에서 처리하는 개인정보, 이용 목적, 권한, 외부 서비스, 보관 및 삭제 기준을 안내합니다.",
+      "https://samestudio.kr/privacy/",
+    ],
+    [
+      "/terms/",
+      "서비스 이용약관 | SAME STUDIO",
+      "SAME STUDIO 앱과 웹사이트 이용에 적용되는 서비스 이용 조건, 사용자 책임, 결제, 콘텐츠 및 안전 관련 약관을 안내합니다.",
+      "https://samestudio.kr/terms/",
+    ],
+    [
+      "/delete-account/",
+      "계정 및 데이터 삭제 요청 | SAME STUDIO",
+      "ODOW 등 SAME STUDIO 앱 계정과 연결 데이터의 삭제를 요청하고 처리 절차를 확인할 수 있는 공식 페이지입니다.",
+      "https://samestudio.kr/delete-account/",
+    ],
+  ];
+  const titles = new Set();
+
+  for (const [pathname, title, description, canonical] of pages) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+
+    assert.ok(html.includes(`<title>${title}</title>`));
+    assert.ok(html.includes(`<meta name="description" content="${description}"`));
+    assert.ok(html.includes(`<link rel="canonical" href="${canonical}"`));
+    assert.ok(html.includes(`<meta property="og:title" content="${title}"`));
+    assert.ok(html.includes(`<meta property="og:description" content="${description}"`));
+    assert.ok(html.includes(`<meta property="og:url" content="${canonical}"`));
+    assert.ok(html.includes('<meta property="og:site_name" content="SAME STUDIO"'));
+    assert.ok(html.includes('<meta property="og:locale" content="ko_KR"'));
+    assert.ok(html.includes('<meta name="twitter:card" content="summary_large_image"'));
+    assert.ok(html.includes('<meta name="robots" content="index, follow'));
+    assert.doesNotMatch(html, /hreflang=/i);
+    assert.equal((html.match(/<h1\b/gi) ?? []).length, 1, pathname);
+    titles.add(title);
+  }
+
+  assert.equal(titles.size, pages.length, "every route should have a unique title");
+});
+
+test("builds crawlable robots, sitemap, and manifest assets", async () => {
+  const readBuiltAsset = (pathname) =>
+    readFile(new URL(`../dist/client${pathname}`, import.meta.url), "utf8");
+
+  const robots = await readBuiltAsset("/robots.txt");
+  assert.match(robots, /User-agent: \*/);
+  assert.match(robots, /Allow: \//);
+  assert.match(robots, /Sitemap: https:\/\/samestudio\.kr\/sitemap\.xml/);
+
+  const sitemap = await readBuiltAsset("/sitemap.xml");
+  const sitemapPaths = ["/", "/support/", "/privacy/", "/terms/", "/delete-account/"];
+  for (const pathname of sitemapPaths) {
+    assert.ok(sitemap.includes(`<loc>https://samestudio.kr${pathname}</loc>`));
+    assert.equal((await render(pathname)).status, 200, pathname);
+  }
+
+  const manifest = JSON.parse(await readBuiltAsset("/site.webmanifest"));
+  assert.equal(manifest.name, "SAME STUDIO");
+  assert.equal(manifest.start_url, "/");
+  assert.ok(manifest.icons.some((icon) => icon.src === "/assets/favicon/favicon.ico"));
 });
 
 test("renders policy pages with the shared header, footer, and navigation", async () => {
@@ -129,7 +268,7 @@ test("server-renders the public account deletion request page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Account &amp; Data Deletion \| SAME STUDIO<\/title>/i);
+  assert.match(html, /<title>계정 및 데이터 삭제 요청 \| SAME STUDIO<\/title>/i);
   assert.match(html, /<h1[^>]*>계정 및 데이터 삭제<\/h1>/i);
   assert.match(html, /SAME STUDIO/);
   assert.match(html, />ODOW<\/option>/);
