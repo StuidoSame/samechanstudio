@@ -27,6 +27,15 @@ export type TranslatedAppDetail = {
   description: string;
 };
 
+export type TranslationLines = readonly [string, ...string[]];
+
+export type DeviceCopy = {
+  index: string;
+  label: string;
+  titleLines: TranslationLines;
+  descriptionLines: TranslationLines;
+};
+
 export type TranslationMessages = {
   header: {
     controlsLabel: string;
@@ -53,21 +62,9 @@ export type TranslationMessages = {
     };
   };
   devicePhilosophy: {
-    phone: {
-      category: string;
-      title: string;
-      body: string;
-    };
-    tablet: {
-      category: string;
-      title: string;
-      body: string;
-    };
-    watch: {
-      category: string;
-      title: string;
-      body: string;
-    };
+    phone: DeviceCopy;
+    tablet: DeviceCopy;
+    watch: DeviceCopy;
   };
   dailyQuestion: {
     questions: readonly string[];

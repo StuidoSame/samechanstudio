@@ -34,7 +34,7 @@ type PageSectionNavigationProps = {
 export function PageSectionNavigation({
   hidden,
 }: PageSectionNavigationProps) {
-  const { messages, format } = useI18n();
+  const { locale, messages, format } = useI18n();
   const [activeSectionId, setActiveSectionId] =
     useState<PageSectionId>("apps");
   const [footerVisible, setFooterVisible] = useState(false);
@@ -153,7 +153,7 @@ export function PageSectionNavigation({
 
         return (
           <button
-            key={section.id}
+            key={`${locale}-${section.id}`}
             type="button"
             className={active ? "is-active" : ""}
             aria-label={format(messages.sectionNavigation.moveToSection, {

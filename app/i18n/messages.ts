@@ -18,6 +18,71 @@ const partialMessages: Record<Locale, DeepPartial<TranslationMessages>> = {
 };
 
 const warnedMissingKeys = new Set<string>();
+const validatedLocales = new Set<Locale>();
+const DEVICE_IDS = ["phone", "tablet", "watch"] as const;
+
+function assertMeaningfulLines(
+  locale: Locale,
+  path: string,
+  lines: readonly string[],
+) {
+  if (lines.length === 0) {
+    throw new Error(
+      `Translation "${locale}.${path}" must contain at least one line.`,
+    );
+  }
+
+  lines.forEach((line, index) => {
+    const normalizedLine = line.trim();
+
+    if (!normalizedLine || Array.from(normalizedLine).length < 2) {
+      throw new Error(
+        `Translation "${locale}.${path}.${index}" must be a meaningful, non-empty line.`,
+      );
+    }
+  });
+}
+
+function assertLocaleShape(locale: Locale, messages: TranslationMessages) {
+  if (validatedLocales.has(locale)) return;
+
+  DEVICE_IDS.forEach((deviceId, deviceIndex) => {
+    const copy = messages.devicePhilosophy[deviceId];
+    const expectedIndex = String(deviceIndex + 1).padStart(2, "0");
+
+    if (copy.index !== expectedIndex || !copy.label.trim()) {
+      throw new Error(
+        `Translation "${locale}.devicePhilosophy.${deviceId}" has an invalid index or label.`,
+      );
+    }
+
+    assertMeaningfulLines(
+      locale,
+      `devicePhilosophy.${deviceId}.titleLines`,
+      copy.titleLines,
+    );
+    assertMeaningfulLines(
+      locale,
+      `devicePhilosophy.${deviceId}.descriptionLines`,
+      copy.descriptionLines,
+    );
+  });
+
+  if (
+    messages.dailyQuestion.questions.length !== 7 ||
+    messages.dailyQuestion.examples.length !== 7 ||
+    messages.dailyQuestion.examples.some(
+      (examples) =>
+        examples.length === 0 || examples.some((example) => !example.trim()),
+    )
+  ) {
+    throw new Error(
+      `Translation "${locale}.dailyQuestion" has an invalid weekly structure.`,
+    );
+  }
+
+  validatedLocales.add(locale);
+}
 
 function mergeWithKoreanFallback<T>(
   fallback: T,
@@ -55,8 +120,16 @@ function mergeWithKoreanFallback<T>(
 }
 
 export function getMessages(locale: Locale): TranslationMessages {
-  if (locale === "ko") return ko;
-  return mergeWithKoreanFallback(ko, partialMessages[locale], locale, "");
+  const messages =
+    locale === "ko"
+      ? ko
+      : mergeWithKoreanFallback(ko, partialMessages[locale], locale, "");
+
+  if (process.env.NODE_ENV !== "production") {
+    assertLocaleShape(locale, messages);
+  }
+
+  return messages;
 }
 
 export function formatMessage(

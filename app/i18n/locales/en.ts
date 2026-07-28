@@ -33,19 +33,37 @@ export const en = {
   },
   devicePhilosophy: {
     phone: {
-      category: "MOMENT",
-      title: "So small moments\ndon’t slip away.",
-      body: "What changes a day is often not a grand resolution,\nbut a single line written down.\nThe small win of recording how you feel today\nbrings tomorrow’s self into clearer focus.",
+      index: "01",
+      label: "MOMENT",
+      titleLines: ["So small moments", "don’t slip away."],
+      descriptionLines: [
+        "What changes a day is often not a grand resolution,",
+        "but a single line written down.",
+        "The small win of recording how you feel today",
+        "brings tomorrow’s self into clearer focus.",
+      ],
     },
     tablet: {
-      category: "REFLECTION",
-      title: "So you can pause\nand make room to think.",
-      body: "Even a busy day needs a little breathing room.\nTake your time with one small puzzle,\nfind the moment when your thoughts fall into place,\nand complete one more small win.",
+      index: "02",
+      label: "REFLECTION",
+      titleLines: ["So you can pause", "and make room to think."],
+      descriptionLines: [
+        "Even a busy day needs a little breathing room.",
+        "Take your time with one small puzzle,",
+        "find the moment when your thoughts fall into place,",
+        "and complete one more small win.",
+      ],
     },
     watch: {
-      category: "RHYTHM",
-      title: "So you can find\nyour own rhythm.",
-      body: "What matters more than a perfect performance\nis the small act of tapping out a beat.\nThree tiny screens come together as one rhythm,\nand that single beat becomes a small win.",
+      index: "03",
+      label: "RHYTHM",
+      titleLines: ["So you can find", "your own rhythm."],
+      descriptionLines: [
+        "What matters more than a perfect performance",
+        "is the small act of tapping out a beat.",
+        "Three tiny screens come together as one rhythm,",
+        "and that single beat becomes a small win.",
+      ],
     },
   },
   dailyQuestion: {

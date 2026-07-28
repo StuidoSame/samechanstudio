@@ -10,7 +10,7 @@ import { WatchGroup } from "./WatchGroup";
 type DeviceJourneyId = "phone" | "tablet" | "watch";
 
 export function DeviceShowcase() {
-  const { locale, messages } = useI18n();
+  const { messages } = useI18n();
   const showcaseRef = useRef<HTMLElement>(null);
   const journeyDecorationRef = useRef<HTMLDivElement>(null);
   const [activeJourneyId, setActiveJourneyId] = useState<DeviceJourneyId>("phone");
@@ -174,29 +174,23 @@ export function DeviceShowcase() {
       </div>
       <div className="device-showcase-inner">
         <DeviceSection
-          index="01"
           {...messages.devicePhilosophy.phone}
           journeyId="phone"
-          locale={locale}
           className="device-showcase-phone"
           cosmosVariant="phone"
           device={<IPhoneFrame />}
         />
         <DeviceSection
-          index="02"
           {...messages.devicePhilosophy.tablet}
           journeyId="tablet"
-          locale={locale}
           className="device-showcase-tablet"
           cosmosVariant="tablet"
           device={<IPadFrame />}
           reversed
         />
         <DeviceSection
-          index="03"
           {...messages.devicePhilosophy.watch}
           journeyId="watch"
-          locale={locale}
           className="device-showcase-watch"
           cosmosVariant="watch"
           device={<WatchGroup />}

@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { useI18n } from "../../i18n/I18nProvider";
+import type { Locale } from "../../i18n/types";
 
 type IPhoneFrameProps = {
   children?: ReactNode;
@@ -28,6 +29,7 @@ type DailyQuestionStorage = {
 };
 
 const DAILY_QUESTION_STORAGE_KEY = "same-studio-daily-question-v1";
+const CJK_LOCALES = new Set<Locale>(["ja", "zh-CN", "zh-TW"]);
 
 function formatLocalDate(date: Date, locale: string) {
   return new Intl.DateTimeFormat(locale, {
@@ -99,13 +101,14 @@ function writeDailyAnswers(dateKey: string, answers: DailyAnswer[]) {
 }
 
 export function IPhoneFrame({ children }: IPhoneFrameProps) {
-  const { messages } = useI18n();
+  const { locale, messages } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
   const answerInputRef = useRef<HTMLTextAreaElement>(null);
   const [hasEntered, setHasEntered] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [questionStarted, setQuestionStarted] = useState(false);
+  const [animatedQuestionSource, setAnimatedQuestionSource] = useState("");
   const [typedQuestion, setTypedQuestion] = useState("");
   const [typingComplete, setTypingComplete] = useState(false);
   const [answers, setAnswers] = useState<DailyAnswer[]>([]);
@@ -209,43 +212,57 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
       return;
     }
 
+    let revealTimer: ReturnType<typeof setTimeout> | undefined;
     let typingTimer: ReturnType<typeof setTimeout> | undefined;
     let characterIndex = 0;
+    const questionCharacters = Array.from(question);
+    const revealWholeQuestion = CJK_LOCALES.has(locale);
 
     const typeNextCharacter = () => {
       characterIndex += 1;
-      setTypedQuestion(question.slice(0, characterIndex));
+      setTypedQuestion(questionCharacters.slice(0, characterIndex).join(""));
 
-      if (characterIndex < question.length) {
+      if (characterIndex < questionCharacters.length) {
         typingTimer = setTimeout(typeNextCharacter, 48);
       } else {
         setTypingComplete(true);
       }
     };
 
-    const revealTimer = setTimeout(
-      () => {
-        setQuestionStarted(true);
+    const resetFrame = window.requestAnimationFrame(() => {
+      setAnimatedQuestionSource(question);
+      setQuestionStarted(false);
+      setTypedQuestion("");
+      setTypingComplete(false);
 
-        if (prefersReducedMotion) {
-          setTypedQuestion(question);
-          setTypingComplete(true);
-          return;
-        }
+      revealTimer = setTimeout(
+        () => {
+          setQuestionStarted(true);
 
-        typeNextCharacter();
-      },
-      prefersReducedMotion ? 0 : 520,
-    );
+          if (prefersReducedMotion || revealWholeQuestion) {
+            setTypedQuestion(question);
+            setTypingComplete(true);
+            return;
+          }
+
+          typeNextCharacter();
+        },
+        prefersReducedMotion ? 0 : 520,
+      );
+    });
 
     return () => {
-      clearTimeout(revealTimer);
+      window.cancelAnimationFrame(resetFrame);
+
+      if (revealTimer) {
+        clearTimeout(revealTimer);
+      }
 
       if (typingTimer) {
         clearTimeout(typingTimer);
       }
     };
-  }, [hasEntered, prefersReducedMotion, question]);
+  }, [hasEntered, locale, prefersReducedMotion, question]);
 
   useEffect(() => {
     if (!currentDateKey) {
@@ -337,7 +354,11 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   };
 
   const answerLimitReached = answers.length >= 3;
-  const answerInputDisabled = answerLimitReached || !typingComplete;
+  const questionAnimationCurrent = animatedQuestionSource === question;
+  const questionStartedCurrent = questionAnimationCurrent && questionStarted;
+  const typingCompleteCurrent = questionAnimationCurrent && typingComplete;
+  const visibleTypedQuestion = questionAnimationCurrent ? typedQuestion : "";
+  const answerInputDisabled = answerLimitReached || !typingCompleteCurrent;
 
   const handleAnswerShellPointerDown = (
     event: PointerEvent<HTMLFormElement>,
@@ -372,7 +393,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
         <div className="device-screen device-phone-screen">
           {children ?? (
             <div
-              className={`phone-daily-experience${hasEntered ? " is-entered" : ""}${questionStarted ? " is-question-started" : ""}${typingComplete ? " is-typing-complete" : ""}`}
+              className={`phone-daily-experience localized-copy${hasEntered ? " is-entered" : ""}${questionStartedCurrent ? " is-question-started" : ""}${typingCompleteCurrent ? " is-typing-complete" : ""}`}
             >
               <div className="phone-daily-splash">
                 <Image
@@ -399,8 +420,8 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                   <h3>
                     <span className="phone-daily-sr-only">{question}</span>
                     <span aria-hidden="true">
-                      {typedQuestion}
-                      {!typingComplete && <i className="phone-daily-cursor" />}
+                      {visibleTypedQuestion}
+                      {!typingCompleteCurrent && <i className="phone-daily-cursor" />}
                     </span>
                   </h3>
                 </header>

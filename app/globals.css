@@ -111,29 +111,38 @@ body {
 
 html[lang="ja"],
 html[lang="ja"] body {
-  font-family:
-    var(--brand-font), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", "Noto Sans JP", sans-serif;
+  --localized-font-stack:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    "Noto Sans JP", sans-serif;
 }
 
 html[lang="zh-CN"],
 html[lang="zh-CN"] body {
-  font-family:
-    var(--brand-font), "PingFang SC", "Microsoft YaHei", "Noto Sans SC",
-    sans-serif;
+  --localized-font-stack:
+    "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
 
 html[lang="zh-TW"],
 html[lang="zh-TW"] body {
-  font-family:
-    var(--brand-font), "PingFang TC", "Microsoft JhengHei", "Noto Sans TC",
-    sans-serif;
+  --localized-font-stack:
+    "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
 }
 
 html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) {
   line-break: strict;
   overflow-wrap: break-word;
   word-break: normal;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  :is(
+    .localized-copy,
+    .contact-copy,
+    .footer-business,
+    .page-section-navigation-tooltip
+  ) {
+  font-family: var(--localized-font-stack);
+  font-synthesis: none;
 }
 
 body,
@@ -3828,6 +3837,36 @@ button {
   white-space: pre-line;
 }
 
+.type-reveal-lines {
+  position: static;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  display: block;
+  overflow: visible;
+  white-space: normal;
+}
+
+.type-reveal-line {
+  position: static;
+  width: auto;
+  display: block;
+  opacity: 0;
+  filter: blur(3px);
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 460ms ease,
+    filter 460ms ease,
+    transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--type-reveal-line-delay, 0ms);
+}
+
+.type-reveal-lines.is-complete .type-reveal-line {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
+}
+
 @keyframes type-reveal-settle {
   from {
     opacity: 0.92;
@@ -4287,7 +4326,7 @@ button {
 }
 
 .device-showcase-body,
-.device-showcase-copy .type-reveal {
+.device-showcase-copy :is(.type-reveal, .type-reveal-lines) {
   height: auto;
   max-height: none;
   overflow: visible;
@@ -4337,17 +4376,26 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
 
 html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   .device-showcase-copy h2 {
+  width: 100%;
+  height: auto;
+  max-height: none;
   font-weight: 600;
   line-height: 1.22;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
+  overflow: visible;
   overflow-wrap: break-word;
+  text-overflow: clip;
+  white-space: normal;
   word-break: normal;
 }
 
 html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   .device-showcase-body {
+  height: auto;
+  max-height: none;
   line-height: 1.82;
-  letter-spacing: 0;
+  letter-spacing: normal;
+  overflow: visible;
   overflow-wrap: break-word;
   word-break: normal;
 }
@@ -4527,6 +4575,28 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   line-height: 1.36;
   letter-spacing: -0.04em;
   word-break: keep-all;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  .phone-daily-header time {
+  letter-spacing: 0.02em;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  .phone-daily-header h3 {
+  font-weight: 600;
+  line-break: strict;
+  line-height: 1.42;
+  letter-spacing: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  :is(.phone-daily-example-list li, .phone-daily-answer-list li, .phone-daily-form) {
+  letter-spacing: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .phone-daily-cursor {
@@ -7500,6 +7570,23 @@ footer {
   line-height: 1.7;
 }
 
+.footer-business-row {
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.footer-business-label,
+.footer-business-value {
+  position: static;
+}
+
+.footer-business-value {
+  unicode-bidi: isolate;
+}
+
 .footer-owner-value {
   display: inline-flex;
   align-items: baseline;
@@ -8277,6 +8364,10 @@ footer {
     flex-direction: column;
     flex-wrap: nowrap;
     gap: 2px;
+  }
+
+  .footer-business-row {
+    flex-wrap: wrap;
   }
 }
 

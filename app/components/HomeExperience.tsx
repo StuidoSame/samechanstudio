@@ -76,6 +76,11 @@ const ARCHIVE_PORTAL_DURATION_MS = 850;
 const ARCHIVE_PORTAL_REDUCED_DURATION_MS = 180;
 const ARCHIVE_ENTRY_STORAGE_KEY = "same-studio-archive-entry-v1";
 const ARCHIVE_RETURN_STORAGE_KEY = "same-studio-archive-return-v1";
+const FOOTER_BUSINESS_VALUES = {
+  businessName: "세임스튜디오 (SAME STUDIO)",
+  registrationNumber: "272-08-03608",
+  email: "contact@samestudio.kr",
+} as const;
 const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
   { text: "Small apps, made\nwith a lot of care.", speed: 45 },
@@ -2984,18 +2989,57 @@ export function HomeExperience() {
           </div>
           <p className="footer-copyright">© 2026 SAME STUDIO</p>
           <div className="footer-business">
-            <span>{messages.footer.businessNameLabel}: 세임스튜디오 (SAME STUDIO)</span>
-            <span>{messages.footer.businessRegistrationLabel}: 272-08-03608</span>
-            <span>
-              {messages.footer.representativeLabel}:{" "}
-              <span className="footer-owner-value">
+            <span
+              className="footer-business-row"
+              key={`${locale}-business-name`}
+            >
+              <span className="footer-business-label">
+                {messages.footer.businessNameLabel}:
+              </span>
+              <span className="footer-business-value">
+                {FOOTER_BUSINESS_VALUES.businessName}
+              </span>
+            </span>
+            <span
+              className="footer-business-row"
+              key={`${locale}-registration-number`}
+            >
+              <span className="footer-business-label">
+                {messages.footer.businessRegistrationLabel}:
+              </span>
+              <span className="footer-business-value" lang="en">
+                {FOOTER_BUSINESS_VALUES.registrationNumber}
+              </span>
+            </span>
+            <span
+              className="footer-business-row"
+              key={`${locale}-representative`}
+            >
+              <span className="footer-business-label">
+                {messages.footer.representativeLabel}:
+              </span>
+              <span className="footer-business-value footer-owner-value">
                 <span className="footer-owner-name-ko">김동찬</span>{" "}
                 <span className="footer-owner-name-en" lang="en">
                   KIM DONGCHAN
                 </span>
               </span>
             </span>
-            <span>{messages.footer.emailLabel}: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
+            <span
+              className="footer-business-row"
+              key={`${locale}-email`}
+            >
+              <span className="footer-business-label">
+                {messages.footer.emailLabel}:
+              </span>
+              <a
+                className="footer-business-value"
+                href={`mailto:${FOOTER_BUSINESS_VALUES.email}`}
+                lang="en"
+              >
+                {FOOTER_BUSINESS_VALUES.email}
+              </a>
+            </span>
           </div>
         </div>
       </footer>
