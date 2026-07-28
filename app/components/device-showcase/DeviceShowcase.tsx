@@ -129,12 +129,22 @@ export function DeviceShowcase() {
           focusable="false"
         >
           <path
-            className="device-journey-line device-journey-line--base"
+            className="device-journey-line device-journey-line--base device-journey-line--wide"
+            d="M50.5 4C48.5 22 49 36 47.3 49C47.6 64 48.5 77 49 96"
+            pathLength="1"
+          />
+          <path
+            className="device-journey-line device-journey-line--progress device-journey-line--wide"
+            d="M50.5 4C48.5 22 49 36 47.3 49C47.6 64 48.5 77 49 96"
+            pathLength="1"
+          />
+          <path
+            className="device-journey-line device-journey-line--base device-journey-line--compact"
             d="M50.5 4C48.5 22 49 36 50 49C51 64 50.5 77 49 96"
             pathLength="1"
           />
           <path
-            className="device-journey-line device-journey-line--progress"
+            className="device-journey-line device-journey-line--progress device-journey-line--compact"
             d="M50.5 4C48.5 22 49 36 50 49C51 64 50.5 77 49 96"
             pathLength="1"
           />
