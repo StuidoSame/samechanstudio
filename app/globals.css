@@ -8354,3 +8354,90 @@ footer {
     will-change: auto;
   }
 }
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    cursor:
+      url("/assets/cursor/cursor-default.svg") 3 3,
+      auto;
+  }
+
+  a,
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  label[for],
+  [data-cursor="pointer"] {
+    cursor:
+      url("/assets/cursor/cursor-pointer.svg") 12 12,
+      pointer;
+  }
+
+  [data-cursor="drag"] {
+    cursor:
+      url("/assets/cursor/cursor-drag.svg") 14 14,
+      grab;
+  }
+
+  [data-cursor="drag"]:active {
+    cursor:
+      url("/assets/cursor/cursor-drag.svg") 14 14,
+      grabbing;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"],
+  main :where(p, h1, h2, h3, h4, h5, h6, li, dd, dt, blockquote, code, pre) {
+    cursor: text;
+  }
+
+  button:disabled:disabled,
+  [aria-disabled="true"][aria-disabled="true"],
+  input:disabled:disabled,
+  textarea:disabled:disabled,
+  select:disabled:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@media (forced-colors: active) {
+  html,
+  body,
+  [data-cursor] {
+    cursor: auto;
+  }
+
+  a,
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  label[for] {
+    cursor: pointer;
+  }
+
+  [data-cursor="drag"] {
+    cursor: grab;
+  }
+
+  [data-cursor="drag"]:active {
+    cursor: grabbing;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"] {
+    cursor: text;
+  }
+
+  button:disabled:disabled,
+  [aria-disabled="true"][aria-disabled="true"],
+  input:disabled:disabled,
+  textarea:disabled:disabled,
+  select:disabled:disabled {
+    cursor: not-allowed;
+  }
+}

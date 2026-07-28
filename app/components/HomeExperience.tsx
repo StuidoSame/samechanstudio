@@ -2173,6 +2173,7 @@ export function HomeExperience() {
         <section
           className="hero"
           id="apps"
+          data-cursor="drag"
           ref={heroRef}
           aria-label="SAME STUDIO app explorer"
           onPointerEnter={updateHeroDepth}
