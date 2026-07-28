@@ -27,6 +27,11 @@ export type TranslatedAppDetail = {
   description: string;
 };
 
+export type SupportFaqItem = {
+  question: string;
+  answer: string;
+};
+
 export type TranslationLines = readonly [string, ...string[]];
 
 export type DeviceCopy = {
@@ -116,6 +121,50 @@ export type TranslationMessages = {
       AppTranslationId,
       Partial<Record<TranslationDevice, TranslatedAppDetail>>
     >;
+  };
+  support: {
+    hero: {
+      label: string;
+      title: string;
+      description: string;
+    };
+    sections: {
+      contact: string;
+      details: string;
+      responseTime: string;
+      faq: string;
+    };
+    fields: {
+      appName: string;
+      device: string;
+      osVersion: string;
+      message: string;
+    };
+    examples: {
+      appName: string;
+      device: string;
+      osVersion: string;
+      message: string;
+    };
+    actions: {
+      emailSupport: string;
+    };
+    responseLines: readonly [string, string];
+    email: {
+      subject: string;
+      body: string;
+    };
+    accessibility: {
+      previousApps: string;
+      nextApps: string;
+      appGallery: string;
+      selectApp: string;
+      appIconAlt: string;
+      form: string;
+      emailSupport: string;
+      emailAddress: string;
+    };
+    faq: readonly SupportFaqItem[];
   };
   footer: {
     businessNameLabel: string;

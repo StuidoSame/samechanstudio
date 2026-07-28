@@ -14,6 +14,7 @@ import {
 const BACKGROUND_AUDIO_PATH = "/assets/mp3/main.mp3";
 const BACKGROUND_AUDIO_VOLUME = 0.2;
 const BACKGROUND_AUDIO_MUTED_STORAGE_KEY = "same-studio-background-audio-muted-v1";
+const BACKGROUND_AUDIO_DISPOSAL_DELAY_MS = 1500;
 const PLAYBACK_START_EVENTS = ["pointerdown", "touchstart", "keydown"] as const;
 
 let sharedAudio: HTMLAudioElement | null = null;
@@ -49,10 +50,8 @@ function releaseBackgroundAudio(audio: HTMLAudioElement) {
 
     audio.pause();
     audio.remove();
-    audio.removeAttribute("src");
-    audio.load();
     sharedAudio = null;
-  }, 0);
+  }, BACKGROUND_AUDIO_DISPOSAL_DELAY_MS);
 }
 
 type BackgroundAudioContextValue = {

@@ -81,6 +81,17 @@ function assertLocaleShape(locale: Locale, messages: TranslationMessages) {
     );
   }
 
+  if (
+    messages.support.faq.length !== 10 ||
+    messages.support.faq.some(
+      ({ question, answer }) => !question.trim() || !answer.trim(),
+    )
+  ) {
+    throw new Error(
+      `Translation "${locale}.support.faq" must contain 10 complete items.`,
+    );
+  }
+
   validatedLocales.add(locale);
 }
 

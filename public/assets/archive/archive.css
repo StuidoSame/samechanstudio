@@ -330,6 +330,7 @@ body.archive-page.is-returning {
   font-size: clamp(13px, 1.2vw, 15px);
   line-height: 1.8;
   letter-spacing: 0.005em;
+  white-space: pre-line;
 }
 
 .support-hero-decoration {
@@ -781,6 +782,7 @@ body.archive-page.is-returning {
   color: rgba(225, 211, 244, 0.35);
   font-size: 11px;
   line-height: 1.75;
+  white-space: pre-line;
 }
 
 .support-form-selected + .support-form-example {
@@ -949,6 +951,235 @@ body.archive-page.is-returning {
   color: rgba(222, 207, 241, 0.5);
   font-size: 12px;
   line-height: 1.75;
+}
+
+/* SUPPORT reuses the main site's light theme tokens; the archive dark theme stays unchanged. */
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] {
+  color: var(--theme-text);
+  background:
+    radial-gradient(circle at 18% 14%, rgba(var(--theme-accent-rgb), 0.11), transparent 26rem),
+    radial-gradient(circle at 82% 68%, rgba(var(--theme-accent-rgb), 0.075), transparent 32rem),
+    linear-gradient(145deg, var(--theme-page-soft), var(--theme-page-flow) 52%, var(--theme-page));
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .archive-space::before {
+  background:
+    radial-gradient(ellipse 42% 10% at 50% 42%, var(--theme-glow), transparent 72%),
+    linear-gradient(118deg, transparent 28%, rgba(var(--theme-accent-rgb), 0.045) 48%, transparent 67%);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .archive-star {
+  background: var(--theme-star-muted);
+  box-shadow: 0 0 8px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .archive-orb {
+  border-color: var(--theme-border);
+  background: radial-gradient(circle at 32% 26%, var(--theme-highlight), var(--theme-glow) 38%, transparent 72%);
+  box-shadow: inset -10px -12px 24px var(--theme-glow), 0 0 34px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .archive-constellation path {
+  stroke: var(--theme-accent-soft);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .archive-constellation circle,
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-hero-star {
+  fill: var(--theme-accent);
+  background: var(--theme-accent);
+  box-shadow: 0 0 10px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-hero::before {
+  background: radial-gradient(ellipse, var(--theme-glow), transparent 68%);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] :is(
+  .support-hero-label,
+  .support-hero-index,
+  .support-eyebrow-index,
+  .support-faq-symbol
+) {
+  color: var(--theme-accent);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] :is(
+  .support-hero-line,
+  .support-heading-line
+) {
+  background: linear-gradient(90deg, var(--theme-border-strong), transparent);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-document .support-hero h1 {
+  color: var(--theme-text);
+  text-shadow: 0 0 34px var(--theme-glow), 0 8px 32px var(--theme-shadow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-hero-description {
+  color: var(--theme-text-soft);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-hero-orbit {
+  border-color: var(--theme-border);
+  border-left-color: transparent;
+  border-bottom-color: var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-document .archive-document-space {
+  border-color: var(--theme-border);
+  background:
+    radial-gradient(circle at 12% 8%, var(--theme-glow), transparent 23rem),
+    radial-gradient(circle at 88% 92%, rgba(var(--theme-accent-rgb), 0.07), transparent 25rem),
+    linear-gradient(145deg, var(--theme-surface), var(--theme-surface-soft));
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 28px 90px var(--theme-shadow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .archive-document-space::before,
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-document .archive-document-space::after {
+  border-color: var(--theme-border);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] :is(
+  .support-section-heading h2,
+  .support-response-card h2,
+  .support-form-label
+) {
+  color: var(--theme-text);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] :is(
+  .support-form-section,
+  .support-faq-section
+) {
+  border-color: var(--theme-border);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-gallery {
+  border-color: var(--theme-border);
+  background: radial-gradient(circle at 50% 0%, var(--theme-glow), transparent 62%), var(--theme-surface-soft);
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 18px 42px var(--theme-shadow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-gallery.is-scrollable::before {
+  background: linear-gradient(90deg, var(--theme-surface-strong), transparent);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-gallery.is-scrollable::after {
+  background: linear-gradient(270deg, var(--theme-surface-strong), transparent);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-button {
+  color: var(--theme-text-muted);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-frame {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-muted);
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 10px 24px var(--theme-shadow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-frame::before {
+  background: rgba(var(--theme-accent-rgb), 0.12);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-frame img {
+  filter: brightness(0.82) saturate(0.72) grayscale(0.08);
+  opacity: 0.88;
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-button[aria-pressed="true"] {
+  color: var(--theme-text);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-button[aria-pressed="true"] .support-app-icon-frame {
+  border-color: var(--theme-border-strong);
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 12px 28px var(--theme-shadow), 0 0 24px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-icon-frame::after {
+  border-color: var(--theme-border-strong);
+  box-shadow: 0 0 22px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-app-arrow {
+  border-color: var(--theme-border-strong);
+  color: var(--theme-accent);
+  background: var(--theme-surface-strong);
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 7px 22px var(--theme-shadow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-form-field {
+  border-color: var(--theme-border);
+  background: var(--theme-input);
+  box-shadow: inset 0 1px 0 var(--theme-highlight);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-form-selected {
+  color: var(--theme-accent);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] :is(
+  .support-form-example,
+  .support-response-card p,
+  .support-faq-answer p,
+  .support-email-address
+) {
+  color: var(--theme-text-muted);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-email-cta {
+  border-color: var(--theme-border-strong);
+  color: var(--theme-surface-strong);
+  background: linear-gradient(120deg, var(--theme-accent), var(--theme-accent-soft));
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 14px 36px var(--theme-shadow-strong);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-response-card {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-soft);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-response-dot {
+  background: var(--theme-accent);
+  box-shadow: 0 0 14px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-faq-item {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-soft);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-faq-item:has(button[aria-expanded="true"]) {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-surface-muted);
+  box-shadow: 0 10px 30px var(--theme-shadow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-faq-item button {
+  color: var(--theme-text-soft);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] :is(
+  .support-app-icon-button,
+  .support-app-arrow,
+  .support-app-rail,
+  .support-email-cta,
+  .support-faq-item button
+):focus-visible {
+  outline-color: var(--theme-accent);
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) body.archive-page[data-archive-document="support"] :is(
+  .support-hero-label,
+  .support-hero-description,
+  .support-section-heading,
+  .support-form-grid,
+  .support-response-card,
+  .support-faq-list,
+  .support-email-cta
+) {
+  font-family: var(--localized-font-stack);
+  font-synthesis: none;
 }
 
 @media (hover: hover) and (pointer: fine) {

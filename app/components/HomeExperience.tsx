@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -531,6 +532,7 @@ function Loader({
 }
 
 export function HomeExperience() {
+  const router = useRouter();
   const { messages } = useI18n();
   const contactRevealSteps = useMemo(
     () => [
@@ -741,13 +743,13 @@ export function HomeExperience() {
       }
 
       archivePortalTimerRef.current = window.setTimeout(
-        () => window.location.assign(href),
+        () => router.push(href),
         reducedMotion
           ? ARCHIVE_PORTAL_REDUCED_DURATION_MS
           : ARCHIVE_PORTAL_DURATION_MS,
       );
     },
-    [archivePortal, reducedMotion],
+    [archivePortal, reducedMotion, router],
   );
 
   const clearAutoplay = useCallback(() => {
