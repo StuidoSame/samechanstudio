@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CosmicInteractionLayer } from "../components/CosmicInteractionLayer";
 import { SectionCosmos } from "../components/SectionCosmos";
 import { useI18n } from "../i18n/I18nProvider";
@@ -10,7 +10,7 @@ import {
   DELETE_ACCOUNT_MESSAGES,
 } from "./deleteAccountMessages";
 
-type FormErrors = Partial<Record<"app" | "email" | "login" | "consent", string>>;
+type FormErrors = Partial<Record<"app" | "email" | "login" | "consent", true>>;
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length <= 254;
@@ -37,27 +37,48 @@ export function DeleteAccountContent() {
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [result, setResult] = useState<{ reference: string; email: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState(false);
   const submittingRef = useRef(false);
+  const submitTimerRef = useRef<number | null>(null);
 
   const selectedApp = ACCOUNT_DELETION_APPS.find((app) => app.id === appId);
+
+  useEffect(() => {
+    document.title = messages.metadataTitle;
+    document
+      .querySelector<HTMLMetaElement>('meta[name="description"]')
+      ?.setAttribute("content", messages.metadataDescription);
+  }, [messages]);
+
+  useEffect(
+    () => () => {
+      if (submitTimerRef.current !== null) {
+        window.clearTimeout(submitTimerRef.current);
+      }
+    },
+    [],
+  );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submittingRef.current) return;
 
     const nextErrors: FormErrors = {};
-    if (!selectedApp?.accountDeletionSupported) nextErrors.app = messages.form.errors.app;
-    if (!isValidEmail(email.trim())) nextErrors.email = messages.form.errors.email;
-    if (!selectedApp?.loginMethods.includes(loginMethod as never)) nextErrors.login = messages.form.errors.login;
-    if (!consent) nextErrors.consent = messages.form.errors.consent;
+    if (!selectedApp?.accountDeletionSupported) nextErrors.app = true;
+    if (!isValidEmail(email.trim())) nextErrors.email = true;
+    if (!selectedApp?.loginMethods.includes(loginMethod as never)) nextErrors.login = true;
+    if (!consent) nextErrors.consent = true;
     setErrors(nextErrors);
     setResult(null);
+    setSubmissionError(false);
     if (Object.keys(nextErrors).length > 0 || !selectedApp) return;
 
     submittingRef.current = true;
+    setIsSubmitting(true);
     const reference = createReference();
     const loginName = messages.form.loginNames[loginMethod] ?? loginMethod;
-    const subject = `[SAME STUDIO] Account Deletion Request · ${selectedApp.name} · ${reference}`;
+    const subject = `${messages.form.subject} · ${selectedApp.name} · ${reference}`;
     const body = [
       `${messages.form.app}: ${selectedApp.name}`,
       `${messages.form.email}: ${email.trim()}`,
@@ -72,11 +93,19 @@ export function DeleteAccountContent() {
     ].join("\n");
     const mailto = `mailto:contact@samestudio.kr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    setResult({ reference, email: maskEmail(email.trim()) });
-    window.location.assign(mailto);
-    window.setTimeout(() => {
+    try {
+      setResult({ reference, email: maskEmail(email.trim()) });
+      window.location.assign(mailto);
+      submitTimerRef.current = window.setTimeout(() => {
+        submittingRef.current = false;
+        setIsSubmitting(false);
+        submitTimerRef.current = null;
+      }, 1000);
+    } catch {
       submittingRef.current = false;
-    }, 1000);
+      setIsSubmitting(false);
+      setSubmissionError(true);
+    }
   };
 
   return (
@@ -117,12 +146,12 @@ export function DeleteAccountContent() {
                 <option value="">—</option>
                 {ACCOUNT_DELETION_APPS.map((app) => <option value={app.id} key={app.id}>{app.name}</option>)}
               </select>
-              {errors.app ? <p className="deletion-error" id="deletion-app-error">{errors.app}</p> : null}
+              {errors.app ? <p className="deletion-error" id="deletion-app-error">{messages.form.errors.app}</p> : null}
             </div>
             <div className="deletion-field">
               <label htmlFor="deletion-email">{messages.form.email} <span aria-hidden="true">*</span></label>
               <input id="deletion-email" type="email" inputMode="email" autoComplete="email" maxLength={254} value={email} placeholder={messages.form.emailPlaceholder} onChange={(event) => { setEmail(event.target.value); setErrors((current) => ({ ...current, email: undefined })); }} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "deletion-email-error" : undefined} required />
-              {errors.email ? <p className="deletion-error" id="deletion-email-error">{errors.email}</p> : null}
+              {errors.email ? <p className="deletion-error" id="deletion-email-error">{messages.form.errors.email}</p> : null}
             </div>
             <div className="deletion-field">
               <label htmlFor="deletion-login">{messages.form.login} <span aria-hidden="true">*</span></label>
@@ -130,7 +159,7 @@ export function DeleteAccountContent() {
                 <option value="">{messages.form.loginPlaceholder}</option>
                 {selectedApp?.loginMethods.map((method) => <option value={method} key={method}>{messages.form.loginNames[method]}</option>)}
               </select>
-              {errors.login ? <p className="deletion-error" id="deletion-login-error">{errors.login}</p> : null}
+              {errors.login ? <p className="deletion-error" id="deletion-login-error">{messages.form.errors.login}</p> : null}
             </div>
             <div className="deletion-field">
               <label htmlFor="deletion-type">{messages.form.requestType}</label>
@@ -144,10 +173,16 @@ export function DeleteAccountContent() {
               <input type="checkbox" checked={consent} onChange={(event) => { setConsent(event.target.checked); setErrors((current) => ({ ...current, consent: undefined })); }} aria-invalid={Boolean(errors.consent)} aria-describedby={errors.consent ? "deletion-consent-error" : "deletion-privacy-notice"} required />
               <span>{messages.form.consent}</span>
             </label>
-            {errors.consent ? <p className="deletion-error" id="deletion-consent-error">{errors.consent}</p> : null}
+            {errors.consent ? <p className="deletion-error" id="deletion-consent-error">{messages.form.errors.consent}</p> : null}
             <p className="deletion-privacy-notice" id="deletion-privacy-notice">{messages.form.privacyNotice} <InternalTransitionLink href="/privacy/">{messages.form.privacyLink}</InternalTransitionLink></p>
-            <button className="deletion-submit" type="submit">{messages.form.submit} <span aria-hidden="true">→</span></button>
+            <button className="deletion-submit" type="submit" disabled={isSubmitting} aria-busy={isSubmitting}>{isSubmitting ? messages.form.submitting : messages.form.submit} <span aria-hidden="true">→</span></button>
           </form>
+          {submissionError ? (
+            <div className="deletion-submit-error" role="alert">
+              <strong>{messages.form.errors.submitFailed}</strong>
+              <span>{messages.form.errors.retry}</span>
+            </div>
+          ) : null}
           {result ? (
             <div className="deletion-result" role="status" aria-live="polite">
               <h3>{messages.form.draftReady}</h3><p>{messages.form.draftInstruction}</p>
@@ -179,7 +214,7 @@ export function DeleteAccountContent() {
         <div className="deletion-faq-list">{messages.faq.items.map((item) => <details key={item.question}><summary>{item.question}<span aria-hidden="true" /></summary><p>{item.answer}</p></details>)}</div>
       </section>
 
-      <nav className="deletion-related-links" aria-label="Related pages">
+      <nav className="deletion-related-links" aria-label={messages.links.ariaLabel}>
         <InternalTransitionLink href="/privacy/">{messages.links.privacy}</InternalTransitionLink>
         <InternalTransitionLink href="/support/">{messages.links.support}</InternalTransitionLink>
         <InternalTransitionLink href="/">{messages.links.home}</InternalTransitionLink>

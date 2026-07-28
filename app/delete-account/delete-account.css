@@ -160,7 +160,13 @@
 .deletion-privacy-notice a { color: inherit; text-underline-offset: 3px; }
 .deletion-submit { min-height: 56px; border: 1px solid rgba(206, 180, 255, 0.48); border-radius: 15px; background: linear-gradient(110deg, rgba(135, 82, 222, 0.92), rgba(95, 55, 165, 0.92)); color: #fff; font: inherit; letter-spacing: 0.06em; cursor: pointer; box-shadow: 0 15px 35px rgba(77, 36, 145, 0.26); transition: transform 180ms ease, filter 180ms ease; }
 .deletion-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.deletion-submit:disabled { cursor: wait; opacity: 0.72; transform: none; filter: none; }
 .deletion-submit span { margin-left: 8px; }
+
+.deletion-submit-error { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-top: 18px; padding: 14px 16px; border: 1px solid rgba(255, 151, 178, 0.38); border-radius: 13px; background: rgba(142, 38, 75, 0.1); color: #ffc4d3; line-height: 1.55; }
+.deletion-submit-error strong { font-weight: 400; }
+.deletion-submit-error span { color: var(--deletion-muted); }
+[data-theme="light"] .deletion-submit-error { color: #8b1f45; }
 
 .deletion-result { margin-top: 20px; padding: 20px; border: 1px solid rgba(169, 131, 238, 0.3); border-radius: 15px; background: rgba(120, 76, 196, 0.1); }
 .deletion-result h3 { margin: 0 0 9px; font-size: 1rem; }

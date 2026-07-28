@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import vm from "node:vm";
+import { DELETE_ACCOUNT_MESSAGES } from "../app/delete-account/deleteAccountMessages.ts";
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -128,7 +129,7 @@ test("server-renders the public account deletion request page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>계정 및 데이터 삭제 \| SAME STUDIO<\/title>/i);
+  assert.match(html, /<title>Account &amp; Data Deletion \| SAME STUDIO<\/title>/i);
   assert.match(html, /<h1[^>]*>계정 및 데이터 삭제<\/h1>/i);
   assert.match(html, /SAME STUDIO/);
   assert.match(html, />ODOW<\/option>/);
@@ -145,6 +146,35 @@ test("server-renders the public account deletion request page", async () => {
   const menu = html.match(/<nav id="site-menu"[\s\S]*?<\/nav>/i)?.[0] ?? "";
   assert.ok(menu, "the shared hamburger menu should be rendered");
   assert.doesNotMatch(menu, /DELETE ACCOUNT/i);
+});
+
+test("localizes every account-deletion validation and status message", () => {
+  const locales = ["ko", "en", "ja", "zh-CN", "zh-TW"];
+  const collectStrings = (value) =>
+    typeof value === "string"
+      ? [value]
+      : Array.isArray(value)
+        ? value.flatMap(collectStrings)
+        : value && typeof value === "object"
+          ? Object.values(value).flatMap(collectStrings)
+          : [];
+
+  for (const locale of locales) {
+    const messages = DELETE_ACCOUNT_MESSAGES[locale];
+    assert.ok(messages.metadataTitle);
+    assert.ok(messages.metadataDescription);
+    assert.ok(messages.form.submitting);
+    assert.ok(messages.form.errors.required);
+    assert.ok(messages.form.errors.submitFailed);
+    assert.ok(messages.form.errors.retry);
+  }
+
+  for (const locale of locales.slice(1)) {
+    const leakedKorean = collectStrings(DELETE_ACCOUNT_MESSAGES[locale]).filter(
+      (value) => /[가-힣]/.test(value),
+    );
+    assert.deepEqual(leakedKorean, [], `${locale} must not contain Korean copy`);
+  }
 });
 
 test("initializes the pre-hydration theme from saved choice or dark", async () => {
