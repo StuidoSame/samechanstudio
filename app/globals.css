@@ -6351,20 +6351,29 @@ html[data-theme="dark"] body {
 
 html[data-theme="dark"] .site-shell {
   background:
-    radial-gradient(circle at 50% 32%, rgba(var(--active-accent-rgb), 0.045), transparent 24rem),
-    radial-gradient(circle at 52% 39%, rgba(145, 108, 218, 0.11), transparent 35rem),
-    linear-gradient(135deg, #1b1725 0%, #211a30 48%, #251a29 100%);
+    radial-gradient(ellipse 82% 18% at 50% 18%, rgba(var(--active-accent-rgb), 0.045), transparent 72%),
+    radial-gradient(circle at 18% 42%, rgba(145, 108, 218, 0.09), transparent 30rem),
+    radial-gradient(circle at 82% 68%, rgba(176, 111, 190, 0.065), transparent 34rem),
+    radial-gradient(ellipse 74% 20% at 50% 92%, rgba(132, 94, 196, 0.055), transparent 76%),
+    linear-gradient(
+      180deg,
+      #201a2b 0%,
+      #231c30 18%,
+      #211a2e 28%,
+      #211b2d 42%,
+      #201a2b 58%,
+      #211b31 78%,
+      #211b31 100%
+    );
 }
 
-html[data-theme="dark"] .hero {
-  background:
-    linear-gradient(112deg, rgba(255, 255, 255, 0.025), transparent 38%),
-    radial-gradient(circle at 12% 18%, rgba(154, 117, 230, 0.11), transparent 30%),
-    radial-gradient(circle at 50% 43%, rgba(135, 94, 213, 0.13), transparent 34%),
-    radial-gradient(circle at 88% 76%, rgba(190, 122, 173, 0.07), transparent 32%),
-    radial-gradient(circle at 76% 16%, rgba(105, 136, 190, 0.055), transparent 27%),
-    radial-gradient(ellipse 70% 18% at 50% 100%, rgba(143, 105, 204, 0.07), transparent 75%),
-    linear-gradient(180deg, #201a2b 0%, #231c30 58%, #211a2e 100%);
+html[data-theme="dark"] :is(
+  .hero,
+  .studio-about,
+  .device-showcase,
+  .contact-section
+) {
+  background: transparent;
 }
 
 html[data-theme="dark"] .wordmark,
@@ -6469,31 +6478,11 @@ html[data-theme="dark"] .carousel-arrow {
   color: rgba(205, 183, 249, 0.72);
 }
 
-html[data-theme="dark"] .studio-about {
-  background:
-    radial-gradient(ellipse 70% 22% at 50% 0%, rgba(147, 108, 212, 0.08), transparent 75%),
-    radial-gradient(circle at 70% 50%, rgba(134, 91, 205, 0.08), transparent 22rem),
-    linear-gradient(180deg, #211a2e 0%, #211b2d 56%, #201a2b 100%);
-}
-
 html[data-theme="dark"] .section-label,
 html[data-theme="dark"] .studio-about h2,
 html[data-theme="dark"] .device-showcase-eyebrow,
 html[data-theme="dark"] .device-showcase-copy h2 {
   color: #c2a8fa;
-}
-
-html[data-theme="dark"] .device-showcase {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(138, 96, 210, 0.1), transparent 24rem),
-    radial-gradient(circle at 82% 38%, rgba(179, 117, 195, 0.08), transparent 28rem),
-    linear-gradient(
-      180deg,
-      #201a2b 0%,
-      #211b2e 24%,
-      var(--content-lavender-flow) 42%,
-      var(--content-lavender-flow) 100%
-    );
 }
 
 html[data-theme="dark"] .device-showcase-body {
@@ -6573,10 +6562,6 @@ html[data-theme="dark"] .section-cosmos-dot {
 
 html[data-theme="dark"] .section-cosmos-orbit {
   border-color: rgba(224, 210, 245, 0.34);
-}
-
-html[data-theme="dark"] .contact-section {
-  background-color: var(--content-lavender-flow);
 }
 
 html[data-theme="dark"] .contact-section::before {
