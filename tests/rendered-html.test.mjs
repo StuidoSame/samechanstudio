@@ -82,6 +82,22 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   assert.match(html, /RESPONSE TIME/);
   assert.match(html, /앱에서 오류가 발생했어요\./);
   assert.match(html, /개인정보 삭제를 요청하고 싶어요\./);
+  assert.equal(
+    (html.match(/class="support-faq-item"/g) ?? []).length,
+    10,
+  );
+  for (const question of [
+    "구매한 항목을 복원하고 싶어요.",
+    "앱이 실행되지 않거나 바로 종료돼요.",
+    "알림이 오지 않아요.",
+    "사진이나 데이터가 저장되지 않아요.",
+    "다른 기기로 데이터를 옮기고 싶어요.",
+    "광고 제거 구매가 적용되지 않아요.",
+    "앱 사용 방법이나 기능이 궁금해요.",
+    "새로운 기능을 제안하고 싶어요.",
+  ]) {
+    assert.ok(html.includes(question));
+  }
   assert.doesNotMatch(html, /도움이 필요한 앱을 선택해주세요\./);
   assert.doesNotMatch(html, /support-app-pill/);
   assert.match(html, /aria-label="Mapary 선택" aria-pressed="true"/);

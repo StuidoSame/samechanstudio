@@ -747,7 +747,11 @@ body.archive-page.is-returning {
 .support-faq-list {
   margin-top: 22px;
   display: grid;
-  gap: 10px;
+  gap: 12px;
+}
+
+.support-faq-section {
+  padding-bottom: clamp(6px, 1vw, 12px);
 }
 
 .support-faq-item {
