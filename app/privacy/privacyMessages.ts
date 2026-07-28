@@ -17,7 +17,7 @@ export type PrivacySection = {
 };
 
 export type PrivacyMessages = {
-  hero: { label: string; title: string; description: string; updated: string };
+  hero: { label: string; title: string; description: string; updated: string; archiveAriaLabel: string };
   summary: readonly { label: string; title: string; text: string }[];
   contents: { label: string; navigationLabel: string; mobileLabel: string };
   sections: readonly PrivacySection[];
@@ -37,6 +37,11 @@ export type PrivacyMessages = {
     subject: string;
     changeNotice: string;
   };
+  navigation: {
+    back: string;
+    backAriaLabel: string;
+    websiteAriaLabel: string;
+  };
 };
 
 const ko = {
@@ -44,7 +49,8 @@ const ko = {
     label: "PRIVACY ARCHIVE",
     title: "PRIVACY",
     description: "SAME STUDIO가 어떤 정보를 다루고,\n어떻게 이용하고 보호하는지 안내합니다.",
-    updated: "LAST UPDATED · 2026.07.28",
+    updated: "최종 업데이트 · 2026.07.28",
+    archiveAriaLabel: "개인정보 문서 보관함 섹션 03",
   },
   summary: [
     { label: "MINIMUM DATA", title: "필요한 만큼만", text: "서비스 제공에 필요한 범위에서 정보를 처리합니다." },
@@ -131,21 +137,22 @@ const ko = {
     },
   ],
   deletion: {
-    label: "REQUEST DATA DELETION →", ariaLabel: "이메일로 개인정보 삭제 요청하기", subject: "[SAME STUDIO] 개인정보 삭제 요청",
+    label: "개인정보 삭제 요청 →", ariaLabel: "이메일로 개인정보 삭제 요청하기", subject: "[SAME STUDIO] 개인정보 삭제 요청",
     body: "앱 이름:\n\n계정 또는 식별 정보:\n\n요청 내용:\n\n추가 확인 사항:\n",
   },
   rights: ["개인정보 열람 요청", "개인정보 수정 요청", "개인정보 삭제 요청", "개인정보 처리 정지 요청", "동의 철회", "앱 권한 변경", "계정 탈퇴 또는 데이터 삭제 요청"],
   contact: {
     heading: "개인정보 보호 문의", businessLabel: "사업자명", business: "세임스튜디오", representativeLabel: "대표자", representative: "김동찬",
-    emailLabel: "이메일", websiteLabel: "웹사이트", button: "EMAIL PRIVACY SUPPORT →", buttonAriaLabel: "이메일로 개인정보 보호 문의하기",
+    emailLabel: "이메일", websiteLabel: "웹사이트", button: "개인정보 문의 이메일 →", buttonAriaLabel: "이메일로 개인정보 보호 문의하기",
     emailAriaLabel: "contact@samestudio.kr로 개인정보 문의하기", subject: "[SAME STUDIO] 개인정보 문의",
     changeNotice: "개인정보처리방침은 법령, 서비스 기능 또는 운영 정책 변경에 따라 수정될 수 있으며, 중요한 변경 사항은 웹사이트 또는 앱 내 공지를 통해 안내할 수 있습니다.",
   },
+  navigation: { back: "홈으로", backAriaLabel: "SAME STUDIO 홈으로 이동", websiteAriaLabel: "SAME STUDIO 홈페이지로 이동" },
 } satisfies PrivacyMessages;
 
 const en: PrivacyMessages = {
   ...ko,
-  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "Learn what information SAME STUDIO handles,\nhow it is used, and how it is protected.", updated: "LAST UPDATED · 2026.07.28" },
+  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "Learn what information SAME STUDIO handles,\nhow it is used, and how it is protected.", updated: "LAST UPDATED · 2026.07.28", archiveAriaLabel: "Privacy archive section 03" },
   summary: [
     { label: "MINIMUM DATA", title: "Only what is needed", text: "We handle information only as needed to provide each service." },
     { label: "YOUR CONTROL", title: "Your choices", text: "You can change permissions and privacy settings in your device or the app." },
@@ -198,14 +205,15 @@ const en: PrivacyMessages = {
     ]},
     { ...ko.sections[7], title: "Privacy contact", intro: "Contact us below about access or deletion requests, this policy, or privacy practices for a specific app.", paragraphs: ["We may ask for the app name and the minimum information needed to identify the relevant account or request."] },
   ],
-  deletion: { label: "REQUEST DATA DELETION →", ariaLabel: "Request deletion of personal data by email", subject: "[SAME STUDIO] Personal Data Deletion Request", body: "App name:\n\nAccount or identifier:\n\nRequest details:\n\nAdditional information:\n" },
+  deletion: { label: "REQUEST DATA DELETION →", ariaLabel: "Request deletion of personal data by email", subject: "[SAME STUDIO] Data Deletion Request", body: "App name:\n\nAccount or identifier:\n\nRequest details:\n\nAdditional information:\n" },
   rights: ["Request access", "Request correction", "Request deletion", "Request restriction of processing", "Withdraw consent", "Change app permissions", "Close an account or request data deletion"],
   contact: { heading: "Privacy inquiries", businessLabel: "Business", business: "SAME STUDIO", representativeLabel: "Representative", representative: "Kim Dongchan", emailLabel: "Email", websiteLabel: "Website", button: "EMAIL PRIVACY SUPPORT →", buttonAriaLabel: "Contact privacy support by email", emailAriaLabel: "Send a privacy inquiry to contact@samestudio.kr", subject: "[SAME STUDIO] Privacy Inquiry", changeNotice: "This policy may be revised when laws, service features, or operating policies change. Important changes may be announced on the website or inside the relevant app." },
+  navigation: { back: "HOME", backAriaLabel: "Go to the SAME STUDIO home page", websiteAriaLabel: "Open the SAME STUDIO website" },
 };
 
 const ja: PrivacyMessages = {
   ...en,
-  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "SAME STUDIOが取り扱う情報と、\nその利用・保護の方法をご案内します。", updated: "最終更新 · 2026.07.28" },
+  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "SAME STUDIOが取り扱う情報と、\nその利用・保護の方法をご案内します。", updated: "最終更新 · 2026.07.28", archiveAriaLabel: "プライバシー文書アーカイブ セクション03" },
   summary: [
     { label: "MINIMUM DATA", title: "必要な範囲のみ", text: "サービス提供に必要な範囲で情報を取り扱います。" },
     { label: "YOUR CONTROL", title: "利用者の選択", text: "権限やプライバシー設定は端末またはアプリで変更できます。" },
@@ -279,14 +287,15 @@ const ja: PrivacyMessages = {
       ["該当するアカウントや依頼を確認するため、アプリ名と必要最小限の識別情報を追加でお願いする場合があります。"],
     ][index] ?? section.paragraphs),
   })),
-  deletion: { label: "データ削除を依頼 →", ariaLabel: "メールで個人データの削除を依頼", subject: "[SAME STUDIO] 個人情報削除依頼", body: "アプリ名：\n\nアカウントまたは識別情報：\n\n依頼内容：\n\n追加確認事項：\n" },
+  deletion: { label: "データ削除を依頼 →", ariaLabel: "メールで個人データの削除を依頼", subject: "[SAME STUDIO] 個人情報削除のリクエスト", body: "アプリ名：\n\nアカウントまたは識別情報：\n\n依頼内容：\n\n追加確認事項：\n" },
   rights: ["個人情報の開示請求", "訂正請求", "削除請求", "取扱い停止の請求", "同意の撤回", "アプリ権限の変更", "退会またはデータ削除の依頼"],
   contact: { heading: "プライバシーに関するお問い合わせ", businessLabel: "事業者名", business: "SAME STUDIO", representativeLabel: "代表者", representative: "Kim Dongchan", emailLabel: "メール", websiteLabel: "ウェブサイト", button: "プライバシー窓口へメール →", buttonAriaLabel: "メールでプライバシー窓口に問い合わせる", emailAriaLabel: "contact@samestudio.krへプライバシーについて問い合わせる", subject: "[SAME STUDIO] プライバシーに関するお問い合わせ", changeNotice: "本方針は、法令、サービス機能または運営方針の変更に伴い改定される場合があります。重要な変更はウェブサイトまたはアプリ内でお知らせすることがあります。" },
+  navigation: { back: "ホームへ", backAriaLabel: "SAME STUDIOのホームへ移動", websiteAriaLabel: "SAME STUDIOのウェブサイトへ移動" },
 };
 
 const zhCN: PrivacyMessages = {
   ...en,
-  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "了解 SAME STUDIO 会处理哪些信息，\n以及我们如何使用和保护这些信息。", updated: "最后更新 · 2026.07.28" },
+  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "了解 SAME STUDIO 会处理哪些信息，\n以及我们如何使用和保护这些信息。", updated: "最后更新 · 2026.07.28", archiveAriaLabel: "隐私文件存档第 03 部分" },
   summary: [
     { label: "MINIMUM DATA", title: "仅处理必要信息", text: "我们仅在提供服务所需的范围内处理信息。" },
     { label: "YOUR CONTROL", title: "由您掌控", text: "您可以在设备或应用中更改权限和隐私设置。" },
@@ -360,14 +369,15 @@ const zhCN: PrivacyMessages = {
       ["为确认相关账号或请求，我们可能会要求提供应用名称以及识别所需的最少信息。"],
     ][index] ?? section.paragraphs),
   })),
-  deletion: { label: "申请删除数据 →", ariaLabel: "通过电子邮件申请删除个人数据", subject: "[SAME STUDIO] 个人信息删除申请", body: "应用名称：\n\n账号或识别信息：\n\n申请内容：\n\n补充确认事项：\n" },
+  deletion: { label: "申请删除数据 →", ariaLabel: "通过电子邮件申请删除个人数据", subject: "[SAME STUDIO] 个人信息删除请求", body: "应用名称：\n\n账号或识别信息：\n\n申请内容：\n\n补充确认事项：\n" },
   rights: ["申请访问个人信息", "申请更正", "申请删除", "申请停止处理", "撤回同意", "更改应用权限", "注销账号或申请删除数据"],
   contact: { heading: "隐私保护咨询", businessLabel: "企业名称", business: "SAME STUDIO", representativeLabel: "负责人", representative: "Kim Dongchan", emailLabel: "电子邮箱", websiteLabel: "网站", button: "发送隐私咨询邮件 →", buttonAriaLabel: "通过电子邮件联系隐私支持", emailAriaLabel: "发送隐私咨询至 contact@samestudio.kr", subject: "[SAME STUDIO] 隐私咨询", changeNotice: "本政策可能会因法律、服务功能或运营政策的变化而修订。重要变更可能会通过网站或相关应用内公告进行说明。" },
+  navigation: { back: "返回首页", backAriaLabel: "前往 SAME STUDIO 首页", websiteAriaLabel: "前往 SAME STUDIO 网站" },
 };
 
 const zhTW: PrivacyMessages = {
   ...zhCN,
-  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "瞭解 SAME STUDIO 會處理哪些資訊，\n以及我們如何使用與保護這些資訊。", updated: "最後更新 · 2026.07.28" },
+  hero: { label: "PRIVACY ARCHIVE", title: "PRIVACY", description: "瞭解 SAME STUDIO 會處理哪些資訊，\n以及我們如何使用與保護這些資訊。", updated: "最後更新 · 2026.07.28", archiveAriaLabel: "隱私文件封存第 03 部分" },
   summary: [
     { label: "MINIMUM DATA", title: "僅處理必要資訊", text: "我們僅在提供服務所需的範圍內處理資訊。" },
     { label: "YOUR CONTROL", title: "由您掌控", text: "您可以在裝置或應用程式中變更權限與隱私設定。" },
@@ -446,9 +456,10 @@ const zhTW: PrivacyMessages = {
       ["為確認相關帳號或要求，我們可能會要求提供應用程式名稱以及識別所需的最少資訊。"],
     ][index] ?? section.paragraphs),
   })),
-  deletion: { label: "申請刪除資料 →", ariaLabel: "透過電子郵件申請刪除個人資料", subject: "[SAME STUDIO] 個人資訊刪除申請", body: "應用程式名稱：\n\n帳號或識別資訊：\n\n申請內容：\n\n補充確認事項：\n" },
+  deletion: { label: "申請刪除資料 →", ariaLabel: "透過電子郵件申請刪除個人資料", subject: "[SAME STUDIO] 個人資料刪除請求", body: "應用程式名稱：\n\n帳號或識別資訊：\n\n申請內容：\n\n補充確認事項：\n" },
   rights: ["申請查閱個人資訊", "申請更正", "申請刪除", "申請停止處理", "撤回同意", "變更應用程式權限", "註銷帳號或申請刪除資料"],
   contact: { heading: "隱私保護諮詢", businessLabel: "商業名稱", business: "SAME STUDIO", representativeLabel: "負責人", representative: "Kim Dongchan", emailLabel: "電子郵件", websiteLabel: "網站", button: "傳送隱私諮詢郵件 →", buttonAriaLabel: "透過電子郵件聯絡隱私支援", emailAriaLabel: "傳送隱私諮詢至 contact@samestudio.kr", subject: "[SAME STUDIO] 隱私諮詢", changeNotice: "本政策可能因法律、服務功能或營運政策變更而修訂。重要變更可能會透過網站或相關應用程式內公告說明。" },
+  navigation: { back: "返回首頁", backAriaLabel: "前往 SAME STUDIO 首頁", websiteAriaLabel: "前往 SAME STUDIO 網站" },
 };
 
 export const PRIVACY_MESSAGES: Record<Locale, PrivacyMessages> = {

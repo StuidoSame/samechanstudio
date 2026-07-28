@@ -92,7 +92,7 @@ export function PrivacyArchive() {
       window.removeEventListener("resize", updateActiveSection);
       if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
     };
-  }, [locale, reducedMotion]);
+  }, [reducedMotion]);
 
   const scrollToSection = (id: string) => {
     setActiveSection(id);
@@ -110,7 +110,7 @@ export function PrivacyArchive() {
 
   return (
     <article
-      className="archive-document privacy-document"
+      className="archive-document legal-archive-document privacy-document"
       aria-labelledby="privacy-title"
     >
       <CosmicInteractionLayer reducedMotion={reducedMotion} />
@@ -119,7 +119,7 @@ export function PrivacyArchive() {
         <SectionCosmos variant="hero" />
         <div className="privacy-hero-glow" aria-hidden="true" />
         <div className="privacy-hero-content">
-          <div className="privacy-kicker" aria-label="Privacy archive section 03">
+          <div className="privacy-kicker" aria-label={messages.hero.archiveAriaLabel}>
             <span>03</span>
             <span>{messages.hero.label}</span>
             <i aria-hidden="true" />
@@ -250,7 +250,7 @@ export function PrivacyArchive() {
                             <div><dt>{messages.contact.businessLabel}</dt><dd>{messages.contact.business}</dd></div>
                             <div><dt>{messages.contact.representativeLabel}</dt><dd>{messages.contact.representative}</dd></div>
                             <div><dt>{messages.contact.emailLabel}</dt><dd><a href={contactMailto} aria-label={messages.contact.emailAriaLabel}>contact@samestudio.kr</a></dd></div>
-                            <div><dt>{messages.contact.websiteLabel}</dt><dd><InternalTransitionLink href="/">samestudio.kr</InternalTransitionLink></dd></div>
+                            <div><dt>{messages.contact.websiteLabel}</dt><dd><InternalTransitionLink href="/" aria-label={messages.navigation.websiteAriaLabel}>samestudio.kr</InternalTransitionLink></dd></div>
                           </dl>
                           <a className="privacy-contact-button" href={contactMailto} aria-label={messages.contact.buttonAriaLabel}>
                             {messages.contact.button}
@@ -284,8 +284,9 @@ export function PrivacyArchive() {
       <InternalTransitionLink
         className="archive-back privacy-back"
         href="/"
+        aria-label={messages.navigation.backAriaLabel}
       >
-        BACK
+        {messages.navigation.back}
       </InternalTransitionLink>
     </article>
   );

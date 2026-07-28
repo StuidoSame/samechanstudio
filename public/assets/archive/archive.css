@@ -2768,6 +2768,225 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) body.archive-page[data-arch
   }
 }
 
+/* PRIVACY + TERMS — shared main-theme legal system */
+:root[data-theme] body.archive-page:is([data-archive-document="privacy"], [data-archive-document="terms"]) {
+  color: var(--theme-text);
+  background:
+    radial-gradient(circle at 18% 14%, rgba(var(--theme-accent-rgb), 0.11), transparent 26rem),
+    radial-gradient(circle at 82% 68%, rgba(var(--theme-accent-rgb), 0.075), transparent 32rem),
+    linear-gradient(145deg, var(--theme-page-soft), var(--theme-page-flow) 52%, var(--theme-page));
+}
+
+:root[data-theme] body.archive-page:is([data-archive-document="privacy"], [data-archive-document="terms"])
+  .legal-archive-document
+  :is(
+    .terms-hero,
+    .terms-summary-card,
+    .terms-contents,
+    .terms-card,
+    .terms-quote,
+    .privacy-hero,
+    .privacy-summary-card,
+    .privacy-contents,
+    .privacy-mobile-contents,
+    .privacy-card,
+    .privacy-item,
+    .privacy-contact-panel
+  ) {
+  border-color: var(--theme-border);
+  background:
+    radial-gradient(circle at 82% 18%, var(--theme-glow), transparent 22rem),
+    linear-gradient(145deg, var(--theme-surface), var(--theme-surface-soft));
+  box-shadow: inset 0 1px 0 var(--theme-highlight), 0 24px 70px var(--theme-shadow);
+}
+
+:root[data-theme] .legal-archive-document :is(
+  .terms-hero h1,
+  .terms-summary-card h2,
+  .terms-card h2,
+  .terms-quote p,
+  .privacy-hero h1,
+  .privacy-summary-card h2,
+  .privacy-card h2,
+  .privacy-item h3,
+  .privacy-contact-panel h3
+) {
+  color: var(--theme-text);
+}
+
+:root[data-theme] .legal-archive-document :is(
+  .terms-hero-description,
+  .terms-summary-card > p:last-child,
+  .terms-copy p,
+  .privacy-hero-description,
+  .privacy-summary-card > p:last-child,
+  .privacy-intro,
+  .privacy-copy p,
+  .privacy-item > div,
+  .privacy-contact-panel > p
+) {
+  color: var(--theme-text-soft);
+}
+
+:root[data-theme] .legal-archive-document :is(
+  .terms-kicker,
+  .terms-card-heading,
+  .terms-summary-label,
+  .terms-updated,
+  .terms-contents > p,
+  .terms-quote span,
+  .privacy-kicker,
+  .privacy-card-heading,
+  .privacy-summary-label,
+  .privacy-updated,
+  .privacy-contents > p,
+  .privacy-mobile-contents label,
+  .privacy-item > p
+) {
+  color: var(--theme-accent);
+}
+
+:root[data-theme] .legal-archive-document :is(.terms-contents button, .privacy-contents button) {
+  color: var(--theme-text-muted);
+}
+
+:root[data-theme] .legal-archive-document :is(
+  .terms-contents button[aria-current="location"],
+  .terms-contents button:hover,
+  .privacy-contents button[aria-current="location"],
+  .privacy-contents button:hover
+) {
+  color: var(--theme-text);
+  background: var(--theme-surface-muted);
+}
+
+:root[data-theme] .legal-archive-document :is(.terms-route-node, .privacy-route-node) {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-page-soft);
+  box-shadow: 0 0 18px var(--theme-glow);
+}
+
+:root[data-theme] .legal-archive-document :is(.terms-connector path, .privacy-connector path) {
+  stroke: var(--theme-accent-soft);
+}
+
+:root[data-theme] .legal-archive-document :is(.terms-copy, .privacy-copy, .privacy-item-grid) {
+  border-color: var(--theme-border);
+}
+
+:root[data-theme] .legal-archive-document .privacy-rights-list li {
+  border-color: var(--theme-border);
+  color: var(--theme-text-soft);
+  background: var(--theme-surface-soft);
+}
+
+:root[data-theme] .legal-archive-document .privacy-contact-panel dl {
+  border-color: var(--theme-border);
+  background: var(--theme-border);
+}
+
+:root[data-theme] .legal-archive-document .privacy-contact-panel dl > div {
+  background: var(--theme-surface-strong);
+}
+
+:root[data-theme] .legal-archive-document .privacy-contact-panel :is(dd, dd a) {
+  color: var(--theme-text-soft);
+}
+
+:root[data-theme] .legal-archive-document .privacy-contact-panel dt {
+  color: var(--theme-accent);
+}
+
+.terms-hero-description span {
+  display: block;
+}
+
+.terms-inline-action,
+:root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button) {
+  width: fit-content;
+  min-height: 48px;
+  margin-top: 30px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 999px;
+  color: var(--theme-text);
+  background: var(--theme-surface-muted);
+  font-size: 10px;
+  line-height: 1.45;
+  letter-spacing: 0.1em;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+.terms-inline-action:hover,
+.terms-inline-action:focus-visible,
+:root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button):hover,
+:root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button):focus-visible {
+  border-color: var(--theme-accent);
+  background: var(--theme-surface-strong);
+  box-shadow: 0 0 24px var(--theme-glow);
+  transform: translateY(-1px);
+}
+
+.legal-archive-document :is(
+  .terms-hero-description,
+  .terms-summary-card > p:last-child,
+  .terms-copy p,
+  .privacy-hero-description,
+  .privacy-summary-card > p:last-child,
+  .privacy-intro,
+  .privacy-copy p,
+  .privacy-item > div,
+  .privacy-contact-panel dd,
+  .privacy-contact-panel > p
+) {
+  overflow-wrap: anywhere;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  body.archive-page[data-archive-document="terms"]
+  :is(.terms-hero-content, .terms-summary, .terms-contents, .terms-route) {
+  font-family: var(--localized-font-stack);
+  font-synthesis: none;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  .legal-archive-document
+  :is(.terms-copy p, .privacy-copy p, .privacy-intro, .privacy-item > div) {
+  line-height: 2;
+}
+
+@media (max-width: 640px) {
+  .terms-inline-action,
+  :root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button) {
+    width: 100%;
+    min-height: 52px;
+    padding: 10px 14px;
+  }
+
+  .legal-archive-document :is(.terms-hero-description, .privacy-hero-description) span {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terms-inline-action,
+  :root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button) {
+    transition-duration: 0.001ms !important;
+  }
+
+  .terms-inline-action:hover,
+  .terms-inline-action:focus-visible,
+  :root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button):hover,
+  :root[data-theme] .legal-archive-document :is(.privacy-deletion-link, .privacy-contact-button):focus-visible {
+    transform: none;
+  }
+}
+
 .archive-back {
   width: max-content;
   margin-top: 30px;
