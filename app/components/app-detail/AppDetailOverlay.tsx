@@ -15,6 +15,11 @@ import { getAppScreenshots } from "../../lib/appScreenshots";
 
 const OVERLAY_EXIT_MS = 300;
 
+type PreviewLoadState = {
+  source: string;
+  status: "loaded" | "failed";
+};
+
 type AppDetailOverlayProps = {
   app: AppItem;
   open: boolean;
@@ -115,7 +120,22 @@ export function AppDetailOverlay({
   const [previewIndex, setPreviewIndex] = useState(0);
   const previewImage = screenshots[previewIndex] ?? null;
   const previewFit = "contain";
-  const [previewFailed, setPreviewFailed] = useState(false);
+  const [previewDirection, setPreviewDirection] = useState<"previous" | "next">(
+    "next",
+  );
+  const [previewLoadState, setPreviewLoadState] =
+    useState<PreviewLoadState | null>(null);
+  const previewLoaded =
+    previewImage !== null &&
+    previewLoadState?.source === previewImage &&
+    previewLoadState.status === "loaded";
+  const previewFailed =
+    previewImage !== null &&
+    previewLoadState?.source === previewImage &&
+    previewLoadState.status === "failed";
+  const previewLoading = previewImage !== null && !previewLoaded && !previewFailed;
+  const hasMultipleScreenshots = screenshots.length > 1;
+  const screenshotPosition = `${String(previewIndex + 1).padStart(2, "0")} / ${String(screenshots.length).padStart(2, "0")}`;
 
   useEffect(() => {
     const deviceResetFrame = window.requestAnimationFrame(() => {
@@ -136,13 +156,6 @@ export function AppDetailOverlay({
     });
     return () => window.cancelAnimationFrame(previewResetFrame);
   }, [locale, selectedDevice]);
-
-  useEffect(() => {
-    const previewResetFrame = window.requestAnimationFrame(() => {
-      setPreviewFailed(false);
-    });
-    return () => window.cancelAnimationFrame(previewResetFrame);
-  }, [app.id, previewImage, selectedDevice]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -178,6 +191,22 @@ export function AppDetailOverlay({
         onRequestClose();
         return;
       }
+      if (event.key === "ArrowLeft" && hasMultipleScreenshots) {
+        event.preventDefault();
+        setPreviewDirection("previous");
+        setPreviewIndex((current) =>
+          current === 0 ? screenshots.length - 1 : current - 1,
+        );
+        return;
+      }
+      if (event.key === "ArrowRight" && hasMultipleScreenshots) {
+        event.preventDefault();
+        setPreviewDirection("next");
+        setPreviewIndex((current) =>
+          current === screenshots.length - 1 ? 0 : current + 1,
+        );
+        return;
+      }
       if (event.key !== "Tab") return;
 
       const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
@@ -201,7 +230,7 @@ export function AppDetailOverlay({
       window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onRequestClose, open]);
+  }, [hasMultipleScreenshots, onRequestClose, open, screenshots.length]);
 
   return (
     <div
@@ -294,13 +323,13 @@ export function AppDetailOverlay({
             data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
           >
             <div
-              className="app-detail-preview-media"
+              className={`app-detail-preview-media is-${previewDirection}`}
               key={`${app.id}:${selectedDevice ?? "none"}:${previewImage ?? "placeholder"}`}
               data-preview-fit={previewFit}
             >
               {previewImage && !previewFailed ? (
                 <Image
-                  className="app-detail-preview-image"
+                  className={`app-detail-preview-image${previewLoaded ? " is-loaded" : ""}`}
                   src={previewImage}
                   alt={format(messages.appDetail.previewAlt, {
                     app: app.name,
@@ -311,7 +340,19 @@ export function AppDetailOverlay({
                   fill
                   sizes="(max-width: 767px) calc(100vw - 72px), min(80vw, 1060px)"
                   style={{ objectFit: previewFit }}
-                  onError={() => setPreviewFailed(true)}
+                  loading={previewIndex === 0 ? "eager" : "lazy"}
+                  onLoad={() =>
+                    setPreviewLoadState({
+                      source: previewImage,
+                      status: "loaded",
+                    })
+                  }
+                  onError={() =>
+                    setPreviewLoadState({
+                      source: previewImage,
+                      status: "failed",
+                    })
+                  }
                   unoptimized
                 />
               ) : selectedDevice ? (
@@ -319,7 +360,52 @@ export function AppDetailOverlay({
                   <DeviceSilhouette device={selectedDevice} />
                 </span>
               ) : null}
+              {previewLoading && (
+                <span className="app-detail-preview-loading" role="status">
+                  Loading preview...
+                </span>
+              )}
             </div>
+            {screenshots.length > 0 && (
+              <div className="app-detail-gallery-controls">
+                <button
+                  className="app-detail-gallery-button is-previous"
+                  type="button"
+                  aria-label={`Previous ${app.name} screenshot`}
+                  disabled={!hasMultipleScreenshots}
+                  onClick={() => {
+                    setPreviewDirection("previous");
+                    setPreviewIndex((current) =>
+                      current === 0 ? screenshots.length - 1 : current - 1,
+                    );
+                  }}
+                >
+                  <span aria-hidden="true">‹</span>
+                </button>
+                <span
+                  className="app-detail-gallery-position"
+                  role="status"
+                  aria-live="polite"
+                  aria-label={`${app.name} screenshot ${previewIndex + 1} of ${screenshots.length}`}
+                >
+                  {screenshotPosition}
+                </span>
+                <button
+                  className="app-detail-gallery-button is-next"
+                  type="button"
+                  aria-label={`Next ${app.name} screenshot`}
+                  disabled={!hasMultipleScreenshots}
+                  onClick={() => {
+                    setPreviewDirection("next");
+                    setPreviewIndex((current) =>
+                      current === screenshots.length - 1 ? 0 : current + 1,
+                    );
+                  }}
+                >
+                  <span aria-hidden="true">›</span>
+                </button>
+              </div>
+            )}
           </div>
           <div
             className="device-detail-copy"
@@ -358,7 +444,7 @@ export function AppDetailOverlay({
             ))}
           </div>
           <span className="app-detail-screenshot-count" aria-hidden="true">
-            0
+            {screenshots.length}
           </span>
         </div>
       </div>

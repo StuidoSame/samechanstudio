@@ -2147,6 +2147,14 @@ button {
   border-radius: clamp(14px, 1.8vw, 22px);
 }
 
+.app-detail-preview-media.is-previous {
+  --preview-enter-x: -12px;
+}
+
+.app-detail-preview-media.is-next {
+  --preview-enter-x: 12px;
+}
+
 .app-detail-preview.is-iphone .app-detail-preview-media,
 .app-detail-preview.is-androidPhone .app-detail-preview-media {
   max-width: 560px;
@@ -2164,12 +2172,107 @@ button {
   display: block;
   object-position: center;
   opacity: 0;
-  animation: app-detail-preview-reveal 0.32s ease forwards;
+}
+
+.app-detail-preview-image.is-loaded {
+  animation: app-detail-preview-reveal 0.24s ease forwards;
 }
 
 @keyframes app-detail-preview-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(var(--preview-enter-x, 10px));
+  }
+
   to {
     opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.app-detail-preview-loading {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 2;
+  color: rgba(93, 62, 148, 0.58);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transform: translateX(-50%);
+}
+
+.app-detail-gallery-controls {
+  position: absolute;
+  right: clamp(16px, 2.2vw, 28px);
+  bottom: clamp(14px, 2vw, 24px);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-detail-gallery-button {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(108, 73, 169, 0.14);
+  border-radius: 50%;
+  color: rgba(92, 54, 157, 0.82);
+  background: rgba(249, 246, 255, 0.72);
+  box-shadow: 0 8px 20px rgba(82, 52, 135, 0.08);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.app-detail-gallery-button span {
+  font-family: Arial, sans-serif;
+  font-size: 27px;
+  font-weight: 300;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.app-detail-gallery-button:hover:not(:disabled) {
+  color: #6336ad;
+  background: rgba(255, 255, 255, 0.88);
+  transform: translateY(-1px);
+}
+
+.app-detail-gallery-button:focus-visible {
+  outline: 2px solid rgba(112, 69, 214, 0.55);
+  outline-offset: 2px;
+}
+
+.app-detail-gallery-button:disabled {
+  cursor: default;
+  opacity: 0.28;
+}
+
+.app-detail-gallery-position {
+  min-width: 62px;
+  color: rgba(86, 56, 138, 0.68);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-detail-preview-image.is-loaded {
+    opacity: 1;
+    animation: none;
+    transform: none;
   }
 }
 
@@ -2455,6 +2558,17 @@ button {
 
   .app-detail-preview-marker {
     transform: scale(2.8);
+  }
+
+  .app-detail-gallery-controls {
+    right: 10px;
+    bottom: 10px;
+    gap: 5px;
+  }
+
+  .app-detail-gallery-position {
+    min-width: 54px;
+    font-size: 10px;
   }
 
   .app-detail-device-selector {
@@ -6644,6 +6758,23 @@ html[data-theme="dark"] .app-detail-preview {
 
 html[data-theme="dark"] .app-detail-preview-marker {
   color: rgba(199, 176, 234, 0.25);
+}
+
+html[data-theme="dark"] .app-detail-preview-loading,
+html[data-theme="dark"] .app-detail-gallery-position {
+  color: rgba(218, 201, 244, 0.68);
+}
+
+html[data-theme="dark"] .app-detail-gallery-button {
+  border-color: var(--theme-border);
+  color: #ceb9f4;
+  background: rgba(55, 44, 73, 0.74);
+  box-shadow: 0 8px 22px rgba(5, 3, 9, 0.2);
+}
+
+html[data-theme="dark"] .app-detail-gallery-button:hover:not(:disabled) {
+  color: #e0cffd;
+  background: rgba(74, 58, 99, 0.88);
 }
 
 html[data-theme="dark"] .device-detail-copy {
