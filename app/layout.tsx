@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { BackgroundAudioProvider } from "./audio/BackgroundAudioProvider";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { ThemeProvider } from "./theme/ThemeProvider";
 import { THEME_STORAGE_KEY } from "./theme/types";
@@ -88,9 +89,11 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
       </head>
       <body>
-        <ThemeProvider>
-          <I18nProvider>{children}</I18nProvider>
-        </ThemeProvider>
+        <BackgroundAudioProvider>
+          <ThemeProvider>
+            <I18nProvider>{children}</I18nProvider>
+          </ThemeProvider>
+        </BackgroundAudioProvider>
       </body>
     </html>
   );
