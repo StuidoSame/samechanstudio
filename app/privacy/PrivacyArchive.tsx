@@ -102,10 +102,6 @@ export function PrivacyArchive() {
     });
   };
 
-  const deletionMailto = createMailto(
-    messages.deletion.subject,
-    messages.deletion.body,
-  );
   const contactMailto = createMailto(messages.contact.subject, "");
 
   return (
@@ -223,13 +219,13 @@ export function PrivacyArchive() {
                       ) : null}
 
                       {section.id === "storage" ? (
-                        <a
+                        <InternalTransitionLink
                           className="privacy-deletion-link"
-                          href={deletionMailto}
+                          href="/delete-account/"
                           aria-label={messages.deletion.ariaLabel}
                         >
                           {messages.deletion.label}
-                        </a>
+                        </InternalTransitionLink>
                       ) : null}
 
                       {section.id === "rights" ? (

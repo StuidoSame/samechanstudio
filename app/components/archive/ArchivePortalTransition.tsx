@@ -1,6 +1,10 @@
 import type { CSSProperties } from "react";
 
-export type ArchiveDocumentTitle = "SUPPORT" | "TERMS" | "PRIVACY";
+export type ArchiveDocumentTitle =
+  | "SUPPORT"
+  | "TERMS"
+  | "PRIVACY"
+  | "DELETE ACCOUNT";
 
 export type PageTransitionDestination =
   | ArchiveDocumentTitle

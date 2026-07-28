@@ -49,9 +49,9 @@ test("server-renders the SAME STUDIO app explorer", async () => {
 
 test("renders policy pages with the shared header, footer, and navigation", async () => {
   const policyPages = [
-    ["/support", "SUPPORT"],
-    ["/privacy", "PRIVACY"],
-    ["/terms", "TERMS"],
+    ["/support/", "SUPPORT"],
+    ["/privacy/", "PRIVACY"],
+    ["/terms/", "TERMS"],
   ];
 
   for (const [pathname, title] of policyPages) {
@@ -71,7 +71,7 @@ test("renders policy pages with the shared header, footer, and navigation", asyn
 });
 
 test("server-renders the SUPPORT contact flow and FAQ", async () => {
-  const response = await render("/support");
+  const response = await render("/support/");
   assert.equal(response.status, 200);
   const html = await response.text();
 
@@ -120,6 +120,31 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   ]) {
     assert.match(html, new RegExp(iconName.replace(".", "\\.")));
   }
+});
+
+test("server-renders the public account deletion request page", async () => {
+  const response = await render("/delete-account/");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+
+  const html = await response.text();
+  assert.match(html, /<title>계정 및 데이터 삭제 \| SAME STUDIO<\/title>/i);
+  assert.match(html, /<h1[^>]*>계정 및 데이터 삭제<\/h1>/i);
+  assert.match(html, /SAME STUDIO/);
+  assert.match(html, />ODOW<\/option>/);
+  assert.match(html, /id="deletion-email"[^>]*type="email"/i);
+  assert.match(html, /id="deletion-login"/i);
+  assert.match(html, /type="checkbox"/i);
+  assert.match(html, /mailto:contact@samestudio\.kr/i);
+  assert.match(html, /href="\/privacy\/"/i);
+  assert.match(html, /href="\/support\/"/i);
+  assert.match(html, /href="\/delete-account\/"[^>]*>DELETE ACCOUNT<\/a>/i);
+  assert.doesNotMatch(html, /type="password"/i);
+  assert.doesNotMatch(html, /Coming Soon/i);
+
+  const menu = html.match(/<nav id="site-menu"[\s\S]*?<\/nav>/i)?.[0] ?? "";
+  assert.ok(menu, "the shared hamburger menu should be rendered");
+  assert.doesNotMatch(menu, /DELETE ACCOUNT/i);
 });
 
 test("initializes the pre-hydration theme from saved choice or dark", async () => {

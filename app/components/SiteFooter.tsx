@@ -10,10 +10,11 @@ const FOOTER_BUSINESS_VALUES = {
 } as const;
 
 const FOOTER_NAVIGATION = [
-  { id: "support", label: "SUPPORT", href: "/support" },
+  { id: "support", label: "SUPPORT", href: "/support/" },
   { id: "home", label: "HOME", href: "/" },
-  { id: "privacy", label: "PRIVACY", href: "/privacy" },
-  { id: "terms", label: "TERMS", href: "/terms" },
+  { id: "privacy", label: "PRIVACY", href: "/privacy/" },
+  { id: "terms", label: "TERMS", href: "/terms/" },
+  { id: "delete-account", label: "DELETE ACCOUNT", href: "/delete-account/" },
 ] as const;
 
 export type FooterPage = (typeof FOOTER_NAVIGATION)[number]["id"];

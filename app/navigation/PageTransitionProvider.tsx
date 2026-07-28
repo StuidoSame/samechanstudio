@@ -39,12 +39,14 @@ const PageTransitionContext =
 
 function getDestination(href: string): PageTransitionDestination {
   const url = new URL(href, window.location.href);
+  const pathname = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
   if (url.hash === "#about") return "ABOUT";
   if (url.hash === "#apps") return "APPS";
   if (url.hash === "#contact") return "CONTACT";
-  if (url.pathname === "/support") return "SUPPORT";
-  if (url.pathname === "/terms") return "TERMS";
-  if (url.pathname === "/privacy") return "PRIVACY";
+  if (pathname === "/support") return "SUPPORT";
+  if (pathname === "/terms") return "TERMS";
+  if (pathname === "/privacy") return "PRIVACY";
+  if (pathname === "/delete-account") return "DELETE ACCOUNT";
   return "HOME";
 }
 

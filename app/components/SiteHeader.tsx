@@ -300,9 +300,9 @@ export function SiteHeader({
   const sectionPrefix = homePage ? "" : "/";
   const wordmarkHref = "/";
   const archiveLinks = [
-    { title: "SUPPORT" as const, href: "/support" },
-    { title: "TERMS" as const, href: "/terms" },
-    { title: "PRIVACY" as const, href: "/privacy" },
+    { title: "SUPPORT" as const, href: "/support/" },
+    { title: "TERMS" as const, href: "/terms/" },
+    { title: "PRIVACY" as const, href: "/privacy/" },
   ];
 
   return (

@@ -183,7 +183,7 @@ export function TermsArchive() {
                       {section.id === "privacy" ? (
                         <InternalTransitionLink
                           className="terms-inline-action"
-                          href="/privacy"
+                          href="/privacy/"
                           aria-label={messages.actions.privacyPolicyAriaLabel}
                         >
                           {messages.actions.privacyPolicy}
