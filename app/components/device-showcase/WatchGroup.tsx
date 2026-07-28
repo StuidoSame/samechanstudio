@@ -6,11 +6,6 @@ import { WatchFrame, type WatchVariant } from "./WatchFrame";
 
 type DrumId = "kick" | "snare" | "hihat";
 
-type RhythmEvent = {
-  drum: DrumId;
-  time: number;
-};
-
 type HitEffects = Record<DrumId, number[]>;
 
 const DRUM_PADS: Array<{
@@ -39,8 +34,6 @@ const KEY_TO_DRUM: Partial<Record<string, DrumId>> = {
   KeyD: "hihat",
 };
 
-const getInteractionTime = () => performance.now();
-
 function createNoiseBuffer(context: AudioContext, duration: number) {
   const frameCount = Math.ceil(context.sampleRate * duration);
   const buffer = context.createBuffer(1, frameCount, context.sampleRate);
@@ -56,21 +49,15 @@ function createNoiseBuffer(context: AudioContext, duration: number) {
 export function WatchGroup() {
   const { messages, format } = useI18n();
   const [activePad, setActivePad] = useState<string | null>(null);
+  const [hitCount, setHitCount] = useState(0);
   const [hitCounts, setHitCounts] = useState<Record<DrumId, number>>({ kick: 0, snare: 0, hihat: 0 });
   const [hitEffects, setHitEffects] = useState<HitEffects>({ kick: [], snare: [], hihat: [] });
-  const [rhythm, setRhythm] = useState<RhythmEvent[]>([]);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const audioBuffersRef = useRef<Partial<Record<DrumId, AudioBuffer>>>({});
   const bufferPromisesRef = useRef<Partial<Record<DrumId, Promise<AudioBuffer>>>>({});
-  const triggerDrumRef = useRef<(drumId: DrumId, shouldRecord?: boolean) => void>(() => undefined);
+  const triggerDrumRef = useRef<(drumId: DrumId) => void>(() => undefined);
   const hitRecoveryTimerRef = useRef<number | null>(null);
-  const recordingStartedAtRef = useRef(0);
-  const recordingStopTimerRef = useRef<number | null>(null);
-  const playbackTimersRef = useRef<number[]>([]);
   const effectSequenceRef = useRef(0);
   const effectTimersRef = useRef<Set<number>>(new Set());
 
@@ -146,9 +133,6 @@ export function WatchGroup() {
       audioBuffersRef.current = {};
       bufferPromisesRef.current = {};
       if (hitRecoveryTimerRef.current) window.clearTimeout(hitRecoveryTimerRef.current);
-      if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
-      playbackTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-      playbackTimersRef.current = [];
       effectTimers.forEach((timer) => window.clearTimeout(timer));
       effectTimers.clear();
     };
@@ -238,11 +222,12 @@ export function WatchGroup() {
     source.start();
   };
 
-  const triggerDrum = (drumId: DrumId, shouldRecord = true) => {
+  const triggerDrum = (drumId: DrumId) => {
     const pad = DRUM_PADS.find((candidate) => candidate.id === drumId);
     if (!pad) return;
 
     setActivePad(pad.id);
+    setHitCount((current) => current + 1);
     setHitCounts((currentCounts) => ({ ...currentCounts, [pad.id]: currentCounts[pad.id] + 1 }));
     effectSequenceRef.current += 1;
     const effectId = effectSequenceRef.current;
@@ -261,15 +246,6 @@ export function WatchGroup() {
     effectTimersRef.current.add(effectTimer);
     void playSample(pad);
 
-    if (shouldRecord && isRecording) {
-      const elapsed = Math.min(8000, Math.round(getInteractionTime() - recordingStartedAtRef.current));
-      setRhythm((currentRhythm) =>
-        currentRhythm.length >= 32
-          ? currentRhythm
-          : [...currentRhythm, { drum: pad.id, time: elapsed }],
-      );
-    }
-
     if (hitRecoveryTimerRef.current) window.clearTimeout(hitRecoveryTimerRef.current);
     hitRecoveryTimerRef.current = window.setTimeout(() => {
       setActivePad(null);
@@ -277,68 +253,7 @@ export function WatchGroup() {
     }, 170);
   };
 
-  const activatePad = (pad: (typeof DRUM_PADS)[number]) => triggerDrum(pad.id, true);
-
-  const stopRecording = () => {
-    setIsRecording(false);
-    if (recordingStopTimerRef.current) {
-      window.clearTimeout(recordingStopTimerRef.current);
-      recordingStopTimerRef.current = null;
-    }
-  };
-
-  const stopPlayback = () => {
-    playbackTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-    playbackTimersRef.current = [];
-    setIsPlaying(false);
-  };
-
-  const startRecording = () => {
-    stopPlayback();
-    if (recordingStopTimerRef.current) window.clearTimeout(recordingStopTimerRef.current);
-    setRhythm([]);
-    setIsRecording(true);
-    recordingStartedAtRef.current = getInteractionTime();
-    recordingStopTimerRef.current = window.setTimeout(stopRecording, 8000);
-  };
-
-  const playRhythm = () => {
-    if (rhythm.length === 0) return;
-
-    stopRecording();
-    stopPlayback();
-    setIsPlaying(true);
-
-    rhythm.forEach((rhythmEvent) => {
-      const timer = window.setTimeout(() => {
-        triggerDrum(rhythmEvent.drum, false);
-      }, rhythmEvent.time);
-      playbackTimersRef.current.push(timer);
-    });
-
-    const finishTimer = window.setTimeout(() => {
-      playbackTimersRef.current = [];
-      setIsPlaying(false);
-    }, rhythm[rhythm.length - 1].time + 260);
-    playbackTimersRef.current.push(finishTimer);
-  };
-
-  const clearRhythm = () => {
-    stopRecording();
-    stopPlayback();
-    setRhythm([]);
-  };
-
-  const toggleMute = () => {
-    const nextMuted = !isMuted;
-    setIsMuted(nextMuted);
-
-    const context = audioContextRef.current;
-    const masterGain = masterGainRef.current;
-    if (context && masterGain) {
-      masterGain.gain.setTargetAtTime(nextMuted ? 0 : MASTER_GAIN, context.currentTime, 0.012);
-    }
-  };
+  const activatePad = (pad: (typeof DRUM_PADS)[number]) => triggerDrum(pad.id);
 
   useEffect(() => {
     triggerDrumRef.current = triggerDrum;
@@ -361,7 +276,7 @@ export function WatchGroup() {
       if (!drumId) return;
 
       event.preventDefault();
-      triggerDrumRef.current(drumId, true);
+      triggerDrumRef.current(drumId);
     };
 
     window.addEventListener("keydown", handleShortcut);
@@ -424,25 +339,11 @@ export function WatchGroup() {
           </WatchFrame>
         ))}
       </div>
-      <div className="watch-drum-controls" role="group" aria-label="Rhythm recording controls">
-        <button type="button" data-control="record" aria-label="Record rhythm" aria-pressed={isRecording} disabled={isRecording} onClick={startRecording}>
-          <span className="watch-drum-control-tooltip">Record</span>
-        </button>
-        <button type="button" data-control="stop" aria-label="Stop recording or playback" disabled={!isRecording && !isPlaying} onClick={() => { stopRecording(); stopPlayback(); }}>
-          <span className="watch-drum-control-tooltip">Stop</span>
-        </button>
-        <button type="button" data-control="play" aria-label="Play recorded rhythm" aria-pressed={isPlaying} disabled={rhythm.length === 0} onClick={playRhythm}>
-          <span className="watch-drum-control-tooltip">Play</span>
-        </button>
-        <button type="button" data-control="clear" aria-label="Clear recorded rhythm" disabled={rhythm.length === 0} onClick={clearRhythm}>
-          <span className="watch-drum-control-tooltip">Clear</span>
-        </button>
-        <button type="button" data-control="mute" aria-label={isMuted ? "Unmute drums" : "Mute drums"} aria-pressed={isMuted} onClick={toggleMute}>
-          <span className="watch-drum-control-tooltip">{isMuted ? "Unmute" : "Mute"}</span>
-        </button>
-        <span className="watch-drum-status" aria-live="polite">
-          {isRecording ? `REC ${String(rhythm.length).padStart(2, "0")}` : `${String(rhythm.length).padStart(2, "0")} HITS`}
+      <div className="watch-hit-counter" aria-label={`${hitCount} HITS`}>
+        <span key={hitCount} className="watch-hit-counter-value">
+          {String(hitCount).padStart(2, "0")}
         </span>
+        <span className="watch-hit-counter-label">HITS</span>
       </div>
     </div>
   );

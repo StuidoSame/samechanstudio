@@ -36,6 +36,12 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /Mapary_icon\.png/);
   assert.match(html, /페이지 주요 섹션 이동/);
   assert.match(html, /contact@samestudio\.kr/);
+  assert.match(html, /watch-hit-counter/);
+  assert.match(html, />00<\/span><span[^>]*>HITS<\/span>/);
+  assert.doesNotMatch(
+    html,
+    /Rhythm recording controls|Record rhythm|Stop recording|Play recorded rhythm|Clear recorded rhythm|Mute drums/,
+  );
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 

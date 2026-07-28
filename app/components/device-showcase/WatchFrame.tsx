@@ -64,15 +64,15 @@ export function WatchFrame({ variant, ariaLabel, onActivate, hitKey, isHit, chil
       className={`device-watch device-watch--${variant}${isHit ? " is-hit" : ""}`}
       data-hit-count={hitKey}
       aria-label={ariaLabel}
-      onPointerDown={onActivate}
+      onClick={onActivate}
       onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
+        if (
+          !event.repeat &&
+          (event.key === "Enter" || event.key === " ")
+        ) {
           event.preventDefault();
           onActivate();
         }
-      }}
-      onClick={(event) => {
-        if (event.detail === 0) onActivate();
       }}
     >
       <span ref={hitWrapperRef} className={`drum-hit-wrapper${hitKey > 0 ? " is-struck" : ""}`}>

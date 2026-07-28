@@ -5242,152 +5242,45 @@ button {
   height: 340px;
 }
 
-.watch-drum-controls {
+.watch-hit-counter {
   position: relative;
   z-index: 5;
-  margin-top: -18px;
-  display: flex;
-  flex-wrap: wrap;
+  margin-top: -14px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  color: rgba(78, 42, 122, 0.96);
-}
-
-.watch-drum-controls button {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  color: inherit;
-  background: transparent;
-  font-size: 13px;
+  gap: 0.58em;
+  color: rgba(78, 42, 122, 0.86);
+  font-size: 10px;
   font-weight: 700;
-  text-shadow: 0 1px rgba(255, 255, 255, 0.28);
-  cursor: pointer;
-  transition: opacity 160ms ease, color 160ms ease, transform 160ms ease;
-}
-
-.watch-drum-controls button::before,
-.watch-drum-controls button::after {
-  content: "";
-  pointer-events: none;
-}
-
-.watch-drum-controls button[data-control="record"]::before {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.watch-drum-controls button[data-control="stop"]::before {
-  width: 8px;
-  height: 8px;
-  border-radius: 1px;
-  background: currentColor;
-}
-
-.watch-drum-controls button[data-control="play"]::before {
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid currentColor;
-}
-
-.watch-drum-controls button[data-control="clear"]::before,
-.watch-drum-controls button[data-control="clear"]::after {
-  position: absolute;
-  width: 11px;
-  height: 1.5px;
-  border-radius: 2px;
-  background: currentColor;
-}
-
-.watch-drum-controls button[data-control="clear"]::before {
-  transform: rotate(45deg);
-}
-
-.watch-drum-controls button[data-control="clear"]::after {
-  transform: rotate(-45deg);
-}
-
-.watch-drum-controls button[data-control="mute"]::before {
-  content: "♪";
-  font-size: 13px;
-  font-weight: 750;
   line-height: 1;
-}
-
-.watch-drum-controls button[data-control="mute"][aria-pressed="true"]::before {
-  content: "×";
-  font-size: 15px;
-}
-
-.watch-drum-controls button[data-control="record"][aria-pressed="true"] {
-  color: rgba(211, 83, 133, 0.96);
-}
-
-.watch-drum-controls button:hover,
-.watch-drum-controls button[aria-pressed="true"] {
-  color: rgba(111, 68, 163, 0.96);
-}
-
-.watch-drum-controls button:active {
-  transform: scale(0.92);
-}
-
-.watch-drum-controls button:focus-visible {
-  border-radius: 50%;
-  outline: 2px solid rgba(125, 81, 178, 0.35);
-  outline-offset: 2px;
-}
-
-.watch-drum-controls button:disabled {
-  cursor: default;
-  opacity: 0.28;
-}
-
-.watch-drum-controls button[data-control="record"][aria-pressed="true"]:disabled {
-  opacity: 1;
-}
-
-.watch-drum-control-tooltip {
-  position: absolute;
-  bottom: calc(100% + 5px);
-  left: 50%;
-  padding: 3px 5px;
-  border-radius: 5px;
-  color: rgba(250, 246, 255, 0.96);
-  background: rgba(62, 43, 83, 0.78);
-  font-size: 7px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 2px);
-  transition: opacity 140ms ease-out, transform 140ms ease-out;
-}
-
-.watch-drum-controls button:hover .watch-drum-control-tooltip,
-.watch-drum-controls button:focus-visible .watch-drum-control-tooltip {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.watch-drum-status {
-  min-width: 54px;
-  color: rgba(82, 52, 119, 0.68);
-  font-size: 9px;
-  font-weight: 650;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  user-select: none;
+}
+
+.watch-hit-counter-value {
+  min-width: 2ch;
+  display: inline-block;
+  color: currentColor;
+  text-align: right;
+  animation: watch-hit-counter-pulse 150ms ease-out both;
+}
+
+.watch-hit-counter-label {
+  opacity: 0.68;
+}
+
+@keyframes watch-hit-counter-pulse {
+  from {
+    opacity: 0.75;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .device-watch {
@@ -6210,11 +6103,6 @@ button {
     font-size: 6px;
   }
 
-  .watch-drum-controls {
-    width: min(100%, 360px);
-    margin-inline: auto;
-  }
-
   .device-watch-stage::before {
     width: min(104vw, 410px);
   }
@@ -6311,10 +6199,6 @@ button {
     line-height: 1.82;
   }
 
-  .watch-drum-controls button {
-    width: 36px;
-    height: 36px;
-  }
 }
 
 @media (max-width: 359px) {
@@ -6547,13 +6431,8 @@ html[data-theme="dark"] .device-journey-node-label {
   color: rgba(204, 185, 232, 0.7);
 }
 
-html[data-theme="dark"] .watch-drum-controls,
-html[data-theme="dark"] .watch-drum-status {
+html[data-theme="dark"] .watch-hit-counter {
   color: rgba(210, 189, 239, 0.84);
-}
-
-html[data-theme="dark"] .watch-drum-controls button {
-  text-shadow: none;
 }
 
 html[data-theme="dark"] .page-section-navigation button {
@@ -6823,8 +6702,8 @@ html[data-theme="dark"] .preloader-wordmark {
     background: radial-gradient(circle at 50% 44%, rgba(211, 174, 241, 0.24), transparent 48%);
   }
 
-  .watch-drum-controls button {
-    transition: none;
+  .watch-hit-counter-value {
+    animation: none;
   }
 }
 
