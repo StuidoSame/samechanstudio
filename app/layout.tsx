@@ -7,6 +7,7 @@ import "./globals.css";
 const themeInitializationScript = `
   (() => {
     const storageKey = ${JSON.stringify(THEME_STORAGE_KEY)};
+    const archiveReturnKey = "same-studio-archive-return-v1";
     let theme = "dark";
     try {
       const storedTheme = window.localStorage.getItem(storageKey);
@@ -18,6 +19,13 @@ const themeInitializationScript = `
     const root = document.documentElement;
     root.dataset.theme = theme;
     root.style.colorScheme = theme;
+
+    try {
+      if (window.sessionStorage.getItem(archiveReturnKey) === "1") {
+        root.dataset.archiveReturning = "true";
+        window.sessionStorage.removeItem(archiveReturnKey);
+      }
+    } catch {}
 
     const themeColor = document.querySelector('meta[name="theme-color"]');
     themeColor?.setAttribute(

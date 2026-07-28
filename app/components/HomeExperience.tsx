@@ -9,7 +9,16 @@ import {
   useRef,
   useState,
 } from "react";
-import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
+import type {
+  CSSProperties,
+  MouseEvent as ReactMouseEvent,
+  PointerEvent as ReactPointerEvent,
+} from "react";
+import {
+  ArchivePortalTransition,
+  type ArchiveDocumentTitle,
+  type ArchivePortalState,
+} from "./archive/ArchivePortalTransition";
 import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
@@ -63,6 +72,10 @@ const PLAY_RESUME_DELAY_MS = 400;
 const FAST_FORWARD_TRANSITION_MS = 280;
 const FAST_FORWARD_GAP_MS = 70;
 const REDUCED_MOTION_FAST_FORWARD_TRANSITION_MS = 360;
+const ARCHIVE_PORTAL_DURATION_MS = 850;
+const ARCHIVE_PORTAL_REDUCED_DURATION_MS = 180;
+const ARCHIVE_ENTRY_STORAGE_KEY = "same-studio-archive-entry-v1";
+const ARCHIVE_RETURN_STORAGE_KEY = "same-studio-archive-return-v1";
 const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
   { text: "Small apps, made\nwith a lot of care.", speed: 45 },
@@ -574,6 +587,8 @@ export function HomeExperience() {
   const [typedNameLength, setTypedNameLength] = useState(0);
   const [detailApp, setDetailApp] = useState<AppItem | null>(null);
   const [detailOverlayOpen, setDetailOverlayOpen] = useState(false);
+  const [archivePortal, setArchivePortal] =
+    useState<ArchivePortalState | null>(null);
 
   const heroRef = useRef<HTMLElement>(null);
   const mainRef = useRef<HTMLElement>(null);
@@ -680,8 +695,107 @@ export function HomeExperience() {
   );
   const detailTriggerRef = useRef<HTMLButtonElement | null>(null);
   const detailWasPlayingRef = useRef(false);
+  const archivePortalTimerRef = useRef<number | null>(null);
+  const skipInitialLoaderRef = useRef(false);
 
   const activeApp = apps[activeIndex];
+
+  useEffect(() => {
+    const finishArchiveReturn = () => {
+      let returningFromArchive =
+        document.documentElement.dataset.archiveReturning === "true";
+
+      try {
+        if (
+          window.sessionStorage.getItem(ARCHIVE_RETURN_STORAGE_KEY) === "1"
+        ) {
+          returningFromArchive = true;
+          window.sessionStorage.removeItem(ARCHIVE_RETURN_STORAGE_KEY);
+        }
+      } catch {
+        // Session storage can be unavailable in restricted browser contexts.
+      }
+
+      if (returningFromArchive && loaderVisible) {
+        skipInitialLoaderRef.current = true;
+        setLoadProgress(100);
+        setLoaderCompletionMediaVisible(false);
+        setLoaderPhase("leaving");
+        setLoaderVisible(false);
+      }
+
+      delete document.documentElement.dataset.archiveReturning;
+      document.documentElement.style.removeProperty("--archive-portal-x");
+      document.documentElement.style.removeProperty("--archive-portal-y");
+      document.body.classList.remove("is-archive-transitioning");
+      setArchivePortal(null);
+    };
+
+    finishArchiveReturn();
+    window.addEventListener("pageshow", finishArchiveReturn);
+    return () => window.removeEventListener("pageshow", finishArchiveReturn);
+  }, [loaderVisible]);
+
+  useEffect(
+    () => () => {
+      if (archivePortalTimerRef.current !== null) {
+        window.clearTimeout(archivePortalTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  const beginArchiveTransition = useCallback(
+    (
+      event: ReactMouseEvent<HTMLAnchorElement>,
+      documentTitle: ArchiveDocumentTitle,
+      href: string,
+    ) => {
+      event.preventDefault();
+      if (archivePortal) return;
+
+      const bounds = event.currentTarget.getBoundingClientRect();
+      const keyboardActivation = event.clientX === 0 && event.clientY === 0;
+      const x = keyboardActivation
+        ? bounds.left + bounds.width / 2
+        : event.clientX;
+      const y = keyboardActivation
+        ? bounds.top + bounds.height / 2
+        : event.clientY;
+
+      setLanguageOpen(false);
+      setArchivePortal({ documentTitle, href, x, y });
+      document.documentElement.style.setProperty(
+        "--archive-portal-x",
+        `${x}px`,
+      );
+      document.documentElement.style.setProperty(
+        "--archive-portal-y",
+        `${y}px`,
+      );
+      document.body.classList.add("is-archive-transitioning");
+
+      try {
+        window.sessionStorage.setItem(
+          ARCHIVE_ENTRY_STORAGE_KEY,
+          JSON.stringify({
+            x: x / Math.max(window.innerWidth, 1),
+            y: y / Math.max(window.innerHeight, 1),
+          }),
+        );
+      } catch {
+        // The Archive can use its centered fallback when storage is unavailable.
+      }
+
+      archivePortalTimerRef.current = window.setTimeout(
+        () => window.location.assign(href),
+        reducedMotion
+          ? ARCHIVE_PORTAL_REDUCED_DURATION_MS
+          : ARCHIVE_PORTAL_DURATION_MS,
+      );
+    },
+    [archivePortal, reducedMotion],
+  );
 
   const clearAutoplay = useCallback(() => {
     if (autoplayTimerRef.current === null) return;
@@ -1249,6 +1363,8 @@ export function HomeExperience() {
   }, [headerUtilityHidden]);
 
   useEffect(() => {
+    if (skipInitialLoaderRef.current) return;
+
     let loaded = 0;
     let done = false;
     let animationFrame = 0;
@@ -2401,9 +2517,27 @@ export function HomeExperience() {
               <a href="#about" onClick={() => setMenuOpen(false)}>ABOUT</a>
               <a href="#apps" onClick={() => setMenuOpen(false)}>APPS</a>
               <a href="#contact" onClick={() => setMenuOpen(false)}>CONTACT</a>
-              <a href="/support/" onClick={() => setMenuOpen(false)}>SUPPORT</a>
-              <a href="/terms/" onClick={() => setMenuOpen(false)}>TERMS</a>
-              <a href="/privacy/" onClick={() => setMenuOpen(false)}>PRIVACY</a>
+              <a
+                href="/support/"
+                className={archivePortal?.documentTitle === "SUPPORT" ? "is-archive-selected" : undefined}
+                onClick={(event) => beginArchiveTransition(event, "SUPPORT", "/support/")}
+              >
+                SUPPORT
+              </a>
+              <a
+                href="/terms/"
+                className={archivePortal?.documentTitle === "TERMS" ? "is-archive-selected" : undefined}
+                onClick={(event) => beginArchiveTransition(event, "TERMS", "/terms/")}
+              >
+                TERMS
+              </a>
+              <a
+                href="/privacy/"
+                className={archivePortal?.documentTitle === "PRIVACY" ? "is-archive-selected" : undefined}
+                onClick={(event) => beginArchiveTransition(event, "PRIVACY", "/privacy/")}
+              >
+                PRIVACY
+              </a>
             </nav>
             <button
               type="button"
@@ -2865,6 +2999,10 @@ export function HomeExperience() {
           </div>
         </div>
       </footer>
+      <ArchivePortalTransition
+        transition={archivePortal}
+        reducedMotion={reducedMotion}
+      />
       {detailApp && (
         <AppDetailOverlay
           app={detailApp}
