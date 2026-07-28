@@ -912,6 +912,318 @@ body.archive-page.is-returning {
   padding: clamp(8px, 1vw, 14px) 0 2px;
 }
 
+/* SUPPORT — shared main-page cosmos, distributed along the long archive */
+.support-document {
+  position: relative;
+  isolation: isolate;
+}
+
+.support-document > :not(.support-cosmos-backdrop, .cosmic-interaction-layer) {
+  position: relative;
+  z-index: 2;
+}
+
+.support-document > .cosmic-interaction-layer {
+  z-index: 1;
+}
+
+.support-cosmos-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: -90px clamp(-76px, -5vw, -28px) -40px;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.support-cosmos-layer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+.support-cosmos-layer .section-cosmos {
+  opacity: 0.34;
+}
+
+.support-cosmos-layer--hero {
+  top: 0;
+  height: 620px;
+}
+
+.support-cosmos-layer--hero .section-cosmos-constellation--one {
+  top: 8%;
+  left: 0;
+  transform: rotate(-9deg);
+}
+
+.support-cosmos-layer--hero .section-cosmos-constellation--two {
+  top: 21%;
+  right: 1%;
+  transform: rotate(12deg) scale(0.86);
+}
+
+.support-cosmos-layer--hero .section-cosmos-orbit--one {
+  right: 5%;
+  bottom: 16%;
+  transform: rotate(24deg);
+}
+
+.support-cosmos-layer--middle {
+  top: 29%;
+  height: 38%;
+}
+
+.support-cosmos-layer--middle .section-cosmos-constellation--one {
+  top: 12%;
+  right: -1%;
+  transform: rotate(-12deg) scale(0.92);
+}
+
+.support-cosmos-layer--middle .section-cosmos-constellation--two {
+  bottom: 10%;
+  left: 0;
+  transform: rotate(11deg) scale(0.9);
+}
+
+.support-cosmos-layer--middle .section-cosmos-orbit--one {
+  right: 1%;
+  bottom: 23%;
+  transform: rotate(-30deg);
+}
+
+.support-cosmos-layer--middle .section-cosmos-orbit--two {
+  top: 23%;
+  right: auto;
+  left: 2%;
+  transform: rotate(18deg);
+}
+
+.support-cosmos-layer--lower {
+  bottom: 0;
+  height: 34%;
+}
+
+.support-cosmos-layer--lower .section-cosmos-constellation--one {
+  top: auto;
+  right: 1%;
+  bottom: 5%;
+  transform: rotate(9deg) scale(0.9);
+}
+
+.support-cosmos-layer--lower .section-cosmos-orbit--one {
+  right: auto;
+  bottom: 14%;
+  left: 2%;
+  transform: rotate(-20deg);
+}
+
+.support-cosmos-planet {
+  position: absolute;
+  aspect-ratio: 1;
+  border: 1px solid rgba(224, 203, 252, 0.12);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 31% 27%, rgba(255, 255, 255, 0.14), transparent 13%),
+    radial-gradient(circle at 42% 38%, rgba(171, 123, 231, 0.13), rgba(79, 52, 112, 0.05) 48%, transparent 73%);
+  box-shadow:
+    inset -18px -22px 44px rgba(47, 29, 70, 0.12),
+    0 0 58px rgba(155, 105, 220, 0.08);
+  opacity: 0.62;
+  animation: support-cosmos-float 22s ease-in-out infinite;
+}
+
+.support-cosmos-planet--hero {
+  top: 1%;
+  right: -8%;
+  width: clamp(170px, 22vw, 286px);
+  filter: blur(0.4px);
+}
+
+.support-cosmos-planet--middle {
+  top: 47%;
+  left: -22px;
+  width: clamp(38px, 5vw, 64px);
+  opacity: 0.44;
+  animation-delay: -8s;
+}
+
+.support-cosmos-planet--lower {
+  right: 5%;
+  bottom: 7%;
+  width: clamp(48px, 6vw, 78px);
+  opacity: 0.48;
+  animation-delay: -14s;
+}
+
+.support-cosmos-planet::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 138%;
+  height: 42%;
+  border: 1px solid rgba(217, 192, 249, 0.12);
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+  content: "";
+  transform: translate(-50%, -50%) rotate(-14deg);
+}
+
+.support-cosmos-dust {
+  position: absolute;
+  width: min(34vw, 420px);
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(161, 111, 224, 0.075), transparent 70%);
+  filter: blur(16px);
+  opacity: 0.62;
+}
+
+.support-cosmos-dust--one {
+  top: 38%;
+  right: -8%;
+}
+
+.support-cosmos-dust--two {
+  bottom: 4%;
+  left: -10%;
+}
+
+@keyframes support-cosmos-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(3px, -5px, 0);
+  }
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-layer .section-cosmos-constellation {
+  stroke: var(--theme-accent-soft);
+  filter: drop-shadow(0 0 6px var(--theme-glow));
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-layer .section-cosmos-constellation circle {
+  fill: var(--theme-highlight);
+  stroke: var(--theme-accent);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-layer .section-cosmos-orbit {
+  border-color: var(--theme-border-strong);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-layer :is(.section-cosmos-star, .section-cosmos-dot) {
+  background: var(--theme-star-muted);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-planet {
+  border-color: var(--theme-border);
+  background:
+    radial-gradient(circle at 31% 27%, var(--theme-highlight), transparent 13%),
+    radial-gradient(circle at 42% 38%, var(--theme-glow), rgba(var(--theme-accent-rgb), 0.035) 48%, transparent 73%);
+  box-shadow: inset -18px -22px 44px var(--theme-glow), 0 0 58px var(--theme-glow);
+  opacity: 0.42;
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-planet::after {
+  border-color: var(--theme-border);
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .support-cosmos-dust {
+  background: radial-gradient(ellipse, var(--theme-glow), transparent 70%);
+  opacity: 0.44;
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .cosmic-meteor-streak {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--theme-accent-rgb), 0.06) 24%,
+    rgba(var(--theme-accent-rgb), 0.24) 68%,
+    var(--theme-highlight) 100%
+  );
+  box-shadow: 0 0 8px var(--theme-glow);
+}
+
+:root[data-theme="light"] body.archive-page[data-archive-document="support"] .cosmic-meteor-streak::after {
+  background: var(--theme-surface-strong);
+  box-shadow: 0 0 7px var(--theme-highlight), 0 0 12px var(--theme-glow);
+}
+
+@media (max-width: 900px) {
+  .support-cosmos-backdrop {
+    inset-inline: -18px;
+  }
+
+  .support-cosmos-layer .section-cosmos {
+    opacity: 0.29;
+  }
+
+  .support-cosmos-layer--middle .section-cosmos-constellation--two,
+  .support-cosmos-layer--middle .section-cosmos-orbit--two {
+    display: none;
+  }
+
+  .support-cosmos-planet--hero {
+    right: -74px;
+    width: clamp(150px, 28vw, 220px);
+  }
+}
+
+@media (max-width: 600px) {
+  .support-cosmos-backdrop {
+    inset: -42px -12px -20px;
+  }
+
+  .support-cosmos-layer .section-cosmos {
+    opacity: 0.24;
+  }
+
+  .support-cosmos-layer--middle,
+  .support-cosmos-planet--middle,
+  .support-cosmos-dust--one {
+    display: none;
+  }
+
+  .support-cosmos-layer--hero {
+    height: 430px;
+  }
+
+  .support-cosmos-layer--lower {
+    height: 25%;
+  }
+
+  .support-cosmos-planet--hero {
+    top: 2%;
+    right: -72px;
+    width: 156px;
+    opacity: 0.38;
+  }
+
+  .support-cosmos-planet--lower {
+    right: 2%;
+    bottom: 4%;
+    width: 46px;
+  }
+
+  .support-cosmos-dust--two {
+    width: 72vw;
+    opacity: 0.42;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .support-cosmos-planet {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 .support-hero::before {
   position: absolute;
   z-index: -1;

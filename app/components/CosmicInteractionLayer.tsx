@@ -14,10 +14,12 @@ const randomBetween = (minimum: number, maximum: number) =>
   minimum + Math.random() * (maximum - minimum);
 
 type CosmicInteractionLayerProps = {
+  enablePointerTrail?: boolean;
   reducedMotion: boolean;
 };
 
 export function CosmicInteractionLayer({
+  enablePointerTrail = true,
   reducedMotion,
 }: CosmicInteractionLayerProps) {
   const layerRef = useRef<HTMLDivElement>(null);
@@ -135,7 +137,7 @@ export function CosmicInteractionLayer({
   useEffect(() => {
     const layer = layerRef.current;
     const main = layer?.parentElement;
-    if (!layer || !main || reducedMotion) return;
+    if (!layer || !main || reducedMotion || !enablePointerTrail) return;
 
     const finePointerQuery = window.matchMedia(
       "(hover: hover) and (pointer: fine) and (min-width: 769px)",
@@ -272,7 +274,7 @@ export function CosmicInteractionLayer({
       document.removeEventListener("visibilitychange", onVisibilityChange);
       finePointerQuery.removeEventListener("change", updateEnabled);
     };
-  }, [reducedMotion]);
+  }, [enablePointerTrail, reducedMotion]);
 
   return (
     <div
