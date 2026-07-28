@@ -74,6 +74,9 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   const html = await response.text();
 
   assert.match(html, />CONTACT</);
+  assert.match(html, />SUPPORT CENTER</);
+  assert.match(html, /SAME STUDIO 앱 사용 중 문제가 있거나/);
+  assert.match(html, /도움이 필요하다면 아래에서 문의해주세요\./);
   assert.match(html, />EMAIL SUPPORT</);
   assert.match(html, /mailto:contact@samestudio\.kr\?subject=/);
   assert.match(html, /aria-label="이메일로 고객지원 문의하기"/);
