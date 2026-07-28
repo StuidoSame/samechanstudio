@@ -106,3 +106,28 @@ export const SCREENSHOT_MANIFEST = {
     ipad: localizedScreenshots("weasseum", "ipad", 5),
   },
 } satisfies ScreenshotManifest;
+
+export function getAppScreenshots({
+  appId,
+  device,
+  locale,
+}: {
+  appId: string;
+  device: DetailDevice;
+  locale: Locale;
+}): string[] {
+  const appScreenshots: AppScreenshotManifest | undefined =
+    SCREENSHOT_MANIFEST[appId as keyof typeof SCREENSHOT_MANIFEST];
+
+  if (!appScreenshots) return [];
+
+  const screenshotDevice = SCREENSHOT_DEVICE_MAP[device];
+
+  if (screenshotDevice === "watch") {
+    return appScreenshots.watch ?? [];
+  }
+
+  const screenshotLocale = SCREENSHOT_LOCALE_MAP[locale];
+
+  return appScreenshots[screenshotDevice]?.[screenshotLocale] ?? [];
+}
