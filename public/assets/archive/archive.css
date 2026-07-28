@@ -295,6 +295,7 @@ body.archive-page.is-returning {
   border: 1px solid rgba(225, 204, 255, 0.055);
   border-radius: calc(clamp(28px, 3vw, 44px) - 12px);
   content: "";
+  pointer-events: none;
 }
 
 .archive-placeholder {
@@ -700,6 +701,19 @@ body.archive-page.is-returning {
   transition: transform 0.2s ease;
 }
 
+.support-email-address {
+  width: max-content;
+  max-width: 100%;
+  margin: 12px auto 0;
+  display: block;
+  color: rgba(222, 205, 245, 0.48);
+  font-size: 10px;
+  letter-spacing: 0.075em;
+  line-height: 1.5;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
 .support-response-card {
   padding: 22px 24px;
   border: 1px solid rgba(203, 173, 241, 0.12);
@@ -856,6 +870,10 @@ body.archive-page.is-returning {
 
   .support-email-cta:hover > span:last-child {
     transform: translateX(4px);
+  }
+
+  .support-email-address:hover {
+    color: rgba(244, 234, 255, 0.78);
   }
 
   .support-faq-item:hover {

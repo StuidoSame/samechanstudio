@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
 } from "react";
@@ -68,6 +69,11 @@ export function SupportContent() {
     );
     return `mailto:contact@samestudio.kr?subject=${subject}&body=${body}`;
   }, [selectedApp]);
+
+  const openEmailSupport = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    window.location.href = emailHref;
+  };
 
   const updateGalleryState = useCallback(() => {
     if (scrollFrameRef.current !== null) return;
@@ -283,9 +289,22 @@ export function SupportContent() {
             </span>
           </div>
         </div>
-        <a className="support-email-cta" href={emailHref}>
+        <a
+          className="support-email-cta"
+          href={emailHref}
+          aria-label="이메일로 고객지원 문의하기"
+          onClick={openEmailSupport}
+        >
           <span>EMAIL SUPPORT</span>
           <span aria-hidden="true">→</span>
+        </a>
+        <a
+          className="support-email-address"
+          href={emailHref}
+          aria-label="contact@samestudio.kr로 고객지원 문의하기"
+          onClick={openEmailSupport}
+        >
+          contact@samestudio.kr
         </a>
       </section>
 

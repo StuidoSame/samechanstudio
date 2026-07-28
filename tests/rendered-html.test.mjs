@@ -76,6 +76,9 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   assert.match(html, />CONTACT</);
   assert.match(html, />EMAIL SUPPORT</);
   assert.match(html, /mailto:contact@samestudio\.kr\?subject=/);
+  assert.match(html, /aria-label="이메일로 고객지원 문의하기"/);
+  assert.match(html, />contact@samestudio\.kr<\/a>/);
+  assert.match(html, /body=[^"']*%EC%95%B1%20%EC%9D%B4%EB%A6%84%3A%20Mapary/);
   assert.match(html, /RESPONSE TIME/);
   assert.match(html, /앱에서 오류가 발생했어요\./);
   assert.match(html, /개인정보 삭제를 요청하고 싶어요\./);
