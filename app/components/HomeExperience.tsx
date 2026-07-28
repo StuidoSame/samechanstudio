@@ -274,12 +274,18 @@ const getCircularSlot = (appIndex: number, progress: number) => {
   return appIndex + nearestCycle * apps.length - progress;
 };
 
-const interpolateSlotValue = (absoluteSlot: number, anchors: number[]) => {
+const interpolateSlotValue = (absoluteSlot: number, anchors: readonly number[]) => {
   const lower = Math.min(Math.floor(absoluteSlot), anchors.length - 1);
   const upper = Math.min(lower + 1, anchors.length - 1);
   const progress = smoothstep(0, 1, absoluteSlot - Math.floor(absoluteSlot));
   return anchors[lower] + (anchors[upper] - anchors[lower]) * progress;
 };
+
+const CAROUSEL_SCALE_ANCHORS = [1.18, 0.93, 0.77, 0.63, 0.52] as const;
+const CAROUSEL_OPACITY_ANCHORS = [1, 0.9, 0.7, 0.5, 0.34] as const;
+const CAROUSEL_BRIGHTNESS_ANCHORS = [1, 0.92, 0.82, 0.74, 0.68] as const;
+const CAROUSEL_SATURATION_ANCHORS = [1, 0.9, 0.72, 0.58, 0.48] as const;
+const CAROUSEL_BLUR_ANCHORS = [0, 0, 0.35, 0.7, 1] as const;
 
 const sampleTensionCurve = (
   progress: number,
@@ -348,19 +354,34 @@ const presentationProgress = (elapsed: number) => {
   return 1;
 };
 
+const getCarouselPositionAnchors = (width: number) => {
+  if (width < 768) {
+    const first = clamp(width * 0.58, 185, 235);
+    const second = first + clamp(width * 0.34, 105, 145);
+    const third = second + clamp(width * 0.25, 80, 110);
+    return [0, first, second, third, third + 75];
+  }
+
+  if (width < 1024) {
+    const first = clamp(width * 0.31, 250, 280);
+    const second = first + clamp(width * 0.18, 140, 175);
+    const third = second + clamp(width * 0.13, 105, 135);
+    return [0, first, second, third, third + 95];
+  }
+
+  const first = clamp(width * 0.2, 290, 330);
+  const second = first + clamp(width * 0.13, 180, 220);
+  const third = second + clamp(width * 0.095, 135, 165);
+  return [0, first, second, third, third + clamp(width * 0.075, 105, 135)];
+};
+
 const easeSlot = (slot: number, width: number) => {
   const sign = Math.sign(slot);
   const absolute = Math.abs(slot);
-  const mobile = width < 768;
-  const tablet = width >= 768 && width < 1024;
-  const anchors = mobile
-    ? [0, width * 0.59, width * 1.04, width * 1.35]
-    : tablet
-      ? [0, width * 0.31, width * 0.46, width * 0.58]
-      : [0, width * 0.22, width * 0.39, width * 0.5, width * 0.58];
+  const anchors = getCarouselPositionAnchors(width);
   const lower = Math.min(Math.floor(absolute), anchors.length - 1);
   const upper = Math.min(lower + 1, anchors.length - 1);
-  const mix = absolute - Math.floor(absolute);
+  const mix = smoothstep(0, 1, absolute - Math.floor(absolute));
   return sign * (anchors[lower] + (anchors[upper] - anchors[lower]) * mix);
 };
 
@@ -1555,14 +1576,28 @@ export function HomeExperience() {
         setActiveIndex(nearest);
       }
 
+      const carouselMoving =
+        transitionWasActive ||
+        pointer.dragging ||
+        Math.abs(velocityRef.current) > 0.001;
+
       cardRefs.current.forEach((card, index) => {
         if (!card) return;
         const slot = getCircularSlot(index, progress);
         const absolute = Math.abs(slot);
-        const visibleRadius = width < 768 ? 1.55 : width < 1024 ? 2.55 : 3.55;
+        const visibleRadius = width < 768 ? 1.65 : width < 1024 ? 2.75 : 4.45;
         const x = easeSlot(slot, width);
-        const scale = interpolateSlotValue(absolute, [1, 0.82, 0.67, 0.54, 0.46]);
-        const opacity = interpolateSlotValue(absolute, [1, 0.84, 0.58, 0.36, 0]);
+        const scale = interpolateSlotValue(absolute, CAROUSEL_SCALE_ANCHORS);
+        const opacity = interpolateSlotValue(absolute, CAROUSEL_OPACITY_ANCHORS);
+        const brightness = interpolateSlotValue(
+          absolute,
+          CAROUSEL_BRIGHTNESS_ANCHORS,
+        );
+        const saturation = interpolateSlotValue(
+          absolute,
+          CAROUSEL_SATURATION_ANCHORS,
+        );
+        const blur = interpolateSlotValue(absolute, CAROUSEL_BLUR_ANCHORS);
         const rotation =
           -Math.sign(slot) *
           (absolute <= 1
@@ -1580,11 +1615,23 @@ export function HomeExperience() {
 
         card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${parallaxY}px), ${depth + parallaxZ}px) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
         card.style.opacity = String(absolute < visibleRadius ? opacity : 0);
+        card.style.filter = `brightness(${brightness}) saturate(${saturation}) blur(${blur}px)`;
+        card.style.zIndex = String(100 - Math.round(absolute * 10));
+        card.style.willChange =
+          carouselMoving || absolute < 1.6
+            ? "transform, opacity, filter"
+            : "auto";
         card.style.pointerEvents = absolute < visibleRadius ? "auto" : "none";
         card.setAttribute(
           "aria-hidden",
           absolute >= visibleRadius ? "true" : "false",
         );
+        if (nearest === index) {
+          card.setAttribute("aria-current", "true");
+        } else {
+          card.removeAttribute("aria-current");
+        }
+        card.dataset.carouselDistance = absolute.toFixed(3);
         card.tabIndex = nearest === index ? 0 : -1;
       });
 
@@ -1801,8 +1848,7 @@ export function HomeExperience() {
     }
     event.preventDefault();
     if (!isTransitioningRef.current) beginTransition();
-    const width = window.innerWidth;
-    const step = width < 768 ? width * 0.59 : width < 1024 ? width * 0.23 : width * 0.16;
+    const step = getCarouselPositionAnchors(window.innerWidth)[1];
     const now = performance.now();
     const elapsed = Math.max(now - pointer.lastTime, 8);
     const next = pointer.startProgress - dx / step;

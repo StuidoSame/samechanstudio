@@ -1300,11 +1300,24 @@ button {
   transform-style: preserve-3d;
   background: transparent;
   box-shadow: 0 26px 52px rgba(76, 49, 127, 0.2);
+  transition: box-shadow 620ms cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
   will-change: transform, opacity;
   pointer-events: auto;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.app-card[aria-current="true"] {
+  box-shadow:
+    0 32px 66px rgba(76, 49, 127, 0.28),
+    0 0 34px rgba(var(--active-accent-rgb), 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-card {
+    transition-duration: 120ms;
+  }
 }
 
 .carousel-app-icon {
