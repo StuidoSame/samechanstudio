@@ -113,9 +113,13 @@ export function AppDetailOverlay({
   const screenshots = useMemo(
     () =>
       selectedDevice
-        ? getAppScreenshots({ appId: app.id, device: selectedDevice, locale })
+        ? getAppScreenshots({
+            appId: app.screenshotId ?? app.id,
+            device: selectedDevice,
+            locale,
+          })
         : [],
-    [app.id, locale, selectedDevice],
+    [app.id, app.screenshotId, locale, selectedDevice],
   );
   const [previewIndex, setPreviewIndex] = useState(0);
   const previewImage = screenshots[previewIndex] ?? null;

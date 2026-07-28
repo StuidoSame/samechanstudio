@@ -77,7 +77,7 @@ export const SCREENSHOT_MANIFEST = {
     phone: localizedScreenshots("odow", "phone", 5),
     ipad: localizedScreenshots("odow", "ipad", 5),
   },
-  locaunt: {
+  lacaunt: {
     screenshotId: "lacaunt",
     phone: localizedScreenshots("lacaunt", "phone", 6),
   },
