@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Locale } from "../../i18n/types";
 import {
   TypeReveal,
   TypeRevealGroup,
@@ -16,7 +17,27 @@ type DeviceSectionProps = {
   className?: string;
   cosmosVariant: "phone" | "tablet" | "watch";
   journeyId: "phone" | "tablet" | "watch";
+  locale: Locale;
 };
+
+const CJK_LOCALES = new Set<Locale>(["ja", "zh-CN", "zh-TW"]);
+const CJK_LINE_REVEAL_SPEED = 140;
+
+function getDeviceRevealDelay(
+  steps: readonly { text: string; speed: number }[],
+  index: number,
+  locale: Locale,
+) {
+  if (!CJK_LOCALES.has(locale)) {
+    return getTypeRevealDelay(steps, index, 160, 190);
+  }
+
+  return steps.slice(0, index).reduce(
+    (delay, step) =>
+      delay + step.text.split("\n").length * CJK_LINE_REVEAL_SPEED + 160,
+    190,
+  );
+}
 
 export function DeviceSection({
   index,
@@ -28,6 +49,7 @@ export function DeviceSection({
   className = "",
   cosmosVariant,
   journeyId,
+  locale,
 }: DeviceSectionProps) {
   const titleId = `device-showcase-title-${index}`;
   const revealSteps = [
@@ -52,14 +74,14 @@ export function DeviceSection({
           className="device-showcase-eyebrow"
           text={revealSteps[0].text}
           speed={revealSteps[0].speed}
-          delay={getTypeRevealDelay(revealSteps, 0, 160, 190)}
+          delay={getDeviceRevealDelay(revealSteps, 0, locale)}
         />
         <TypeReveal
           as="h2"
           id={titleId}
           text={revealSteps[1].text}
           speed={revealSteps[1].speed}
-          delay={getTypeRevealDelay(revealSteps, 1, 160, 190)}
+          delay={getDeviceRevealDelay(revealSteps, 1, locale)}
           preserveLineBreaks
         />
         <div className="device-showcase-body">
@@ -67,7 +89,7 @@ export function DeviceSection({
             as="p"
             text={revealSteps[2].text}
             speed={revealSteps[2].speed}
-            delay={getTypeRevealDelay(revealSteps, 2, 160, 190)}
+            delay={getDeviceRevealDelay(revealSteps, 2, locale)}
             preserveLineBreaks
           />
         </div>

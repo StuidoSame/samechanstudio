@@ -11,6 +11,8 @@ import {
   type ReactNode,
   type Ref,
 } from "react";
+import { useI18n } from "../../i18n/I18nProvider";
+import type { Locale } from "../../i18n/types";
 
 type RevealContextValue = {
   hasRevealed: boolean;
@@ -36,6 +38,8 @@ type TypeRevealProps = {
 };
 
 const TypeRevealContext = createContext<RevealContextValue | null>(null);
+const CJK_LOCALES = new Set<Locale>(["ja", "zh-CN", "zh-TW"]);
+const CJK_LINE_REVEAL_SPEED = 140;
 
 export function TypeRevealGroup({
   as = "div",
@@ -117,6 +121,20 @@ export function TypeRevealGroup({
 }
 
 export function TypeReveal({
+  ...props
+}: TypeRevealProps) {
+  const { locale } = useI18n();
+
+  return (
+    <TypeRevealContent
+      key={`${locale}:${props.text}`}
+      {...props}
+      locale={locale}
+    />
+  );
+}
+
+function TypeRevealContent({
   as = "span",
   className = "",
   delay = 0,
@@ -124,7 +142,8 @@ export function TypeReveal({
   preserveLineBreaks = false,
   speed,
   text,
-}: TypeRevealProps) {
+  locale,
+}: TypeRevealProps & { locale: Locale }) {
   const context = useContext(TypeRevealContext);
   const [visibleLength, setVisibleLength] = useState(0);
   const [complete, setComplete] = useState(false);
@@ -133,14 +152,24 @@ export function TypeReveal({
     throw new Error("TypeReveal must be rendered inside TypeRevealGroup.");
   }
 
-  const characters = useMemo(() => Array.from(text), [text]);
+  const revealMode = CJK_LOCALES.has(locale) ? "line" : "character";
+  const revealUnits = useMemo(
+    () =>
+      revealMode === "line"
+        ? text.split("\n").map((line, index) =>
+            index === 0 ? line : `\n${line}`,
+          )
+        : Array.from(text),
+    [revealMode, text],
+  );
+  const revealSpeed = revealMode === "line" ? CJK_LINE_REVEAL_SPEED : speed;
 
   useEffect(() => {
     if (!context.hasRevealed || complete) return;
 
     if (!context.isInView || context.reducedMotion) {
       const reducedRevealId = window.setTimeout(() => {
-        setVisibleLength(characters.length);
+        setVisibleLength(revealUnits.length);
         setComplete(true);
       }, 0);
       return () => window.clearTimeout(reducedRevealId);
@@ -148,7 +177,7 @@ export function TypeReveal({
 
     let intervalId: number | null = null;
     const delayId = window.setTimeout(() => {
-      if (characters.length === 0) {
+      if (revealUnits.length === 0) {
         setComplete(true);
         return;
       }
@@ -157,14 +186,14 @@ export function TypeReveal({
       setVisibleLength(nextLength);
       intervalId = window.setInterval(() => {
         nextLength += 1;
-        setVisibleLength(Math.min(nextLength, characters.length));
+        setVisibleLength(Math.min(nextLength, revealUnits.length));
 
-        if (nextLength >= characters.length) {
+        if (nextLength >= revealUnits.length) {
           if (intervalId !== null) window.clearInterval(intervalId);
           intervalId = null;
           setComplete(true);
         }
-      }, speed);
+      }, revealSpeed);
     }, delay);
 
     return () => {
@@ -172,13 +201,13 @@ export function TypeReveal({
       if (intervalId !== null) window.clearInterval(intervalId);
     };
   }, [
-    characters,
     complete,
     context.hasRevealed,
     context.isInView,
     context.reducedMotion,
     delay,
-    speed,
+    revealSpeed,
+    revealUnits,
   ]);
 
   const Tag = as;
@@ -196,12 +225,13 @@ export function TypeReveal({
       aria-label={text}
       data-preserve-line-breaks={preserveLineBreaks ? "true" : undefined}
       data-reveal-length={visibleLength}
+      data-reveal-mode={revealMode}
     >
       <span className="type-reveal-reserve" aria-hidden="true">
         {text}
       </span>
       <span className="type-reveal-visual" aria-hidden="true">
-        {characters.slice(0, visibleLength).join("")}
+        {revealUnits.slice(0, visibleLength).join("")}
       </span>
     </Tag>
   );

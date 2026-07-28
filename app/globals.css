@@ -6,10 +6,16 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
+  unicode-range:
+    U+0000-024F,
+    U+1100-11FF,
+    U+3130-318F,
+    U+AC00-D7A3;
 }
 
 :root {
   color-scheme: light;
+  --brand-font: "BMJUA";
   --lavender-0: #faf7ff;
   --lavender-1: #f3eeff;
   --lavender-2: #e9deff;
@@ -91,16 +97,43 @@
 html {
   scroll-behavior: smooth;
   background: var(--lavender-1);
-  font-family: "BMJUA", sans-serif;
+  font-family: var(--brand-font), sans-serif;
 }
 
 body {
   margin: 0;
   color: var(--ink);
   background: var(--lavender-1);
-  font-family: "BMJUA", sans-serif;
+  font-family: var(--brand-font), sans-serif;
   font-synthesis: none;
   overflow-x: hidden;
+}
+
+html[lang="ja"],
+html[lang="ja"] body {
+  font-family:
+    var(--brand-font), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
+}
+
+html[lang="zh-CN"],
+html[lang="zh-CN"] body {
+  font-family:
+    var(--brand-font), "PingFang SC", "Microsoft YaHei", "Noto Sans SC",
+    sans-serif;
+}
+
+html[lang="zh-TW"],
+html[lang="zh-TW"] body {
+  font-family:
+    var(--brand-font), "PingFang TC", "Microsoft JhengHei", "Noto Sans TC",
+    sans-serif;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) {
+  line-break: strict;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 body,
@@ -4154,6 +4187,30 @@ button {
 .device-showcase-body p {
   width: 100%;
   margin: 0;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  .device-showcase-eyebrow {
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  .device-showcase-copy h2 {
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
+  .device-showcase-body {
+  line-height: 1.82;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 @media (max-width: 1200px) and (min-width: 901px) {
