@@ -79,8 +79,7 @@ function readStoredMutedPreference() {
 }
 
 export function BackgroundAudioProvider({ children }: { children: ReactNode }) {
-  const [muted, setMutedState] = useState(readStoredMutedPreference);
-  const initialMutedRef = useRef(muted);
+  const [muted, setMutedState] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const activeRef = useRef(false);
   const playbackAttemptRef = useRef<Promise<void> | null>(null);
@@ -152,8 +151,12 @@ export function BackgroundAudioProvider({ children }: { children: ReactNode }) {
     const audio = acquireBackgroundAudio();
     audioRef.current = audio;
 
-    audio.muted = initialMutedRef.current;
-    if (!initialMutedRef.current) requestPlayback();
+    const storedMutedPreference = readStoredMutedPreference();
+    audio.muted = storedMutedPreference;
+    window.queueMicrotask(() => {
+      if (activeRef.current) setMutedState(storedMutedPreference);
+    });
+    if (!storedMutedPreference) requestPlayback();
 
     return () => {
       activeRef.current = false;

@@ -15,6 +15,8 @@ export const ja = {
     controlsButtonLabel: "言語とテーマのボタンを開く",
     switchToDarkMode: "ダークモードに切り替え",
     switchToLightMode: "ライトモードに切り替え",
+    turnBackgroundMusicOn: "BGMをオンにする",
+    turnBackgroundMusicOff: "BGMをオフにする",
   },
   carousel: {
     pauseAutoplay: "自動再生を一時停止",

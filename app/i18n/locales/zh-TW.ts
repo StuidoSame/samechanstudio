@@ -15,6 +15,8 @@ export const zhTW = {
     controlsButtonLabel: "開啟語言與主題按鈕",
     switchToDarkMode: "切換至深色模式",
     switchToLightMode: "切換至淺色模式",
+    turnBackgroundMusicOn: "開啟背景音樂",
+    turnBackgroundMusicOff: "關閉背景音樂",
   },
   carousel: {
     pauseAutoplay: "暫停自動播放",

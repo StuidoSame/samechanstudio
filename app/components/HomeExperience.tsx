@@ -32,6 +32,7 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import type { Locale } from "../i18n/types";
+import { useBackgroundAudio } from "../audio/BackgroundAudioProvider";
 import { useTheme } from "../theme/ThemeProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
@@ -562,6 +563,8 @@ function Loader({
 export function HomeExperience() {
   const { locale, messages, setLocale } = useI18n();
   const { theme, toggleTheme } = useTheme();
+  const { muted: backgroundAudioMuted, toggleMuted: toggleBackgroundAudio } =
+    useBackgroundAudio();
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -2427,6 +2430,59 @@ export function HomeExperience() {
                         strokeLinejoin="round"
                       >
                         <path d="M20.1 15.25A8.25 8.25 0 0 1 8.75 3.9 8.25 8.25 0 1 0 20.1 15.25Z" />
+                      </svg>
+                    )}
+                  </span>
+                </button>
+                <span className="header-utility-divider" aria-hidden="true" />
+                <button
+                  type="button"
+                  className="header-utility-segment audio-control"
+                  aria-label={
+                    backgroundAudioMuted
+                      ? messages.header.turnBackgroundMusicOn
+                      : messages.header.turnBackgroundMusicOff
+                  }
+                  aria-pressed={!backgroundAudioMuted}
+                  title={
+                    backgroundAudioMuted
+                      ? messages.header.turnBackgroundMusicOn
+                      : messages.header.turnBackgroundMusicOff
+                  }
+                  tabIndex={headerUtilityHidden ? -1 : 0}
+                  onClick={() => {
+                    setLanguageOpen(false);
+                    toggleBackgroundAudio();
+                  }}
+                >
+                  <span className="audio-control-icon" aria-hidden="true">
+                    {backgroundAudioMuted ? (
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M11 5 6.8 8.5H4.5v7h2.3L11 19V5Z" />
+                        <path d="m16 9 5 5M21 9l-5 5" />
+                      </svg>
+                    ) : (
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M11 5 6.8 8.5H4.5v7h2.3L11 19V5Z" />
+                        <path d="M15.5 8.1a5.5 5.5 0 0 1 0 7.8M18.4 5.2a9.5 9.5 0 0 1 0 13.6" />
                       </svg>
                     )}
                   </span>

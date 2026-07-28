@@ -45,6 +45,8 @@ export type TranslationMessages = {
     controlsButtonLabel: string;
     switchToDarkMode: string;
     switchToLightMode: string;
+    turnBackgroundMusicOn: string;
+    turnBackgroundMusicOff: string;
   };
   carousel: {
     pauseAutoplay: string;

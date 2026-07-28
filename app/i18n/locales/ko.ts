@@ -15,6 +15,8 @@ export const ko = {
     controlsButtonLabel: "언어 및 테마 버튼 열기",
     switchToDarkMode: "다크모드로 전환",
     switchToLightMode: "라이트모드로 전환",
+    turnBackgroundMusicOn: "배경음악 켜기",
+    turnBackgroundMusicOff: "배경음악 끄기",
   },
   carousel: {
     pauseAutoplay: "자동 재생 일시정지",

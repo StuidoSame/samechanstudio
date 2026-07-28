@@ -487,7 +487,9 @@ button {
 
 .language-control-icon,
 .dark-control-icon,
-.dark-control-icon svg {
+.dark-control-icon svg,
+.audio-control-icon,
+.audio-control-icon svg {
   display: block;
   flex-shrink: 0;
   pointer-events: none;
@@ -504,6 +506,11 @@ button {
 }
 
 .dark-control {
+  width: 44px;
+  min-width: 44px;
+}
+
+.audio-control {
   width: 44px;
   min-width: 44px;
   border-radius: 0 999px 999px 0;
@@ -8284,6 +8291,11 @@ footer {
     min-width: 44px;
   }
 
+  .audio-control {
+    width: 44px;
+    min-width: 44px;
+  }
+
   .language-panel {
     top: calc(50% + 33px);
     right: auto;
@@ -8564,11 +8576,17 @@ footer {
   }
 
   .dark-control {
-    width: 44px;
-    min-width: 44px;
+    width: 40px;
+    min-width: 40px;
   }
 
-  .dark-control-icon svg {
+  .audio-control {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .dark-control-icon svg,
+  .audio-control-icon svg {
     width: 16px;
     height: 16px;
   }

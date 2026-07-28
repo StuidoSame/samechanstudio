@@ -15,6 +15,8 @@ export const en = {
     controlsButtonLabel: "Open language and theme controls",
     switchToDarkMode: "Switch to dark mode",
     switchToLightMode: "Switch to light mode",
+    turnBackgroundMusicOn: "Turn background music on",
+    turnBackgroundMusicOff: "Turn background music off",
   },
   carousel: {
     pauseAutoplay: "Pause autoplay",
