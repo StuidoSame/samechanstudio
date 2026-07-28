@@ -39,10 +39,23 @@ export type AppScreenshotManifest = {
 
 export type ScreenshotManifest = Record<string, AppScreenshotManifest>;
 
+const screenshotPathCollator = new Intl.Collator("en", {
+  numeric: true,
+  sensitivity: "base",
+});
+
+function naturallySortedScreenshots(screenshots: string[]): string[] {
+  return [...screenshots].sort((left, right) =>
+    screenshotPathCollator.compare(left, right),
+  );
+}
+
 function numberedScreenshots(directory: string, count: number): string[] {
-  return Array.from(
-    { length: count },
-    (_, index) => `/assets/screenshot/${directory}/${index + 1}.png`,
+  return naturallySortedScreenshots(
+    Array.from(
+      { length: count },
+      (_, index) => `/assets/screenshot/${directory}/${index + 1}.png`,
+    ),
   );
 }
 
@@ -164,8 +177,12 @@ export function getAppScreenshots({
   const screenshotDevice = SCREENSHOT_DEVICE_MAP[device];
 
   if (screenshotDevice === "watch") {
-    return resolveWatchScreenshots(appScreenshots.watch);
+    return naturallySortedScreenshots(
+      resolveWatchScreenshots(appScreenshots.watch),
+    );
   }
 
-  return resolveLocalizedScreenshots(appScreenshots[screenshotDevice], locale);
+  return naturallySortedScreenshots(
+    resolveLocalizedScreenshots(appScreenshots[screenshotDevice], locale),
+  );
 }

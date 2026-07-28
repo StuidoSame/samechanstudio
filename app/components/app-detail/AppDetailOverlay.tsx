@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useI18n } from "../../i18n/I18nProvider";
 import type { AppTranslationId, TranslationDevice } from "../../i18n/types";
 import type { AppItem } from "../../lib/apps";
@@ -14,10 +20,29 @@ import {
 import { getAppScreenshots } from "../../lib/appScreenshots";
 
 const OVERLAY_EXIT_MS = 300;
+const GALLERY_SCROLL_AMOUNT = 0.78;
+const GALLERY_EDGE_TOLERANCE = 2;
+const DRAG_THRESHOLD = 5;
 
-type PreviewLoadState = {
-  source: string;
-  status: "loaded" | "failed";
+type GalleryState = {
+  activeIndex: number;
+  canScrollLeft: boolean;
+  canScrollRight: boolean;
+  hasOverflow: boolean;
+};
+
+type GalleryDrag = {
+  pointerId: number;
+  startX: number;
+  startScrollLeft: number;
+  moved: boolean;
+};
+
+const INITIAL_GALLERY_STATE: GalleryState = {
+  activeIndex: 0,
+  canScrollLeft: false,
+  canScrollRight: false,
+  hasOverflow: false,
 };
 
 type AppDetailOverlayProps = {
@@ -97,7 +122,10 @@ export function AppDetailOverlay({
   const { locale, messages, format } = useI18n();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const previousLocaleRef = useRef(locale);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const galleryFrameRef = useRef<number | null>(null);
+  const dragRef = useRef<GalleryDrag | null>(null);
+  const suppressClickRef = useRef(false);
   const availableDevices = useMemo(
     () => getAvailableDetailDevices(app.id),
     [app.id],
@@ -121,45 +149,118 @@ export function AppDetailOverlay({
         : [],
     [app.id, app.screenshotId, locale, selectedDevice],
   );
-  const [previewIndex, setPreviewIndex] = useState(0);
-  const previewImage = screenshots[previewIndex] ?? null;
-  const previewFit = "contain";
-  const [previewDirection, setPreviewDirection] = useState<"previous" | "next">(
-    "next",
+  const [galleryState, setGalleryState] = useState<GalleryState>(
+    INITIAL_GALLERY_STATE,
   );
-  const [previewLoadState, setPreviewLoadState] =
-    useState<PreviewLoadState | null>(null);
-  const previewLoaded =
-    previewImage !== null &&
-    previewLoadState?.source === previewImage &&
-    previewLoadState.status === "loaded";
-  const previewFailed =
-    previewImage !== null &&
-    previewLoadState?.source === previewImage &&
-    previewLoadState.status === "failed";
-  const previewLoading = previewImage !== null && !previewLoaded && !previewFailed;
-  const hasMultipleScreenshots = screenshots.length > 1;
-  const screenshotPosition = `${String(previewIndex + 1).padStart(2, "0")} / ${String(screenshots.length).padStart(2, "0")}`;
+  const [isDragging, setIsDragging] = useState(false);
+  const screenshotPosition = `${String(galleryState.activeIndex + 1).padStart(2, "0")} / ${String(screenshots.length).padStart(2, "0")}`;
+
+  const updateGalleryState = useCallback(() => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+
+    const maximumScroll = Math.max(0, gallery.scrollWidth - gallery.clientWidth);
+    const hasOverflow = maximumScroll > GALLERY_EDGE_TOLERANCE;
+    const items = Array.from(
+      gallery.querySelectorAll<HTMLElement>("[data-screenshot-index]"),
+    );
+    let activeIndex = 0;
+
+    if (items.length > 0) {
+      const galleryStart = gallery.scrollLeft;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+
+      items.forEach((item, index) => {
+        const distance = Math.abs(item.offsetLeft - galleryStart);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          activeIndex = index;
+        }
+      });
+    }
+
+    const nextState = {
+      activeIndex,
+      hasOverflow,
+      canScrollLeft:
+        hasOverflow && gallery.scrollLeft > GALLERY_EDGE_TOLERANCE,
+      canScrollRight:
+        hasOverflow &&
+        gallery.scrollLeft < maximumScroll - GALLERY_EDGE_TOLERANCE,
+    };
+
+    setGalleryState((current) =>
+      current.activeIndex === nextState.activeIndex &&
+      current.hasOverflow === nextState.hasOverflow &&
+      current.canScrollLeft === nextState.canScrollLeft &&
+      current.canScrollRight === nextState.canScrollRight
+        ? current
+        : nextState,
+    );
+  }, []);
+
+  const scheduleGalleryUpdate = useCallback(() => {
+    if (galleryFrameRef.current !== null) return;
+
+    galleryFrameRef.current = window.requestAnimationFrame(() => {
+      galleryFrameRef.current = null;
+      updateGalleryState();
+    });
+  }, [updateGalleryState]);
+
+  const scrollGallery = useCallback(
+    (direction: -1 | 1) => {
+      const gallery = galleryRef.current;
+      if (!gallery) return;
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      gallery.scrollBy({
+        left: gallery.clientWidth * GALLERY_SCROLL_AMOUNT * direction,
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+    },
+    [],
+  );
 
   useEffect(() => {
     const deviceResetFrame = window.requestAnimationFrame(() => {
       setSelectedDevice(availableDevices[0] ?? null);
-      setPreviewIndex(0);
     });
     return () => window.cancelAnimationFrame(deviceResetFrame);
   }, [app.id, availableDevices]);
 
   useEffect(() => {
-    const localeChanged = previousLocaleRef.current !== locale;
-    previousLocaleRef.current = locale;
-
-    if (!localeChanged || selectedDevice === "appleWatch") return;
-
-    const previewResetFrame = window.requestAnimationFrame(() => {
-      setPreviewIndex(0);
+    const galleryResetFrame = window.requestAnimationFrame(() => {
+      galleryRef.current?.scrollTo({ left: 0, behavior: "auto" });
+      updateGalleryState();
     });
-    return () => window.cancelAnimationFrame(previewResetFrame);
-  }, [locale, selectedDevice]);
+    return () => window.cancelAnimationFrame(galleryResetFrame);
+  }, [app.id, locale, screenshots, selectedDevice, updateGalleryState]);
+
+  useEffect(() => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+
+    const resizeObserver = new ResizeObserver(scheduleGalleryUpdate);
+    resizeObserver.observe(gallery);
+    const track = gallery.firstElementChild;
+    if (track) resizeObserver.observe(track);
+    gallery.addEventListener("scroll", scheduleGalleryUpdate, {
+      passive: true,
+    });
+    scheduleGalleryUpdate();
+
+    return () => {
+      gallery.removeEventListener("scroll", scheduleGalleryUpdate);
+      resizeObserver.disconnect();
+      if (galleryFrameRef.current !== null) {
+        window.cancelAnimationFrame(galleryFrameRef.current);
+        galleryFrameRef.current = null;
+      }
+    };
+  }, [scheduleGalleryUpdate, screenshots]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -195,22 +296,6 @@ export function AppDetailOverlay({
         onRequestClose();
         return;
       }
-      if (event.key === "ArrowLeft" && hasMultipleScreenshots) {
-        event.preventDefault();
-        setPreviewDirection("previous");
-        setPreviewIndex((current) =>
-          current === 0 ? screenshots.length - 1 : current - 1,
-        );
-        return;
-      }
-      if (event.key === "ArrowRight" && hasMultipleScreenshots) {
-        event.preventDefault();
-        setPreviewDirection("next");
-        setPreviewIndex((current) =>
-          current === screenshots.length - 1 ? 0 : current + 1,
-        );
-        return;
-      }
       if (event.key !== "Tab") return;
 
       const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
@@ -234,7 +319,7 @@ export function AppDetailOverlay({
       window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [hasMultipleScreenshots, onRequestClose, open, screenshots.length]);
+  }, [onRequestClose, open]);
 
   return (
     <div
@@ -324,7 +409,6 @@ export function AppDetailOverlay({
           <div
             className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
             role="region"
-            aria-busy={previewLoading}
             aria-label={format(messages.appDetail.previewRegionLabel, {
               app: app.name,
               device: selectedDevice
@@ -333,42 +417,134 @@ export function AppDetailOverlay({
             })}
             data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
           >
-            <div
-              className={`app-detail-preview-media is-${previewDirection}`}
-              key={`${app.id}:${selectedDevice ?? "none"}:${previewImage ?? "placeholder"}`}
-              data-preview-fit={previewFit}
-            >
-              {previewImage && !previewFailed ? (
-                <Image
-                  className={`app-detail-preview-image${previewLoaded ? " is-loaded" : ""}`}
-                  src={previewImage}
-                  alt={format(messages.appDetail.previewAlt, {
-                    app: app.name,
-                    device: selectedDevice
-                      ? DEVICE_ARIA_LABELS[selectedDevice]
-                      : "",
-                    current: previewIndex + 1,
-                    total: screenshots.length,
-                  })}
-                  fill
-                  sizes="(max-width: 767px) calc(100vw - 72px), min(80vw, 1060px)"
-                  style={{ objectFit: previewFit }}
-                  loading={previewIndex === 0 ? "eager" : "lazy"}
-                  onLoad={() =>
-                    setPreviewLoadState({
-                      source: previewImage,
-                      status: "loaded",
-                    })
+            {screenshots.length > 0 ? (
+              <div
+                className={`app-detail-gallery${isDragging ? " is-dragging" : ""}`}
+                ref={galleryRef}
+                tabIndex={0}
+                aria-label={format(messages.appDetail.previewRegionLabel, {
+                  app: app.name,
+                  device: selectedDevice
+                    ? DEVICE_ARIA_LABELS[selectedDevice]
+                    : "",
+                })}
+                onKeyDown={(event) => {
+                  if (
+                    event.key !== "ArrowLeft" &&
+                    event.key !== "ArrowRight"
+                  ) {
+                    return;
                   }
-                  onError={() =>
-                    setPreviewLoadState({
-                      source: previewImage,
-                      status: "failed",
-                    })
+                  event.preventDefault();
+                  scrollGallery(event.key === "ArrowLeft" ? -1 : 1);
+                }}
+                onWheel={(event) => {
+                  const gallery = event.currentTarget;
+                  if (
+                    !galleryState.hasOverflow ||
+                    Math.abs(event.deltaX) >= Math.abs(event.deltaY)
+                  ) {
+                    return;
                   }
-                  unoptimized
-                />
-              ) : selectedDevice ? (
+
+                  const maximumScroll =
+                    gallery.scrollWidth - gallery.clientWidth;
+                  const canMove =
+                    (event.deltaY < 0 && gallery.scrollLeft > 0) ||
+                    (event.deltaY > 0 &&
+                      gallery.scrollLeft < maximumScroll);
+                  if (!canMove) return;
+
+                  event.preventDefault();
+                  gallery.scrollLeft += event.deltaY;
+                }}
+                onPointerDown={(event) => {
+                  if (event.pointerType !== "mouse" || event.button !== 0) {
+                    return;
+                  }
+
+                  dragRef.current = {
+                    pointerId: event.pointerId,
+                    startX: event.clientX,
+                    startScrollLeft: event.currentTarget.scrollLeft,
+                    moved: false,
+                  };
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                }}
+                onPointerMove={(event) => {
+                  const drag = dragRef.current;
+                  if (!drag || drag.pointerId !== event.pointerId) return;
+
+                  const distance = event.clientX - drag.startX;
+                  if (!drag.moved && Math.abs(distance) < DRAG_THRESHOLD) {
+                    return;
+                  }
+
+                  if (!drag.moved) {
+                    drag.moved = true;
+                    setIsDragging(true);
+                  }
+                  event.preventDefault();
+                  event.currentTarget.scrollLeft =
+                    drag.startScrollLeft - distance;
+                }}
+                onPointerUp={(event) => {
+                  const drag = dragRef.current;
+                  if (!drag || drag.pointerId !== event.pointerId) return;
+
+                  suppressClickRef.current = drag.moved;
+                  dragRef.current = null;
+                  setIsDragging(false);
+                  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                  }
+                }}
+                onPointerCancel={(event) => {
+                  dragRef.current = null;
+                  suppressClickRef.current = false;
+                  setIsDragging(false);
+                  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                  }
+                }}
+                onClickCapture={(event) => {
+                  if (!suppressClickRef.current) return;
+                  event.preventDefault();
+                  event.stopPropagation();
+                  suppressClickRef.current = false;
+                }}
+              >
+                <div className="app-detail-gallery-track">
+                  {screenshots.map((screenshot, index) => (
+                    <div
+                      className="app-detail-gallery-item"
+                      data-screenshot-index={index}
+                      key={screenshot}
+                    >
+                      <Image
+                        className="app-detail-preview-image"
+                        src={screenshot}
+                        alt={format(messages.appDetail.previewAlt, {
+                          app: app.name,
+                          device: selectedDevice
+                            ? DEVICE_ARIA_LABELS[selectedDevice]
+                            : "",
+                          current: index + 1,
+                          total: screenshots.length,
+                        })}
+                        fill
+                        sizes="(max-width: 767px) 55vw, (max-width: 1023px) 32vw, 22vw"
+                        style={{ objectFit: "contain" }}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        draggable={false}
+                        onLoad={scheduleGalleryUpdate}
+                        unoptimized
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : selectedDevice ? (
                 <span className="app-detail-preview-marker">
                   <DeviceSilhouette device={selectedDevice} />
                   <span
@@ -379,15 +555,11 @@ export function AppDetailOverlay({
                     {messages.appDetail.previewUnavailableLabel}
                   </span>
                 </span>
-              ) : null}
-              {previewLoading && (
-                <span className="app-detail-preview-loading" role="status">
-                  {messages.appDetail.previewLoadingLabel}
-                </span>
-              )}
-            </div>
+            ) : null}
             {screenshots.length > 0 && (
-              <div className="app-detail-gallery-controls">
+              <div
+                className={`app-detail-gallery-controls${galleryState.hasOverflow ? " has-overflow" : ""}`}
+              >
                 <button
                   className="app-detail-gallery-button is-previous"
                   type="button"
@@ -395,13 +567,8 @@ export function AppDetailOverlay({
                     messages.appDetail.previousScreenshotLabel,
                     { app: app.name },
                   )}
-                  disabled={!hasMultipleScreenshots}
-                  onClick={() => {
-                    setPreviewDirection("previous");
-                    setPreviewIndex((current) =>
-                      current === 0 ? screenshots.length - 1 : current - 1,
-                    );
-                  }}
+                  disabled={!galleryState.canScrollLeft}
+                  onClick={() => scrollGallery(-1)}
                 >
                   <span aria-hidden="true">‹</span>
                 </button>
@@ -413,7 +580,7 @@ export function AppDetailOverlay({
                     messages.appDetail.screenshotPositionLabel,
                     {
                       app: app.name,
-                      current: previewIndex + 1,
+                      current: galleryState.activeIndex + 1,
                       total: screenshots.length,
                     },
                   )}
@@ -426,13 +593,8 @@ export function AppDetailOverlay({
                   aria-label={format(messages.appDetail.nextScreenshotLabel, {
                     app: app.name,
                   })}
-                  disabled={!hasMultipleScreenshots}
-                  onClick={() => {
-                    setPreviewDirection("next");
-                    setPreviewIndex((current) =>
-                      current === screenshots.length - 1 ? 0 : current + 1,
-                    );
-                  }}
+                  disabled={!galleryState.canScrollRight}
+                  onClick={() => scrollGallery(1)}
                 >
                   <span aria-hidden="true">›</span>
                 </button>
@@ -463,10 +625,7 @@ export function AppDetailOverlay({
                 key={device}
                 aria-label={DEVICE_ARIA_LABELS[device]}
                 aria-pressed={selectedDevice === device}
-                onClick={() => {
-                  setSelectedDevice(device);
-                  setPreviewIndex(0);
-                }}
+                onClick={() => setSelectedDevice(device)}
               >
                 <DeviceSilhouette device={device} />
                 <span className="app-detail-device-label">
