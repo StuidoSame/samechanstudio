@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CosmicInteractionLayer } from "../components/CosmicInteractionLayer";
 import { SectionCosmos } from "../components/SectionCosmos";
 import { useI18n } from "../i18n/I18nProvider";
-import { usePageTransition } from "../navigation/PageTransitionProvider";
+import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
 import { PRIVACY_MESSAGES } from "./privacyMessages";
 
 const COSMOS_VARIANTS = [
@@ -25,7 +24,6 @@ function createMailto(subject: string, body: string) {
 
 export function PrivacyArchive() {
   const { locale } = useI18n();
-  const { navigateWithTransition } = usePageTransition();
   const messages = PRIVACY_MESSAGES[locale];
   const [activeSection, setActiveSection] = useState("information");
   const [revealedSections, setRevealedSections] = useState<Set<string>>(
@@ -252,7 +250,7 @@ export function PrivacyArchive() {
                             <div><dt>{messages.contact.businessLabel}</dt><dd>{messages.contact.business}</dd></div>
                             <div><dt>{messages.contact.representativeLabel}</dt><dd>{messages.contact.representative}</dd></div>
                             <div><dt>{messages.contact.emailLabel}</dt><dd><a href={contactMailto} aria-label={messages.contact.emailAriaLabel}>contact@samestudio.kr</a></dd></div>
-                            <div><dt>{messages.contact.websiteLabel}</dt><dd><Link href="/">samestudio.kr</Link></dd></div>
+                            <div><dt>{messages.contact.websiteLabel}</dt><dd><InternalTransitionLink href="/">samestudio.kr</InternalTransitionLink></dd></div>
                           </dl>
                           <a className="privacy-contact-button" href={contactMailto} aria-label={messages.contact.buttonAriaLabel}>
                             {messages.contact.button}
@@ -283,13 +281,12 @@ export function PrivacyArchive() {
         </div>
       </div>
 
-      <Link
+      <InternalTransitionLink
         className="archive-back privacy-back"
         href="/"
-        onClick={(event) => navigateWithTransition(event, "/")}
       >
         BACK
-      </Link>
+      </InternalTransitionLink>
     </article>
   );
 }

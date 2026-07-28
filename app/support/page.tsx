@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { PolicyPageLayout } from "../components/PolicyPageLayout";
+import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
 import { SupportContent } from "./SupportContent";
 import { SupportCosmosBackground } from "./SupportCosmosBackground";
 import { SupportHero } from "./SupportHero";
@@ -16,7 +16,7 @@ export default function SupportPage() {
         <div className="archive-document-space support-glass-card">
           <SupportContent />
         </div>
-        <Link className="archive-back" href="/">BACK</Link>
+        <InternalTransitionLink className="archive-back" href="/">BACK</InternalTransitionLink>
       </section>
     </PolicyPageLayout>
   );

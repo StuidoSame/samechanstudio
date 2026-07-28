@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   useEffect,
   useRef,
@@ -11,7 +10,7 @@ import {
 import { useBackgroundAudio } from "../audio/BackgroundAudioProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import type { Locale } from "../i18n/types";
-import { usePageTransition } from "../navigation/PageTransitionProvider";
+import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
 import { useTheme } from "../theme/ThemeProvider";
 import type { ArchiveDocumentTitle } from "./archive/ArchivePortalTransition";
 
@@ -42,7 +41,6 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const { locale, messages, setLocale } = useI18n();
   const { theme, toggleTheme } = useTheme();
-  const { navigateWithTransition } = usePageTransition();
   const { muted: backgroundAudioMuted, toggleMuted: toggleBackgroundAudio } =
     useBackgroundAudio();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -232,7 +230,7 @@ export function SiteHeader({
     setLanguageOpen(false);
   };
   const sectionPrefix = homePage ? "" : "/";
-  const wordmarkHref = homePage ? "#apps" : "/";
+  const wordmarkHref = "/";
   const archiveLinks = [
     { title: "SUPPORT" as const, href: "/support" },
     { title: "TERMS" as const, href: "/terms" },
@@ -241,11 +239,10 @@ export function SiteHeader({
 
   return (
     <header className="site-header" ref={headerRef}>
-      <Link
+      <InternalTransitionLink
         href={wordmarkHref}
         className="wordmark"
         aria-label="SAME STUDIO home"
-        onClick={(event) => navigateWithTransition(event, wordmarkHref)}
       >
         <span className="wordmark-hover-layer">
           <span
@@ -258,7 +255,7 @@ export function SiteHeader({
             SAME STUDIO
           </span>
         </span>
-      </Link>
+      </InternalTransitionLink>
       <div
         ref={headerUtilityRef}
         className={`header-utility${headerUtilityDragging ? " is-dragging" : ""}${
@@ -384,30 +381,24 @@ export function SiteHeader({
           { label: "APPS", href: `${sectionPrefix}#apps` },
           { label: "CONTACT", href: `${sectionPrefix}#contact` },
         ].map((item) => (
-          <Link
+          <InternalTransitionLink
             key={item.label}
             href={item.href}
-            onClick={(event) => {
-              closeMenus();
-              navigateWithTransition(event, item.href);
-            }}
+            onTransitionStart={closeMenus}
           >
             {item.label}
-          </Link>
+          </InternalTransitionLink>
         ))}
         {archiveLinks.map((item) => (
-          <Link
+          <InternalTransitionLink
             key={item.title}
             href={item.href}
             className={selectedArchiveTitle === item.title ? "is-archive-selected" : undefined}
             aria-current={selectedArchiveTitle === item.title ? "page" : undefined}
-            onClick={(event) => {
-              closeMenus();
-              navigateWithTransition(event, item.href);
-            }}
+            onTransitionStart={closeMenus}
           >
             {item.title}
-          </Link>
+          </InternalTransitionLink>
         ))}
       </nav>
       <button

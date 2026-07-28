@@ -109,9 +109,12 @@ function settleDestination(href: string) {
 
 function destinationIsReady(href: string) {
   const url = new URL(href, window.location.href);
-  return (
-    !url.hash ||
-    Boolean(document.getElementById(decodeURIComponent(url.hash.slice(1))))
+  const routeMatches =
+    window.location.pathname === url.pathname &&
+    window.location.search === url.search;
+  if (!routeMatches) return false;
+  return !url.hash || Boolean(
+    document.getElementById(decodeURIComponent(url.hash.slice(1))),
   );
 }
 
@@ -159,24 +162,32 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
       let attempts = 0;
       const settleAndFinish = () => {
         attempts += 1;
-        if (!destinationIsReady(href) && attempts < 60) {
+        const destinationReady = destinationIsReady(href);
+        if (!destinationReady && attempts < 60) {
           finishTimerRef.current = window.setTimeout(settleAndFinish, 30);
           return;
         }
 
         finishTimerRef.current = null;
-        document.body.classList.remove("is-page-transitioning");
-        document.body.removeAttribute("aria-busy");
-        settleDestination(href);
         try {
+          if (!destinationReady) {
+            console.error(
+              `[PageTransition] Destination did not become ready: ${href}`,
+            );
+          } else {
+            settleDestination(href);
+          }
           window.sessionStorage.removeItem(PENDING_DESTINATION_KEY);
         } catch {
           // Destination cleanup still completes when storage is unavailable.
+        } finally {
+          document.body.classList.remove("is-page-transitioning");
+          document.body.removeAttribute("aria-busy");
+          setTransition(null);
+          transitionLockedRef.current = false;
+          document.documentElement.style.removeProperty("--archive-portal-x");
+          document.documentElement.style.removeProperty("--archive-portal-y");
         }
-        setTransition(null);
-        transitionLockedRef.current = false;
-        document.documentElement.style.removeProperty("--archive-portal-x");
-        document.documentElement.style.removeProperty("--archive-portal-y");
       };
       settleAndFinish();
     },
@@ -289,7 +300,13 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
           } catch {
             // The live provider state remains the fallback when storage is unavailable.
           }
-          router.push(href, { scroll: false });
+          try {
+            router.push(href, { scroll: false });
+          } catch (error) {
+            console.error(`[PageTransition] Navigation failed: ${href}`, error);
+            finishTransition(href);
+            return;
+          }
           finishTimerRef.current = window.setTimeout(
             () => {
               finishTimerRef.current = null;

@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CosmicInteractionLayer } from "../components/CosmicInteractionLayer";
 import { SectionCosmos } from "../components/SectionCosmos";
-import { usePageTransition } from "../navigation/PageTransitionProvider";
+import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
 
 const SUMMARY_ITEMS = [
   {
@@ -117,7 +116,6 @@ function ArchiveQuote({ eyebrow, children }: { eyebrow: string; children: string
 }
 
 export function TermsArchive() {
-  const { navigateWithTransition } = usePageTransition();
   const [activeSection, setActiveSection] = useState<string>(
     TERMS_SECTIONS[0].id,
   );
@@ -292,13 +290,12 @@ export function TermsArchive() {
         </div>
       </div>
 
-      <Link
+      <InternalTransitionLink
         className="archive-back terms-back"
         href="/"
-        onClick={(event) => navigateWithTransition(event, "/")}
       >
         BACK
-      </Link>
+      </InternalTransitionLink>
     </article>
   );
 }
