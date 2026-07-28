@@ -92,6 +92,7 @@ export function AppDetailOverlay({
   const { locale, messages, format } = useI18n();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousLocaleRef = useRef(locale);
   const availableDevices = useMemo(
     () => getAvailableDetailDevices(app.id),
     [app.id],
@@ -111,16 +112,30 @@ export function AppDetailOverlay({
         : [],
     [app.id, locale, selectedDevice],
   );
-  const previewImage = screenshots[0] ?? null;
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const previewImage = screenshots[previewIndex] ?? null;
   const previewFit = "contain";
   const [previewFailed, setPreviewFailed] = useState(false);
 
   useEffect(() => {
     const deviceResetFrame = window.requestAnimationFrame(() => {
       setSelectedDevice(availableDevices[0] ?? null);
+      setPreviewIndex(0);
     });
     return () => window.cancelAnimationFrame(deviceResetFrame);
   }, [app.id, availableDevices]);
+
+  useEffect(() => {
+    const localeChanged = previousLocaleRef.current !== locale;
+    previousLocaleRef.current = locale;
+
+    if (!localeChanged || selectedDevice === "appleWatch") return;
+
+    const previewResetFrame = window.requestAnimationFrame(() => {
+      setPreviewIndex(0);
+    });
+    return () => window.cancelAnimationFrame(previewResetFrame);
+  }, [locale, selectedDevice]);
 
   useEffect(() => {
     const previewResetFrame = window.requestAnimationFrame(() => {
@@ -330,7 +345,10 @@ export function AppDetailOverlay({
                 key={device}
                 aria-label={DEVICE_ARIA_LABELS[device]}
                 aria-pressed={selectedDevice === device}
-                onClick={() => setSelectedDevice(device)}
+                onClick={() => {
+                  setSelectedDevice(device);
+                  setPreviewIndex(0);
+                }}
               >
                 <DeviceSilhouette device={device} />
                 <span className="app-detail-device-label">
