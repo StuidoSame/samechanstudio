@@ -161,6 +161,11 @@ export const ko = {
     previousScreenshotLabel: "{app} 이전 미리보기",
     nextScreenshotLabel: "{app} 다음 미리보기",
     screenshotPositionLabel: "{app} 미리보기 {current}/{total}",
+    enlargeScreenshotLabel: "{app} 스크린샷 {current} 크게 보기",
+    lightboxLabel: "{app} 스크린샷 확대 보기",
+    closeLightboxLabel: "확대 이미지 닫기",
+    previousImageLabel: "이전 이미지 보기",
+    nextImageLabel: "다음 이미지 보기",
     deviceSelectorLabel: "디바이스 선택",
     fallback: {
       keywords: ["핵심 경험", "간결한 흐름", "기기 최적화"],

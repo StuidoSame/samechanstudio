@@ -18,6 +18,8 @@ import {
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
 import { getAppScreenshots } from "../../lib/appScreenshots";
+import { ResilientScreenshotImage } from "./ResilientScreenshotImage";
+import { ScreenshotLightbox } from "./ScreenshotLightbox";
 
 const OVERLAY_EXIT_MS = 300;
 const GALLERY_SCROLL_AMOUNT = 0.78;
@@ -126,6 +128,7 @@ export function AppDetailOverlay({
   const galleryFrameRef = useRef<number | null>(null);
   const dragRef = useRef<GalleryDrag | null>(null);
   const suppressClickRef = useRef(false);
+  const lightboxTriggerRef = useRef<HTMLButtonElement | null>(null);
   const availableDevices = useMemo(
     () => getAvailableDetailDevices(app.id),
     [app.id],
@@ -153,7 +156,21 @@ export function AppDetailOverlay({
     INITIAL_GALLERY_STATE,
   );
   const [isDragging, setIsDragging] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const screenshotPosition = `${String(galleryState.activeIndex + 1).padStart(2, "0")} / ${String(screenshots.length).padStart(2, "0")}`;
+
+  const closeLightbox = useCallback(() => {
+    setLightboxIndex(null);
+    const trigger = lightboxTriggerRef.current;
+    window.requestAnimationFrame(() => {
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+    });
+  }, []);
+
+  const closeAppDetail = useCallback(() => {
+    setLightboxIndex(null);
+    onRequestClose();
+  }, [onRequestClose]);
 
   const updateGalleryState = useCallback(() => {
     const gallery = galleryRef.current;
@@ -233,11 +250,27 @@ export function AppDetailOverlay({
 
   useEffect(() => {
     const galleryResetFrame = window.requestAnimationFrame(() => {
+      setGalleryState(INITIAL_GALLERY_STATE);
+      setLightboxIndex(null);
       galleryRef.current?.scrollTo({ left: 0, behavior: "auto" });
       updateGalleryState();
     });
     return () => window.cancelAnimationFrame(galleryResetFrame);
   }, [app.id, locale, screenshots, selectedDevice, updateGalleryState]);
+
+  useEffect(() => {
+    if (!open || screenshots.length === 0) return;
+    const preloadPaths = screenshots.slice(0, Math.min(3, screenshots.length));
+    const preload = (src: string) =>
+      new Promise<void>((resolve, reject) => {
+        const image = new window.Image();
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error(`Unable to preload ${src}`));
+        image.src = src;
+      });
+
+    void Promise.allSettled(preloadPaths.map(preload));
+  }, [open, screenshots]);
 
   useEffect(() => {
     const gallery = galleryRef.current;
@@ -290,10 +323,18 @@ export function AppDetailOverlay({
     const focusFrame = window.requestAnimationFrame(() => {
       closeButtonRef.current?.focus({ preventScroll: true });
     });
+
+    return () => window.cancelAnimationFrame(focusFrame);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (lightboxIndex !== null) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        onRequestClose();
+        closeAppDetail();
         return;
       }
       if (event.key !== "Tab") return;
@@ -316,17 +357,16 @@ export function AppDetailOverlay({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onRequestClose, open]);
+  }, [closeAppDetail, lightboxIndex, open]);
 
   return (
     <div
       className={`app-detail-overlay${open ? " is-open" : ""}`}
       aria-hidden={!open}
       onPointerDown={(event) => {
-        if (event.target === event.currentTarget) onRequestClose();
+        if (event.target === event.currentTarget) closeAppDetail();
       }}
     >
       <div
@@ -353,7 +393,7 @@ export function AppDetailOverlay({
             ref={closeButtonRef}
             type="button"
             aria-label={messages.appDetail.closeLabel}
-            onClick={onRequestClose}
+            onClick={closeAppDetail}
           >
             <span aria-hidden="true">×</span>
           </button>
@@ -516,14 +556,25 @@ export function AppDetailOverlay({
               >
                 <div className="app-detail-gallery-track">
                   {screenshots.map((screenshot, index) => (
-                    <div
+                    <button
                       className="app-detail-gallery-item"
+                      type="button"
                       data-screenshot-index={index}
-                      key={screenshot}
+                      key={`${app.id}:${selectedDevice ?? "none"}:${screenshot}`}
+                      aria-label={format(
+                        messages.appDetail.enlargeScreenshotLabel,
+                        { app: app.name, current: index + 1 },
+                      )}
+                      onClick={(event) => {
+                        lightboxTriggerRef.current = event.currentTarget;
+                        setLightboxIndex(index);
+                      }}
                     >
-                      <Image
+                      <ResilientScreenshotImage
+                        key={screenshot}
                         className="app-detail-preview-image"
                         src={screenshot}
+                        errorLabel={messages.appDetail.previewUnavailableLabel}
                         alt={format(messages.appDetail.previewAlt, {
                           app: app.name,
                           device: selectedDevice
@@ -532,15 +583,10 @@ export function AppDetailOverlay({
                           current: index + 1,
                           total: screenshots.length,
                         })}
-                        fill
-                        sizes="(max-width: 767px) 55vw, (max-width: 1023px) 32vw, 22vw"
-                        style={{ objectFit: "contain" }}
-                        loading={index === 0 ? "eager" : "lazy"}
-                        draggable={false}
+                        loading={index < 3 ? "eager" : "lazy"}
                         onLoad={scheduleGalleryUpdate}
-                        unoptimized
                       />
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -639,6 +685,29 @@ export function AppDetailOverlay({
           </span>
         </div>
       </div>
+      {lightboxIndex !== null ? (
+        <ScreenshotLightbox
+          activeIndex={Math.min(lightboxIndex, screenshots.length - 1)}
+          closeLabel={messages.appDetail.closeLightboxLabel}
+          dialogLabel={format(messages.appDetail.lightboxLabel, {
+            app: app.name,
+          })}
+          errorLabel={messages.appDetail.previewUnavailableLabel}
+          imageAlt={format(messages.appDetail.previewAlt, {
+            app: app.name,
+            device: selectedDevice
+              ? DEVICE_ARIA_LABELS[selectedDevice]
+              : "",
+            current: Math.min(lightboxIndex, screenshots.length - 1) + 1,
+            total: screenshots.length,
+          })}
+          nextLabel={messages.appDetail.nextImageLabel}
+          onClose={closeLightbox}
+          onIndexChange={setLightboxIndex}
+          previousLabel={messages.appDetail.previousImageLabel}
+          screenshots={screenshots}
+        />
+      ) : null}
     </div>
   );
 }

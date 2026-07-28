@@ -161,6 +161,11 @@ export const ja = {
     previousScreenshotLabel: "{app}の前のプレビュー",
     nextScreenshotLabel: "{app}の次のプレビュー",
     screenshotPositionLabel: "{app}のプレビュー {current}/{total}",
+    enlargeScreenshotLabel: "{app}のスクリーンショット{current}を拡大表示",
+    lightboxLabel: "{app}のスクリーンショット拡大表示",
+    closeLightboxLabel: "拡大画像を閉じる",
+    previousImageLabel: "前の画像を見る",
+    nextImageLabel: "次の画像を見る",
     deviceSelectorLabel: "デバイスを選択",
     fallback: {
       keywords: ["コア体験", "シンプルな流れ", "デバイス最適化"],

@@ -161,6 +161,11 @@ export const en = {
     previousScreenshotLabel: "Previous {app} preview",
     nextScreenshotLabel: "Next {app} preview",
     screenshotPositionLabel: "{app} preview {current} of {total}",
+    enlargeScreenshotLabel: "Enlarge {app} screenshot {current}",
+    lightboxLabel: "Enlarged {app} screenshots",
+    closeLightboxLabel: "Close enlarged image",
+    previousImageLabel: "View previous image",
+    nextImageLabel: "View next image",
     deviceSelectorLabel: "Select a device",
     fallback: {
       keywords: ["Core experience", "Simple flow", "Device optimized"],

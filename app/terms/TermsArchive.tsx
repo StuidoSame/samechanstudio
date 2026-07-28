@@ -118,7 +118,9 @@ function ArchiveQuote({ eyebrow, children }: { eyebrow: string; children: string
 
 export function TermsArchive() {
   const { navigateWithTransition } = usePageTransition();
-  const [activeSection, setActiveSection] = useState(TERMS_SECTIONS[0].id);
+  const [activeSection, setActiveSection] = useState<string>(
+    TERMS_SECTIONS[0].id,
+  );
   const [revealedSections, setRevealedSections] = useState<Set<string>>(
     () => new Set(),
   );

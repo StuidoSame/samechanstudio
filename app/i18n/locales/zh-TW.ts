@@ -161,6 +161,11 @@ export const zhTW = {
     previousScreenshotLabel: "{app}上一張預覽",
     nextScreenshotLabel: "{app}下一張預覽",
     screenshotPositionLabel: "{app}預覽 {current}/{total}",
+    enlargeScreenshotLabel: "放大檢視{app}截圖{current}",
+    lightboxLabel: "{app}截圖放大檢視",
+    closeLightboxLabel: "關閉放大圖片",
+    previousImageLabel: "檢視上一張圖片",
+    nextImageLabel: "檢視下一張圖片",
     deviceSelectorLabel: "選擇裝置",
     fallback: {
       keywords: ["核心體驗", "簡潔流程", "裝置最佳化"],

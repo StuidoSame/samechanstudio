@@ -161,6 +161,11 @@ export const zhCN = {
     previousScreenshotLabel: "{app}上一张预览",
     nextScreenshotLabel: "{app}下一张预览",
     screenshotPositionLabel: "{app}预览 {current}/{total}",
+    enlargeScreenshotLabel: "放大查看{app}截图{current}",
+    lightboxLabel: "{app}截图放大查看",
+    closeLightboxLabel: "关闭放大图片",
+    previousImageLabel: "查看上一张图片",
+    nextImageLabel: "查看下一张图片",
     deviceSelectorLabel: "选择设备",
     fallback: {
       keywords: ["核心体验", "简洁流程", "设备优化"],

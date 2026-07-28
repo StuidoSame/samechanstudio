@@ -115,6 +115,11 @@ export type TranslationMessages = {
     previousScreenshotLabel: string;
     nextScreenshotLabel: string;
     screenshotPositionLabel: string;
+    enlargeScreenshotLabel: string;
+    lightboxLabel: string;
+    closeLightboxLabel: string;
+    previousImageLabel: string;
+    nextImageLabel: string;
     deviceSelectorLabel: string;
     fallback: TranslatedAppDetail;
     apps: Record<
