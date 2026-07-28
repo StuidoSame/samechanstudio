@@ -11,6 +11,7 @@ import {
   type DetailDevice,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
+import { getAppScreenshots } from "../../lib/appScreenshots";
 
 const OVERLAY_EXIT_MS = 300;
 
@@ -88,7 +89,7 @@ export function AppDetailOverlay({
   onRequestClose,
   onExited,
 }: AppDetailOverlayProps) {
-  const { messages, format } = useI18n();
+  const { locale, messages, format } = useI18n();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const availableDevices = useMemo(
@@ -103,7 +104,14 @@ export function AppDetailOverlay({
         TRANSLATION_DEVICE_BY_DETAIL_DEVICE[selectedDevice]
       ] ?? messages.appDetail.fallback
     : null;
-  const previewImage = null;
+  const screenshots = useMemo(
+    () =>
+      selectedDevice
+        ? getAppScreenshots({ appId: app.id, device: selectedDevice, locale })
+        : [],
+    [app.id, locale, selectedDevice],
+  );
+  const previewImage = screenshots[0] ?? null;
   const previewFit = "contain";
   const [previewFailed, setPreviewFailed] = useState(false);
 
