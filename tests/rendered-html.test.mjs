@@ -79,7 +79,23 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   assert.match(html, /RESPONSE TIME/);
   assert.match(html, /앱에서 오류가 발생했어요\./);
   assert.match(html, /개인정보 삭제를 요청하고 싶어요\./);
-  assert.match(html, /aria-pressed="true"[^>]*>Mapary</);
+  assert.doesNotMatch(html, /도움이 필요한 앱을 선택해주세요\./);
+  assert.doesNotMatch(html, /support-app-pill/);
+  assert.match(html, /aria-label="Mapary 선택" aria-pressed="true"/);
+  for (const iconName of [
+    "ODOW_icon.png",
+    "Mapary_icon.png",
+    "Locaunt_icon.png",
+    "Runtronome_icon.png",
+    "pepesnap_icon.png",
+    "tocklist_icon.png",
+    "skkoo_icon.png",
+    "terubozu_icon.png",
+    "waesseum_icon.png",
+    "feeloo_icon.png",
+  ]) {
+    assert.match(html, new RegExp(iconName.replace(".", "\\.")));
+  }
 });
 
 test("initializes the pre-hydration theme from saved choice or dark", async () => {

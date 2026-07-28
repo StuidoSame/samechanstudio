@@ -1,24 +1,31 @@
 "use client";
 
+import Image from "next/image";
 import {
+  useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
+  type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
 } from "react";
 
 const SUPPORT_APPS = [
-  "ODOW",
-  "Mapary",
-  "LOCAUNT",
-  "Runtronome",
-  "PepeSnap",
-  "Tocklist",
-  "Skkoo",
-  "TeruBozu",
-  "Waesseum",
-  "Feeloo",
+  { name: "ODOW", icon: "/assets/icons/ODOW_icon.png" },
+  { name: "Mapary", icon: "/assets/icons/Mapary_icon.png" },
+  { name: "LOCAUNT", icon: "/assets/icons/Locaunt_icon.png" },
+  { name: "Runtronome", icon: "/assets/icons/Runtronome_icon.png" },
+  { name: "PepeSnap", icon: "/assets/icons/pepesnap_icon.png" },
+  { name: "Tocklist", icon: "/assets/icons/tocklist_icon.png" },
+  { name: "Skkoo", icon: "/assets/icons/skkoo_icon.png" },
+  { name: "TeruBozu", icon: "/assets/icons/terubozu_icon.png" },
+  { name: "Waesseum", icon: "/assets/icons/waesseum_icon.png" },
+  { name: "Feeloo", icon: "/assets/icons/feeloo_icon.png" },
 ] as const;
+
+type SupportAppName = (typeof SUPPORT_APPS)[number]["name"];
 
 const FAQ_ITEMS = [
   {
@@ -39,11 +46,10 @@ const FAQ_ITEMS = [
 ] as const;
 
 export function SupportContent() {
-  const [selectedApp, setSelectedApp] = useState<(typeof SUPPORT_APPS)[number]>(
-    "Mapary",
-  );
+  const [selectedApp, setSelectedApp] = useState<SupportAppName>("Mapary");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const appRailRef = useRef<HTMLDivElement>(null);
+  const scrollFrameRef = useRef<number | null>(null);
   const dragRef = useRef({
     pointerId: -1,
     startX: 0,
@@ -51,6 +57,9 @@ export function SupportContent() {
     dragged: false,
   });
   const [dragging, setDragging] = useState(false);
+  const [galleryOverflowing, setGalleryOverflowing] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const emailHref = useMemo(() => {
     const subject = encodeURIComponent("[SAME STUDIO] Support");
@@ -60,10 +69,79 @@ export function SupportContent() {
     return `mailto:contact@samestudio.kr?subject=${subject}&body=${body}`;
   }, [selectedApp]);
 
+  const updateGalleryState = useCallback(() => {
+    if (scrollFrameRef.current !== null) return;
+    scrollFrameRef.current = window.requestAnimationFrame(() => {
+      scrollFrameRef.current = null;
+      const rail = appRailRef.current;
+      if (!rail) return;
+      const maxScrollLeft = Math.max(rail.scrollWidth - rail.clientWidth, 0);
+      const overflowing = maxScrollLeft > 2;
+      setGalleryOverflowing(overflowing);
+      setCanScrollLeft(overflowing && rail.scrollLeft > 2);
+      setCanScrollRight(
+        overflowing && rail.scrollLeft < maxScrollLeft - 2,
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    const rail = appRailRef.current;
+    if (!rail) return;
+    const observer = new ResizeObserver(updateGalleryState);
+    observer.observe(rail);
+    Array.from(rail.children).forEach((item) => observer.observe(item));
+    updateGalleryState();
+
+    return () => {
+      observer.disconnect();
+      if (scrollFrameRef.current !== null) {
+        window.cancelAnimationFrame(scrollFrameRef.current);
+        scrollFrameRef.current = null;
+      }
+      const pointerId = dragRef.current.pointerId;
+      if (pointerId >= 0 && rail.hasPointerCapture(pointerId)) {
+        rail.releasePointerCapture(pointerId);
+      }
+    };
+  }, [updateGalleryState]);
+
+  const moveGalleryByPage = (direction: -1 | 1) => {
+    const rail = appRailRef.current;
+    if (!rail) return;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    rail.scrollBy({
+      left: rail.clientWidth * 0.7 * direction,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  };
+
+  const onGalleryKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    moveGalleryByPage(event.key === "ArrowLeft" ? -1 : 1);
+  };
+
+  const onGalleryWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+    const rail = appRailRef.current;
+    if (!rail || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const movingRight = event.deltaY > 0;
+    if (
+      (movingRight && !canScrollRight) ||
+      (!movingRight && !canScrollLeft)
+    ) {
+      return;
+    }
+    event.preventDefault();
+    rail.scrollLeft += event.deltaY;
+  };
+
   const startAppRailDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse" || event.button !== 0) return;
     const rail = appRailRef.current;
-    if (!rail) return;
+    if (!rail || rail.scrollWidth <= rail.clientWidth + 2) return;
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -91,6 +169,7 @@ export function SupportContent() {
     }
     dragRef.current.pointerId = -1;
     setDragging(false);
+    updateGalleryState();
   };
 
   return (
@@ -101,35 +180,77 @@ export function SupportContent() {
           <h2 id="support-contact-title">CONTACT</h2>
           <span className="support-heading-line" aria-hidden="true" />
         </div>
-        <p className="support-section-intro">
-          도움이 필요한 앱을 선택해주세요.
-        </p>
         <div
-          ref={appRailRef}
-          className={`support-app-rail${dragging ? " is-dragging" : ""}`}
-          aria-label="문의할 앱 선택"
-          onPointerDown={startAppRailDrag}
-          onPointerMove={moveAppRail}
-          onPointerUp={finishAppRailDrag}
-          onPointerCancel={finishAppRailDrag}
-          onClickCapture={(event) => {
-            if (!dragRef.current.dragged) return;
-            event.preventDefault();
-            event.stopPropagation();
-            dragRef.current.dragged = false;
-          }}
+          className={`support-app-gallery${galleryOverflowing ? " is-scrollable" : ""}`}
         >
-          {SUPPORT_APPS.map((app) => (
+          {galleryOverflowing && (
             <button
-              key={app}
               type="button"
-              className="support-app-pill"
-              aria-pressed={selectedApp === app}
-              onClick={() => setSelectedApp(app)}
+              className="support-app-arrow support-app-arrow--previous"
+              aria-label="이전 앱 보기"
+              disabled={!canScrollLeft}
+              onClick={() => moveGalleryByPage(-1)}
             >
-              {app}
+              <span aria-hidden="true">‹</span>
             </button>
-          ))}
+          )}
+          <div
+            ref={appRailRef}
+            className={`support-app-rail${dragging ? " is-dragging" : ""}`}
+            role="region"
+            aria-label="문의할 앱 선택"
+            tabIndex={0}
+            onScroll={updateGalleryState}
+            onKeyDown={onGalleryKeyDown}
+            onWheel={onGalleryWheel}
+            onPointerDown={startAppRailDrag}
+            onPointerMove={moveAppRail}
+            onPointerUp={finishAppRailDrag}
+            onPointerCancel={finishAppRailDrag}
+            onLostPointerCapture={finishAppRailDrag}
+            onClickCapture={(event) => {
+              if (!dragRef.current.dragged) return;
+              event.preventDefault();
+              event.stopPropagation();
+              dragRef.current.dragged = false;
+            }}
+          >
+            {SUPPORT_APPS.map((app) => (
+              <button
+                key={app.name}
+                type="button"
+                className="support-app-icon-button"
+                aria-label={`${app.name} 선택`}
+                aria-pressed={selectedApp === app.name}
+                onClick={() => setSelectedApp(app.name)}
+              >
+                <span className="support-app-icon-frame">
+                  <Image
+                    src={app.icon}
+                    alt={`${app.name} 앱 아이콘`}
+                    width={96}
+                    height={96}
+                    sizes="(max-width: 680px) 66px, 88px"
+                    draggable={false}
+                    unoptimized
+                    onLoad={updateGalleryState}
+                  />
+                </span>
+                <span className="support-app-icon-label">{app.name}</span>
+              </button>
+            ))}
+          </div>
+          {galleryOverflowing && (
+            <button
+              type="button"
+              className="support-app-arrow support-app-arrow--next"
+              aria-label="다음 앱 보기"
+              disabled={!canScrollRight}
+              onClick={() => moveGalleryByPage(1)}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+          )}
         </div>
       </section>
 
