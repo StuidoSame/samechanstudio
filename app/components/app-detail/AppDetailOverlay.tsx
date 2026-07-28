@@ -358,11 +358,14 @@ export function AppDetailOverlay({
               ) : selectedDevice ? (
                 <span className="app-detail-preview-marker">
                   <DeviceSilhouette device={selectedDevice} />
+                  <span className="app-detail-preview-empty">
+                    {messages.appDetail.previewUnavailableLabel}
+                  </span>
                 </span>
               ) : null}
               {previewLoading && (
                 <span className="app-detail-preview-loading" role="status">
-                  Loading preview...
+                  {messages.appDetail.previewLoadingLabel}
                 </span>
               )}
             </div>

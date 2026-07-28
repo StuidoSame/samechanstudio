@@ -135,6 +135,8 @@ export const zhTW = {
     storeSelectorLabel: "選擇應用程式商店",
     storeLinkLabel: "在{store}查看{app}",
     previewAlt: "{app} {device}預覽",
+    previewLoadingLabel: "正在載入預覽...",
+    previewUnavailableLabel: "預覽正在準備中。",
     deviceSelectorLabel: "選擇裝置",
     fallback: {
       keywords: ["核心體驗", "簡潔流程", "裝置最佳化"],

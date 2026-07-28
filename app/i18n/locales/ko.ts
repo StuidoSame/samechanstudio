@@ -135,6 +135,8 @@ export const ko = {
     storeSelectorLabel: "스토어 선택",
     storeLinkLabel: "{store}에서 {app} 보기",
     previewAlt: "{app} {device} 미리보기",
+    previewLoadingLabel: "미리보기를 불러오는 중...",
+    previewUnavailableLabel: "미리보기를 준비 중입니다.",
     deviceSelectorLabel: "디바이스 선택",
     fallback: {
       keywords: ["핵심 경험", "간결한 흐름", "기기 최적화"],

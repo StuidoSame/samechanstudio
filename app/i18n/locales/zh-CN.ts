@@ -135,6 +135,8 @@ export const zhCN = {
     storeSelectorLabel: "选择应用商店",
     storeLinkLabel: "在{store}中查看{app}",
     previewAlt: "{app} {device}预览",
+    previewLoadingLabel: "正在加载预览...",
+    previewUnavailableLabel: "预览正在准备中。",
     deviceSelectorLabel: "选择设备",
     fallback: {
       keywords: ["核心体验", "简洁流程", "设备优化"],

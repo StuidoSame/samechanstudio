@@ -105,6 +105,8 @@ export type TranslationMessages = {
     storeSelectorLabel: string;
     storeLinkLabel: string;
     previewAlt: string;
+    previewLoadingLabel: string;
+    previewUnavailableLabel: string;
     deviceSelectorLabel: string;
     fallback: TranslatedAppDetail;
     apps: Record<

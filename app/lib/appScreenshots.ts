@@ -107,6 +107,46 @@ export const SCREENSHOT_MANIFEST = {
   },
 } satisfies ScreenshotManifest;
 
+function nonEmptyScreenshots(
+  screenshots: string[] | undefined,
+): string[] | null {
+  return screenshots && screenshots.length > 0 ? screenshots : null;
+}
+
+export function resolveLocalizedScreenshots(
+  localizedScreenshots: LocalizedScreenshotManifest | undefined,
+  locale: Locale,
+): string[] {
+  if (!localizedScreenshots) return [];
+
+  const screenshotLocale = SCREENSHOT_LOCALE_MAP[locale];
+  const localizedMatch = nonEmptyScreenshots(
+    localizedScreenshots[screenshotLocale],
+  );
+  if (localizedMatch) return localizedMatch;
+
+  const koreanFallback = nonEmptyScreenshots(localizedScreenshots.ko);
+  if (koreanFallback) return koreanFallback;
+
+  const englishFallback = nonEmptyScreenshots(localizedScreenshots.en);
+  if (englishFallback) return englishFallback;
+
+  for (const fallbackLocale of SCREENSHOT_LOCALES) {
+    const firstAvailable = nonEmptyScreenshots(
+      localizedScreenshots[fallbackLocale],
+    );
+    if (firstAvailable) return firstAvailable;
+  }
+
+  return [];
+}
+
+export function resolveWatchScreenshots(
+  watchScreenshots: string[] | undefined,
+): string[] {
+  return nonEmptyScreenshots(watchScreenshots) ?? [];
+}
+
 export function getAppScreenshots({
   appId,
   device,
@@ -124,10 +164,8 @@ export function getAppScreenshots({
   const screenshotDevice = SCREENSHOT_DEVICE_MAP[device];
 
   if (screenshotDevice === "watch") {
-    return appScreenshots.watch ?? [];
+    return resolveWatchScreenshots(appScreenshots.watch);
   }
 
-  const screenshotLocale = SCREENSHOT_LOCALE_MAP[locale];
-
-  return appScreenshots[screenshotDevice]?.[screenshotLocale] ?? [];
+  return resolveLocalizedScreenshots(appScreenshots[screenshotDevice], locale);
 }

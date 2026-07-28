@@ -135,6 +135,8 @@ export const en = {
     storeSelectorLabel: "Select a store",
     storeLinkLabel: "View {app} on {store}",
     previewAlt: "{app} {device} preview",
+    previewLoadingLabel: "Loading preview...",
+    previewUnavailableLabel: "Preview coming soon.",
     deviceSelectorLabel: "Select a device",
     fallback: {
       keywords: ["Core experience", "Simple flow", "Device optimized"],

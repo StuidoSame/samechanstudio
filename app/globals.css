@@ -2277,11 +2277,23 @@ button {
 }
 
 .app-detail-preview-marker {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 38px;
   color: rgba(113, 76, 174, 0.22);
-  transform: scale(3.4);
   pointer-events: none;
+}
+
+.app-detail-preview-marker .app-detail-device-silhouette {
+  transform: scale(2.3);
+}
+
+.app-detail-preview-empty {
+  color: rgba(89, 63, 132, 0.56);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .device-detail-copy {
@@ -2557,7 +2569,11 @@ button {
   }
 
   .app-detail-preview-marker {
-    transform: scale(2.8);
+    gap: 32px;
+  }
+
+  .app-detail-preview-marker .app-detail-device-silhouette {
+    transform: scale(1.9);
   }
 
   .app-detail-gallery-controls {
@@ -6758,6 +6774,10 @@ html[data-theme="dark"] .app-detail-preview {
 
 html[data-theme="dark"] .app-detail-preview-marker {
   color: rgba(199, 176, 234, 0.25);
+}
+
+html[data-theme="dark"] .app-detail-preview-empty {
+  color: var(--theme-text-muted);
 }
 
 html[data-theme="dark"] .app-detail-preview-loading,

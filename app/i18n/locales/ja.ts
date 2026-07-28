@@ -135,6 +135,8 @@ export const ja = {
     storeSelectorLabel: "ストアを選択",
     storeLinkLabel: "{store}で{app}を見る",
     previewAlt: "{app}の{device}プレビュー",
+    previewLoadingLabel: "プレビューを読み込み中...",
+    previewUnavailableLabel: "プレビューを準備中です。",
     deviceSelectorLabel: "デバイスを選択",
     fallback: {
       keywords: ["コア体験", "シンプルな流れ", "デバイス最適化"],
