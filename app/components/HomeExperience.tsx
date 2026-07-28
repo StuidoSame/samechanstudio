@@ -21,6 +21,7 @@ import {
 } from "./archive/ArchivePortalTransition";
 import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
+import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import { PageSectionNavigation } from "./PageSectionNavigation";
 import { SectionCosmos } from "./SectionCosmos";
@@ -2288,6 +2289,7 @@ export function HomeExperience() {
           className="main-pointer-glow"
           aria-hidden="true"
         />
+        <CosmicInteractionLayer reducedMotion={reducedMotion} />
         <PageSectionNavigation
           hidden={loaderVisible || menuOpen || Boolean(detailApp)}
         />
