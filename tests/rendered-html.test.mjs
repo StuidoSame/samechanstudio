@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import vm from "node:vm";
 
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -36,4 +37,75 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /페이지 주요 섹션 이동/);
   assert.match(html, /contact@samestudio\.kr/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
+});
+
+test("initializes the pre-hydration theme from saved choice or dark", async () => {
+  const response = await render();
+  const html = await response.text();
+  const scriptMatch = html.match(
+    /<script>([\s\S]*?same-studio-theme-v1[\s\S]*?)<\/script>/,
+  );
+
+  assert.ok(scriptMatch, "theme initialization script should be rendered");
+  assert.ok(
+    html.indexOf(scriptMatch[0]) < html.indexOf("<body>"),
+    "theme initialization should run before body rendering",
+  );
+  assert.doesNotMatch(scriptMatch[1], /prefers-color-scheme|matchMedia/);
+
+  const executeThemeScript = (storedTheme, storageThrows = false) => {
+    const root = { dataset: {}, style: {} };
+    let themeColor = "#191522";
+
+    vm.runInNewContext(scriptMatch[1], {
+      document: {
+        documentElement: root,
+        querySelector: () => ({
+          setAttribute: (name, value) => {
+            if (name === "content") themeColor = value;
+          },
+        }),
+      },
+      window: {
+        localStorage: {
+          getItem: () => {
+            if (storageThrows) throw new Error("Storage unavailable");
+            return storedTheme;
+          },
+        },
+      },
+    });
+
+    return {
+      theme: root.dataset.theme,
+      colorScheme: root.style.colorScheme,
+      themeColor,
+    };
+  };
+
+  assert.deepEqual(executeThemeScript(null), {
+    theme: "dark",
+    colorScheme: "dark",
+    themeColor: "#191522",
+  });
+  assert.deepEqual(executeThemeScript("invalid-theme"), {
+    theme: "dark",
+    colorScheme: "dark",
+    themeColor: "#191522",
+  });
+  assert.deepEqual(executeThemeScript("dark"), {
+    theme: "dark",
+    colorScheme: "dark",
+    themeColor: "#191522",
+  });
+  assert.deepEqual(executeThemeScript("light"), {
+    theme: "light",
+    colorScheme: "light",
+    themeColor: "#f3eeff",
+  });
+  assert.deepEqual(executeThemeScript(null, true), {
+    theme: "dark",
+    colorScheme: "dark",
+    themeColor: "#191522",
+  });
 });

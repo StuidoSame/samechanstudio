@@ -1,22 +1,29 @@
 import type { Metadata, Viewport } from "next";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { ThemeProvider } from "./theme/ThemeProvider";
+import { THEME_STORAGE_KEY } from "./theme/types";
 import "./globals.css";
 
 const themeInitializationScript = `
   (() => {
-    const storageKey = "same-studio-theme-v1";
-    let storedTheme = null;
+    const storageKey = ${JSON.stringify(THEME_STORAGE_KEY)};
+    let theme = "dark";
     try {
-      storedTheme = window.localStorage.getItem(storageKey);
+      const storedTheme = window.localStorage.getItem(storageKey);
+      if (storedTheme === "light" || storedTheme === "dark") {
+        theme = storedTheme;
+      }
     } catch {}
-    const theme = storedTheme === "light" || storedTheme === "dark"
-      ? storedTheme
-      : window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme;
+
+    const root = document.documentElement;
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    themeColor?.setAttribute(
+      "content",
+      theme === "dark" ? "#191522" : "#f3eeff",
+    );
   })();
 `;
 
@@ -57,7 +64,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f3eeff",
+  themeColor: "#191522",
   width: "device-width",
   initialScale: 1,
 };

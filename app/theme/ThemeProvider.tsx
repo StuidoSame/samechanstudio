@@ -32,7 +32,7 @@ function updateThemeMetadata(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme, setThemeState] = useState<Theme>("dark");
 
   const applyTheme = useCallback((nextTheme: Theme, persist: boolean) => {
     setThemeState(nextTheme);
@@ -71,7 +71,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const initializationTimer = window.setTimeout(() => {
       const initialTheme = isTheme(document.documentElement.dataset.theme)
         ? document.documentElement.dataset.theme
-        : "light";
+        : "dark";
       applyTheme(initialTheme, false);
     }, 0);
 
