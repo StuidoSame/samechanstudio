@@ -68,6 +68,20 @@ test("renders policy pages with the shared header, footer, and navigation", asyn
   }
 });
 
+test("server-renders the SUPPORT contact flow and FAQ", async () => {
+  const response = await render("/support");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+
+  assert.match(html, />CONTACT</);
+  assert.match(html, />EMAIL SUPPORT</);
+  assert.match(html, /mailto:contact@samestudio\.kr\?subject=/);
+  assert.match(html, /RESPONSE TIME/);
+  assert.match(html, /앱에서 오류가 발생했어요\./);
+  assert.match(html, /개인정보 삭제를 요청하고 싶어요\./);
+  assert.match(html, /aria-pressed="true"[^>]*>Mapary</);
+});
+
 test("initializes the pre-hydration theme from saved choice or dark", async () => {
   const response = await render();
   const html = await response.text();
