@@ -11,28 +11,6 @@ const { d1, r2 } = hostingConfig;
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
 
-const localBindingConfig = {
-  main: "./worker/index.ts",
-  compatibility_flags: ["nodejs_compat"],
-  d1_databases: d1
-    ? [
-        {
-          binding: d1,
-          database_name: "site-creator-d1",
-          database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
-        },
-      ]
-    : [],
-  r2_buckets: r2
-    ? [
-        {
-          binding: r2,
-          bucket_name: "site-creator-r2",
-        },
-      ]
-    : [],
-};
-
 export default defineConfig(async () => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
@@ -51,8 +29,31 @@ export default defineConfig(async () => {
       vinext(),
       sites(),
       cloudflare({
+        inspectorPort: false,
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
-        config: localBindingConfig,
+        configPath: "./wrangler.jsonc",
+        // The checked-in Wrangler file is the production source of truth.
+        // Sites may inject placeholder local bindings through hosting.json
+        // without replacing production D1/R2 bindings declared there.
+        config: (config) => ({
+          d1_databases: d1
+            ? [
+                {
+                  binding: d1,
+                  database_name: "site-creator-d1",
+                  database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+                },
+              ]
+            : config.d1_databases,
+          r2_buckets: r2
+            ? [
+                {
+                  binding: r2,
+                  bucket_name: "site-creator-r2",
+                },
+              ]
+            : config.r2_buckets,
+        }),
       }),
     ],
   };
