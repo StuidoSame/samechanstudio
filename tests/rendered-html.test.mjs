@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import vm from "node:vm";
 
-async function render() {
+async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", {
+    new Request(`http://localhost${pathname}`, {
       headers: { accept: "text/html" },
     }),
     {
@@ -43,6 +43,29 @@ test("server-renders the SAME STUDIO app explorer", async () => {
     /Rhythm recording controls|Record rhythm|Stop recording|Play recorded rhythm|Clear recorded rhythm|Mute drums/,
   );
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
+});
+
+test("renders policy pages with the shared header, footer, and navigation", async () => {
+  const policyPages = [
+    ["/support", "SUPPORT"],
+    ["/privacy", "PRIVACY"],
+    ["/terms", "TERMS"],
+  ];
+
+  for (const [pathname, title] of policyPages) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+
+    assert.match(html, new RegExp(`<h1[^>]*>${title}</h1>`, "i"));
+    assert.match(html, /aria-label="SAME STUDIO home"/i);
+    assert.match(html, /aria-label="Footer navigation"/i);
+    assert.match(html, />SUPPORT</i);
+    assert.match(html, />HOME</i);
+    assert.match(html, />PRIVACY</i);
+    assert.match(html, />TERMS</i);
+    assert.doesNotMatch(html, /RETURN TO SAME STUDIO|SAME STUDIO ARCHIVE/);
+  }
 });
 
 test("initializes the pre-hydration theme from saved choice or dark", async () => {

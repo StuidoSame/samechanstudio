@@ -25,15 +25,14 @@ import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import { PageSectionNavigation } from "./PageSectionNavigation";
 import { SectionCosmos } from "./SectionCosmos";
+import { SiteFooter } from "./SiteFooter";
+import { SiteHeader } from "./SiteHeader";
 import {
   TypeReveal,
   TypeRevealGroup,
 } from "./type-reveal/TypeReveal";
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
-import type { Locale } from "../i18n/types";
-import { useBackgroundAudio } from "../audio/BackgroundAudioProvider";
-import { useTheme } from "../theme/ThemeProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 
@@ -78,26 +77,10 @@ const ARCHIVE_PORTAL_DURATION_MS = 850;
 const ARCHIVE_PORTAL_REDUCED_DURATION_MS = 180;
 const ARCHIVE_ENTRY_STORAGE_KEY = "same-studio-archive-entry-v1";
 const ARCHIVE_RETURN_STORAGE_KEY = "same-studio-archive-return-v1";
-const FOOTER_BUSINESS_VALUES = {
-  businessName: "세임스튜디오 (SAME STUDIO)",
-  registrationNumber: "272-08-03608",
-  email: "contact@samestudio.kr",
-} as const;
 const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
   { text: "Small apps, made\nwith a lot of care.", speed: 45 },
 ] as const;
-type LanguageOption = {
-  code: Locale;
-};
-
-const LANGUAGE_OPTIONS = [
-  { code: "ko" },
-  { code: "en" },
-  { code: "ja" },
-  { code: "zh-CN" },
-  { code: "zh-TW" },
-] as const satisfies readonly LanguageOption[];
 type LoaderPhase =
   | "loading"
   | "complete"
@@ -471,19 +454,6 @@ function PlatformIcons({ app }: { app: AppItem }) {
   );
 }
 
-function SocialIcon({ platform }: { platform: "github" | "x" | "instagram" | "threads" }) {
-  if (platform === "github") {
-    return <svg className="footer-social-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.64-1.24-1.64-1.02-.7.08-.69.08-.69 1.12.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.1-2.96 0 0 .94-.3 3.08 1.15a10.6 10.6 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.6 1.54.22 2.68.1 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.06c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8z" /></svg>;
-  }
-  if (platform === "x") {
-    return <svg className="footer-social-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.27 10.16 22.65 0h-1.99l-7.28 8.82L7.57 0H.86l8.79 13.1L.86 23.76h1.99l7.68-9.31 6.13 9.31h6.71l-9.1-13.6Zm-2.72 3.3-.89-1.31L3.57 1.53h3.05l5.72 8.56.89 1.31 7.44 10.94h-3.05l-6.07-8.88Z" /></svg>;
-  }
-  if (platform === "instagram") {
-    return <svg className="footer-social-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm0 2A3.3 3.3 0 0 0 4 7.3v9.4A3.3 3.3 0 0 0 7.3 20h9.4a3.3 3.3 0 0 0 3.3-3.3V7.3A3.3 3.3 0 0 0 16.7 4H7.3Zm4.7 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 2a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Zm5-2.65a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z" /></svg>;
-  }
-  return <svg className="footer-social-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.263 11.097c-.03-3.486-1.92-5.586-5.111-5.586-2.13 0-3.922.963-4.863 2.499l2.062 1.438c.535-.843 1.272-1.543 2.628-1.543 1.528 0 2.318.85 2.544 2.431a15 15 0 0 0-2.236-.173c-4.125 0-6.068 1.867-6.068 4.336s1.943 3.99 4.804 3.99c3.139 0 5.013-2.115 5.781-4.735.798.361 1.348 1.204 1.348 2.47 0 3.387-3.907 5.232-7.22 5.232-4.885 0-8.077-3.207-8.077-8.424 0-6.392 4.223-10.487 9.9-10.487 3.808 0 5.69 1.671 6.97 3.914l2.108-1.475C21.44 2.078 18.331 0 13.663 0 6.227 0 1.168 5.277 1.168 12.934c0 7 4.953 11.066 10.856 11.066 4.878 0 9.809-2.846 9.809-7.716 0-2.545-1.46-4.231-3.569-5.187m-6.33 4.855c-1.077 0-2.026-.512-2.026-1.453 0-1.483 1.822-1.934 3.606-1.934.678 0 1.34.045 1.927.173-.422 1.927-1.671 3.215-3.508 3.214Z" /></svg>;
-}
-
 function Loader({
   progress,
   interactionRef,
@@ -561,10 +531,7 @@ function Loader({
 }
 
 export function HomeExperience() {
-  const { locale, messages, setLocale } = useI18n();
-  const { theme, toggleTheme } = useTheme();
-  const { muted: backgroundAudioMuted, toggleMuted: toggleBackgroundAudio } =
-    useBackgroundAudio();
+  const { messages } = useI18n();
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -575,13 +542,6 @@ export function HomeExperience() {
   );
   const [activeIndex, setActiveIndex] = useState(DEFAULT_APP_INDEX);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [languageOpen, setLanguageOpen] = useState(false);
-  const [darkPressKey, setDarkPressKey] = useState(0);
-  const [headerUtilityHidden, setHeaderUtilityHidden] = useState(false);
-  const [headerUtilityDragging, setHeaderUtilityDragging] = useState(false);
-  const [headerUtilityDragX, setHeaderUtilityDragX] = useState(0);
-  const [headerUtilityHideDistance, setHeaderUtilityHideDistance] = useState(0);
-  const [headerUtilityHintKey, setHeaderUtilityHintKey] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
@@ -603,21 +563,6 @@ export function HomeExperience() {
   const mainRef = useRef<HTMLElement>(null);
   const mainPointerGlowRef = useRef<HTMLDivElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
-  const headerUtilityRef = useRef<HTMLDivElement>(null);
-  const headerLanguageButtonRef = useRef<HTMLButtonElement>(null);
-  const languagePanelRef = useRef<HTMLDivElement>(null);
-  const languagePanelWasOpenRef = useRef(false);
-  const headerUtilityHandleRef = useRef<HTMLButtonElement>(null);
-  const headerUtilityWasHiddenRef = useRef(false);
-  const headerUtilitySuppressClickRef = useRef(false);
-  const headerUtilityDragRef = useRef({
-    id: -1,
-    startX: 0,
-    startY: 0,
-    distanceX: 0,
-    horizontal: false,
-  });
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const progressRef = useRef(DEFAULT_APP_INDEX);
   const targetRef = useRef(DEFAULT_APP_INDEX);
@@ -772,7 +717,6 @@ export function HomeExperience() {
         ? bounds.top + bounds.height / 2
         : event.clientY;
 
-      setLanguageOpen(false);
       setArchivePortal({ documentTitle, href, x, y });
       document.documentElement.style.setProperty(
         "--archive-portal-x",
@@ -1290,86 +1234,6 @@ export function HomeExperience() {
     queueAutoplayAdvance,
     reducedMotion,
   ]);
-
-  useEffect(() => {
-    if (!menuOpen && !languageOpen) return;
-
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (!(event.target instanceof Node)) return;
-
-      if (
-        languageOpen &&
-        !languagePanelRef.current?.contains(event.target) &&
-        !headerLanguageButtonRef.current?.contains(event.target)
-      ) {
-        setLanguageOpen(false);
-      }
-
-      if (menuOpen && !headerRef.current?.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-        setLanguageOpen(false);
-      }
-    };
-
-    window.addEventListener("pointerdown", closeOnOutsidePointer);
-    window.addEventListener("keydown", closeOnEscape);
-    return () => {
-      window.removeEventListener("pointerdown", closeOnOutsidePointer);
-      window.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [languageOpen, menuOpen]);
-
-  useEffect(() => {
-    if (languageOpen) {
-      languagePanelWasOpenRef.current = true;
-      const focusTimer = window.setTimeout(() => {
-        languagePanelRef.current
-          ?.querySelector<HTMLButtonElement>(
-            '[role="menuitemradio"][aria-checked="true"]',
-          )
-          ?.focus({ preventScroll: true });
-      }, 0);
-
-      return () => window.clearTimeout(focusTimer);
-    }
-
-    if (languagePanelWasOpenRef.current) {
-      languagePanelWasOpenRef.current = false;
-      headerLanguageButtonRef.current?.focus({ preventScroll: true });
-    }
-  }, [languageOpen]);
-
-  useEffect(() => {
-    if (!headerUtilityHidden || reducedMotion) return;
-
-    let hintInterval: number | undefined;
-    const firstHint = window.setTimeout(() => {
-      setHeaderUtilityHintKey((key) => key + 1);
-      hintInterval = window.setInterval(
-        () => setHeaderUtilityHintKey((key) => key + 1),
-        5500,
-      );
-    }, 1000);
-
-    return () => {
-      window.clearTimeout(firstHint);
-      if (hintInterval !== undefined) window.clearInterval(hintInterval);
-    };
-  }, [headerUtilityHidden, reducedMotion]);
-
-  useEffect(() => {
-    if (headerUtilityHidden) {
-      headerUtilityHandleRef.current?.focus({ preventScroll: true });
-    } else if (headerUtilityWasHiddenRef.current) {
-      headerLanguageButtonRef.current?.focus({ preventScroll: true });
-    }
-    headerUtilityWasHiddenRef.current = headerUtilityHidden;
-  }, [headerUtilityHidden]);
 
   useEffect(() => {
     if (skipInitialLoaderRef.current) return;
@@ -2081,97 +1945,6 @@ export function HomeExperience() {
     resumeAutoplay("interaction");
   };
 
-  const onHeaderUtilityPointerDown = (
-    event: ReactPointerEvent<HTMLDivElement>,
-  ) => {
-    if (headerUtilityHidden || !event.isPrimary || event.button !== 0) return;
-
-    const drag = headerUtilityDragRef.current;
-    drag.id = event.pointerId;
-    drag.startX = event.clientX;
-    drag.startY = event.clientY;
-    drag.distanceX = 0;
-    drag.horizontal = false;
-    headerUtilitySuppressClickRef.current = false;
-  };
-
-  const onHeaderUtilityPointerMove = (
-    event: ReactPointerEvent<HTMLDivElement>,
-  ) => {
-    const drag = headerUtilityDragRef.current;
-    if (drag.id !== event.pointerId) return;
-
-    const distanceX = Math.max(0, event.clientX - drag.startX);
-    const distanceY = Math.abs(event.clientY - drag.startY);
-
-    if (!drag.horizontal) {
-      if (distanceY > 8 && distanceY > distanceX) {
-        drag.id = -1;
-        setHeaderUtilityDragging(false);
-        setHeaderUtilityDragX(0);
-        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-          event.currentTarget.releasePointerCapture(event.pointerId);
-        }
-        return;
-      }
-
-      if (distanceX < 8 || distanceX <= distanceY * 1.2) return;
-      drag.horizontal = true;
-      headerUtilitySuppressClickRef.current = true;
-      setHeaderUtilityDragging(true);
-      event.currentTarget.setPointerCapture(event.pointerId);
-    }
-
-    drag.distanceX = distanceX;
-    setHeaderUtilityDragX(distanceX);
-  };
-
-  const finishHeaderUtilityDrag = (
-    event: ReactPointerEvent<HTMLDivElement>,
-    cancelled = false,
-  ) => {
-    const drag = headerUtilityDragRef.current;
-    if (drag.id !== event.pointerId) return;
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-
-    const threshold = window.matchMedia("(max-width: 767px)").matches
-      ? 40
-      : 55;
-    if (!cancelled && drag.horizontal && drag.distanceX >= threshold) {
-      const rect = headerUtilityRef.current?.getBoundingClientRect();
-      setHeaderUtilityHideDistance(
-        rect
-          ? Math.max(window.innerWidth - rect.left + 24, 0)
-          : window.innerWidth,
-      );
-      setLanguageOpen(false);
-      setHeaderUtilityHidden(true);
-    }
-
-    drag.id = -1;
-    drag.distanceX = 0;
-    drag.horizontal = false;
-    setHeaderUtilityDragging(false);
-    setHeaderUtilityDragX(0);
-    window.setTimeout(() => {
-      headerUtilitySuppressClickRef.current = false;
-    }, 0);
-  };
-
-  const headerUtilityStyle = {
-    "--header-utility-drag-x": `${headerUtilityDragX * 0.75}px`,
-    "--header-utility-drag-opacity": String(
-      1 - Math.min(headerUtilityDragX / 200, 0.35),
-    ),
-    "--header-utility-drag-scale": String(
-      1 - Math.min(headerUtilityDragX / 2500, 0.02),
-    ),
-    "--header-utility-hide-x": `${headerUtilityHideDistance}px`,
-  } as CSSProperties;
-
   const startFastForward = (event: ReactPointerEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -2315,308 +2088,14 @@ export function HomeExperience() {
           onPointerUp={endPointer}
           onPointerCancel={endPointer}
         >
-          <header className="site-header" ref={headerRef}>
-            <a href="#apps" className="wordmark" aria-label="SAME STUDIO home">
-              <span className="wordmark-hover-layer">
-                <span
-                  key={wordmarkPulse.key}
-                  className={`wordmark-change-layer${
-                    wordmarkPulse.key > 0 ? " is-changing" : ""
-                  }${wordmarkPulse.fast ? " is-fast-forward" : ""}`}
-                  data-pulse-key={wordmarkPulse.key}
-                >
-                  SAME STUDIO
-                </span>
-              </span>
-            </a>
-            <div
-              ref={headerUtilityRef}
-              className={`header-utility${
-                headerUtilityDragging ? " is-dragging" : ""
-              }${headerUtilityHidden ? " is-hidden" : ""}`}
-              style={headerUtilityStyle}
-              aria-hidden={headerUtilityHidden}
-              inert={headerUtilityHidden ? true : undefined}
-              onPointerDown={onHeaderUtilityPointerDown}
-              onPointerMove={onHeaderUtilityPointerMove}
-              onPointerUp={(event) => finishHeaderUtilityDrag(event)}
-              onPointerCancel={(event) =>
-                finishHeaderUtilityDrag(event, true)
-              }
-              onClickCapture={(event) => {
-                if (!headerUtilitySuppressClickRef.current) return;
-                event.preventDefault();
-                event.stopPropagation();
-                headerUtilitySuppressClickRef.current = false;
-              }}
-            >
-              <div
-                className="header-utility-bar"
-                aria-label={messages.header.controlsLabel}
-              >
-                <button
-                  ref={headerLanguageButtonRef}
-                  type="button"
-                  className="header-utility-segment language-control"
-                  aria-label={messages.header.languageButtonLabel}
-                  aria-expanded={languageOpen}
-                  aria-controls="language-panel"
-                  aria-haspopup="menu"
-                  tabIndex={headerUtilityHidden ? -1 : 0}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setLanguageOpen((open) => !open);
-                  }}
-                >
-                  <svg
-                    className="language-control-icon"
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M3.6 9h16.8M3.6 15h16.8M12 3c2.15 2.35 3.25 5.35 3.25 9S14.15 18.65 12 21M12 3c-2.15 2.35-3.25 5.35-3.25 9S9.85 18.65 12 21" />
-                  </svg>
-                  <span>LANG</span>
-                </button>
-                <span className="header-utility-divider" aria-hidden="true" />
-                <button
-                  type="button"
-                  className="header-utility-segment dark-control"
-                  aria-label={
-                    theme === "dark"
-                      ? messages.header.switchToLightMode
-                      : messages.header.switchToDarkMode
-                  }
-                  aria-pressed={theme === "dark"}
-                  tabIndex={headerUtilityHidden ? -1 : 0}
-                  onClick={() => {
-                    setLanguageOpen(false);
-                    toggleTheme();
-                    setDarkPressKey((key) => key + 1);
-                  }}
-                >
-                  <span
-                    key={`${theme}-${darkPressKey}`}
-                    className={`dark-control-icon${darkPressKey > 0 ? " is-pressing" : ""}`}
-                    aria-hidden="true"
-                  >
-                    {theme === "dark" ? (
-                      <svg
-                        width="17"
-                        height="17"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      >
-                        <circle cx="12" cy="12" r="3.6" />
-                        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" />
-                      </svg>
-                    ) : (
-                      <svg
-                        width="17"
-                        height="17"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M20.1 15.25A8.25 8.25 0 0 1 8.75 3.9 8.25 8.25 0 1 0 20.1 15.25Z" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
-                <span className="header-utility-divider" aria-hidden="true" />
-                <button
-                  type="button"
-                  className="header-utility-segment audio-control"
-                  aria-label={
-                    backgroundAudioMuted
-                      ? messages.header.turnBackgroundMusicOn
-                      : messages.header.turnBackgroundMusicOff
-                  }
-                  aria-pressed={!backgroundAudioMuted}
-                  title={
-                    backgroundAudioMuted
-                      ? messages.header.turnBackgroundMusicOn
-                      : messages.header.turnBackgroundMusicOff
-                  }
-                  tabIndex={headerUtilityHidden ? -1 : 0}
-                  onClick={() => {
-                    setLanguageOpen(false);
-                    toggleBackgroundAudio();
-                  }}
-                >
-                  <span className="audio-control-icon" aria-hidden="true">
-                    {backgroundAudioMuted ? (
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M11 5 6.8 8.5H4.5v7h2.3L11 19V5Z" />
-                        <path d="m16 9 5 5M21 9l-5 5" />
-                      </svg>
-                    ) : (
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M11 5 6.8 8.5H4.5v7h2.3L11 19V5Z" />
-                        <path d="M15.5 8.1a5.5 5.5 0 0 1 0 7.8M18.4 5.2a9.5 9.5 0 0 1 0 13.6" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
-              </div>
-            </div>
-            <div
-              ref={languagePanelRef}
-              id="language-panel"
-              className={`language-panel${languageOpen ? " is-open" : ""}`}
-              role="menu"
-              aria-label={messages.header.languageOptionsLabel}
-              aria-hidden={!languageOpen}
-              onKeyDown={(event) => {
-                if (
-                  event.key !== "ArrowDown" &&
-                  event.key !== "ArrowUp" &&
-                  event.key !== "Home" &&
-                  event.key !== "End"
-                ) {
-                  return;
-                }
-
-                const options = Array.from(
-                  event.currentTarget.querySelectorAll<HTMLButtonElement>(
-                    '[role="menuitemradio"]',
-                  ),
-                );
-                const currentIndex = options.indexOf(
-                  document.activeElement as HTMLButtonElement,
-                );
-                const nextIndex =
-                  event.key === "Home"
-                    ? 0
-                    : event.key === "End"
-                      ? options.length - 1
-                      : event.key === "ArrowDown"
-                        ? (currentIndex + 1) % options.length
-                        : (currentIndex - 1 + options.length) % options.length;
-
-                event.preventDefault();
-                options[nextIndex]?.focus({ preventScroll: true });
-              }}
-            >
-              {LANGUAGE_OPTIONS.map((language) => (
-                <button
-                  key={language.code}
-                  type="button"
-                  className="language-option"
-                  role="menuitemradio"
-                  aria-checked={locale === language.code}
-                  onClick={() => {
-                    setLocale(language.code);
-                    setLanguageOpen(false);
-                  }}
-                >
-                  <span className="language-label">
-                    {messages.header.languageNames[language.code]}
-                  </span>
-                  <span
-                    className="language-selected-indicator"
-                    aria-hidden="true"
-                  />
-                </button>
-              ))}
-            </div>
-            <button
-              ref={headerUtilityHandleRef}
-              type="button"
-              className={`header-utility-handle${
-                headerUtilityHidden ? " is-visible" : ""
-              }`}
-              aria-label={messages.header.controlsButtonLabel}
-              aria-hidden={!headerUtilityHidden}
-              tabIndex={headerUtilityHidden ? 0 : -1}
-              onClick={() => {
-                setLanguageOpen(false);
-                setHeaderUtilityDragX(0);
-                setHeaderUtilityHidden(false);
-              }}
-            >
-              <span
-                key={headerUtilityHintKey}
-                className={headerUtilityHintKey > 0 ? "is-hinting" : ""}
-                aria-hidden="true"
-              >
-                ‹
-              </span>
-            </button>
-            <nav
-              id="site-menu"
-              className={menuOpen ? "is-open" : ""}
-              aria-label="Primary navigation"
-            >
-              <a href="#about" onClick={() => setMenuOpen(false)}>ABOUT</a>
-              <a href="#apps" onClick={() => setMenuOpen(false)}>APPS</a>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>CONTACT</a>
-              <a
-                href="/support/"
-                className={archivePortal?.documentTitle === "SUPPORT" ? "is-archive-selected" : undefined}
-                onClick={(event) => beginArchiveTransition(event, "SUPPORT", "/support/")}
-              >
-                SUPPORT
-              </a>
-              <a
-                href="/terms/"
-                className={archivePortal?.documentTitle === "TERMS" ? "is-archive-selected" : undefined}
-                onClick={(event) => beginArchiveTransition(event, "TERMS", "/terms/")}
-              >
-                TERMS
-              </a>
-              <a
-                href="/privacy/"
-                className={archivePortal?.documentTitle === "PRIVACY" ? "is-archive-selected" : undefined}
-                onClick={(event) => beginArchiveTransition(event, "PRIVACY", "/privacy/")}
-              >
-                PRIVACY
-              </a>
-            </nav>
-            <button
-              type="button"
-              className="menu-control"
-              aria-expanded={menuOpen}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-controls="site-menu"
-              onClick={() => {
-                setLanguageOpen(false);
-                setMenuOpen((open) => !open);
-              }}
-            >
-              <span />
-              <span />
-            </button>
-          </header>
+          <SiteHeader
+            homePage
+            wordmarkPulse={wordmarkPulse}
+            reducedMotion={reducedMotion}
+            selectedArchiveTitle={archivePortal?.documentTitle}
+            onMenuOpenChange={setMenuOpen}
+            onArchiveNavigate={beginArchiveTransition}
+          />
 
           <div className="ambient-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
@@ -3037,70 +2516,7 @@ export function HomeExperience() {
         </TypeRevealGroup>
 
       </main>
-      <footer>
-        <div className="footer-inner">
-          <div className="footer-social" aria-label="SAME STUDIO social links">
-            <a href="https://github.com/StuidoSame" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO GitHub"><SocialIcon platform="github" /></a>
-            <a href="https://x.com/samechan0412" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO X"><SocialIcon platform="x" /></a>
-            <a href="https://www.instagram.com/do.ob0909" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Instagram"><SocialIcon platform="instagram" /></a>
-            <a href="https://www.threads.com/@do.ob0909?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="SAME STUDIO Threads"><SocialIcon platform="threads" /></a>
-          </div>
-          <p className="footer-copyright">© 2026 SAME STUDIO</p>
-          <div className="footer-business">
-            <span
-              className="footer-business-row"
-              key={`${locale}-business-name`}
-            >
-              <span className="footer-business-label">
-                {messages.footer.businessNameLabel}:
-              </span>
-              <span className="footer-business-value">
-                {FOOTER_BUSINESS_VALUES.businessName}
-              </span>
-            </span>
-            <span
-              className="footer-business-row"
-              key={`${locale}-registration-number`}
-            >
-              <span className="footer-business-label">
-                {messages.footer.businessRegistrationLabel}:
-              </span>
-              <span className="footer-business-value" lang="en">
-                {FOOTER_BUSINESS_VALUES.registrationNumber}
-              </span>
-            </span>
-            <span
-              className="footer-business-row"
-              key={`${locale}-representative`}
-            >
-              <span className="footer-business-label">
-                {messages.footer.representativeLabel}:
-              </span>
-              <span className="footer-business-value footer-owner-value">
-                <span className="footer-owner-name-ko">김동찬</span>{" "}
-                <span className="footer-owner-name-en" lang="en">
-                  KIM DONGCHAN
-                </span>
-              </span>
-            </span>
-            <span
-              className="footer-business-row"
-              key={`${locale}-email`}
-            >
-              <span className="footer-business-label">
-                {messages.footer.emailLabel}:
-              </span>
-              <a
-                className="footer-business-value"
-                href={`mailto:${FOOTER_BUSINESS_VALUES.email}`}
-                lang="en"
-              >
-                {FOOTER_BUSINESS_VALUES.email}
-              </a>
-            </span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter currentPage="home" />
       <ArchivePortalTransition
         transition={archivePortal}
         reducedMotion={reducedMotion}

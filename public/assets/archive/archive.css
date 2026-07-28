@@ -43,7 +43,7 @@ html {
   font-family: "BMJUA", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-body {
+body.archive-page {
   min-width: 320px;
   min-height: 100dvh;
   margin: 0;
@@ -58,21 +58,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-body.is-returning {
+body.archive-page.is-returning {
   overflow: hidden;
 }
 
-a {
+.archive-page a {
   color: inherit;
   text-decoration: none;
 }
 
-button,
-a {
+.archive-page button,
+.archive-page a {
   -webkit-tap-highlight-color: transparent;
 }
 
-:focus-visible {
+.archive-page :focus-visible {
   outline: 2px solid rgba(207, 178, 255, 0.76);
   outline-offset: 5px;
 }
@@ -175,6 +175,19 @@ a {
   flex-direction: column;
   transform-origin: var(--archive-portal-x) var(--archive-portal-y);
   animation: archive-shell-arrive 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
+}
+
+.policy-page-layout {
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+.policy-page-layout .site-header {
+  position: absolute;
+}
+
+.policy-page-content {
+  padding-top: clamp(132px, 13vw, 176px);
 }
 
 .archive-header {
@@ -542,6 +555,10 @@ a {
     padding-top: 64px;
   }
 
+  .policy-page-content {
+    padding-top: 116px;
+  }
+
   .archive-document h1 {
     font-size: clamp(48px, 18vw, 74px);
   }
@@ -611,12 +628,11 @@ a {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  html,
-  body {
+  body.archive-page {
     cursor: url("/assets/cursor/cursor-default.svg") 3 3, auto;
   }
 
-  a {
+  .archive-page a {
     cursor: url("/assets/cursor/cursor-pointer.svg") 12 12, pointer;
   }
 }
