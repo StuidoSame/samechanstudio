@@ -7,7 +7,7 @@ import {
   useState,
   type FormEvent,
   type KeyboardEvent,
-  type MouseEvent,
+  type PointerEvent,
   type ReactNode,
 } from "react";
 import { useI18n } from "../../i18n/I18nProvider";
@@ -339,11 +339,22 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
   const answerLimitReached = answers.length >= 3;
   const answerInputDisabled = answerLimitReached || !typingComplete;
 
-  const focusAnswerInput = (event: MouseEvent<HTMLFormElement>) => {
-    if (answerInputDisabled || (event.target as HTMLElement).closest("button")) {
+  const handleAnswerShellPointerDown = (
+    event: PointerEvent<HTMLFormElement>,
+  ) => {
+    const target = event.target;
+
+    if (
+      answerInputDisabled ||
+      !(target instanceof HTMLElement) ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLInputElement ||
+      target.closest("button")
+    ) {
       return;
     }
 
+    event.preventDefault();
     answerInputRef.current?.focus();
   };
 
@@ -422,7 +433,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                   ) : (
                     <form
                       className={`phone-daily-form${answers.length === 0 ? " is-after-examples" : ""}${answerInputDisabled ? " is-disabled" : ""}`}
-                      onClick={focusAnswerInput}
+                      onPointerDown={handleAnswerShellPointerDown}
                       onSubmit={submitAnswer}
                     >
                       <textarea
@@ -444,6 +455,7 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
                         type="submit"
                         aria-label={messages.dailyQuestion.saveButtonLabel}
                         disabled={answerLimitReached || !answerDraft.trim()}
+                        onPointerDown={(event) => event.stopPropagation()}
                         onClick={(event) => event.stopPropagation()}
                       >
                         <span aria-hidden="true">✓</span>
