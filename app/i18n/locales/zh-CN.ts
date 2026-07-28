@@ -2,7 +2,7 @@ import type { TranslationMessages } from "../types";
 
 export const zhCN = {
   header: {
-    controlsLabel: "语言与主题控件",
+    controlsLabel: "语言、文字大小与主题控件",
     languageButtonLabel: "选择语言",
     languageOptionsLabel: "语言选项",
     languageNames: {
@@ -12,11 +12,17 @@ export const zhCN = {
       "zh-CN": "简体中文",
       "zh-TW": "繁體中文",
     },
-    controlsButtonLabel: "打开语言与主题按钮",
+    controlsButtonLabel: "打开页眉设置",
     switchToDarkMode: "切换到深色模式",
     switchToLightMode: "切换到浅色模式",
     turnBackgroundMusicOn: "开启背景音乐",
     turnBackgroundMusicOff: "关闭背景音乐",
+    textSizeLabel: "文字大小",
+    textSizeSmall: "小",
+    textSizeDefault: "默认",
+    textSizeLarge: "大",
+    openTextSizeMenu: "打开文字大小菜单",
+    closeTextSizeMenu: "关闭文字大小菜单",
   },
   carousel: {
     pauseAutoplay: "暂停自动播放",

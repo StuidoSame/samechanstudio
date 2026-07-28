@@ -2,7 +2,7 @@ import type { TranslationMessages } from "../types";
 
 export const ja = {
   header: {
-    controlsLabel: "言語とテーマのコントロール",
+    controlsLabel: "言語、文字サイズ、テーマのコントロール",
     languageButtonLabel: "言語を選択",
     languageOptionsLabel: "言語の選択肢",
     languageNames: {
@@ -12,11 +12,17 @@ export const ja = {
       "zh-CN": "简体中文",
       "zh-TW": "繁體中文",
     },
-    controlsButtonLabel: "言語とテーマのボタンを開く",
+    controlsButtonLabel: "ヘッダー設定を開く",
     switchToDarkMode: "ダークモードに切り替え",
     switchToLightMode: "ライトモードに切り替え",
     turnBackgroundMusicOn: "BGMをオンにする",
     turnBackgroundMusicOff: "BGMをオフにする",
+    textSizeLabel: "文字サイズ",
+    textSizeSmall: "小",
+    textSizeDefault: "標準",
+    textSizeLarge: "大",
+    openTextSizeMenu: "文字サイズメニューを開く",
+    closeTextSizeMenu: "文字サイズメニューを閉じる",
   },
   carousel: {
     pauseAutoplay: "自動再生を一時停止",

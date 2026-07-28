@@ -7,6 +7,11 @@ import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { useFontSize } from "../accessibility/FontSizeProvider";
+import {
+  FONT_SIZE_OPTIONS,
+  type FontSize,
+} from "../accessibility/types";
 import { useBackgroundAudio } from "../audio/BackgroundAudioProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import type { Locale } from "../i18n/types";
@@ -37,10 +42,12 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const { locale, messages, setLocale } = useI18n();
   const { theme, toggleTheme } = useTheme();
+  const { fontSize, setFontSize } = useFontSize();
   const { muted: backgroundAudioMuted, toggleMuted: toggleBackgroundAudio } =
     useBackgroundAudio();
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [fontSizeOpen, setFontSizeOpen] = useState(false);
   const [darkPressKey, setDarkPressKey] = useState(0);
   const [wordmarkPulseKey, setWordmarkPulseKey] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -54,6 +61,9 @@ export function SiteHeader({
   const headerLanguageButtonRef = useRef<HTMLButtonElement>(null);
   const languagePanelRef = useRef<HTMLDivElement>(null);
   const languagePanelWasOpenRef = useRef(false);
+  const headerFontSizeButtonRef = useRef<HTMLButtonElement>(null);
+  const fontSizePanelRef = useRef<HTMLDivElement>(null);
+  const fontSizePanelWasOpenRef = useRef(false);
   const headerUtilityHandleRef = useRef<HTMLButtonElement>(null);
   const headerUtilityWasHiddenRef = useRef(false);
   const headerUtilitySuppressClickRef = useRef(false);
@@ -96,7 +106,7 @@ export function SiteHeader({
   }, [reducedMotion]);
 
   useEffect(() => {
-    if (!menuOpen && !languageOpen) return;
+    if (!menuOpen && !languageOpen && !fontSizeOpen) return;
 
     const closeOnOutsidePointer = (event: PointerEvent) => {
       if (!(event.target instanceof Node)) return;
@@ -107,6 +117,13 @@ export function SiteHeader({
       ) {
         setLanguageOpen(false);
       }
+      if (
+        fontSizeOpen &&
+        !fontSizePanelRef.current?.contains(event.target) &&
+        !headerFontSizeButtonRef.current?.contains(event.target)
+      ) {
+        setFontSizeOpen(false);
+      }
       if (menuOpen && !headerRef.current?.contains(event.target)) {
         setMenuOpen(false);
       }
@@ -115,6 +132,7 @@ export function SiteHeader({
       if (event.key !== "Escape") return;
       setMenuOpen(false);
       setLanguageOpen(false);
+      setFontSizeOpen(false);
     };
 
     window.addEventListener("pointerdown", closeOnOutsidePointer);
@@ -123,7 +141,7 @@ export function SiteHeader({
       window.removeEventListener("pointerdown", closeOnOutsidePointer);
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [languageOpen, menuOpen]);
+  }, [fontSizeOpen, languageOpen, menuOpen]);
 
   useEffect(() => {
     if (languageOpen) {
@@ -143,6 +161,25 @@ export function SiteHeader({
       headerLanguageButtonRef.current?.focus({ preventScroll: true });
     }
   }, [languageOpen]);
+
+  useEffect(() => {
+    if (fontSizeOpen) {
+      fontSizePanelWasOpenRef.current = true;
+      const focusTimer = window.setTimeout(() => {
+        fontSizePanelRef.current
+          ?.querySelector<HTMLButtonElement>(
+            '[role="radio"][aria-checked="true"]',
+          )
+          ?.focus({ preventScroll: true });
+      }, 0);
+      return () => window.clearTimeout(focusTimer);
+    }
+
+    if (fontSizePanelWasOpenRef.current) {
+      fontSizePanelWasOpenRef.current = false;
+      headerFontSizeButtonRef.current?.focus({ preventScroll: true });
+    }
+  }, [fontSizeOpen]);
 
   useEffect(() => {
     if (!headerUtilityHidden || reducedMotion) return;
@@ -226,6 +263,7 @@ export function SiteHeader({
         rect ? Math.max(window.innerWidth - rect.left + 24, 0) : window.innerWidth,
       );
       setLanguageOpen(false);
+      setFontSizeOpen(false);
       setHeaderUtilityHidden(true);
     }
     drag.id = -1;
@@ -252,6 +290,12 @@ export function SiteHeader({
   const closeMenus = () => {
     setMenuOpen(false);
     setLanguageOpen(false);
+    setFontSizeOpen(false);
+  };
+  const getFontSizeLabel = (size: FontSize) => {
+    if (size === "small") return messages.header.textSizeSmall;
+    if (size === "large") return messages.header.textSizeLarge;
+    return messages.header.textSizeDefault;
   };
   const sectionPrefix = homePage ? "" : "/";
   const wordmarkHref = "/";
@@ -311,11 +355,37 @@ export function SiteHeader({
             tabIndex={headerUtilityHidden ? -1 : 0}
             onClick={() => {
               setMenuOpen(false);
+              setFontSizeOpen(false);
               setLanguageOpen((open) => !open);
             }}
           >
             <svg className="language-control-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3.6 9h16.8M3.6 15h16.8M12 3c2.15 2.35 3.25 5.35 3.25 9S14.15 18.65 12 21M12 3c-2.15 2.35-3.25 5.35-3.25 9S9.85 18.65 12 21" /></svg>
             <span>LANG</span>
+          </button>
+          <span className="header-utility-divider" aria-hidden="true" />
+          <button
+            ref={headerFontSizeButtonRef}
+            type="button"
+            className="header-utility-segment font-size-control"
+            aria-label={
+              fontSizeOpen
+                ? messages.header.closeTextSizeMenu
+                : messages.header.openTextSizeMenu
+            }
+            aria-expanded={fontSizeOpen}
+            aria-controls="font-size-panel"
+            title={`${messages.header.textSizeLabel}: ${getFontSizeLabel(fontSize)}`}
+            tabIndex={headerUtilityHidden ? -1 : 0}
+            onClick={() => {
+              setMenuOpen(false);
+              setLanguageOpen(false);
+              setFontSizeOpen((open) => !open);
+            }}
+          >
+            <span className="font-size-control-icon" aria-hidden="true">
+              <span>A</span>
+              <span>a</span>
+            </span>
           </button>
           <span className="header-utility-divider" aria-hidden="true" />
           <button
@@ -326,6 +396,7 @@ export function SiteHeader({
             tabIndex={headerUtilityHidden ? -1 : 0}
             onClick={() => {
               setLanguageOpen(false);
+              setFontSizeOpen(false);
               toggleTheme();
               setDarkPressKey((key) => key + 1);
             }}
@@ -348,6 +419,7 @@ export function SiteHeader({
             tabIndex={headerUtilityHidden ? -1 : 0}
             onClick={() => {
               setLanguageOpen(false);
+              setFontSizeOpen(false);
               toggleBackgroundAudio();
             }}
           >
@@ -384,6 +456,78 @@ export function SiteHeader({
           </button>
         ))}
       </div>
+      <div
+        ref={fontSizePanelRef}
+        id="font-size-panel"
+        className={`font-size-panel${fontSizeOpen ? " is-open" : ""}`}
+        role="radiogroup"
+        aria-label={messages.header.textSizeLabel}
+        aria-hidden={!fontSizeOpen}
+        onKeyDown={(event) => {
+          if (["Enter", " ", "Space", "Spacebar"].includes(event.key)) {
+            const option =
+              event.target instanceof HTMLButtonElement &&
+              event.target.getAttribute("role") === "radio"
+                ? event.target
+                : null;
+            if (option) {
+              event.preventDefault();
+              option.click();
+              return;
+            }
+          }
+          if (![
+            "ArrowDown",
+            "ArrowUp",
+            "ArrowLeft",
+            "ArrowRight",
+            "Home",
+            "End",
+          ].includes(event.key)) {
+            return;
+          }
+          const options = Array.from(
+            event.currentTarget.querySelectorAll<HTMLButtonElement>(
+              '[role="radio"]',
+            ),
+          );
+          const currentIndex = options.indexOf(
+            document.activeElement as HTMLButtonElement,
+          );
+          const nextIndex =
+            event.key === "Home"
+              ? 0
+              : event.key === "End"
+                ? options.length - 1
+                : event.key === "ArrowDown" || event.key === "ArrowRight"
+                  ? (currentIndex + 1) % options.length
+                  : (currentIndex - 1 + options.length) % options.length;
+          event.preventDefault();
+          options[nextIndex]?.focus({ preventScroll: true });
+        }}
+      >
+        <p className="font-size-panel-title">{messages.header.textSizeLabel}</p>
+        {FONT_SIZE_OPTIONS.map((size) => (
+          <button
+            key={size}
+            type="button"
+            className="font-size-option"
+            role="radio"
+            aria-checked={fontSize === size}
+            data-font-size-option={size}
+            onClick={() => {
+              setFontSize(size);
+              setFontSizeOpen(false);
+            }}
+          >
+            <span>{getFontSizeLabel(size)}</span>
+            <span className="font-size-preview" aria-hidden="true">
+              Aa
+            </span>
+            <span className="language-selected-indicator" aria-hidden="true" />
+          </button>
+        ))}
+      </div>
       <button
         ref={headerUtilityHandleRef}
         type="button"
@@ -393,6 +537,7 @@ export function SiteHeader({
         tabIndex={headerUtilityHidden ? 0 : -1}
         onClick={() => {
           setLanguageOpen(false);
+          setFontSizeOpen(false);
           setHeaderUtilityDragX(0);
           setHeaderUtilityHidden(false);
         }}
@@ -433,6 +578,7 @@ export function SiteHeader({
         aria-controls="site-menu"
         onClick={() => {
           setLanguageOpen(false);
+          setFontSizeOpen(false);
           setMenuOpen((open) => !open);
         }}
       >

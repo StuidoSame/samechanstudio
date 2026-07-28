@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { FontSizeProvider } from "./accessibility/FontSizeProvider";
+import { FONT_SIZE_STORAGE_KEY } from "./accessibility/types";
 import { BackgroundAudioProvider } from "./audio/BackgroundAudioProvider";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { PageTransitionProvider } from "./navigation/PageTransitionProvider";
@@ -26,6 +28,23 @@ const themeInitializationScript = `
       "content",
       theme === "dark" ? "#191522" : "#f3eeff",
     );
+  })();
+`;
+
+const fontSizeInitializationScript = `
+  (() => {
+    const storageKey = ${JSON.stringify(FONT_SIZE_STORAGE_KEY)};
+    let fontSize = "medium";
+    try {
+      const storedFontSize = window.localStorage.getItem(storageKey);
+      if (["small", "medium", "large"].includes(storedFontSize)) {
+        fontSize = storedFontSize;
+      } else if (storedFontSize !== null) {
+        window.localStorage.setItem(storageKey, fontSize);
+      }
+    } catch {}
+
+    document.documentElement.dataset.fontSize = fontSize;
   })();
 `;
 
@@ -80,12 +99,17 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
+        <script
+          dangerouslySetInnerHTML={{ __html: fontSizeInitializationScript }}
+        />
       </head>
       <body>
         <BackgroundAudioProvider>
           <PageTransitionProvider>
             <ThemeProvider>
-              <I18nProvider>{children}</I18nProvider>
+              <FontSizeProvider>
+                <I18nProvider>{children}</I18nProvider>
+              </FontSizeProvider>
             </ThemeProvider>
           </PageTransitionProvider>
         </BackgroundAudioProvider>

@@ -7,6 +7,34 @@
   unicode-range: U+0000-024F, U+1100-11FF, U+3130-318F, U+AC00-D7A3;
 }
 
+.archive-document h1,
+.terms-document .terms-hero h1,
+.privacy-document .privacy-hero h1,
+.support-document .support-hero h1 {
+  --font-scale: var(--display-font-scale);
+}
+
+:root[data-font-size="large"]
+  :is(
+    .legal-archive-document,
+    .support-document,
+    .terms-card,
+    .privacy-card,
+    .privacy-item,
+    .privacy-contact-panel,
+    .support-form-field,
+    .support-faq-item
+  ) {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1024px) {
+  :root[data-font-size="large"] .terms-archive-layout,
+  :root[data-font-size="large"] .privacy-archive-layout {
+    grid-template-columns: minmax(184px, 230px) minmax(0, 1fr);
+  }
+}
+
 /* TERMS — connected legal archive */
 .terms-document {
   position: relative;
@@ -70,7 +98,7 @@
   align-items: center;
   gap: 12px;
   color: rgba(209, 181, 247, 0.6);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.19em;
   line-height: 1.3;
 }
@@ -78,7 +106,7 @@
 .terms-kicker span:first-child,
 .terms-card-heading span {
   color: rgba(198, 164, 245, 0.42);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
 }
 
 .terms-kicker i,
@@ -91,7 +119,7 @@
 .terms-document .terms-hero h1 {
   margin: clamp(24px, 3.5vw, 42px) 0 0;
   color: rgba(247, 240, 255, 0.95);
-  font-size: clamp(62px, 9.4vw, 124px);
+  font-size: calc(clamp(62px, 9.4vw, 124px) * var(--font-scale));
   line-height: 0.86;
   letter-spacing: -0.045em;
   text-shadow: 0 0 42px rgba(168, 112, 236, 0.18);
@@ -101,7 +129,7 @@
   max-width: 590px;
   margin: clamp(24px, 3vw, 34px) 0 0;
   color: rgba(232, 218, 250, 0.72);
-  font-size: clamp(13px, 1.35vw, 16px);
+  font-size: calc(clamp(13px, 1.35vw, 16px) * var(--font-scale));
   line-height: 1.85;
   word-break: keep-all;
 }
@@ -109,7 +137,7 @@
 .terms-updated {
   margin: 23px 0 0;
   color: rgba(203, 177, 237, 0.42);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.17em;
 }
 
@@ -154,28 +182,28 @@
   top: 22px;
   right: 24px;
   color: rgba(200, 169, 242, 0.24);
-  font-size: 22px;
+  font-size: calc(22px * var(--font-scale));
   letter-spacing: -0.02em;
 }
 
 .terms-summary-label {
   margin: 0;
   color: rgba(205, 174, 245, 0.58);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.19em;
 }
 
 .terms-summary-card h2 {
   margin: 23px 0 0;
   color: rgba(244, 235, 255, 0.92);
-  font-size: clamp(18px, 2vw, 24px);
+  font-size: calc(clamp(18px, 2vw, 24px) * var(--font-scale));
   font-weight: 400;
 }
 
 .terms-summary-card > p:last-child {
   margin: 14px 0 0;
   color: rgba(218, 201, 239, 0.56);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   line-height: 1.75;
   word-break: keep-all;
 }
@@ -203,7 +231,7 @@
 .terms-contents > p {
   margin: 0 8px 14px;
   color: rgba(203, 171, 246, 0.5);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.2em;
 }
 
@@ -225,7 +253,7 @@
   color: rgba(221, 205, 241, 0.48);
   background: transparent;
   font: inherit;
-  font-size: 11px;
+  font-size: calc(11px * var(--font-scale));
   text-align: left;
   cursor: pointer;
   transition: color 180ms ease, background 180ms ease, transform 180ms ease;
@@ -234,7 +262,7 @@
 .terms-contents button span {
   min-width: 20px;
   color: rgba(198, 164, 245, 0.34);
-  font-size: 8px;
+  font-size: calc(8px * var(--font-scale));
   letter-spacing: 0.12em;
 }
 
@@ -334,7 +362,7 @@
 .terms-card h2 {
   margin: clamp(27px, 4vw, 42px) 0 0;
   color: rgba(245, 237, 255, 0.94);
-  font-size: clamp(30px, 4.4vw, 48px);
+  font-size: calc(clamp(30px, 4.4vw, 48px) * var(--font-scale));
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: -0.025em;
@@ -349,7 +377,7 @@
 .terms-copy p {
   margin: 0;
   color: rgba(224, 209, 243, 0.64);
-  font-size: clamp(13px, 1.35vw, 15px);
+  font-size: calc(clamp(13px, 1.35vw, 15px) * var(--font-scale));
   line-height: 1.92;
   word-break: keep-all;
 }
@@ -406,14 +434,14 @@
 
 .terms-quote span {
   color: rgba(200, 166, 242, 0.48);
-  font-size: 8px;
+  font-size: calc(8px * var(--font-scale));
   letter-spacing: 0.2em;
 }
 
 .terms-quote p {
   margin: 15px auto 0;
   color: rgba(241, 231, 253, 0.82);
-  font-size: clamp(17px, 2.25vw, 26px);
+  font-size: calc(clamp(17px, 2.25vw, 26px) * var(--font-scale));
   line-height: 1.5;
 }
 
@@ -537,7 +565,7 @@
 
   .terms-kicker {
     gap: 9px;
-    font-size: 8.5px;
+    font-size: calc(8.5px * var(--font-scale));
   }
 
   .terms-kicker i {
@@ -546,18 +574,18 @@
 
   .terms-document .terms-hero h1 {
     margin-top: 25px;
-    font-size: clamp(58px, 21vw, 82px);
+    font-size: calc(clamp(58px, 21vw, 82px) * var(--font-scale));
   }
 
   .terms-hero-description {
     margin-top: 25px;
-    font-size: 12px;
+    font-size: calc(12px * var(--font-scale));
     line-height: 1.8;
   }
 
   .terms-updated {
     margin-top: 19px;
-    font-size: 8px;
+    font-size: calc(8px * var(--font-scale));
   }
 
   .terms-summary-card {
@@ -589,7 +617,7 @@
 
   .terms-card-heading {
     gap: 9px;
-    font-size: 8px;
+    font-size: calc(8px * var(--font-scale));
   }
 
   .terms-card-heading i {
@@ -598,7 +626,7 @@
 
   .terms-card h2 {
     margin-top: 24px;
-    font-size: 30px;
+    font-size: calc(30px * var(--font-scale));
   }
 
   .terms-copy {
@@ -607,7 +635,7 @@
   }
 
   .terms-copy p {
-    font-size: 12px;
+    font-size: calc(12px * var(--font-scale));
     line-height: 1.9;
   }
 
@@ -715,7 +743,7 @@
   align-items: center;
   gap: 12px;
   color: rgba(209, 181, 247, 0.62);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.19em;
   line-height: 1.3;
 }
@@ -723,7 +751,7 @@
 .privacy-kicker span:first-child,
 .privacy-card-heading span {
   color: rgba(198, 164, 245, 0.42);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
 }
 
 .privacy-kicker i,
@@ -736,7 +764,7 @@
 .privacy-document .privacy-hero h1 {
   margin: clamp(24px, 3.5vw, 42px) 0 0;
   color: rgba(247, 240, 255, 0.95);
-  font-size: clamp(58px, 8.9vw, 118px);
+  font-size: calc(clamp(58px, 8.9vw, 118px) * var(--font-scale));
   line-height: 0.86;
   letter-spacing: -0.045em;
   text-shadow: 0 0 44px rgba(168, 112, 236, 0.2);
@@ -746,7 +774,7 @@
   max-width: 620px;
   margin: clamp(25px, 3vw, 35px) 0 0;
   color: rgba(232, 218, 250, 0.74);
-  font-size: clamp(13px, 1.35vw, 16px);
+  font-size: calc(clamp(13px, 1.35vw, 16px) * var(--font-scale));
   line-height: 1.85;
   word-break: keep-all;
 }
@@ -756,7 +784,7 @@
 .privacy-updated {
   margin: 23px 0 0;
   color: rgba(203, 177, 237, 0.44);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.17em;
 }
 
@@ -801,27 +829,27 @@
   top: 22px;
   right: 24px;
   color: rgba(200, 169, 242, 0.24);
-  font-size: 22px;
+  font-size: calc(22px * var(--font-scale));
 }
 
 .privacy-summary-label {
   margin: 0;
   color: rgba(205, 174, 245, 0.6);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.19em;
 }
 
 .privacy-summary-card h2 {
   margin: 23px 0 0;
   color: rgba(244, 235, 255, 0.92);
-  font-size: clamp(18px, 2vw, 24px);
+  font-size: calc(clamp(18px, 2vw, 24px) * var(--font-scale));
   font-weight: 400;
 }
 
 .privacy-summary-card > p:last-child {
   margin: 14px 0 0;
   color: rgba(218, 201, 239, 0.57);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   line-height: 1.75;
   word-break: keep-all;
 }
@@ -851,7 +879,7 @@
 .privacy-contents > p {
   margin: 0 8px 14px;
   color: rgba(203, 171, 246, 0.52);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.2em;
 }
 
@@ -869,7 +897,7 @@
   color: rgba(221, 205, 241, 0.48);
   background: transparent;
   font: inherit;
-  font-size: 11px;
+  font-size: calc(11px * var(--font-scale));
   text-align: left;
   cursor: pointer;
   transition: color 180ms ease, background 180ms ease, transform 180ms ease;
@@ -878,7 +906,7 @@
 .privacy-contents button span {
   min-width: 20px;
   color: rgba(198, 164, 245, 0.34);
-  font-size: 8px;
+  font-size: calc(8px * var(--font-scale));
   letter-spacing: 0.12em;
 }
 
@@ -952,7 +980,7 @@
 .privacy-card h2 {
   margin: clamp(27px, 4vw, 42px) 0 0;
   color: rgba(245, 237, 255, 0.94);
-  font-size: clamp(30px, 4.4vw, 48px);
+  font-size: calc(clamp(30px, 4.4vw, 48px) * var(--font-scale));
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -962,7 +990,7 @@
   max-width: 760px;
   margin: 24px 0 0;
   color: rgba(231, 217, 248, 0.7);
-  font-size: clamp(13px, 1.35vw, 15px);
+  font-size: calc(clamp(13px, 1.35vw, 15px) * var(--font-scale));
   line-height: 1.9;
   word-break: keep-all;
 }
@@ -994,7 +1022,7 @@
 .privacy-item > p {
   margin: 0;
   color: rgba(201, 168, 244, 0.51);
-  font-size: 8px;
+  font-size: calc(8px * var(--font-scale));
   letter-spacing: 0.15em;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -1003,7 +1031,7 @@
 .privacy-item h3 {
   margin: 14px 0 0;
   color: rgba(243, 234, 254, 0.86);
-  font-size: 16px;
+  font-size: calc(16px * var(--font-scale));
   font-weight: 400;
   line-height: 1.35;
 }
@@ -1011,7 +1039,7 @@
 .privacy-item > div {
   margin-top: 12px;
   color: rgba(219, 203, 239, 0.56);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   line-height: 1.8;
   word-break: keep-all;
 }
@@ -1025,7 +1053,7 @@
 .privacy-copy p {
   margin: 0;
   color: rgba(224, 209, 243, 0.64);
-  font-size: clamp(13px, 1.35vw, 15px);
+  font-size: calc(clamp(13px, 1.35vw, 15px) * var(--font-scale));
   line-height: 1.92;
   word-break: keep-all;
 }
@@ -1044,7 +1072,7 @@
   border-radius: 999px;
   color: rgba(239, 225, 255, 0.82);
   background: rgba(121, 78, 174, 0.14);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.12em;
   transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
 }
@@ -1076,11 +1104,11 @@
   border-radius: 16px;
   color: rgba(232, 219, 247, 0.68);
   background: rgba(72, 50, 96, 0.1);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   line-height: 1.5;
 }
 
-.privacy-rights-list span { color: rgba(196, 157, 243, 0.45); font-size: 9px; }
+.privacy-rights-list span { color: rgba(196, 157, 243, 0.45); font-size: calc(9px * var(--font-scale)); }
 
 .privacy-contact-panel {
   margin-top: 32px;
@@ -1090,14 +1118,14 @@
   background: radial-gradient(circle at 90% 0%, rgba(177, 123, 239, 0.11), transparent 17rem), rgba(71, 49, 95, 0.13);
 }
 
-.privacy-contact-panel h3 { margin: 0; color: rgba(244, 235, 255, 0.9); font-size: 20px; font-weight: 400; }
+.privacy-contact-panel h3 { margin: 0; color: rgba(244, 235, 255, 0.9); font-size: calc(20px * var(--font-scale)); font-weight: 400; }
 .privacy-contact-panel dl { margin: 24px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; overflow: hidden; border: 1px solid rgba(218, 193, 251, 0.09); border-radius: 18px; background: rgba(218, 193, 251, 0.09); }
 .privacy-contact-panel dl > div { min-width: 0; padding: 17px; background: rgba(34, 25, 47, 0.83); }
-.privacy-contact-panel dt { color: rgba(199, 165, 243, 0.49); font-size: 8px; letter-spacing: 0.13em; }
-.privacy-contact-panel dd { margin: 8px 0 0; color: rgba(235, 222, 250, 0.76); font-size: 12px; overflow-wrap: anywhere; }
+.privacy-contact-panel dt { color: rgba(199, 165, 243, 0.49); font-size: calc(8px * var(--font-scale)); letter-spacing: 0.13em; }
+.privacy-contact-panel dd { margin: 8px 0 0; color: rgba(235, 222, 250, 0.76); font-size: calc(12px * var(--font-scale)); overflow-wrap: anywhere; }
 .privacy-contact-panel dd a { transition: color 180ms ease; }
 .privacy-contact-panel dd a:hover { color: #fff; }
-.privacy-contact-panel > p { margin: 24px 0 0; color: rgba(211, 195, 231, 0.48); font-size: 11px; line-height: 1.75; word-break: keep-all; }
+.privacy-contact-panel > p { margin: 24px 0 0; color: rgba(211, 195, 231, 0.48); font-size: calc(11px * var(--font-scale)); line-height: 1.75; word-break: keep-all; }
 
 .privacy-connector { width: 100%; height: 148px; display: block; overflow: visible; }
 .privacy-connector path {
@@ -1169,7 +1197,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) body.archive-page[data-arch
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
-  .privacy-mobile-contents label { color: rgba(202, 169, 244, 0.58); font-size: 8px; letter-spacing: 0.16em; }
+  .privacy-mobile-contents label { color: rgba(202, 169, 244, 0.58); font-size: calc(8px * var(--font-scale)); letter-spacing: 0.16em; }
   .privacy-mobile-contents select {
     width: 100%;
     min-height: 44px;
@@ -1179,7 +1207,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) body.archive-page[data-arch
     color: rgba(242, 233, 253, 0.86);
     background: rgba(69, 49, 92, 0.36);
     font: inherit;
-    font-size: 11px;
+    font-size: calc(11px * var(--font-scale));
   }
   :root[data-theme="light"] body.archive-page[data-archive-document="privacy"] .privacy-mobile-contents { border-color: var(--theme-border); background: var(--theme-surface-strong); box-shadow: 0 16px 42px var(--theme-shadow); }
   :root[data-theme="light"] body.archive-page[data-archive-document="privacy"] .privacy-mobile-contents label { color: var(--theme-accent); }
@@ -1189,24 +1217,24 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) body.archive-page[data-arch
 @media (max-width: 680px) {
   .privacy-hero { min-height: 420px; padding: 37px 24px; border-radius: 30px; }
   .privacy-hero-content { width: 100%; }
-  .privacy-kicker { gap: 9px; font-size: 8.5px; }
+  .privacy-kicker { gap: 9px; font-size: calc(8.5px * var(--font-scale)); }
   .privacy-kicker i { width: 48px; }
-  .privacy-document .privacy-hero h1 { margin-top: 25px; font-size: clamp(52px, 18.8vw, 74px); }
-  .privacy-hero-description { margin-top: 25px; font-size: 12px; line-height: 1.8; }
-  .privacy-updated { margin-top: 19px; font-size: 8px; }
+  .privacy-document .privacy-hero h1 { margin-top: 25px; font-size: calc(clamp(52px, 18.8vw, 74px) * var(--font-scale)); }
+  .privacy-hero-description { margin-top: 25px; font-size: calc(12px * var(--font-scale)); line-height: 1.8; }
+  .privacy-updated { margin-top: 19px; font-size: calc(8px * var(--font-scale)); }
   .privacy-summary-card { padding: 25px 22px; border-radius: 22px; }
   .privacy-mobile-contents { top: 72px; margin-top: 46px; }
   .privacy-mobile-contents label { display: none; }
   .privacy-mobile-contents { grid-template-columns: 1fr; }
   .privacy-card { min-height: 0; margin-left: 17px; padding: 30px 22px 34px; border-radius: 26px; }
   .privacy-route-node { top: 30px; left: -4px; width: 9px; height: 9px; }
-  .privacy-card-heading { gap: 9px; font-size: 8px; }
+  .privacy-card-heading { gap: 9px; font-size: calc(8px * var(--font-scale)); }
   .privacy-card-heading i { width: 38px; }
-  .privacy-card h2 { margin-top: 24px; font-size: 30px; }
-  .privacy-intro { margin-top: 20px; font-size: 12px; line-height: 1.85; }
+  .privacy-card h2 { margin-top: 24px; font-size: calc(30px * var(--font-scale)); }
+  .privacy-intro { margin-top: 20px; font-size: calc(12px * var(--font-scale)); line-height: 1.85; }
   .privacy-item-grid { grid-template-columns: 1fr; margin-top: 25px; padding-top: 22px; }
   .privacy-item { padding: 21px 19px; border-radius: 18px; }
-  .privacy-item > div, .privacy-copy p { font-size: 12px; line-height: 1.88; }
+  .privacy-item > div, .privacy-copy p { font-size: calc(12px * var(--font-scale)); line-height: 1.88; }
   .privacy-rights-list { grid-template-columns: 1fr; }
   .privacy-contact-panel { padding: 22px 18px; border-radius: 22px; }
   .privacy-contact-panel dl { grid-template-columns: 1fr; }
@@ -1423,7 +1451,7 @@ body.archive-page.is-returning {
 .archive-return,
 .archive-current,
 .archive-back {
-  font-size: 11px;
+  font-size: calc(11px * var(--font-scale));
   letter-spacing: 0.12em;
   line-height: 1.4;
 }
@@ -1451,12 +1479,12 @@ body.archive-page.is-returning {
 
 .archive-brand-studio {
   color: var(--archive-text);
-  font-size: 13px;
+  font-size: calc(13px * var(--font-scale));
 }
 
 .archive-brand-label {
   color: var(--archive-accent);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.24em;
 }
 
@@ -1483,7 +1511,7 @@ body.archive-page.is-returning {
 .archive-document h1 {
   margin: 0;
   color: var(--archive-text);
-  font-size: clamp(54px, 8vw, 112px);
+  font-size: calc(clamp(54px, 8vw, 112px) * var(--font-scale));
   font-weight: 400;
   letter-spacing: -0.035em;
   line-height: 0.92;
@@ -1828,14 +1856,14 @@ body.archive-page.is-returning {
   align-items: center;
   gap: 12px;
   color: rgba(209, 181, 247, 0.58);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.19em;
   line-height: 1.3;
 }
 
 .support-hero-index {
   color: rgba(198, 164, 245, 0.4);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.16em;
 }
 
@@ -1848,7 +1876,7 @@ body.archive-page.is-returning {
 .support-document .support-hero h1 {
   margin-top: clamp(18px, 2.1vw, 28px);
   color: rgba(246, 238, 255, 0.94);
-  font-size: clamp(48px, 6.4vw, 88px);
+  font-size: calc(clamp(48px, 6.4vw, 88px) * var(--font-scale));
   line-height: 0.94;
   text-shadow:
     0 0 34px rgba(170, 116, 237, 0.16),
@@ -1859,7 +1887,7 @@ body.archive-page.is-returning {
   max-width: 520px;
   margin: clamp(18px, 2vw, 24px) 0 0;
   color: rgba(232, 218, 250, 0.7);
-  font-size: clamp(13px, 1.2vw, 15px);
+  font-size: calc(clamp(13px, 1.2vw, 15px) * var(--font-scale));
   line-height: 1.8;
   letter-spacing: 0.005em;
   white-space: pre-line;
@@ -1953,7 +1981,7 @@ body.archive-page.is-returning {
   align-items: center;
   gap: 12px;
   color: var(--archive-text-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   letter-spacing: 0.12em;
 }
 
@@ -2018,7 +2046,7 @@ body.archive-page.is-returning {
 .support-response-card h2 {
   margin: 0;
   color: rgba(244, 235, 255, 0.92);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   font-weight: 400;
   letter-spacing: 0.18em;
   line-height: 1.2;
@@ -2026,7 +2054,7 @@ body.archive-page.is-returning {
 
 .support-eyebrow-index {
   color: rgba(198, 164, 245, 0.46);
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   letter-spacing: 0.16em;
 }
 
@@ -2176,7 +2204,7 @@ body.archive-page.is-returning {
 .support-app-icon-label {
   max-width: 100%;
   overflow: hidden;
-  font-size: 9px;
+  font-size: calc(9px * var(--font-scale));
   font-weight: 400;
   letter-spacing: 0.045em;
   line-height: 1.3;
@@ -2238,7 +2266,7 @@ body.archive-page.is-returning {
 
 .support-app-arrow span {
   margin-top: -2px;
-  font-size: 25px;
+  font-size: calc(25px * var(--font-scale));
   font-weight: 300;
   line-height: 1;
 }
@@ -2299,20 +2327,20 @@ body.archive-page.is-returning {
 
 .support-form-label {
   color: rgba(242, 232, 255, 0.82);
-  font-size: 13px;
+  font-size: calc(13px * var(--font-scale));
   line-height: 1.3;
 }
 
 .support-form-selected {
   color: #cfb3ff;
-  font-size: 16px;
+  font-size: calc(16px * var(--font-scale));
   font-weight: 400;
   letter-spacing: 0.035em;
 }
 
 .support-form-example {
   color: rgba(225, 211, 244, 0.35);
-  font-size: 11px;
+  font-size: calc(11px * var(--font-scale));
   line-height: 1.75;
   white-space: pre-line;
 }
@@ -2338,7 +2366,7 @@ body.archive-page.is-returning {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     0 14px 36px rgba(48, 26, 79, 0.22);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   letter-spacing: 0.14em;
   transition:
     border-color 0.22s ease,
@@ -2348,7 +2376,7 @@ body.archive-page.is-returning {
 
 .support-email-cta > span:last-child {
   font-family: Arial, sans-serif;
-  font-size: 18px;
+  font-size: calc(18px * var(--font-scale));
   transition: transform 0.2s ease;
 }
 
@@ -2358,7 +2386,7 @@ body.archive-page.is-returning {
   margin: 12px auto 0;
   display: block;
   color: rgba(222, 205, 245, 0.48);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.075em;
   line-height: 1.5;
   text-align: center;
@@ -2387,7 +2415,7 @@ body.archive-page.is-returning {
 .support-response-card p {
   margin: 10px 0 0;
   color: rgba(225, 210, 244, 0.52);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   line-height: 1.65;
 }
 
@@ -2440,7 +2468,7 @@ body.archive-page.is-returning {
   color: rgba(240, 230, 252, 0.76);
   background: transparent;
   font: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--font-scale));
   text-align: left;
   cursor: pointer;
 }
@@ -2454,7 +2482,7 @@ body.archive-page.is-returning {
   flex: 0 0 auto;
   color: rgba(201, 167, 247, 0.68);
   font-family: Arial, sans-serif;
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale));
   font-weight: 200;
 }
 
@@ -2481,7 +2509,7 @@ body.archive-page.is-returning {
   margin: 0;
   padding: 0 20px 20px;
   color: rgba(222, 207, 241, 0.5);
-  font-size: 12px;
+  font-size: calc(12px * var(--font-scale));
   line-height: 1.75;
 }
 
@@ -2911,7 +2939,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"]) body.archive-page[data-arch
   border-radius: 999px;
   color: var(--theme-text);
   background: var(--theme-surface-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--font-scale));
   line-height: 1.45;
   letter-spacing: 0.1em;
   text-align: center;
@@ -3210,12 +3238,12 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
 
   .archive-return,
   .archive-current {
-    font-size: 9px;
+    font-size: calc(9px * var(--font-scale));
     letter-spacing: 0.075em;
   }
 
-  .archive-brand-studio { font-size: 11px; }
-  .archive-brand-label { font-size: 8px; }
+  .archive-brand-studio { font-size: calc(11px * var(--font-scale)); }
+  .archive-brand-label { font-size: calc(8px * var(--font-scale)); }
 
   .archive-main {
     width: calc(100% - 36px);
@@ -3227,7 +3255,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   }
 
   .archive-document h1 {
-    font-size: clamp(48px, 18vw, 74px);
+    font-size: calc(clamp(48px, 18vw, 74px) * var(--font-scale));
   }
 
   .support-hero {
@@ -3236,7 +3264,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
 
   .support-hero-label {
     gap: 9px;
-    font-size: 9px;
+    font-size: calc(9px * var(--font-scale));
   }
 
   .support-hero-line {
@@ -3245,13 +3273,13 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
 
   .support-document .support-hero h1 {
     margin-top: 16px;
-    font-size: clamp(42px, 14vw, 58px);
+    font-size: calc(clamp(42px, 14vw, 58px) * var(--font-scale));
   }
 
   .support-hero-description {
     max-width: 310px;
     margin-top: 15px;
-    font-size: 12px;
+    font-size: calc(12px * var(--font-scale));
     line-height: 1.75;
   }
 
@@ -3330,7 +3358,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   }
 
   .support-app-icon-label {
-    font-size: 8.5px;
+    font-size: calc(8.5px * var(--font-scale));
   }
 
   .support-app-arrow {
@@ -3339,7 +3367,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   }
 
   .support-app-arrow span {
-    font-size: 22px;
+    font-size: calc(22px * var(--font-scale));
   }
 
   .support-app-arrow--previous {

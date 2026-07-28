@@ -2,7 +2,7 @@ import type { TranslationMessages } from "../types";
 
 export const en = {
   header: {
-    controlsLabel: "Language and theme controls",
+    controlsLabel: "Language, text size, and theme controls",
     languageButtonLabel: "Select language",
     languageOptionsLabel: "Language options",
     languageNames: {
@@ -12,11 +12,17 @@ export const en = {
       "zh-CN": "简体中文",
       "zh-TW": "繁體中文",
     },
-    controlsButtonLabel: "Open language and theme controls",
+    controlsButtonLabel: "Open header settings",
     switchToDarkMode: "Switch to dark mode",
     switchToLightMode: "Switch to light mode",
     turnBackgroundMusicOn: "Turn background music on",
     turnBackgroundMusicOff: "Turn background music off",
+    textSizeLabel: "Text Size",
+    textSizeSmall: "Small",
+    textSizeDefault: "Default",
+    textSizeLarge: "Large",
+    openTextSizeMenu: "Open text size menu",
+    closeTextSizeMenu: "Close text size menu",
   },
   carousel: {
     pauseAutoplay: "Pause autoplay",

@@ -32,6 +32,8 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /<html[^>]*lang="ko"/i);
   assert.match(html, /<title>SAME STUDIO<\/title>/i);
   assert.match(html, /same-studio-theme-v1/);
+  assert.match(html, /same-studio-font-size/);
+  assert.match(html, /aria-controls="font-size-panel"/);
   assert.match(html, /SAME STUDIO/);
   assert.match(html, /Mapary_icon\.png/);
   assert.match(html, /페이지 주요 섹션 이동/);
@@ -188,5 +190,60 @@ test("initializes the pre-hydration theme from saved choice or dark", async () =
     theme: "dark",
     colorScheme: "dark",
     themeColor: "#191522",
+  });
+});
+
+test("initializes and validates the saved font size before hydration", async () => {
+  const response = await render();
+  const html = await response.text();
+  const scriptMatch = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].find(
+    (match) => match[1].includes("same-studio-font-size"),
+  );
+
+  assert.ok(scriptMatch, "font size initialization script should be rendered");
+  assert.ok(
+    html.indexOf(scriptMatch[0]) < html.indexOf("<body>"),
+    "font size initialization should run before body rendering",
+  );
+
+  const executeFontSizeScript = (storedFontSize, storageThrows = false) => {
+    const root = { dataset: {} };
+    const persistedValues = [];
+
+    vm.runInNewContext(scriptMatch[1], {
+      document: { documentElement: root },
+      window: {
+        localStorage: {
+          getItem: () => {
+            if (storageThrows) throw new Error("Storage unavailable");
+            return storedFontSize;
+          },
+          setItem: (_key, value) => persistedValues.push(value),
+        },
+      },
+    });
+
+    return { fontSize: root.dataset.fontSize, persistedValues };
+  };
+
+  assert.deepEqual(executeFontSizeScript(null), {
+    fontSize: "medium",
+    persistedValues: [],
+  });
+  assert.deepEqual(executeFontSizeScript("small"), {
+    fontSize: "small",
+    persistedValues: [],
+  });
+  assert.deepEqual(executeFontSizeScript("large"), {
+    fontSize: "large",
+    persistedValues: [],
+  });
+  assert.deepEqual(executeFontSizeScript("invalid-size"), {
+    fontSize: "medium",
+    persistedValues: ["medium"],
+  });
+  assert.deepEqual(executeFontSizeScript(null, true), {
+    fontSize: "medium",
+    persistedValues: [],
   });
 });

@@ -2,7 +2,7 @@ import type { TranslationMessages } from "../types";
 
 export const ko = {
   header: {
-    controlsLabel: "언어 및 테마 컨트롤",
+    controlsLabel: "언어, 글자 크기 및 테마 컨트롤",
     languageButtonLabel: "언어 선택",
     languageOptionsLabel: "언어 선택 옵션",
     languageNames: {
@@ -12,11 +12,17 @@ export const ko = {
       "zh-CN": "简体中文",
       "zh-TW": "繁體中文",
     },
-    controlsButtonLabel: "언어 및 테마 버튼 열기",
+    controlsButtonLabel: "헤더 설정 버튼 열기",
     switchToDarkMode: "다크모드로 전환",
     switchToLightMode: "라이트모드로 전환",
     turnBackgroundMusicOn: "배경음악 켜기",
     turnBackgroundMusicOff: "배경음악 끄기",
+    textSizeLabel: "글자 크기",
+    textSizeSmall: "작게",
+    textSizeDefault: "기본",
+    textSizeLarge: "크게",
+    openTextSizeMenu: "글자 크기 메뉴 열기",
+    closeTextSizeMenu: "글자 크기 메뉴 닫기",
   },
   carousel: {
     pauseAutoplay: "자동 재생 일시정지",

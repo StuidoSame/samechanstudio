@@ -52,6 +52,12 @@ export type TranslationMessages = {
     switchToLightMode: string;
     turnBackgroundMusicOn: string;
     turnBackgroundMusicOff: string;
+    textSizeLabel: string;
+    textSizeSmall: string;
+    textSizeDefault: string;
+    textSizeLarge: string;
+    openTextSizeMenu: string;
+    closeTextSizeMenu: string;
   };
   carousel: {
     pauseAutoplay: string;
