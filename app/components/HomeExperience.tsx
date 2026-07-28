@@ -2852,7 +2852,15 @@ export function HomeExperience() {
           <div className="footer-business">
             <span>{messages.footer.businessNameLabel}: 세임스튜디오 (SAME STUDIO)</span>
             <span>{messages.footer.businessRegistrationLabel}: 272-08-03608</span>
-            <span>{messages.footer.representativeLabel}: 김동찬</span>
+            <span>
+              {messages.footer.representativeLabel}:{" "}
+              <span className="footer-owner-value">
+                <span className="footer-owner-name-ko">김동찬</span>{" "}
+                <span className="footer-owner-name-en" lang="en">
+                  KIM DONGCHAN
+                </span>
+              </span>
+            </span>
             <span>{messages.footer.emailLabel}: <a href="mailto:contact@samestudio.kr">contact@samestudio.kr</a></span>
           </div>
         </div>
