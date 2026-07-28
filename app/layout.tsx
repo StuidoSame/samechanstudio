@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { BackgroundAudioProvider } from "./audio/BackgroundAudioProvider";
 import { I18nProvider } from "./i18n/I18nProvider";
+import { PageTransitionProvider } from "./navigation/PageTransitionProvider";
 import { ThemeProvider } from "./theme/ThemeProvider";
 import { THEME_STORAGE_KEY } from "./theme/types";
 import "./globals.css";
@@ -8,7 +9,6 @@ import "./globals.css";
 const themeInitializationScript = `
   (() => {
     const storageKey = ${JSON.stringify(THEME_STORAGE_KEY)};
-    const archiveReturnKey = "same-studio-archive-return-v1";
     let theme = "dark";
     try {
       const storedTheme = window.localStorage.getItem(storageKey);
@@ -20,13 +20,6 @@ const themeInitializationScript = `
     const root = document.documentElement;
     root.dataset.theme = theme;
     root.style.colorScheme = theme;
-
-    try {
-      if (window.sessionStorage.getItem(archiveReturnKey) === "1") {
-        root.dataset.archiveReturning = "true";
-        window.sessionStorage.removeItem(archiveReturnKey);
-      }
-    } catch {}
 
     const themeColor = document.querySelector('meta[name="theme-color"]');
     themeColor?.setAttribute(
@@ -90,9 +83,11 @@ export default function RootLayout({
       </head>
       <body>
         <BackgroundAudioProvider>
-          <ThemeProvider>
-            <I18nProvider>{children}</I18nProvider>
-          </ThemeProvider>
+          <PageTransitionProvider>
+            <ThemeProvider>
+              <I18nProvider>{children}</I18nProvider>
+            </ThemeProvider>
+          </PageTransitionProvider>
         </BackgroundAudioProvider>
       </body>
     </html>

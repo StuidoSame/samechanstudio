@@ -9011,11 +9011,11 @@ footer {
 }
 
 /* Archive portal navigation */
-html[data-archive-returning="true"] .preloader {
+html[data-internal-home-navigation="true"] .preloader {
   display: none !important;
 }
 
-html[data-archive-returning="true"] .site-shell.is-loading {
+html[data-internal-home-navigation="true"] .site-shell.is-loading {
   height: auto;
   overflow: visible;
   opacity: 1;
@@ -9030,12 +9030,13 @@ html[data-archive-returning="true"] .site-shell.is-loading {
   animation: archive-link-select 0.15s ease-out both;
 }
 
-body.is-archive-transitioning {
+body.is-page-transitioning {
   overflow: hidden;
 }
 
-body.is-archive-transitioning .site-shell,
-body.is-archive-transitioning > footer {
+body.is-page-transitioning .site-shell,
+body.is-page-transitioning > footer,
+body.is-page-transitioning .archive-shell {
   pointer-events: none;
   transform-origin: var(--archive-portal-x, 50vw)
     var(--archive-portal-y, 50vh);
@@ -9392,8 +9393,9 @@ body.is-archive-transitioning > footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.is-archive-transitioning .site-shell,
-  body.is-archive-transitioning > footer {
+  body.is-page-transitioning .site-shell,
+  body.is-page-transitioning > footer,
+  body.is-page-transitioning .archive-shell {
     animation-name: archive-reduced-source-fade !important;
     animation-duration: 0.16s !important;
   }

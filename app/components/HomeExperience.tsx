@@ -2,24 +2,18 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import type {
   CSSProperties,
-  MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
-import {
-  ArchivePortalTransition,
-  type ArchiveDocumentTitle,
-  type ArchivePortalState,
-} from "./archive/ArchivePortalTransition";
 import type { JellyInteraction } from "./JellyCanvas";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
@@ -36,6 +30,10 @@ import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
+import {
+  consumeInternalHomeNavigation,
+  usePageTransition,
+} from "../navigation/PageTransitionProvider";
 
 const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
   ssr: false,
@@ -74,10 +72,6 @@ const PLAY_RESUME_DELAY_MS = 400;
 const FAST_FORWARD_TRANSITION_MS = 280;
 const FAST_FORWARD_GAP_MS = 70;
 const REDUCED_MOTION_FAST_FORWARD_TRANSITION_MS = 360;
-const ARCHIVE_PORTAL_DURATION_MS = 850;
-const ARCHIVE_PORTAL_REDUCED_DURATION_MS = 180;
-const ARCHIVE_ENTRY_STORAGE_KEY = "same-studio-archive-entry-v1";
-const ARCHIVE_RETURN_STORAGE_KEY = "same-studio-archive-return-v1";
 const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
   { text: "Small apps, made\nwith a lot of care.", speed: 45 },
@@ -532,8 +526,8 @@ function Loader({
 }
 
 export function HomeExperience() {
-  const router = useRouter();
   const { messages } = useI18n();
+  const { pageTransitionActive } = usePageTransition();
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -558,8 +552,6 @@ export function HomeExperience() {
   const [typedNameLength, setTypedNameLength] = useState(0);
   const [detailApp, setDetailApp] = useState<AppItem | null>(null);
   const [detailOverlayOpen, setDetailOverlayOpen] = useState(false);
-  const [archivePortal, setArchivePortal] =
-    useState<ArchivePortalState | null>(null);
 
   const heroRef = useRef<HTMLElement>(null);
   const mainRef = useRef<HTMLElement>(null);
@@ -651,106 +643,19 @@ export function HomeExperience() {
   );
   const detailTriggerRef = useRef<HTMLButtonElement | null>(null);
   const detailWasPlayingRef = useRef(false);
-  const archivePortalTimerRef = useRef<number | null>(null);
-  const skipInitialLoaderRef = useRef(false);
 
   const activeApp = apps[activeIndex];
 
-  useEffect(() => {
-    const finishArchiveReturn = () => {
-      let returningFromArchive =
-        document.documentElement.dataset.archiveReturning === "true";
-
-      try {
-        if (
-          window.sessionStorage.getItem(ARCHIVE_RETURN_STORAGE_KEY) === "1"
-        ) {
-          returningFromArchive = true;
-          window.sessionStorage.removeItem(ARCHIVE_RETURN_STORAGE_KEY);
-        }
-      } catch {
-        // Session storage can be unavailable in restricted browser contexts.
-      }
-
-      if (returningFromArchive && loaderVisible) {
-        skipInitialLoaderRef.current = true;
-        setLoadProgress(100);
-        setLoaderCompletionMediaVisible(false);
-        setLoaderPhase("leaving");
+  useLayoutEffect(() => {
+    if (pageTransitionActive || consumeInternalHomeNavigation()) {
+      window.queueMicrotask(() => {
         setLoaderVisible(false);
-      }
-
-      delete document.documentElement.dataset.archiveReturning;
-      document.documentElement.style.removeProperty("--archive-portal-x");
-      document.documentElement.style.removeProperty("--archive-portal-y");
-      document.body.classList.remove("is-archive-transitioning");
-      setArchivePortal(null);
-    };
-
-    finishArchiveReturn();
-    window.addEventListener("pageshow", finishArchiveReturn);
-    return () => window.removeEventListener("pageshow", finishArchiveReturn);
-  }, [loaderVisible]);
-
-  useEffect(
-    () => () => {
-      if (archivePortalTimerRef.current !== null) {
-        window.clearTimeout(archivePortalTimerRef.current);
-      }
-    },
-    [],
-  );
-
-  const beginArchiveTransition = useCallback(
-    (
-      event: ReactMouseEvent<HTMLAnchorElement>,
-      documentTitle: ArchiveDocumentTitle,
-      href: string,
-    ) => {
-      event.preventDefault();
-      if (archivePortal) return;
-
-      const bounds = event.currentTarget.getBoundingClientRect();
-      const keyboardActivation = event.clientX === 0 && event.clientY === 0;
-      const x = keyboardActivation
-        ? bounds.left + bounds.width / 2
-        : event.clientX;
-      const y = keyboardActivation
-        ? bounds.top + bounds.height / 2
-        : event.clientY;
-
-      setArchivePortal({ documentTitle, href, x, y });
-      document.documentElement.style.setProperty(
-        "--archive-portal-x",
-        `${x}px`,
-      );
-      document.documentElement.style.setProperty(
-        "--archive-portal-y",
-        `${y}px`,
-      );
-      document.body.classList.add("is-archive-transitioning");
-
-      try {
-        window.sessionStorage.setItem(
-          ARCHIVE_ENTRY_STORAGE_KEY,
-          JSON.stringify({
-            x: x / Math.max(window.innerWidth, 1),
-            y: y / Math.max(window.innerHeight, 1),
-          }),
-        );
-      } catch {
-        // The Archive can use its centered fallback when storage is unavailable.
-      }
-
-      archivePortalTimerRef.current = window.setTimeout(
-        () => router.push(href),
-        reducedMotion
-          ? ARCHIVE_PORTAL_REDUCED_DURATION_MS
-          : ARCHIVE_PORTAL_DURATION_MS,
-      );
-    },
-    [archivePortal, reducedMotion, router],
-  );
+        window.requestAnimationFrame(() => {
+          delete document.documentElement.dataset.internalHomeNavigation;
+        });
+      });
+    }
+  }, [pageTransitionActive]);
 
   const clearAutoplay = useCallback(() => {
     if (autoplayTimerRef.current === null) return;
@@ -1238,7 +1143,7 @@ export function HomeExperience() {
   ]);
 
   useEffect(() => {
-    if (skipInitialLoaderRef.current) return;
+    if (!loaderVisible) return;
 
     let loaded = 0;
     let done = false;
@@ -1323,7 +1228,7 @@ export function HomeExperience() {
       cancelAnimationFrame(animationFrame);
       phaseTimers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, []);
+  }, [loaderVisible]);
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -2094,9 +1999,7 @@ export function HomeExperience() {
             homePage
             wordmarkPulse={wordmarkPulse}
             reducedMotion={reducedMotion}
-            selectedArchiveTitle={archivePortal?.documentTitle}
             onMenuOpenChange={setMenuOpen}
-            onArchiveNavigate={beginArchiveTransition}
           />
 
           <div className="ambient-glow" aria-hidden="true" />
@@ -2519,10 +2422,6 @@ export function HomeExperience() {
 
       </main>
       <SiteFooter currentPage="home" />
-      <ArchivePortalTransition
-        transition={archivePortal}
-        reducedMotion={reducedMotion}
-      />
       {detailApp && (
         <AppDetailOverlay
           app={detailApp}

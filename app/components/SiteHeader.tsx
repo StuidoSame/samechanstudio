@@ -6,12 +6,12 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useBackgroundAudio } from "../audio/BackgroundAudioProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import type { Locale } from "../i18n/types";
+import { usePageTransition } from "../navigation/PageTransitionProvider";
 import { useTheme } from "../theme/ThemeProvider";
 import type { ArchiveDocumentTitle } from "./archive/ArchivePortalTransition";
 
@@ -31,11 +31,6 @@ type SiteHeaderProps = {
   reducedMotion?: boolean;
   selectedArchiveTitle?: ArchiveDocumentTitle;
   onMenuOpenChange?: (open: boolean) => void;
-  onArchiveNavigate?: (
-    event: ReactMouseEvent<HTMLAnchorElement>,
-    documentTitle: ArchiveDocumentTitle,
-    href: string,
-  ) => void;
 };
 
 export function SiteHeader({
@@ -44,10 +39,10 @@ export function SiteHeader({
   reducedMotion = false,
   selectedArchiveTitle,
   onMenuOpenChange,
-  onArchiveNavigate,
 }: SiteHeaderProps) {
   const { locale, messages, setLocale } = useI18n();
   const { theme, toggleTheme } = useTheme();
+  const { navigateWithTransition } = usePageTransition();
   const { muted: backgroundAudioMuted, toggleMuted: toggleBackgroundAudio } =
     useBackgroundAudio();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -237,6 +232,7 @@ export function SiteHeader({
     setLanguageOpen(false);
   };
   const sectionPrefix = homePage ? "" : "/";
+  const wordmarkHref = homePage ? "#apps" : "/";
   const archiveLinks = [
     { title: "SUPPORT" as const, href: "/support" },
     { title: "TERMS" as const, href: "/terms" },
@@ -246,9 +242,10 @@ export function SiteHeader({
   return (
     <header className="site-header" ref={headerRef}>
       <Link
-        href={homePage ? "#apps" : "/"}
+        href={wordmarkHref}
         className="wordmark"
         aria-label="SAME STUDIO home"
+        onClick={(event) => navigateWithTransition(event, wordmarkHref)}
       >
         <span className="wordmark-hover-layer">
           <span
@@ -382,9 +379,22 @@ export function SiteHeader({
         <span key={headerUtilityHintKey} className={headerUtilityHintKey > 0 ? "is-hinting" : ""} aria-hidden="true">‹</span>
       </button>
       <nav id="site-menu" className={menuOpen ? "is-open" : ""} aria-label="Primary navigation">
-        <Link href={`${sectionPrefix}#about`} onClick={closeMenus}>ABOUT</Link>
-        <Link href={`${sectionPrefix}#apps`} onClick={closeMenus}>APPS</Link>
-        <Link href={`${sectionPrefix}#contact`} onClick={closeMenus}>CONTACT</Link>
+        {[
+          { label: "ABOUT", href: `${sectionPrefix}#about` },
+          { label: "APPS", href: `${sectionPrefix}#apps` },
+          { label: "CONTACT", href: `${sectionPrefix}#contact` },
+        ].map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            onClick={(event) => {
+              closeMenus();
+              navigateWithTransition(event, item.href);
+            }}
+          >
+            {item.label}
+          </Link>
+        ))}
         {archiveLinks.map((item) => (
           <Link
             key={item.title}
@@ -393,7 +403,7 @@ export function SiteHeader({
             aria-current={selectedArchiveTitle === item.title ? "page" : undefined}
             onClick={(event) => {
               closeMenus();
-              onArchiveNavigate?.(event, item.title, item.href);
+              navigateWithTransition(event, item.href);
             }}
           >
             {item.title}

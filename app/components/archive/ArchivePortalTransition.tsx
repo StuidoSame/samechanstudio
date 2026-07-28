@@ -2,8 +2,15 @@ import type { CSSProperties } from "react";
 
 export type ArchiveDocumentTitle = "SUPPORT" | "TERMS" | "PRIVACY";
 
-export type ArchivePortalState = {
-  documentTitle: ArchiveDocumentTitle;
+export type PageTransitionDestination =
+  | ArchiveDocumentTitle
+  | "HOME"
+  | "ABOUT"
+  | "APPS"
+  | "CONTACT";
+
+export type PageTransitionState = {
+  destination: PageTransitionDestination;
   href: string;
   x: number;
   y: number;
@@ -11,7 +18,7 @@ export type ArchivePortalState = {
 
 type ArchivePortalTransitionProps = {
   reducedMotion: boolean;
-  transition: ArchivePortalState | null;
+  transition: PageTransitionState | null;
 };
 
 const PORTAL_DUST = [
@@ -41,7 +48,7 @@ export function ArchivePortalTransition({
       className={`archive-portal-transition${reducedMotion ? " is-reduced-motion" : ""}`}
       style={portalStyle}
       aria-hidden="true"
-      data-archive-destination={transition.documentTitle.toLowerCase()}
+      data-page-destination={transition.destination.toLowerCase()}
     >
       <span className="archive-portal-backdrop" />
       <span className="archive-portal-surface" />

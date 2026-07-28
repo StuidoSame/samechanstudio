@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "../i18n/I18nProvider";
+import { usePageTransition } from "../navigation/PageTransitionProvider";
 
 const FOOTER_BUSINESS_VALUES = {
   businessName: "세임스튜디오 (SAME STUDIO)",
@@ -37,6 +38,7 @@ function SocialIcon({
 
 export function SiteFooter({ currentPage = "home" }: { currentPage?: FooterPage }) {
   const { locale, messages } = useI18n();
+  const { navigateWithTransition } = usePageTransition();
 
   return (
     <footer>
@@ -60,6 +62,7 @@ export function SiteFooter({ currentPage = "home" }: { currentPage?: FooterPage 
               key={item.id}
               href={item.href}
               aria-current={currentPage === item.id ? "page" : undefined}
+              onClick={(event) => navigateWithTransition(event, item.href)}
             >
               {item.label}
             </Link>
