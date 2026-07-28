@@ -95,11 +95,11 @@ function StoreIcon({ store }: { store: DetailStore }) {
   }
 
   return (
-    <svg className="app-detail-store-icon is-google" viewBox="0 0 32 36" fill="none" aria-hidden="true">
-      <path d="M3.7 2.9c-.45.5-.7 1.25-.7 2.18v25.84c0 .93.25 1.68.7 2.18L18.25 18 3.7 2.9Z" fill="#34A853" />
-      <path d="m18.25 18 4.86-5.04L6.54 3.47A4.02 4.02 0 0 0 3.7 2.9L18.25 18Z" fill="#4285F4" />
-      <path d="M18.25 18 3.7 33.1c.76.82 1.86.77 2.84.21l16.57-9.5L18.25 18Z" fill="#EA4335" />
-      <path d="m28.47 16.03-5.36-3.07L18.25 18l4.86 5.04 5.36-3.07c1.52-.87 1.52-3.07 0-3.94Z" fill="#FBBC04" />
+    <svg className="app-detail-store-icon is-google" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M7.45 7.15 6.12 4.84a.72.72 0 0 1 1.25-.72l1.39 2.41A8.02 8.02 0 0 1 12 5.86c1.16 0 2.26.24 3.24.67l1.39-2.41a.72.72 0 1 1 1.25.72l-1.33 2.31A6.83 6.83 0 0 1 19 12.42H5a6.83 6.83 0 0 1 2.45-5.27Zm1.37 2.9a.86.86 0 1 0 0-1.72.86.86 0 0 0 0 1.72Zm6.36 0a.86.86 0 1 0 0-1.72.86.86 0 0 0 0 1.72ZM5 13.86h14v4.76A1.38 1.38 0 0 1 17.62 20h-.76v1.5a1 1 0 0 1-2 0V20H9.14v1.5a1 1 0 0 1-2 0V20h-.76A1.38 1.38 0 0 1 5 18.62v-4.76Zm-2.5.02a1 1 0 0 1 2 0v4.24a1 1 0 0 1-2 0v-4.24Zm17 0a1 1 0 0 1 2 0v4.24a1 1 0 0 1-2 0v-4.24Z"
+      />
     </svg>
   );
 }
@@ -408,6 +408,9 @@ export function AppDetailOverlay({
               const storeUrl =
                 store === "apple" ? app.appStoreUrl : app.googlePlayUrl;
               const storeAvailable = isDetailStoreAvailable(app.id, store);
+
+              if (!storeAvailable || !storeUrl) return null;
+
               const ariaLabel = format(messages.appDetail.storeLinkLabel, {
                 store: STORE_LABELS[store],
                 app: app.name,
@@ -417,20 +420,6 @@ export function AppDetailOverlay({
                   <StoreIcon store={store} />
                 </span>
               );
-
-              if (!storeAvailable || !storeUrl) {
-                return (
-                  <button
-                    className="app-detail-store-button"
-                    type="button"
-                    key={store}
-                    aria-label={ariaLabel}
-                    disabled
-                  >
-                    {icon}
-                  </button>
-                );
-              }
 
               return (
                 <a

@@ -45,19 +45,19 @@ export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
   },
   pepesnap: {
     devices: devices(true, true, false, false),
-    stores: stores(true, false),
+    stores: stores(true, true),
   },
   tocklist: {
     devices: devices(true, true, false, false),
-    stores: stores(true, false),
+    stores: stores(true, true),
   },
   skkoo: {
     devices: devices(true, true, false, false),
-    stores: stores(true, false),
+    stores: stores(true, true),
   },
   terubozu: {
     devices: iphoneOnly(),
-    stores: stores(true, false),
+    stores: stores(true, true),
   },
   feeloo: {
     devices: iphoneOnly(),

@@ -2191,10 +2191,11 @@ button {
 }
 
 .app-detail-store-selector {
+  --platform-icon-color: #704bb8;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 18px;
 }
 
 .app-detail-store-button {
@@ -2207,7 +2208,7 @@ button {
   justify-content: center;
   border: 0;
   border-radius: 0;
-  color: #704bb8;
+  color: var(--platform-icon-color);
   background: transparent;
   box-shadow: none;
   cursor: pointer;
@@ -2226,30 +2227,28 @@ button {
   outline-offset: 4px;
 }
 
-.app-detail-store-button:disabled {
-  color: rgba(112, 75, 184, 0.38);
-  cursor: not-allowed;
-  opacity: 0.36;
-  transform: none;
-}
-
 .app-detail-store-icon-slot {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  flex: 0 0 36px;
+  flex: 0 0 42px;
 }
 
 .app-detail-store-icon {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   display: block;
 }
 
 .app-detail-store-icon.is-apple {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
+}
+
+.app-detail-store-icon.is-google {
+  width: 28px;
+  height: 28px;
 }
 
 .app-detail-preview {
@@ -2966,24 +2965,28 @@ button {
   }
 
   .app-detail-store-selector {
-    gap: 8px;
+    gap: 16px;
   }
 
   .app-detail-store-button {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 
-  .app-detail-store-icon-slot,
-  .app-detail-store-icon {
-    width: 31px;
-    height: 31px;
-    flex-basis: 31px;
+  .app-detail-store-icon-slot {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
   }
 
   .app-detail-store-icon.is-apple {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .app-detail-store-icon.is-google {
+    width: 24px;
+    height: 24px;
   }
 
   .app-detail-preview {
@@ -3097,14 +3100,13 @@ button {
   }
 
   .app-detail-store-button {
-    flex: 0 0 48px;
+    flex: 0 0 44px;
   }
 
-  .app-detail-store-icon-slot,
-  .app-detail-store-icon {
-    width: 30px;
-    height: 30px;
-    flex-basis: 30px;
+  .app-detail-store-icon-slot {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
   }
 }
 
@@ -7269,10 +7271,6 @@ html[data-theme="dark"] .app-detail-header {
 html[data-theme="dark"] .app-detail-close,
 html[data-theme="dark"] .app-detail-store-button {
   color: #c3a8f6;
-}
-
-html[data-theme="dark"] .app-detail-store-button:disabled {
-  color: var(--theme-disabled);
 }
 
 html[data-theme="dark"] .app-detail-preview {
