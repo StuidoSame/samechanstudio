@@ -323,7 +323,14 @@ export function AppDetailOverlay({
           </div>
           <div
             className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
-            aria-label={`${app.name} ${selectedDevice ? DEVICE_ARIA_LABELS[selectedDevice] : ""} preview area`}
+            role="region"
+            aria-busy={previewLoading}
+            aria-label={format(messages.appDetail.previewRegionLabel, {
+              app: app.name,
+              device: selectedDevice
+                ? DEVICE_ARIA_LABELS[selectedDevice]
+                : "",
+            })}
             data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
           >
             <div
@@ -340,6 +347,8 @@ export function AppDetailOverlay({
                     device: selectedDevice
                       ? DEVICE_ARIA_LABELS[selectedDevice]
                       : "",
+                    current: previewIndex + 1,
+                    total: screenshots.length,
                   })}
                   fill
                   sizes="(max-width: 767px) calc(100vw - 72px), min(80vw, 1060px)"
@@ -362,7 +371,11 @@ export function AppDetailOverlay({
               ) : selectedDevice ? (
                 <span className="app-detail-preview-marker">
                   <DeviceSilhouette device={selectedDevice} />
-                  <span className="app-detail-preview-empty">
+                  <span
+                    className="app-detail-preview-empty"
+                    role="status"
+                    aria-live="polite"
+                  >
                     {messages.appDetail.previewUnavailableLabel}
                   </span>
                 </span>
@@ -378,7 +391,10 @@ export function AppDetailOverlay({
                 <button
                   className="app-detail-gallery-button is-previous"
                   type="button"
-                  aria-label={`Previous ${app.name} screenshot`}
+                  aria-label={format(
+                    messages.appDetail.previousScreenshotLabel,
+                    { app: app.name },
+                  )}
                   disabled={!hasMultipleScreenshots}
                   onClick={() => {
                     setPreviewDirection("previous");
@@ -393,14 +409,23 @@ export function AppDetailOverlay({
                   className="app-detail-gallery-position"
                   role="status"
                   aria-live="polite"
-                  aria-label={`${app.name} screenshot ${previewIndex + 1} of ${screenshots.length}`}
+                  aria-label={format(
+                    messages.appDetail.screenshotPositionLabel,
+                    {
+                      app: app.name,
+                      current: previewIndex + 1,
+                      total: screenshots.length,
+                    },
+                  )}
                 >
                   {screenshotPosition}
                 </span>
                 <button
                   className="app-detail-gallery-button is-next"
                   type="button"
-                  aria-label={`Next ${app.name} screenshot`}
+                  aria-label={format(messages.appDetail.nextScreenshotLabel, {
+                    app: app.name,
+                  })}
                   disabled={!hasMultipleScreenshots}
                   onClick={() => {
                     setPreviewDirection("next");

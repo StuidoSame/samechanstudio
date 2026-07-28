@@ -104,9 +104,13 @@ export type TranslationMessages = {
     closeLabel: string;
     storeSelectorLabel: string;
     storeLinkLabel: string;
+    previewRegionLabel: string;
     previewAlt: string;
     previewLoadingLabel: string;
     previewUnavailableLabel: string;
+    previousScreenshotLabel: string;
+    nextScreenshotLabel: string;
+    screenshotPositionLabel: string;
     deviceSelectorLabel: string;
     fallback: TranslatedAppDetail;
     apps: Record<

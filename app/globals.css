@@ -2054,6 +2054,8 @@ button {
   align-content: center;
   gap: clamp(16px, 1.8vw, 24px);
   overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 
 .app-detail-store-selector {
@@ -2134,6 +2136,7 @@ button {
     rgba(244, 237, 255, 0.72);
   background-size: 38px 38px, 38px 38px, auto, auto;
   box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.45);
+  contain: layout paint;
 }
 
 .app-detail-preview-media {
@@ -2172,6 +2175,7 @@ button {
   display: block;
   object-position: center;
   opacity: 0;
+  will-change: opacity, transform;
 }
 
 .app-detail-preview-image.is-loaded {
@@ -2225,6 +2229,7 @@ button {
   background: rgba(249, 246, 255, 0.72);
   box-shadow: 0 8px 20px rgba(82, 52, 135, 0.08);
   cursor: pointer;
+  touch-action: manipulation;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition:
@@ -2273,6 +2278,10 @@ button {
     opacity: 1;
     animation: none;
     transform: none;
+  }
+
+  .app-detail-gallery-button {
+    transition: none;
   }
 }
 
@@ -2531,7 +2540,7 @@ button {
 
   .app-detail-content {
     padding: 20px;
-    grid-template-rows: auto minmax(190px, 230px) auto auto;
+    grid-template-rows: auto auto auto auto;
     align-content: start;
     gap: 18px;
   }
@@ -2558,13 +2567,13 @@ button {
   }
 
   .app-detail-preview {
-    min-height: 200px;
-    padding: 16px;
+    min-height: clamp(250px, 44vh, 360px);
+    padding: 14px 14px 62px;
     border-radius: 24px;
   }
 
   .app-detail-preview-media {
-    min-height: 168px;
+    min-height: 174px;
     border-radius: 16px;
   }
 
