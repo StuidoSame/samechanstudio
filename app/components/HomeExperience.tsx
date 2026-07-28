@@ -1960,12 +1960,6 @@ export function HomeExperience() {
     event: ReactPointerEvent<HTMLDivElement>,
   ) => {
     if (headerUtilityHidden || !event.isPrimary || event.button !== 0) return;
-    if (
-      event.target instanceof Node &&
-      languagePanelRef.current?.contains(event.target)
-    ) {
-      return;
-    }
 
     const drag = headerUtilityDragRef.current;
     drag.id = event.pointerId;
@@ -1974,8 +1968,6 @@ export function HomeExperience() {
     drag.distanceX = 0;
     drag.horizontal = false;
     headerUtilitySuppressClickRef.current = false;
-    setHeaderUtilityDragging(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const onHeaderUtilityPointerMove = (
@@ -2001,6 +1993,8 @@ export function HomeExperience() {
       if (distanceX < 8 || distanceX <= distanceY * 1.2) return;
       drag.horizontal = true;
       headerUtilitySuppressClickRef.current = true;
+      setHeaderUtilityDragging(true);
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
 
     drag.distanceX = distanceX;
@@ -2224,12 +2218,6 @@ export function HomeExperience() {
               }
               onClickCapture={(event) => {
                 if (!headerUtilitySuppressClickRef.current) return;
-                if (
-                  event.target instanceof Node &&
-                  languagePanelRef.current?.contains(event.target)
-                ) {
-                  return;
-                }
                 event.preventDefault();
                 event.stopPropagation();
                 headerUtilitySuppressClickRef.current = false;
@@ -2280,6 +2268,7 @@ export function HomeExperience() {
                   aria-pressed={theme === "dark"}
                   tabIndex={headerUtilityHidden ? -1 : 0}
                   onClick={() => {
+                    setLanguageOpen(false);
                     toggleTheme();
                     setDarkPressKey((key) => key + 1);
                   }}
@@ -2319,67 +2308,66 @@ export function HomeExperience() {
                   </span>
                 </button>
               </div>
-              <div
-                ref={languagePanelRef}
-                id="language-panel"
-                className={`language-panel${languageOpen ? " is-open" : ""}`}
-                role="menu"
-                aria-label={messages.header.languageOptionsLabel}
-                aria-hidden={!languageOpen}
-                onKeyDown={(event) => {
-                  if (
-                    event.key !== "ArrowDown" &&
-                    event.key !== "ArrowUp" &&
-                    event.key !== "Home" &&
-                    event.key !== "End"
-                  ) {
-                    return;
-                  }
+            </div>
+            <div
+              ref={languagePanelRef}
+              id="language-panel"
+              className={`language-panel${languageOpen ? " is-open" : ""}`}
+              role="menu"
+              aria-label={messages.header.languageOptionsLabel}
+              aria-hidden={!languageOpen}
+              onKeyDown={(event) => {
+                if (
+                  event.key !== "ArrowDown" &&
+                  event.key !== "ArrowUp" &&
+                  event.key !== "Home" &&
+                  event.key !== "End"
+                ) {
+                  return;
+                }
 
-                  const options = Array.from(
-                    event.currentTarget.querySelectorAll<HTMLButtonElement>(
-                      '[role="menuitemradio"]',
-                    ),
-                  );
-                  const currentIndex = options.indexOf(
-                    document.activeElement as HTMLButtonElement,
-                  );
-                  const nextIndex =
-                    event.key === "Home"
-                      ? 0
-                      : event.key === "End"
-                        ? options.length - 1
-                        : event.key === "ArrowDown"
-                          ? (currentIndex + 1) % options.length
-                          : (currentIndex - 1 + options.length) %
-                            options.length;
+                const options = Array.from(
+                  event.currentTarget.querySelectorAll<HTMLButtonElement>(
+                    '[role="menuitemradio"]',
+                  ),
+                );
+                const currentIndex = options.indexOf(
+                  document.activeElement as HTMLButtonElement,
+                );
+                const nextIndex =
+                  event.key === "Home"
+                    ? 0
+                    : event.key === "End"
+                      ? options.length - 1
+                      : event.key === "ArrowDown"
+                        ? (currentIndex + 1) % options.length
+                        : (currentIndex - 1 + options.length) % options.length;
 
-                  event.preventDefault();
-                  options[nextIndex]?.focus({ preventScroll: true });
-                }}
-              >
-                {LANGUAGE_OPTIONS.map((language) => (
-                  <button
-                    key={language.code}
-                    type="button"
-                    className="language-option"
-                    role="menuitemradio"
-                    aria-checked={locale === language.code}
-                    onClick={() => {
-                      setLocale(language.code);
-                      setLanguageOpen(false);
-                    }}
-                  >
-                    <span className="language-label">
-                      {messages.header.languageNames[language.code]}
-                    </span>
-                    <span
-                      className="language-selected-indicator"
-                      aria-hidden="true"
-                    />
-                  </button>
-                ))}
-              </div>
+                event.preventDefault();
+                options[nextIndex]?.focus({ preventScroll: true });
+              }}
+            >
+              {LANGUAGE_OPTIONS.map((language) => (
+                <button
+                  key={language.code}
+                  type="button"
+                  className="language-option"
+                  role="menuitemradio"
+                  aria-checked={locale === language.code}
+                  onClick={() => {
+                    setLocale(language.code);
+                    setLanguageOpen(false);
+                  }}
+                >
+                  <span className="language-label">
+                    {messages.header.languageNames[language.code]}
+                  </span>
+                  <span
+                    className="language-selected-indicator"
+                    aria-hidden="true"
+                  />
+                </button>
+              ))}
             </div>
             <button
               ref={headerUtilityHandleRef}
