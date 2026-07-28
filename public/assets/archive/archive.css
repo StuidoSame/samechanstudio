@@ -1405,12 +1405,8 @@ body.archive-page.is-returning {
   overflow-x: clip;
 }
 
-.policy-page-layout .site-header {
-  position: absolute;
-}
-
 .policy-page-content {
-  padding-top: clamp(132px, 13vw, 176px);
+  padding-top: calc(var(--site-header-height) + clamp(52px, 5vw, 92px));
 }
 
 .archive-header {
@@ -1419,8 +1415,9 @@ body.archive-page.is-returning {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  border-bottom: 1px solid var(--archive-line);
-  background: linear-gradient(180deg, rgba(17, 12, 26, 0.42), transparent);
+  border-bottom: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .archive-return,
@@ -3226,7 +3223,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   }
 
   .policy-page-content {
-    padding-top: 116px;
+    padding-top: calc(var(--site-header-height) + 28px);
   }
 
   .archive-document h1 {

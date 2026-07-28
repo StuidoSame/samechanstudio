@@ -22,20 +22,16 @@ const LANGUAGE_OPTIONS = [
   { code: "zh-TW" },
 ] as const satisfies readonly { code: Locale }[];
 
-type WordmarkPulse = { key: number; fast: boolean };
+const WORDMARK_PULSE_INTERVAL_MS = 10_000;
 
 type SiteHeaderProps = {
   homePage?: boolean;
-  wordmarkPulse?: WordmarkPulse;
-  reducedMotion?: boolean;
   selectedArchiveTitle?: ArchiveDocumentTitle;
   onMenuOpenChange?: (open: boolean) => void;
 };
 
 export function SiteHeader({
   homePage = false,
-  wordmarkPulse = { key: 0, fast: false },
-  reducedMotion = false,
   selectedArchiveTitle,
   onMenuOpenChange,
 }: SiteHeaderProps) {
@@ -46,6 +42,8 @@ export function SiteHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [darkPressKey, setDarkPressKey] = useState(0);
+  const [wordmarkPulseKey, setWordmarkPulseKey] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [headerUtilityHidden, setHeaderUtilityHidden] = useState(false);
   const [headerUtilityDragging, setHeaderUtilityDragging] = useState(false);
   const [headerUtilityDragX, setHeaderUtilityDragX] = useState(0);
@@ -70,6 +68,32 @@ export function SiteHeader({
   useEffect(() => {
     onMenuOpenChange?.(menuOpen);
   }, [menuOpen, onMenuOpenChange]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => setReducedMotion(mediaQuery.matches);
+    updateMotionPreference();
+    mediaQuery.addEventListener("change", updateMotionPreference);
+    return () => mediaQuery.removeEventListener("change", updateMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    let pulseTimer = 0;
+    const schedulePulse = () => {
+      const delay =
+        WORDMARK_PULSE_INTERVAL_MS -
+        (Date.now() % WORDMARK_PULSE_INTERVAL_MS);
+      pulseTimer = window.setTimeout(() => {
+        setWordmarkPulseKey((key) => key + 1);
+        schedulePulse();
+      }, delay);
+    };
+
+    schedulePulse();
+    return () => window.clearTimeout(pulseTimer);
+  }, [reducedMotion]);
 
   useEffect(() => {
     if (!menuOpen && !languageOpen) return;
@@ -246,11 +270,11 @@ export function SiteHeader({
       >
         <span className="wordmark-hover-layer">
           <span
-            key={wordmarkPulse.key}
+            key={wordmarkPulseKey}
             className={`wordmark-change-layer${
-              wordmarkPulse.key > 0 ? " is-changing" : ""
-            }${wordmarkPulse.fast ? " is-fast-forward" : ""}`}
-            data-pulse-key={wordmarkPulse.key}
+              wordmarkPulseKey > 0 ? " is-changing" : ""
+            }`}
+            data-pulse-key={wordmarkPulseKey}
           >
             SAME STUDIO
           </span>

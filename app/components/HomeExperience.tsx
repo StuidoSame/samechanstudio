@@ -546,7 +546,6 @@ export function HomeExperience() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isFastForwarding, setIsFastForwarding] = useState(false);
-  const [wordmarkPulse, setWordmarkPulse] = useState({ key: 0, fast: false });
   const [activeSequencePhase, setActiveSequencePhase] =
     useState<ActiveSequencePhase>("idle");
   const [typedNameLength, setTypedNameLength] = useState(0);
@@ -636,8 +635,6 @@ export function HomeExperience() {
   const isPlayingRef = useRef(true);
   const isTransitioningRef = useRef(false);
   const isFastForwardingRef = useRef(false);
-  const settledWordmarkIndexRef = useRef(DEFAULT_APP_INDEX);
-  const lastWordmarkPulseAtRef = useRef(0);
   const autoplayPauseReasonsRef = useRef(
     new Set<"interaction" | "detail-hover" | "detail-focus">(),
   );
@@ -1050,27 +1047,6 @@ export function HomeExperience() {
     window.addEventListener("blur", handleWindowBlur);
     return () => window.removeEventListener("blur", handleWindowBlur);
   }, [stopFastForward]);
-
-  useEffect(() => {
-    if (loaderVisible || isTransitioning) return;
-    if (settledWordmarkIndexRef.current === activeIndex) return;
-
-    settledWordmarkIndexRef.current = activeIndex;
-    const now = performance.now();
-
-    if (
-      isFastForwarding &&
-      now - lastWordmarkPulseAtRef.current < 300
-    ) {
-      return;
-    }
-
-    lastWordmarkPulseAtRef.current = now;
-    setWordmarkPulse((current) => ({
-      key: current.key + 1,
-      fast: isFastForwarding,
-    }));
-  }, [activeIndex, isFastForwarding, isTransitioning, loaderVisible]);
 
   useEffect(() => {
     if (loaderVisible || isTransitioning) return;
@@ -1997,8 +1973,6 @@ export function HomeExperience() {
         >
           <SiteHeader
             homePage
-            wordmarkPulse={wordmarkPulse}
-            reducedMotion={reducedMotion}
             onMenuOpenChange={setMenuOpen}
           />
 
