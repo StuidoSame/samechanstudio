@@ -2977,21 +2977,33 @@ button {
   overflow-wrap: break-word;
 }
 
-.app-detail-content[data-app-id="mapary"] {
+.app-detail-content:is(
+  [data-app-id="mapary"],
+  [data-app-id="runtronome"]
+) {
   grid-template-rows: auto auto auto auto;
 }
 
-.app-detail-content[data-app-id="mapary"] .device-detail-copy {
+.app-detail-content:is(
+  [data-app-id="mapary"],
+  [data-app-id="runtronome"]
+) .device-detail-copy {
   min-height: 0;
   display: grid;
   gap: clamp(16px, 1.5vw, 20px);
 }
 
-.app-detail-content[data-app-id="mapary"] .device-keywords {
+.app-detail-content:is(
+  [data-app-id="mapary"],
+  [data-app-id="runtronome"]
+) .device-keywords {
   width: 100%;
 }
 
-.app-detail-content[data-app-id="mapary"] .device-detail-copy p {
+.app-detail-content:is(
+  [data-app-id="mapary"],
+  [data-app-id="runtronome"]
+) .device-detail-copy p {
   margin: 0 auto;
 }
 

@@ -59,6 +59,15 @@ function numberedScreenshots(directory: string, count: number): string[] {
   );
 }
 
+function screenshotFiles(
+  directory: string,
+  filenames: readonly string[],
+): string[] {
+  return naturallySortedScreenshots(
+    filenames.map((filename) => `/assets/screenshot/${directory}/${filename}`),
+  );
+}
+
 function localizedScreenshots(
   appDirectory: string,
   deviceDirectory: string,
@@ -103,6 +112,21 @@ const MAPARY_PHONE_SCREENSHOT_FILES = [
   "5.png",
 ] as const;
 
+const PULTO_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+] as const;
+
+const PULTO_WATCH_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+] as const;
+
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
@@ -115,8 +139,15 @@ export const SCREENSHOT_MANIFEST = {
   },
   runtronome: {
     screenshotId: "runtronome",
-    phone: localizedScreenshots("runtronome", "phone", 6),
-    watch: numberedScreenshots("runtronome/watch", 2),
+    phone: localizedScreenshotFiles(
+      "runtronome",
+      "phone",
+      PULTO_PHONE_SCREENSHOT_FILES,
+    ),
+    watch: screenshotFiles(
+      "runtronome/watch",
+      PULTO_WATCH_SCREENSHOT_FILES,
+    ),
   },
   odow: {
     screenshotId: "odow",
