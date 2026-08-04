@@ -15,7 +15,6 @@ import type {
   PointerEvent as ReactPointerEvent,
 } from "react";
 import type { JellyInteraction } from "./JellyCanvas";
-import { AppCatalog } from "./AppCatalog";
 import { AppDetailOverlay } from "./app-detail/AppDetailOverlay";
 import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
@@ -2344,8 +2343,6 @@ export function HomeExperience() {
           </button>
 
         </section>
-
-        <AppCatalog />
 
         <TypeRevealGroup as="section" className="studio-about" id="about">
           <SectionCosmos variant="about" />

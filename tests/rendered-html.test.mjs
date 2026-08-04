@@ -67,19 +67,7 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /Mapary_icon\.png/);
   assert.doesNotMatch(html, /home-seo-intro|INDEPENDENT APP STUDIO/i);
   assert.doesNotMatch(html, /<h1\b/i);
-  assert.equal((html.match(/class="app-catalog-card"/g) ?? []).length, 9);
-  const appCatalog = html.match(
-    /<section class="app-catalog"[\s\S]*?<\/section>/i,
-  );
-  assert.ok(appCatalog);
-  assert.doesNotMatch(appCatalog[0], /<p\b/i);
-  assert.match(
-    appCatalog[0],
-    /Mapary[\s\S]*Runtronome[\s\S]*ODOW[\s\S]*Lacaunt[\s\S]*PepeSnap[\s\S]*Tocklist[\s\S]*SKKOO[\s\S]*Teru Bozu[\s\S]*Feeloo/,
-  );
-  assert.match(appCatalog[0], /iOS · watchOS · Android · Wear OS/);
-  assert.match(html, /Mapary[\s\S]{0,80}App Store에서 보기/);
-  assert.match(html, /Mapary[\s\S]{0,80}Google Play에서 보기/);
+  assert.doesNotMatch(html, /app-catalog|APP COLLECTION|apps-catalog-title/i);
   assert.match(html, /type="application\/ld\+json"/);
   assert.match(html, /"@type":"Organization"/);
   assert.match(html, /"@type":"WebSite"/);

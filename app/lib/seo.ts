@@ -23,10 +23,6 @@ type SeoLocaleContent = {
   home: {
     heading: string;
     introduction: string;
-    appsHeading: string;
-    appStoreLabel: string;
-    googlePlayLabel: string;
-    comingSoonLabel: string;
     appDescriptions: Record<string, string>;
   };
 };
@@ -64,10 +60,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       heading: "SAME STUDIO 인디 앱 개발 스튜디오",
       introduction:
         "세임 스튜디오는 지도 메모, 기록, 러닝, 사진과 다이어리를 위한 iOS 앱과 Android 앱을 정성껏 만듭니다.",
-      appsHeading: "SAME STUDIO 앱",
-      appStoreLabel: "App Store에서 보기",
-      googlePlayLabel: "Google Play에서 보기",
-      comingSoonLabel: "출시 준비 중",
       appDescriptions: {
         mapary:
           "Mapary는 장소별 기록을 지도에 남기고 다시 찾는 iOS·Android 지도 메모 앱입니다.",
@@ -122,10 +114,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       heading: "SAME STUDIO, an independent app studio",
       introduction:
         "We craft focused iOS and Android apps for map notes, personal records, running, photography, and digital journals.",
-      appsHeading: "SAME STUDIO Apps",
-      appStoreLabel: "View on the App Store",
-      googlePlayLabel: "View on Google Play",
-      comingSoonLabel: "Coming soon",
       appDescriptions: {
         mapary: "Mapary is an iOS and Android map-note app for saving meaningful places and finding them again.",
         runtronome: "Runtronome is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
@@ -171,10 +159,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       heading: "SAME STUDIO インディーアプリスタジオ",
       introduction:
         "地図メモ、記録、ランニング、写真、デジタル日記のためのiOS・Androidアプリを丁寧に作っています。",
-      appsHeading: "SAME STUDIOのアプリ",
-      appStoreLabel: "App Storeで見る",
-      googlePlayLabel: "Google Playで見る",
-      comingSoonLabel: "近日公開",
       appDescriptions: {
         mapary: "Maparyは、大切な場所を記録して見つけ直せるiOS・Android対応の地図メモアプリです。",
         runtronome: "Runtronomeは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
@@ -220,10 +204,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       heading: "SAME STUDIO 独立应用工作室",
       introduction:
         "我们用心打造用于地图笔记、生活记录、跑步、摄影和数字日记的 iOS 与 Android 应用。",
-      appsHeading: "SAME STUDIO 应用",
-      appStoreLabel: "前往 App Store",
-      googlePlayLabel: "前往 Google Play",
-      comingSoonLabel: "即将推出",
       appDescriptions: {
         mapary: "Mapary 是一款 iOS 与 Android 地图笔记应用，用于保存重要地点并随时重新找到它们。",
         runtronome: "Runtronome 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
@@ -269,10 +249,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       heading: "SAME STUDIO 獨立應用程式工作室",
       introduction:
         "我們用心製作用於地圖筆記、生活記錄、跑步、攝影與數位日記的 iOS 與 Android 應用程式。",
-      appsHeading: "SAME STUDIO 應用程式",
-      appStoreLabel: "前往 App Store",
-      googlePlayLabel: "前往 Google Play",
-      comingSoonLabel: "即將推出",
       appDescriptions: {
         mapary: "Mapary 是一款 iOS 與 Android 地圖筆記應用程式，用於保存重要地點並隨時重新找到它們。",
         runtronome: "Runtronome 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
