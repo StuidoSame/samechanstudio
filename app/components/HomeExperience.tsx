@@ -68,6 +68,12 @@ const NAME_EMPHASIS_MS = 300;
 const PLATFORM_REVEAL_MS = 250;
 const DETAIL_REVEAL_MS = 300;
 const ACTIVE_COMPLETE_HOLD_MS = 500;
+const getAutoplayDelayMs = (appName: string) =>
+  appName.length * TYPE_CHAR_INTERVAL_MS +
+  NAME_EMPHASIS_MS +
+  PLATFORM_REVEAL_MS +
+  DETAIL_REVEAL_MS +
+  ACTIVE_COMPLETE_HOLD_MS;
 const PLAY_RESUME_DELAY_MS = 400;
 const FAST_FORWARD_TRANSITION_MS = 280;
 const FAST_FORWARD_GAP_MS = 70;
@@ -569,7 +575,6 @@ export function HomeExperience() {
   const [isFastForwarding, setIsFastForwarding] = useState(false);
   const [activeSequencePhase, setActiveSequencePhase] =
     useState<ActiveSequencePhase>("idle");
-  const [typedNameLength, setTypedNameLength] = useState(0);
   const [detailApp, setDetailApp] = useState<AppItem | null>(null);
   const [detailOverlayOpen, setDetailOverlayOpen] = useState(false);
 
@@ -694,23 +699,31 @@ export function HomeExperience() {
     isTransitioningRef.current = true;
     setIsTransitioning(true);
     setActiveSequencePhase("idle");
-    setTypedNameLength(0);
   }, [clearAutoplay]);
 
   const moveBy = useCallback(
     (offset: number) => {
+      if (
+        isTransitioningRef.current &&
+        !isFastForwardingRef.current
+      ) {
+        return false;
+      }
       beginTransition();
       targetRef.current = Math.round(targetRef.current) + offset;
+      return true;
     },
     [beginTransition],
   );
 
   const moveToApp = useCallback(
     (appIndex: number) => {
+      if (isTransitioningRef.current) return false;
       beginTransition();
       const progress = progressRef.current;
       const nearestCycle = Math.round((progress - appIndex) / apps.length);
       targetRef.current = appIndex + nearestCycle * apps.length;
+      return true;
     },
     [beginTransition],
   );
@@ -739,7 +752,7 @@ export function HomeExperience() {
   );
 
   const queueAutoplayAdvance = useCallback(
-    (minimumDelay = 0) => {
+    (minimumDelay = AUTOPLAY_RESUME_DELAY_MS) => {
       clearAutoplay();
       autoplayAdvancePendingRef.current = true;
       if (
@@ -760,13 +773,16 @@ export function HomeExperience() {
         if (
           !autoplayEnabledRef.current ||
           !isPlayingRef.current ||
+          isTransitioningRef.current ||
+          isFastForwardingRef.current ||
           document.visibilityState !== "visible" ||
           autoplayPauseReasonsRef.current.size > 0
         ) {
           return;
         }
-        autoplayAdvancePendingRef.current = false;
-        moveBy(1);
+        if (moveBy(1)) {
+          autoplayAdvancePendingRef.current = false;
+        }
       }, Math.max(minimumDelay, resumeDelay));
     },
     [clearAutoplay, moveBy],
@@ -1134,39 +1150,39 @@ export function HomeExperience() {
   ]);
 
   useEffect(() => {
-    if (loaderVisible || isTransitioning) return;
+    if (loaderVisible || isTransitioning || isFastForwarding) return;
 
-    if (isFastForwarding) {
-      return;
-    }
+    queueAutoplayAdvance(getAutoplayDelayMs(activeApp.name));
+
+    return clearAutoplay;
+  }, [
+    activeApp.id,
+    activeApp.name,
+    clearAutoplay,
+    isFastForwarding,
+    isTransitioning,
+    loaderVisible,
+    queueAutoplayAdvance,
+  ]);
+
+  useEffect(() => {
+    if (loaderVisible || isTransitioning || isFastForwarding) return;
 
     const timers: number[] = [];
     const sequenceFrame = window.requestAnimationFrame(() => {
       if (reducedMotion) {
-        setTypedNameLength(activeApp.name.length);
         setActiveSequencePhase("complete");
-        queueAutoplayAdvance();
         return;
       }
 
       const typingDuration = activeApp.name.length * TYPE_CHAR_INTERVAL_MS;
-      setTypedNameLength(0);
       setActiveSequencePhase("typing");
-
-      for (let length = 1; length <= activeApp.name.length; length += 1) {
-        timers.push(
-          window.setTimeout(
-            () => setTypedNameLength(length),
-            length * TYPE_CHAR_INTERVAL_MS,
-          ),
-        );
-      }
 
       const nameEmphasisStart = typingDuration;
       const platformRevealStart = nameEmphasisStart + NAME_EMPHASIS_MS;
       const detailRevealStart = platformRevealStart + PLATFORM_REVEAL_MS;
       const holdStart = detailRevealStart + DETAIL_REVEAL_MS;
-      const completeAt = holdStart + ACTIVE_COMPLETE_HOLD_MS;
+      const completeAt = getAutoplayDelayMs(activeApp.name);
 
       timers.push(
         window.setTimeout(
@@ -1182,10 +1198,10 @@ export function HomeExperience() {
           detailRevealStart,
         ),
         window.setTimeout(() => setActiveSequencePhase("hold"), holdStart),
-        window.setTimeout(() => {
-          setActiveSequencePhase("complete");
-          queueAutoplayAdvance();
-        }, completeAt),
+        window.setTimeout(
+          () => setActiveSequencePhase("complete"),
+          completeAt,
+        ),
       );
     });
 
@@ -1199,7 +1215,6 @@ export function HomeExperience() {
     isFastForwarding,
     isTransitioning,
     loaderVisible,
-    queueAutoplayAdvance,
     reducedMotion,
   ]);
 
@@ -2276,12 +2291,7 @@ export function HomeExperience() {
               <span className="app-count">
                 {String(activeIndex + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}
               </span>
-              <h2 aria-label={activeApp.name}>
-                {activeApp.name.slice(
-                  0,
-                  isFastForwarding ? activeApp.name.length : typedNameLength,
-                )}
-              </h2>
+              <h2 aria-label={activeApp.name}>{activeApp.name}</h2>
               <PlatformIcons app={activeApp} />
               <span className="view-app-sequence">
                 {activeApp.appStoreUrl ? (

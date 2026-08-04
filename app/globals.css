@@ -2142,8 +2142,13 @@ button {
   transform-origin: center;
 }
 
-.app-info-content.sequence-idle h2 {
-  opacity: 0;
+.app-info-content.sequence-idle h2,
+.app-info-content.sequence-typing h2,
+.app-info-content.sequence-platform-reveal h2,
+.app-info-content.sequence-detail-reveal h2,
+.app-info-content.sequence-hold h2,
+.app-info-content.sequence-complete h2 {
+  opacity: 1;
 }
 
 .app-info-content.sequence-name-emphasis h2 {
