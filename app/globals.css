@@ -2988,9 +2988,16 @@ button {
   [data-app-id="mapary"],
   [data-app-id="runtronome"]
 ) .device-detail-copy {
-  min-height: 0;
   display: grid;
   gap: clamp(16px, 1.5vw, 20px);
+}
+
+.app-detail-content[data-app-id="mapary"] .device-detail-copy {
+  min-height: auto;
+}
+
+.app-detail-content[data-app-id="runtronome"] .device-detail-copy {
+  min-height: 0;
 }
 
 .app-detail-content:is(
