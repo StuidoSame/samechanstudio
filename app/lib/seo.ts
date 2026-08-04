@@ -64,7 +64,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary:
           "Mapary는 장소별 기록을 지도에 남기고 다시 찾는 iOS·Android 지도 메모 앱입니다.",
         runtronome:
-          "Runtronome은 달리기 템포와 케이던스를 일정하게 맞추는 iOS·Android 러닝 메트로놈 앱입니다.",
+          "Pulto는 달리기 템포와 케이던스를 일정하게 맞추는 iOS·Android 러닝 메트로놈 앱입니다.",
         odow:
           "ODOW는 매일 하나의 질문에 답하며 하루를 기록하는 iOS 하루 질문 기록 앱이자 일기 앱입니다.",
         locaunt:
@@ -116,7 +116,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         "We craft focused iOS and Android apps for map notes, personal records, running, photography, and digital journals.",
       appDescriptions: {
         mapary: "Mapary is an iOS and Android map-note app for saving meaningful places and finding them again.",
-        runtronome: "Runtronome is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
+        runtronome: "Pulto is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
         odow: "ODOW is an iOS daily-question journal for capturing one thoughtful answer each day.",
         locaunt: "Lacaunt (LOCAUNT) is an iOS location-based memo app for attaching reminders to important places.",
         pepesnap: "PepeSnap is an iOS photo-mission app that invites you to find and capture the shape of the day.",
@@ -161,7 +161,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         "地図メモ、記録、ランニング、写真、デジタル日記のためのiOS・Androidアプリを丁寧に作っています。",
       appDescriptions: {
         mapary: "Maparyは、大切な場所を記録して見つけ直せるiOS・Android対応の地図メモアプリです。",
-        runtronome: "Runtronomeは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
+        runtronome: "Pultoは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
         odow: "ODOWは、毎日ひとつの質問に答えて一日を残すiOS向け日記アプリです。",
         locaunt: "Lacaunt（LOCAUNT）は、大切な場所にリマインダーを残すiOS向け位置メモアプリです。",
         pepesnap: "PepeSnapは、今日の形を見つけて写真に残すiOS向けフォトミッションアプリです。",
@@ -206,7 +206,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         "我们用心打造用于地图笔记、生活记录、跑步、摄影和数字日记的 iOS 与 Android 应用。",
       appDescriptions: {
         mapary: "Mapary 是一款 iOS 与 Android 地图笔记应用，用于保存重要地点并随时重新找到它们。",
-        runtronome: "Runtronome 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
+        runtronome: "Pulto 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
         odow: "ODOW 是一款 iOS 每日提问日记应用，每天用一个回答记录自己的想法。",
         locaunt: "Lacaunt（LOCAUNT）是一款 iOS 位置笔记应用，可在重要地点留下提醒。",
         pepesnap: "PepeSnap 是一款 iOS 摄影任务应用，邀请你寻找并拍下当天的形状。",
@@ -251,7 +251,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         "我們用心製作用於地圖筆記、生活記錄、跑步、攝影與數位日記的 iOS 與 Android 應用程式。",
       appDescriptions: {
         mapary: "Mapary 是一款 iOS 與 Android 地圖筆記應用程式，用於保存重要地點並隨時重新找到它們。",
-        runtronome: "Runtronome 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
+        runtronome: "Pulto 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
         odow: "ODOW 是一款 iOS 每日提問日記應用程式，每天用一個回答記錄自己的想法。",
         locaunt: "Lacaunt（LOCAUNT）是一款 iOS 位置筆記應用程式，可在重要地點留下提醒。",
         pepesnap: "PepeSnap 是一款 iOS 攝影任務應用程式，邀請你尋找並拍下當天的形狀。",

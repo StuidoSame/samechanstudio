@@ -31,11 +31,11 @@ export const apps: AppItem[] = [
   },
   {
     id: "runtronome",
-    name: "Runtronome",
+    name: "Pulto",
     eyebrow: "RUNNING RHYTHM",
     tagline: "Find your rhythm.",
     platforms: "iOS · watchOS · Android · Wear OS",
-    icon: "/assets/icons/Runtronome_icon.png",
+    icon: "/assets/icons/pulto_icon.png",
     accent: "#ff5559",
     accentRgb: "255, 85, 89",
     screenshotId: "runtronome",

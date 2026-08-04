@@ -65,6 +65,8 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /aria-controls="font-size-panel"/);
   assert.match(html, /SAME STUDIO/);
   assert.match(html, /Mapary_icon\.png/);
+  assert.match(html, /aria-label="Select Pulto"/);
+  assert.doesNotMatch(html, /aria-label="Select Runtronome"/);
   assert.doesNotMatch(html, /home-seo-intro|INDEPENDENT APP STUDIO/i);
   assert.doesNotMatch(html, /<h1\b/i);
   assert.doesNotMatch(html, /app-catalog|APP COLLECTION|apps-catalog-title/i);
@@ -243,7 +245,7 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
     "ODOW_icon.png",
     "Mapary_icon.png",
     "Locaunt_icon.png",
-    "Runtronome_icon.png",
+    "pulto_icon.png",
     "pepesnap_icon.png",
     "tocklist_icon.png",
     "skkoo_icon.png",
