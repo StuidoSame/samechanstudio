@@ -73,10 +73,44 @@ function localizedScreenshots(
   };
 }
 
+function localizedScreenshotFiles(
+  appDirectory: string,
+  deviceDirectory: string,
+  filenames: readonly string[],
+): Record<ScreenshotLocale, string[]> {
+  const screenshotsForLocale = (locale: ScreenshotLocale) =>
+    naturallySortedScreenshots(
+      filenames.map(
+        (filename) =>
+          `/assets/screenshot/${appDirectory}/${deviceDirectory}/${locale}/${filename}`,
+      ),
+    );
+
+  return {
+    ko: screenshotsForLocale("ko"),
+    en: screenshotsForLocale("en"),
+    ja: screenshotsForLocale("ja"),
+    zhg: screenshotsForLocale("zhg"),
+    zhb: screenshotsForLocale("zhb"),
+  };
+}
+
+const MAPARY_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+] as const;
+
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
-    phone: localizedScreenshots("mapary", "phone", 5),
+    phone: localizedScreenshotFiles(
+      "mapary",
+      "phone",
+      MAPARY_PHONE_SCREENSHOT_FILES,
+    ),
     ipad: localizedScreenshots("mapary", "ipad", 5),
   },
   runtronome: {
