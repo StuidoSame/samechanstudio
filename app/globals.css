@@ -9995,39 +9995,6 @@ body.is-page-transitioning .archive-shell {
   }
 }
 
-/* Search-friendly studio and app copy follows the existing glass-space system. */
-.home-seo-intro {
-  position: absolute;
-  z-index: 12;
-  top: clamp(92px, 12svh, 126px);
-  left: clamp(20px, 4vw, 64px);
-  width: min(310px, 27vw);
-  pointer-events: none;
-}
-
-.home-seo-intro > span {
-  display: block;
-  margin-bottom: 9px;
-  color: rgba(111, 66, 222, 0.72);
-  font-size: calc(9px * var(--font-scale));
-  letter-spacing: 0.22em;
-}
-
-.home-seo-intro h1 {
-  margin: 0;
-  color: #7251b5;
-  font-size: calc(clamp(18px, 1.6vw, 24px) * var(--font-scale));
-  line-height: 1.16;
-  letter-spacing: -0.035em;
-}
-
-.home-seo-intro p {
-  margin: 11px 0 0;
-  color: rgba(75, 61, 98, 0.72);
-  font-size: calc(12px * var(--font-scale));
-  line-height: 1.65;
-}
-
 .app-catalog {
   position: relative;
   z-index: 2;
@@ -10139,15 +10106,6 @@ body.is-page-transitioning .archive-shell {
   color: #6f42de;
 }
 
-html[data-theme="dark"] .home-seo-intro > span,
-html[data-theme="dark"] .home-seo-intro h1 {
-  color: #c8b2f5;
-}
-
-html[data-theme="dark"] .home-seo-intro p {
-  color: rgba(229, 219, 244, 0.68);
-}
-
 html[data-theme="dark"] .app-catalog {
   background:
     radial-gradient(circle at 16% 14%, rgba(141, 91, 217, 0.14), transparent 36%),
@@ -10179,39 +10137,12 @@ html[data-theme="dark"] .app-catalog-heading span {
 }
 
 @media (max-width: 980px) {
-  .home-seo-intro {
-    width: min(250px, 30vw);
-  }
-
   .app-catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 767px) {
-  .home-seo-intro {
-    top: 82px;
-    left: 18px;
-    width: calc(100% - 36px);
-    text-align: center;
-  }
-
-  .home-seo-intro > span {
-    margin-bottom: 5px;
-    font-size: calc(7px * var(--font-scale));
-  }
-
-  .home-seo-intro h1 {
-    font-size: calc(clamp(15px, 4.5vw, 18px) * var(--font-scale));
-  }
-
-  .home-seo-intro p {
-    max-width: 430px;
-    margin: 6px auto 0;
-    font-size: calc(10px * var(--font-scale));
-    line-height: 1.45;
-  }
-
   .app-catalog {
     padding: 72px 18px 86px;
   }

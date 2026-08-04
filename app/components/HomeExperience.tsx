@@ -30,7 +30,6 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
-import { SEO_CONTENT } from "../lib/seo";
 import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 import {
   consumeInternalHomeNavigation,
@@ -549,9 +548,8 @@ function Loader({
 }
 
 export function HomeExperience() {
-  const { locale, messages } = useI18n();
+  const { messages } = useI18n();
   const { pageTransitionActive } = usePageTransition();
-  const homeSeo = SEO_CONTENT[locale].home;
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -748,7 +746,7 @@ export function HomeExperience() {
       if (
         !autoplayEnabledRef.current ||
         !isPlayingRef.current ||
-        document.visibilityState === "hidden" ||
+        document.visibilityState !== "visible" ||
         autoplayPauseReasonsRef.current.size > 0
       ) {
         return;
@@ -763,7 +761,7 @@ export function HomeExperience() {
         if (
           !autoplayEnabledRef.current ||
           !isPlayingRef.current ||
-          document.visibilityState === "hidden" ||
+          document.visibilityState !== "visible" ||
           autoplayPauseReasonsRef.current.size > 0
         ) {
           return;
@@ -785,7 +783,7 @@ export function HomeExperience() {
 
   const resumeAutoplay = useCallback(
     (reason: "interaction" | "detail-hover" | "detail-focus") => {
-      autoplayPauseReasonsRef.current.delete(reason);
+      if (!autoplayPauseReasonsRef.current.delete(reason)) return;
       autoplayResumeNotBeforeRef.current =
         performance.now() + AUTOPLAY_RESUME_DELAY_MS;
       if (autoplayAdvancePendingRef.current) {
@@ -794,6 +792,33 @@ export function HomeExperience() {
     },
     [queueAutoplayAdvance],
   );
+
+  const resumeTransientAutoplay = useCallback(() => {
+    autoplayPauseReasonsRef.current.delete("interaction");
+    autoplayPauseReasonsRef.current.delete("detail-hover");
+    autoplayResumeNotBeforeRef.current =
+      performance.now() + AUTOPLAY_RESUME_DELAY_MS;
+    if (autoplayAdvancePendingRef.current) {
+      queueAutoplayAdvance(AUTOPLAY_RESUME_DELAY_MS);
+    }
+  }, [queueAutoplayAdvance]);
+
+  const resetPointerInteraction = useCallback(() => {
+    const pointer = pointerRef.current;
+    const pointerId = pointer.id;
+    pointer.dragging = false;
+    pointer.horizontal = false;
+    pointer.id = -1;
+    targetRef.current = Math.round(progressRef.current);
+    velocityRef.current *= 0.24;
+
+    if (
+      pointerId >= 0 &&
+      heroRef.current?.hasPointerCapture(pointerId)
+    ) {
+      heroRef.current.releasePointerCapture(pointerId);
+    }
+  }, []);
 
   const selectApp = useCallback(
     (appIndex: number) => {
@@ -842,7 +867,7 @@ export function HomeExperience() {
       if (
         !isFastForwardingRef.current ||
         !isPlayingRef.current ||
-        document.visibilityState === "hidden"
+        document.visibilityState !== "visible"
       ) {
         return;
       }
@@ -1049,9 +1074,12 @@ export function HomeExperience() {
 
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
+      if (document.visibilityState !== "visible") {
         stopFastForward();
+        resetPointerInteraction();
         clearAutoplay();
+        autoplayPauseReasonsRef.current.delete("interaction");
+        autoplayPauseReasonsRef.current.delete("detail-hover");
         return;
       }
       autoplayResumeNotBeforeRef.current =
@@ -1064,17 +1092,45 @@ export function HomeExperience() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [clearAutoplay, queueAutoplayAdvance, stopFastForward]);
+  }, [clearAutoplay, queueAutoplayAdvance, resetPointerInteraction, stopFastForward]);
 
   useEffect(() => {
-    const handleWindowBlur = () => stopFastForward();
+    const handleWindowBlur = () => {
+      stopFastForward();
+      resetPointerInteraction();
+      clearAutoplay();
+      autoplayPauseReasonsRef.current.delete("interaction");
+      autoplayPauseReasonsRef.current.delete("detail-hover");
+    };
+    const handleWindowResume = () => {
+      if (document.visibilityState === "visible") {
+        resumeTransientAutoplay();
+      }
+    };
+    const handlePointerRelease = () => resumeAutoplay("interaction");
+
     window.addEventListener("blur", handleWindowBlur);
-    return () => window.removeEventListener("blur", handleWindowBlur);
-  }, [stopFastForward]);
+    window.addEventListener("focus", handleWindowResume);
+    window.addEventListener("pageshow", handleWindowResume);
+    window.addEventListener("pointerup", handlePointerRelease);
+    window.addEventListener("pointercancel", handlePointerRelease);
+    return () => {
+      window.removeEventListener("blur", handleWindowBlur);
+      window.removeEventListener("focus", handleWindowResume);
+      window.removeEventListener("pageshow", handleWindowResume);
+      window.removeEventListener("pointerup", handlePointerRelease);
+      window.removeEventListener("pointercancel", handlePointerRelease);
+    };
+  }, [
+    clearAutoplay,
+    resetPointerInteraction,
+    resumeAutoplay,
+    resumeTransientAutoplay,
+    stopFastForward,
+  ]);
 
   useEffect(() => {
     if (loaderVisible || isTransitioning) return;
-    autoplayAdvancePendingRef.current = false;
 
     if (isFastForwarding) {
       return;
@@ -2009,7 +2065,7 @@ export function HomeExperience() {
           id="apps"
           data-cursor="drag"
           ref={heroRef}
-          aria-labelledby="home-title"
+          aria-label={messages.sectionNavigation.summaries.apps}
           onPointerEnter={updateHeroDepth}
           onPointerLeave={resetHeroDepth}
           onPointerDown={(event) => {
@@ -2027,12 +2083,6 @@ export function HomeExperience() {
             homePage
             onMenuOpenChange={setMenuOpen}
           />
-
-          <header className="home-seo-intro">
-            <span aria-hidden="true">INDEPENDENT APP STUDIO</span>
-            <h1 id="home-title">{homeSeo.heading}</h1>
-            <p>{homeSeo.introduction}</p>
-          </header>
 
           <div className="ambient-glow" aria-hidden="true" />
           <div className="perspective-floor" aria-hidden="true" />
@@ -2233,12 +2283,18 @@ export function HomeExperience() {
                   <button
                     className="view-app"
                     type="button"
-                    onMouseEnter={() => pauseAutoplay("detail-hover")}
-                    onMouseLeave={() => resumeAutoplay("detail-hover")}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType === "mouse") {
+                        pauseAutoplay("detail-hover");
+                      }
+                    }}
+                    onPointerLeave={(event) => {
+                      resetDetailMagnet(event);
+                      resumeAutoplay("detail-hover");
+                    }}
                     onFocus={() => pauseAutoplay("detail-focus")}
                     onBlur={() => resumeAutoplay("detail-focus")}
                     onPointerMove={updateDetailMagnet}
-                    onPointerLeave={resetDetailMagnet}
                     onClick={openAppDetail}
                   >
                     <span className="view-app-label">VIEW DETAIL</span>

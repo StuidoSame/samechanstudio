@@ -65,8 +65,8 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /aria-controls="font-size-panel"/);
   assert.match(html, /SAME STUDIO/);
   assert.match(html, /Mapary_icon\.png/);
-  assert.match(html, /<h1[^>]*>SAME STUDIO 인디 앱 개발 스튜디오<\/h1>/i);
-  assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
+  assert.doesNotMatch(html, /home-seo-intro|INDEPENDENT APP STUDIO/i);
+  assert.doesNotMatch(html, /<h1\b/i);
   assert.equal((html.match(/class="app-catalog-card"/g) ?? []).length, 9);
   assert.match(html, /지도 메모 앱/);
   assert.match(html, /러닝 메트로놈 앱/);
@@ -158,7 +158,11 @@ test("renders unique page metadata, canonical URLs, and social cards", async () 
     assert.ok(html.includes('<meta name="twitter:card" content="summary_large_image"'));
     assert.ok(html.includes('<meta name="robots" content="index, follow'));
     assert.doesNotMatch(html, /hreflang=/i);
-    assert.equal((html.match(/<h1\b/gi) ?? []).length, 1, pathname);
+    assert.equal(
+      (html.match(/<h1\b/gi) ?? []).length,
+      pathname === "/" ? 0 : 1,
+      pathname,
+    );
     titles.add(title);
   }
 
