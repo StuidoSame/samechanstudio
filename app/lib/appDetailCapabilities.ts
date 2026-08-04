@@ -28,7 +28,7 @@ const iphoneOnly = (): Record<DetailDevice, boolean> =>
 
 export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
   mapary: {
-    devices: devices(true, true, true, true),
+    devices: devices(true, true, false, true),
     stores: stores(true, true),
   },
   runtronome: {

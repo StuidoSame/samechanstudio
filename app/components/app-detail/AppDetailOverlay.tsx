@@ -399,7 +399,7 @@ export function AppDetailOverlay({
           </button>
         </header>
 
-        <div className="app-detail-content">
+        <div className="app-detail-content" data-app-id={app.id}>
           <div
             className="app-detail-store-selector"
             aria-label={messages.appDetail.storeSelectorLabel}

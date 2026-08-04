@@ -181,7 +181,6 @@ export const zhTW = {
       mapary: {
         iphone: { keywords: ["地圖記錄", "地點備忘", "快速尋找"], description: "把想記住的地點和備忘直接留在地圖上，移動途中也能快速找回附近的記錄。" },
         ipad: { keywords: ["寬廣地圖", "整理記錄", "詳細瀏覽"], description: "在更寬廣的畫面上一覽地圖與地點記錄，從容地查看並整理累積的備忘。" },
-        watch: { keywords: ["腕上查看", "附近記錄", "快速取用"], description: "不必拿出手機，就能在手腕上簡潔查看附近的地點記錄，讓移動中的節奏不中斷。" },
         android: { keywords: ["地圖記錄", "地點備忘", "Android最佳化"], description: "在Android手機上也能以地圖為中心記錄地點與備忘，並在需要時透過熟悉的行動操作快速查看。" },
       },
       runtronome: {

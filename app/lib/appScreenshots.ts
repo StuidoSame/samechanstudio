@@ -76,9 +76,8 @@ function localizedScreenshots(
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
-    phone: localizedScreenshots("mapary", "phone", 6),
+    phone: localizedScreenshots("mapary", "phone", 5),
     ipad: localizedScreenshots("mapary", "ipad", 5),
-    watch: numberedScreenshots("mapary/watch", 3),
   },
   runtronome: {
     screenshotId: "runtronome",

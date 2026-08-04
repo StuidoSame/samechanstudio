@@ -181,7 +181,6 @@ export const zhCN = {
       mapary: {
         iphone: { keywords: ["地图记录", "地点备忘", "快速查找"], description: "把想记住的地点和备忘直接留在地图上，移动途中也能快速找回附近的记录。" },
         ipad: { keywords: ["宽广地图", "整理记录", "详细浏览"], description: "在更宽广的屏幕上一览地图与地点记录，自在地查看并整理积累的备忘。" },
-        watch: { keywords: ["腕上查看", "附近记录", "快速访问"], description: "无需拿出手机，便可在手腕上简洁查看附近的地点记录，让移动中的节奏不中断。" },
         android: { keywords: ["地图记录", "地点备忘", "Android优化"], description: "在Android手机上也能以地图为中心记录地点与备忘，并在需要时通过熟悉的移动操作快速查看。" },
       },
       runtronome: {

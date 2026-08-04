@@ -181,7 +181,6 @@ export const en = {
       mapary: {
         iphone: { keywords: ["Map journal", "Place notes", "Quick discovery"], description: "Save memorable places and notes directly on the map, then quickly rediscover nearby entries while you are on the move." },
         ipad: { keywords: ["Expansive map", "Organized entries", "Detailed discovery"], description: "See the full flow of your map and place journal on a larger screen, then browse and organize saved notes at an easy pace." },
-        watch: { keywords: ["At a glance", "Nearby entries", "Quick access"], description: "Keep moving while checking nearby place entries at a glance from your wrist, without reaching for your phone." },
         android: { keywords: ["Map journal", "Place notes", "Android ready"], description: "Record places and notes around the map on an Android phone, then find them again through a familiar mobile flow whenever you need them." },
       },
       runtronome: {
