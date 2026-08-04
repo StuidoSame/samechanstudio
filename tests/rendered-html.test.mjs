@@ -68,15 +68,16 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.doesNotMatch(html, /home-seo-intro|INDEPENDENT APP STUDIO/i);
   assert.doesNotMatch(html, /<h1\b/i);
   assert.equal((html.match(/class="app-catalog-card"/g) ?? []).length, 9);
-  assert.match(html, /지도 메모 앱/);
-  assert.match(html, /러닝 메트로놈 앱/);
-  assert.match(html, /하루 질문 기록 앱/);
-  assert.match(html, /Lacaunt\(LOCAUNT\)/);
-  assert.match(html, /사진 미션 앱/);
-  assert.match(html, /24시간 투두 앱/);
-  assert.match(html, /다꾸 앱이자 디지털 다이어리/);
-  assert.match(html, /날씨 소원 앱/);
-  assert.match(html, /감정 위젯 앱/);
+  const appCatalog = html.match(
+    /<section class="app-catalog"[\s\S]*?<\/section>/i,
+  );
+  assert.ok(appCatalog);
+  assert.doesNotMatch(appCatalog[0], /<p\b/i);
+  assert.match(
+    appCatalog[0],
+    /Mapary[\s\S]*Runtronome[\s\S]*ODOW[\s\S]*Lacaunt[\s\S]*PepeSnap[\s\S]*Tocklist[\s\S]*SKKOO[\s\S]*Teru Bozu[\s\S]*Feeloo/,
+  );
+  assert.match(appCatalog[0], /iOS · watchOS · Android · Wear OS/);
   assert.match(html, /Mapary[\s\S]{0,80}App Store에서 보기/);
   assert.match(html, /Mapary[\s\S]{0,80}Google Play에서 보기/);
   assert.match(html, /type="application\/ld\+json"/);

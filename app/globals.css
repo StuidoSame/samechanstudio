@@ -10060,22 +10060,15 @@ body.is-page-transitioning .archive-shell {
 }
 
 .app-catalog-copy h3 {
-  margin: 1px 0 7px;
+  margin: 1px 0 0;
   color: #6842b1;
   font-size: calc(18px * var(--font-scale));
   line-height: 1.1;
 }
 
-.app-catalog-copy p {
-  margin: 0;
-  color: rgba(66, 53, 84, 0.75);
-  font-size: calc(12px * var(--font-scale));
-  line-height: 1.55;
-}
-
 .app-catalog-platforms {
   display: block;
-  margin-top: 9px;
+  margin-top: 8px;
   color: rgba(104, 66, 177, 0.72);
   font-size: calc(10px * var(--font-scale));
   letter-spacing: 0.08em;
@@ -10123,10 +10116,6 @@ html[data-theme="dark"] .app-catalog-card {
 html[data-theme="dark"] .app-catalog-copy h3,
 html[data-theme="dark"] .app-catalog-heading h2 {
   color: #c5abfa;
-}
-
-html[data-theme="dark"] .app-catalog-copy p {
-  color: rgba(236, 228, 246, 0.7);
 }
 
 html[data-theme="dark"] .app-catalog-platforms,

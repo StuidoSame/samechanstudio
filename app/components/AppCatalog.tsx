@@ -34,7 +34,6 @@ export function AppCatalog() {
             />
             <div className="app-catalog-copy">
               <h3 id={`app-${app.id}-title`}>{app.name}</h3>
-              <p>{content.appDescriptions[app.id]}</p>
               <span className="app-catalog-platforms">{app.platforms}</span>
               <div className="app-catalog-links">
                 {app.appStoreUrl && (
