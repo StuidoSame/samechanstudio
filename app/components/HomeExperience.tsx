@@ -795,6 +795,7 @@ export function HomeExperience() {
   const resumeTransientAutoplay = useCallback(() => {
     autoplayPauseReasonsRef.current.delete("interaction");
     autoplayPauseReasonsRef.current.delete("detail-hover");
+    autoplayPauseReasonsRef.current.delete("detail-focus");
     autoplayResumeNotBeforeRef.current =
       performance.now() + AUTOPLAY_RESUME_DELAY_MS;
     if (autoplayAdvancePendingRef.current) {
@@ -1049,13 +1050,10 @@ export function HomeExperience() {
   }, []);
 
   useEffect(() => {
-    autoplayEnabledRef.current = !loaderVisible && !reducedMotion;
+    // Reduced motion changes transition presentation, not autoplay intent.
+    autoplayEnabledRef.current = !loaderVisible;
     if (reducedMotion && isFastForwardingRef.current) {
-      stopFastForward(true);
-    }
-    if (reducedMotion && isPlayingRef.current) {
-      isPlayingRef.current = false;
-      setIsPlaying(false);
+      stopFastForward();
     }
     if (!autoplayEnabledRef.current) {
       clearAutoplay();
@@ -1079,6 +1077,7 @@ export function HomeExperience() {
         clearAutoplay();
         autoplayPauseReasonsRef.current.delete("interaction");
         autoplayPauseReasonsRef.current.delete("detail-hover");
+        autoplayPauseReasonsRef.current.delete("detail-focus");
         return;
       }
       autoplayResumeNotBeforeRef.current =
@@ -1100,13 +1099,19 @@ export function HomeExperience() {
       clearAutoplay();
       autoplayPauseReasonsRef.current.delete("interaction");
       autoplayPauseReasonsRef.current.delete("detail-hover");
+      autoplayPauseReasonsRef.current.delete("detail-focus");
     };
     const handleWindowResume = () => {
       if (document.visibilityState === "visible") {
         resumeTransientAutoplay();
       }
     };
-    const handlePointerRelease = () => resumeAutoplay("interaction");
+    const handlePointerRelease = (event: PointerEvent) => {
+      if (pointerRef.current.id === event.pointerId) {
+        resetPointerInteraction();
+      }
+      resumeAutoplay("interaction");
+    };
 
     window.addEventListener("blur", handleWindowBlur);
     window.addEventListener("focus", handleWindowResume);
@@ -1140,6 +1145,7 @@ export function HomeExperience() {
       if (reducedMotion) {
         setTypedNameLength(activeApp.name.length);
         setActiveSequencePhase("complete");
+        queueAutoplayAdvance();
         return;
       }
 
@@ -2215,7 +2221,7 @@ export function HomeExperience() {
                     ? messages.carousel.pauseAutoplay
                     : messages.carousel.startAutoplay
                 }
-                disabled={(isTransitioning && !isFastForwarding) || reducedMotion}
+                disabled={isTransitioning && !isFastForwarding}
                 data-playing={isPlaying ? "true" : "false"}
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={toggleAutoplay}
@@ -2243,7 +2249,7 @@ export function HomeExperience() {
                   type="button"
                   aria-label={messages.carousel.fastForward}
                   aria-pressed={isFastForwarding}
-                  disabled={(isTransitioning && !isFastForwarding) || reducedMotion}
+                  disabled={isTransitioning && !isFastForwarding}
                   onPointerDown={startFastForward}
                   onPointerUp={releaseFastForward}
                   onPointerCancel={releaseFastForward}

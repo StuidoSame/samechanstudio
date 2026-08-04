@@ -64,7 +64,7 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /same-studio-font-size/);
   assert.match(html, /aria-controls="font-size-panel"/);
   assert.match(html, /SAME STUDIO/);
-  assert.match(html, /Mapary_icon\.png/);
+  assert.match(html, /\/assets\/icons\/Mapary_icon\.png/);
   assert.match(html, /aria-label="Select Pulto"/);
   assert.doesNotMatch(html, /aria-label="Select Runtronome"/);
   assert.doesNotMatch(html, /home-seo-intro|INDEPENDENT APP STUDIO/i);
