@@ -132,6 +132,39 @@ test("connects EVRUNE to its actual localized Phone and Pad assets", () => {
   }
 });
 
+test("connects PINI to its actual localized Phone assets without inventing Pad captures", () => {
+  const localeFolders = {
+    ko: "ko",
+    en: "en",
+    ja: "ja",
+    "zh-CN": "zhg",
+    "zh-TW": "zhb",
+  };
+
+  assert.deepEqual(getAvailableDetailScreens("pini"), ["phone"]);
+
+  for (const [locale, folder] of Object.entries(localeFolders)) {
+    const phone = getAppScreenshotSet({
+      appId: "pini",
+      screen: "phone",
+      locale,
+    });
+    assert.equal(phone.locale, folder);
+    assert.equal(phone.screenshots.length, 5);
+    assert.ok(
+      phone.screenshots.every((path) =>
+        path.includes(`/screenshot/pini/phone/${folder}/`),
+      ),
+    );
+    assert.ok(phone.screenshots.every((path) => !path.includes("lacaunt")));
+
+    assert.deepEqual(
+      getAppScreenshotSet({ appId: "pini", screen: "pad", locale }),
+      { locale: null, screenshots: [] },
+    );
+  }
+});
+
 test("uses app platform data as the platform-logo source of truth", () => {
   for (const app of apps) {
     assert.deepEqual(

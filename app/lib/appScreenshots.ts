@@ -156,6 +156,14 @@ const EVRUNE_PAD_SCREENSHOT_FILES = [
   "4.png",
 ] as const;
 
+const PINI_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+] as const;
+
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
@@ -199,7 +207,11 @@ export const SCREENSHOT_MANIFEST = {
   },
   pini: {
     screenshotId: "pini",
-    phone: localizedScreenshots("pini", "phone", 6),
+    phone: localizedScreenshotFiles(
+      "pini",
+      "phone",
+      PINI_PHONE_SCREENSHOT_FILES,
+    ),
   },
   pepesnap: {
     screenshotId: "pepesnap",
