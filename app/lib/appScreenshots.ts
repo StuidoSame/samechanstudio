@@ -141,6 +141,21 @@ const PULTO_WATCH_SCREENSHOT_FILES = [
   "4.png",
 ] as const;
 
+const EVRUNE_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+] as const;
+
+const EVRUNE_PAD_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+] as const;
+
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
@@ -170,8 +185,17 @@ export const SCREENSHOT_MANIFEST = {
   },
   evrune: {
     screenshotId: "evrune",
-    phone: localizedScreenshots("evrune", "phone", 5),
-    pad: localizedScreenshots("evrune", "ipad", 5),
+    phone: localizedScreenshotFiles(
+      "evrune",
+      "phone",
+      EVRUNE_PHONE_SCREENSHOT_FILES,
+    ),
+    pad: createLocalizedScreenshotManifest("evrune", "pad", {
+      en: EVRUNE_PAD_SCREENSHOT_FILES,
+      ja: EVRUNE_PAD_SCREENSHOT_FILES,
+      zhg: EVRUNE_PAD_SCREENSHOT_FILES,
+      zhb: EVRUNE_PAD_SCREENSHOT_FILES,
+    }),
   },
   pini: {
     screenshotId: "pini",

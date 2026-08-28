@@ -8,6 +8,7 @@ import {
 } from "../app/lib/appDetailCapabilities.ts";
 import {
   createLocalizedScreenshotManifest,
+  getAppScreenshotSet,
   getAppScreenshots,
   resolveLocalizedScreenshotSet,
   SCREENSHOT_MANIFEST,
@@ -89,6 +90,46 @@ test("connects WAESSEUM detail screens and localized screenshots", () => {
   });
   assert.equal(screenshots.length, 6);
   assert.ok(screenshots.every((path) => path.includes("/waesseum/")));
+});
+
+test("connects EVRUNE to its actual localized Phone and Pad assets", () => {
+  const localeFolders = {
+    ko: "ko",
+    en: "en",
+    ja: "ja",
+    "zh-CN": "zhg",
+    "zh-TW": "zhb",
+  };
+
+  for (const [locale, folder] of Object.entries(localeFolders)) {
+    const phone = getAppScreenshotSet({
+      appId: "evrune",
+      screen: "phone",
+      locale,
+    });
+    assert.equal(phone.locale, folder);
+    assert.equal(phone.screenshots.length, 5);
+    assert.ok(
+      phone.screenshots.every((path) =>
+        path.includes(`/screenshot/evrune/phone/${folder}/`),
+      ),
+    );
+
+    const pad = getAppScreenshotSet({
+      appId: "evrune",
+      screen: "pad",
+      locale,
+    });
+    const expectedPadFolder = locale === "ko" ? "en" : folder;
+    assert.equal(pad.locale, expectedPadFolder);
+    assert.equal(pad.screenshots.length, 4);
+    assert.ok(
+      pad.screenshots.every((path) =>
+        path.includes(`/screenshot/evrune/pad/${expectedPadFolder}/`),
+      ),
+    );
+    assert.ok(pad.screenshots.every((path) => !path.includes("/ipad/")));
+  }
 });
 
 test("uses app platform data as the platform-logo source of truth", () => {
