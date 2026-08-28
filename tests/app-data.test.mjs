@@ -3,7 +3,10 @@ import { access } from "node:fs/promises";
 import test from "node:test";
 import { apps } from "../app/lib/apps.ts";
 import { getAvailableDetailDevices } from "../app/lib/appDetailCapabilities.ts";
-import { getAppScreenshots } from "../app/lib/appScreenshots.ts";
+import {
+  getAppScreenshots,
+  SCREENSHOT_MANIFEST,
+} from "../app/lib/appScreenshots.ts";
 
 test("uses the current official app names and icon files", async () => {
   const expected = {
@@ -70,4 +73,23 @@ test("uses app platform data as the platform-logo source of truth", () => {
       app.id,
     );
   }
+});
+
+test("keeps every app icon and screenshot manifest path loadable", async () => {
+  const assetPaths = apps.map((app) => app.icon);
+
+  for (const manifest of Object.values(SCREENSHOT_MANIFEST)) {
+    for (const device of [manifest.phone, manifest.ipad]) {
+      for (const screenshots of Object.values(device ?? {})) {
+        assetPaths.push(...screenshots);
+      }
+    }
+    assetPaths.push(...(manifest.watch ?? []));
+  }
+
+  await Promise.all(
+    assetPaths.map((assetPath) =>
+      access(new URL(`../public${assetPath}`, import.meta.url)),
+    ),
+  );
 });

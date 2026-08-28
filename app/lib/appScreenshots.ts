@@ -135,7 +135,12 @@ export const SCREENSHOT_MANIFEST = {
       "phone",
       MAPARY_PHONE_SCREENSHOT_FILES,
     ),
-    ipad: localizedScreenshots("mapary", "ipad", 5),
+    ipad: {
+      ko: numberedScreenshots("mapary/ipad/ko", 5),
+      ja: numberedScreenshots("mapary/ipad/ja", 5),
+      zhg: numberedScreenshots("mapary/ipad/zhg", 5),
+      zhb: numberedScreenshots("mapary/ipad/zhb", 5),
+    },
   },
   runtronome: {
     screenshotId: "runtronome",
