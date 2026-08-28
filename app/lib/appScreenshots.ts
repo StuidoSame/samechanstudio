@@ -181,6 +181,14 @@ const WAESSEUM_PAD_SCREENSHOT_FILES = [
   "5.png",
 ] as const;
 
+const TERUBOZU_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+] as const;
+
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
@@ -247,7 +255,11 @@ export const SCREENSHOT_MANIFEST = {
   },
   terubozu: {
     screenshotId: "terubozu",
-    phone: localizedScreenshots("terubozu", "phone", 6),
+    phone: localizedScreenshotFiles(
+      "terubozu",
+      "phone",
+      TERUBOZU_PHONE_SCREENSHOT_FILES,
+    ),
   },
   waesseum: {
     screenshotId: "waesseum",

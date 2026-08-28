@@ -193,6 +193,38 @@ test("connects PINI to its actual localized Phone assets without inventing Pad c
   }
 });
 
+test("connects Teru Bozu to its canonical localized Phone assets without inventing Pad captures", () => {
+  const localeFolders = {
+    ko: "ko",
+    en: "en",
+    ja: "ja",
+    "zh-CN": "zhg",
+    "zh-TW": "zhb",
+  };
+
+  assert.deepEqual(getAvailableDetailScreens("terubozu"), ["phone"]);
+
+  for (const [locale, folder] of Object.entries(localeFolders)) {
+    const phone = getAppScreenshotSet({
+      appId: "terubozu",
+      screen: "phone",
+      locale,
+    });
+    assert.equal(phone.locale, folder);
+    assert.equal(phone.screenshots.length, 5);
+    assert.ok(
+      phone.screenshots.every((path) =>
+        path.includes(`/screenshot/terubozu/phone/${folder}/`),
+      ),
+    );
+
+    assert.deepEqual(
+      getAppScreenshotSet({ appId: "terubozu", screen: "pad", locale }),
+      { locale: null, screenshots: [] },
+    );
+  }
+});
+
 test("uses app platform data as the platform-logo source of truth", () => {
   for (const app of apps) {
     assert.deepEqual(
