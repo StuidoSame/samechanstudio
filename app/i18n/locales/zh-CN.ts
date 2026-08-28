@@ -172,7 +172,7 @@ export const zhCN = {
     closeLightboxLabel: "关闭放大图片",
     previousImageLabel: "查看上一张图片",
     nextImageLabel: "查看下一张图片",
-    deviceSelectorLabel: "选择设备",
+    screenSelectorLabel: "选择屏幕尺寸",
     fallback: {
       keywords: ["核心体验", "简洁流程", "设备优化"],
       description: "在所选设备上通过简洁的流程了解并使用应用的核心功能。",

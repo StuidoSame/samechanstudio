@@ -1,80 +1,65 @@
 export type DetailStore = "apple" | "google";
-export type DetailDevice = "iphone" | "ipad" | "appleWatch" | "androidPhone";
+export type DetailScreen = "phone" | "pad";
 
 export type AppDetailCapability = {
-  devices: Record<DetailDevice, boolean>;
+  screens: Record<DetailScreen, boolean>;
   stores: Record<DetailStore, boolean>;
 };
 
-const devices = (
-  iphone: boolean,
-  ipad: boolean,
-  appleWatch: boolean,
-  androidPhone: boolean,
-): Record<DetailDevice, boolean> => ({
-  iphone,
-  ipad,
-  appleWatch,
-  androidPhone,
-});
+const screens = (phone: boolean, pad: boolean): Record<DetailScreen, boolean> =>
+  ({ phone, pad });
 
 const stores = (
   apple: boolean,
   google: boolean,
 ): Record<DetailStore, boolean> => ({ apple, google });
 
-const iphoneOnly = (): Record<DetailDevice, boolean> =>
-  devices(true, false, false, false);
+const phoneOnly = (): Record<DetailScreen, boolean> => screens(true, false);
 
 export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
   mapary: {
-    devices: devices(true, true, false, true),
+    screens: screens(true, true),
     stores: stores(true, true),
   },
   runtronome: {
-    devices: devices(true, false, true, true),
+    screens: phoneOnly(),
     stores: stores(true, true),
   },
   evrune: {
-    devices: devices(true, true, false, true),
+    screens: screens(true, true),
     stores: stores(true, true),
   },
   pini: {
-    devices: iphoneOnly(),
+    screens: phoneOnly(),
     stores: stores(true, false),
   },
   pepesnap: {
-    devices: devices(true, true, false, false),
+    screens: screens(true, true),
     stores: stores(true, true),
   },
   tocklist: {
-    devices: devices(true, true, false, false),
+    screens: screens(true, true),
     stores: stores(true, true),
   },
   skkoo: {
-    devices: devices(true, true, false, false),
+    screens: screens(true, true),
     stores: stores(true, true),
   },
   terubozu: {
-    devices: iphoneOnly(),
+    screens: phoneOnly(),
     stores: stores(true, true),
   },
   feeloo: {
-    devices: iphoneOnly(),
+    screens: phoneOnly(),
     stores: stores(false, false),
   },
   waesseum: {
-    devices: devices(true, true, false, true),
+    screens: screens(true, true),
     stores: stores(true, true),
   },
 };
 
-const DETAIL_DEVICE_ORDER: DetailDevice[] = [
-  "iphone",
-  "ipad",
-  "appleWatch",
-  "androidPhone",
-];
+export const DETAIL_SCREEN_ORDER = ["phone", "pad"] as const;
 
 export function isDetailStoreAvailable(
   appId: string,
@@ -84,11 +69,11 @@ export function isDetailStoreAvailable(
   return capability?.stores[store] ?? false;
 }
 
-export function getAvailableDetailDevices(
+export function getAvailableDetailScreens(
   appId: string,
-): DetailDevice[] {
+): DetailScreen[] {
   const capability = APP_DETAIL_CAPABILITIES[appId];
   if (!capability) return [];
 
-  return DETAIL_DEVICE_ORDER.filter((device) => capability.devices[device]);
+  return DETAIL_SCREEN_ORDER.filter((screen) => capability.screens[screen]);
 }

@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { access } from "node:fs/promises";
 import test from "node:test";
 import { apps } from "../app/lib/apps.ts";
-import { getAvailableDetailDevices } from "../app/lib/appDetailCapabilities.ts";
+import {
+  DETAIL_SCREEN_ORDER,
+  getAvailableDetailScreens,
+} from "../app/lib/appDetailCapabilities.ts";
 import {
   getAppScreenshots,
   SCREENSHOT_MANIFEST,
@@ -48,15 +51,11 @@ test("adds WAESSEUM last without changing the existing app order", () => {
   );
 });
 
-test("connects WAESSEUM detail devices and localized screenshots", () => {
-  assert.deepEqual(getAvailableDetailDevices("waesseum"), [
-    "iphone",
-    "ipad",
-    "androidPhone",
-  ]);
+test("connects WAESSEUM detail screens and localized screenshots", () => {
+  assert.deepEqual(getAvailableDetailScreens("waesseum"), ["phone", "pad"]);
   const screenshots = getAppScreenshots({
     appId: "waesseum",
-    device: "iphone",
+    screen: "phone",
     locale: "ko",
   });
   assert.equal(screenshots.length, 6);
@@ -79,8 +78,8 @@ test("keeps every app icon and screenshot manifest path loadable", async () => {
   const assetPaths = apps.map((app) => app.icon);
 
   for (const manifest of Object.values(SCREENSHOT_MANIFEST)) {
-    for (const device of [manifest.phone, manifest.ipad]) {
-      for (const screenshots of Object.values(device ?? {})) {
+    for (const screen of [manifest.phone, manifest.pad]) {
+      for (const screenshots of Object.values(screen ?? {})) {
         assetPaths.push(...screenshots);
       }
     }
@@ -92,4 +91,41 @@ test("keeps every app icon and screenshot manifest path loadable", async () => {
       access(new URL(`../public${assetPath}`, import.meta.url)),
     ),
   );
+});
+
+test("exposes detail screenshots by screen form with Phone first", () => {
+  assert.deepEqual(DETAIL_SCREEN_ORDER, ["phone", "pad"]);
+  assert.equal(SCREENSHOT_MANIFEST.runtronome.watch?.length, 4);
+
+  const padApps = new Set([
+    "mapary",
+    "evrune",
+    "pepesnap",
+    "tocklist",
+    "skkoo",
+    "waesseum",
+  ]);
+
+  for (const app of apps) {
+    assert.deepEqual(
+      getAvailableDetailScreens(app.id),
+      padApps.has(app.id) ? ["phone", "pad"] : ["phone"],
+      app.id,
+    );
+
+    for (const screen of ["phone", "pad"]) {
+      const screenshots = getAppScreenshots({
+        appId: app.screenshotId ?? app.id,
+        screen,
+        locale: "ko",
+      });
+      assert.equal(screenshots.length, new Set(screenshots).size, app.id);
+      assert.ok(
+        screenshots.every((path) =>
+          path.includes(`/${app.screenshotId ?? app.id}/`),
+        ),
+        `${app.id}:${screen}`,
+      );
+    }
+  }
 });

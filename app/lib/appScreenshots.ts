@@ -1,5 +1,5 @@
 import type { Locale } from "../i18n/types";
-import type { DetailDevice } from "./appDetailCapabilities";
+import type { DetailScreen } from "./appDetailCapabilities";
 
 export const SCREENSHOT_LOCALES = ["ko", "en", "ja", "zhg", "zhb"] as const;
 
@@ -13,19 +13,6 @@ export const SCREENSHOT_LOCALE_MAP = {
   "zh-TW": "zhb",
 } as const satisfies Record<Locale, ScreenshotLocale>;
 
-export type LocalizedScreenshotDevice = "phone" | "ipad";
-export type SharedScreenshotDevice = "watch";
-export type ScreenshotDevice =
-  | LocalizedScreenshotDevice
-  | SharedScreenshotDevice;
-
-export const SCREENSHOT_DEVICE_MAP = {
-  iphone: "phone",
-  androidPhone: "phone",
-  ipad: "ipad",
-  appleWatch: "watch",
-} as const satisfies Record<DetailDevice, ScreenshotDevice>;
-
 export type LocalizedScreenshotManifest = Partial<
   Record<ScreenshotLocale, string[]>
 >;
@@ -33,7 +20,9 @@ export type LocalizedScreenshotManifest = Partial<
 export type AppScreenshotManifest = {
   screenshotId: string;
   phone?: LocalizedScreenshotManifest;
-  ipad?: LocalizedScreenshotManifest;
+  pad?: LocalizedScreenshotManifest;
+  // Watch captures are retained as source assets even though the public
+  // screenshot selector is intentionally limited to Phone and Pad.
   watch?: string[];
 };
 
@@ -135,7 +124,7 @@ export const SCREENSHOT_MANIFEST = {
       "phone",
       MAPARY_PHONE_SCREENSHOT_FILES,
     ),
-    ipad: {
+    pad: {
       ko: numberedScreenshots("mapary/ipad/ko", 5),
       ja: numberedScreenshots("mapary/ipad/ja", 5),
       zhg: numberedScreenshots("mapary/ipad/zhg", 5),
@@ -157,7 +146,7 @@ export const SCREENSHOT_MANIFEST = {
   evrune: {
     screenshotId: "evrune",
     phone: localizedScreenshots("evrune", "phone", 5),
-    ipad: localizedScreenshots("evrune", "ipad", 5),
+    pad: localizedScreenshots("evrune", "ipad", 5),
   },
   pini: {
     screenshotId: "pini",
@@ -166,17 +155,17 @@ export const SCREENSHOT_MANIFEST = {
   pepesnap: {
     screenshotId: "pepesnap",
     phone: localizedScreenshots("pepesnap", "phone", 6),
-    ipad: localizedScreenshots("pepesnap", "pad", 5),
+    pad: localizedScreenshots("pepesnap", "pad", 5),
   },
   tocklist: {
     screenshotId: "tocklist",
     phone: localizedScreenshots("tocklist", "phone", 6),
-    ipad: localizedScreenshots("tocklist", "ipad", 5),
+    pad: localizedScreenshots("tocklist", "ipad", 5),
   },
   skkoo: {
     screenshotId: "skkoo",
     phone: localizedScreenshots("skkoo", "phone", 6),
-    ipad: localizedScreenshots("skkoo", "ipad", 5),
+    pad: localizedScreenshots("skkoo", "ipad", 5),
   },
   terubozu: {
     screenshotId: "terubozu",
@@ -185,7 +174,7 @@ export const SCREENSHOT_MANIFEST = {
   waesseum: {
     screenshotId: "waesseum",
     phone: localizedScreenshots("waesseum", "phone", 6),
-    ipad: localizedScreenshots("waesseum", "ipad", 5),
+    pad: localizedScreenshots("waesseum", "ipad", 5),
   },
 } satisfies ScreenshotManifest;
 
@@ -223,19 +212,13 @@ export function resolveLocalizedScreenshots(
   return [];
 }
 
-export function resolveWatchScreenshots(
-  watchScreenshots: string[] | undefined,
-): string[] {
-  return nonEmptyScreenshots(watchScreenshots) ?? [];
-}
-
 export function getAppScreenshots({
   appId,
-  device,
+  screen,
   locale,
 }: {
   appId: string;
-  device: DetailDevice;
+  screen: DetailScreen;
   locale: Locale;
 }): string[] {
   const appScreenshots: AppScreenshotManifest | undefined =
@@ -243,15 +226,11 @@ export function getAppScreenshots({
 
   if (!appScreenshots) return [];
 
-  const screenshotDevice = SCREENSHOT_DEVICE_MAP[device];
-
-  if (screenshotDevice === "watch") {
-    return naturallySortedScreenshots(
-      resolveWatchScreenshots(appScreenshots.watch),
-    );
-  }
-
-  return naturallySortedScreenshots(
-    resolveLocalizedScreenshots(appScreenshots[screenshotDevice], locale),
-  );
+  return [
+    ...new Set(
+      naturallySortedScreenshots(
+        resolveLocalizedScreenshots(appScreenshots[screen], locale),
+      ),
+    ),
+  ];
 }

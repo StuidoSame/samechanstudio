@@ -127,7 +127,7 @@ export type TranslationMessages = {
     closeLightboxLabel: string;
     previousImageLabel: string;
     nextImageLabel: string;
-    deviceSelectorLabel: string;
+    screenSelectorLabel: string;
     fallback: TranslatedAppDetail;
     apps: Record<
       AppTranslationId,

@@ -2585,17 +2585,12 @@ button {
   outline-offset: -3px;
 }
 
-.app-detail-preview.is-iphone .app-detail-gallery-item,
-.app-detail-preview.is-androidPhone .app-detail-gallery-item {
+.app-detail-preview.is-phone .app-detail-gallery-item {
   aspect-ratio: 370 / 800;
 }
 
-.app-detail-preview.is-ipad .app-detail-gallery-item {
+.app-detail-preview.is-pad .app-detail-gallery-item {
   aspect-ratio: 3 / 4;
-}
-
-.app-detail-preview.is-appleWatch .app-detail-gallery-item {
-  aspect-ratio: 0.83;
 }
 
 .app-detail-preview-image {
@@ -2967,7 +2962,7 @@ button {
   transform: translate(-50%, -50%);
 }
 
-.app-detail-preview-marker .app-detail-device-silhouette {
+.app-detail-preview-marker .app-detail-screen-icon {
   transform: scale(2.3);
 }
 
@@ -3016,16 +3011,16 @@ button {
   overflow-wrap: break-word;
 }
 
-.app-detail-device-selector {
-  width: min(100%, 500px);
+.app-detail-screen-selector {
+  width: min(100%, 280px);
   margin-inline: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(86px, 104px));
+  grid-template-columns: repeat(2, minmax(104px, 124px));
   justify-content: center;
   gap: clamp(10px, 1.5vw, 16px);
 }
 
-.app-detail-device-button {
+.app-detail-screen-button {
   width: 100%;
   min-height: 84px;
   margin: 0;
@@ -3050,18 +3045,18 @@ button {
     transform 0.2s ease;
 }
 
-.app-detail-device-button:hover,
-.app-detail-device-button:focus-visible {
+.app-detail-screen-button:hover:not(:disabled),
+.app-detail-screen-button:focus-visible {
   opacity: 0.9;
   border-color: rgba(109, 73, 171, 0.24);
 }
 
-.app-detail-device-button:focus-visible {
+.app-detail-screen-button:focus-visible {
   outline: 2px solid rgba(112, 69, 214, 0.5);
   outline-offset: 3px;
 }
 
-.app-detail-device-button[aria-pressed="true"] {
+.app-detail-screen-button[aria-pressed="true"] {
   color: #744bc1;
   opacity: 1;
   border-color: rgba(112, 72, 192, 0.42);
@@ -3072,96 +3067,18 @@ button {
   transform: translateY(-1px);
 }
 
-.app-detail-device-silhouette {
-  position: relative;
-  width: 32px;
-  height: 46px;
+.app-detail-screen-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.36;
+}
+
+.app-detail-screen-icon {
+  width: 38px;
+  height: 38px;
   display: block;
-  border: 2px solid currentColor;
-  border-radius: 9px;
 }
 
-.app-detail-device-silhouette > span {
-  position: absolute;
-  left: 50%;
-  bottom: 3px;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: currentColor;
-  transform: translateX(-50%);
-}
-
-.app-detail-device-silhouette.is-iphone::before {
-  position: absolute;
-  top: 3px;
-  left: 50%;
-  width: 10px;
-  height: 3px;
-  border-radius: 4px;
-  background: currentColor;
-  content: "";
-  transform: translateX(-50%);
-}
-
-.app-detail-device-silhouette.is-androidPhone {
-  border-radius: 7px;
-}
-
-.app-detail-device-silhouette.is-androidPhone::before {
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-  content: "";
-  transform: translateX(-50%);
-}
-
-.app-detail-device-silhouette.is-androidPhone > span {
-  width: 10px;
-  height: 2px;
-  border-radius: 999px;
-}
-
-.app-detail-device-silhouette.is-ipad {
-  width: 48px;
-  height: 36px;
-  border-radius: 7px;
-}
-
-.app-detail-device-silhouette.is-appleWatch {
-  width: 36px;
-  height: 40px;
-  border-radius: 12px;
-}
-
-.app-detail-device-silhouette.is-appleWatch::before,
-.app-detail-device-silhouette.is-appleWatch::after {
-  position: absolute;
-  left: 50%;
-  width: 17px;
-  height: 9px;
-  border: 2px solid currentColor;
-  content: "";
-  transform: translateX(-50%);
-}
-
-.app-detail-device-silhouette.is-appleWatch::before {
-  top: -10px;
-  border-bottom: 0;
-  border-radius: 6px 6px 0 0;
-}
-
-.app-detail-device-silhouette.is-appleWatch::after {
-  bottom: -10px;
-  border-top: 0;
-  border-radius: 0 0 6px 6px;
-}
-
-.app-detail-device-label {
+.app-detail-screen-label {
   max-width: 72px;
   font-size: calc(9px * var(--font-scale));
   line-height: 1.15;
@@ -3265,7 +3182,7 @@ button {
     gap: 32px;
   }
 
-  .app-detail-preview-marker .app-detail-device-silhouette {
+  .app-detail-preview-marker .app-detail-screen-icon {
     transform: scale(1.9);
   }
 
@@ -3289,30 +3206,24 @@ button {
     font-size: calc(10px * var(--font-scale));
   }
 
-  .app-detail-device-selector {
+  .app-detail-screen-selector {
     width: min(100%, 260px);
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
-  .app-detail-device-button {
+  .app-detail-screen-button {
     min-height: 72px;
     padding: 7px 3px 6px;
     gap: 6px;
     border-radius: 18px;
   }
 
-  .app-detail-device-button:last-child:nth-child(odd) {
-    width: calc((100% - 10px) / 2);
-    grid-column: 1 / -1;
-    justify-self: center;
-  }
-
-  .app-detail-device-silhouette {
+  .app-detail-screen-icon {
     transform: scale(0.82);
   }
 
-  .app-detail-device-label {
+  .app-detail-screen-label {
     max-width: 72px;
     font-size: calc(9px * var(--font-scale));
   }
@@ -7589,13 +7500,13 @@ html[data-theme="dark"] .device-keywords span {
   box-shadow: inset 0 1px 0 var(--theme-highlight);
 }
 
-html[data-theme="dark"] .app-detail-device-button {
+html[data-theme="dark"] .app-detail-screen-button {
   border-color: var(--theme-border);
   color: var(--theme-text-muted);
   background: rgba(49, 40, 65, 0.64);
 }
 
-html[data-theme="dark"] .app-detail-device-button[aria-pressed="true"] {
+html[data-theme="dark"] .app-detail-screen-button[aria-pressed="true"] {
   border-color: rgba(197, 168, 241, 0.42);
   color: #d2bdff;
   background: rgba(88, 65, 123, 0.72);

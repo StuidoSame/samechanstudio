@@ -12,9 +12,10 @@ import { useI18n } from "../../i18n/I18nProvider";
 import type { AppTranslationId, TranslationDevice } from "../../i18n/types";
 import type { AppItem } from "../../lib/apps";
 import {
-  getAvailableDetailDevices,
+  DETAIL_SCREEN_ORDER,
+  getAvailableDetailScreens,
   isDetailStoreAvailable,
-  type DetailDevice,
+  type DetailScreen,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
 import { getAppScreenshots } from "../../lib/appScreenshots";
@@ -61,28 +62,17 @@ const STORE_LABELS: Record<DetailStore, string> = {
 
 const DETAIL_STORES: DetailStore[] = ["apple", "google"];
 
-const DEVICE_LABELS: Record<DetailDevice, string> = {
-  iphone: "iPhone",
-  ipad: "iPad",
-  appleWatch: "Watch",
-  androidPhone: "Android",
+const SCREEN_LABELS: Record<DetailScreen, string> = {
+  phone: "Phone",
+  pad: "Pad",
 };
 
-const DEVICE_ARIA_LABELS: Record<DetailDevice, string> = {
-  iphone: "iPhone",
-  ipad: "iPad",
-  appleWatch: "Apple Watch",
-  androidPhone: "Android Phone",
-};
-
-const TRANSLATION_DEVICE_BY_DETAIL_DEVICE: Record<
-  DetailDevice,
-  TranslationDevice
+const TRANSLATION_DEVICE_CANDIDATES: Record<
+  DetailScreen,
+  readonly TranslationDevice[]
 > = {
-  iphone: "iphone",
-  ipad: "ipad",
-  appleWatch: "watch",
-  androidPhone: "android",
+  phone: ["iphone", "android"],
+  pad: ["ipad"],
 };
 
 function StoreIcon({ store }: { store: DetailStore }) {
@@ -104,14 +94,30 @@ function StoreIcon({ store }: { store: DetailStore }) {
   );
 }
 
-function DeviceSilhouette({ device }: { device: DetailDevice }) {
+function ScreenFormIcon({ screen }: { screen: DetailScreen }) {
   return (
-    <span
-      className={`app-detail-device-silhouette is-${device}`}
+    <svg
+      className={`app-detail-screen-icon is-${screen}`}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden="true"
     >
-      <span />
-    </span>
+      {screen === "phone" ? (
+        <>
+          <rect x="9" y="3" width="14" height="26" rx="2.5" />
+          <path d="M13 6h6M14.5 26h3" />
+        </>
+      ) : (
+        <>
+          <rect x="3" y="6" width="26" height="20" rx="2.5" />
+          <path d="M6 10v12M26 15.5v1" />
+        </>
+      )}
+    </svg>
   );
 }
 
@@ -129,28 +135,26 @@ export function AppDetailOverlay({
   const dragRef = useRef<GalleryDrag | null>(null);
   const suppressClickRef = useRef(false);
   const lightboxTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const availableDevices = useMemo(
-    () => getAvailableDetailDevices(app.id),
+  const availableScreens = useMemo(
+    () => getAvailableDetailScreens(app.id),
     [app.id],
   );
-  const [selectedDevice, setSelectedDevice] = useState<DetailDevice | null>(
-    availableDevices[0] ?? null,
-  );
-  const selectedContent = selectedDevice
-    ? messages.appDetail.apps[app.id as AppTranslationId]?.[
-        TRANSLATION_DEVICE_BY_DETAIL_DEVICE[selectedDevice]
-      ] ?? messages.appDetail.fallback
-    : null;
+  const [selectedScreen, setSelectedScreen] =
+    useState<DetailScreen>("phone");
+  const appDetailContent =
+    messages.appDetail.apps[app.id as AppTranslationId];
+  const selectedContent =
+    TRANSLATION_DEVICE_CANDIDATES[selectedScreen]
+      .map((device) => appDetailContent?.[device])
+      .find((content) => content !== undefined) ?? messages.appDetail.fallback;
   const screenshots = useMemo(
     () =>
-      selectedDevice
-        ? getAppScreenshots({
-            appId: app.screenshotId ?? app.id,
-            device: selectedDevice,
-            locale,
-          })
-        : [],
-    [app.id, app.screenshotId, locale, selectedDevice],
+      getAppScreenshots({
+        appId: app.screenshotId ?? app.id,
+        screen: selectedScreen,
+        locale,
+      }),
+    [app.id, app.screenshotId, locale, selectedScreen],
   );
   const [galleryState, setGalleryState] = useState<GalleryState>(
     INITIAL_GALLERY_STATE,
@@ -242,11 +246,11 @@ export function AppDetailOverlay({
   );
 
   useEffect(() => {
-    const deviceResetFrame = window.requestAnimationFrame(() => {
-      setSelectedDevice(availableDevices[0] ?? null);
+    const screenResetFrame = window.requestAnimationFrame(() => {
+      setSelectedScreen("phone");
     });
-    return () => window.cancelAnimationFrame(deviceResetFrame);
-  }, [app.id, availableDevices]);
+    return () => window.cancelAnimationFrame(screenResetFrame);
+  }, [app.id]);
 
   useEffect(() => {
     const galleryResetFrame = window.requestAnimationFrame(() => {
@@ -256,7 +260,7 @@ export function AppDetailOverlay({
       updateGalleryState();
     });
     return () => window.cancelAnimationFrame(galleryResetFrame);
-  }, [app.id, locale, screenshots, selectedDevice, updateGalleryState]);
+  }, [app.id, locale, screenshots, selectedScreen, updateGalleryState]);
 
   useEffect(() => {
     if (!open || screenshots.length === 0) return;
@@ -436,15 +440,13 @@ export function AppDetailOverlay({
             })}
           </div>
           <div
-            className={`app-detail-preview${selectedDevice ? ` is-${selectedDevice}` : ""}`}
+            className={`app-detail-preview is-${selectedScreen}`}
             role="region"
             aria-label={format(messages.appDetail.previewRegionLabel, {
               app: app.name,
-              device: selectedDevice
-                ? DEVICE_ARIA_LABELS[selectedDevice]
-                : "",
+              device: SCREEN_LABELS[selectedScreen],
             })}
-            data-preview-key={`${app.id}:${selectedDevice ?? "none"}`}
+            data-preview-key={`${app.id}:${selectedScreen}`}
           >
             {screenshots.length > 0 ? (
               <div
@@ -453,9 +455,7 @@ export function AppDetailOverlay({
                 tabIndex={0}
                 aria-label={format(messages.appDetail.previewRegionLabel, {
                   app: app.name,
-                  device: selectedDevice
-                    ? DEVICE_ARIA_LABELS[selectedDevice]
-                    : "",
+                  device: SCREEN_LABELS[selectedScreen],
                 })}
                 onKeyDown={(event) => {
                   if (
@@ -549,7 +549,7 @@ export function AppDetailOverlay({
                       className="app-detail-gallery-item"
                       type="button"
                       data-screenshot-index={index}
-                      key={`${app.id}:${selectedDevice ?? "none"}:${screenshot}`}
+                      key={`${app.id}:${selectedScreen}:${screenshot}`}
                       aria-label={format(
                         messages.appDetail.enlargeScreenshotLabel,
                         { app: app.name, current: index + 1 },
@@ -566,9 +566,7 @@ export function AppDetailOverlay({
                         errorLabel={messages.appDetail.previewUnavailableLabel}
                         alt={format(messages.appDetail.previewAlt, {
                           app: app.name,
-                          device: selectedDevice
-                            ? DEVICE_ARIA_LABELS[selectedDevice]
-                            : "",
+                          device: SCREEN_LABELS[selectedScreen],
                           current: index + 1,
                           total: screenshots.length,
                         })}
@@ -579,9 +577,9 @@ export function AppDetailOverlay({
                   ))}
                 </div>
               </div>
-            ) : selectedDevice ? (
+            ) : (
                 <span className="app-detail-preview-marker">
-                  <DeviceSilhouette device={selectedDevice} />
+                  <ScreenFormIcon screen={selectedScreen} />
                   <span
                     className="app-detail-preview-empty"
                     role="status"
@@ -590,7 +588,7 @@ export function AppDetailOverlay({
                     {messages.appDetail.previewUnavailableLabel}
                   </span>
                 </span>
-            ) : null}
+            )}
             {screenshots.length > 0 && (
               <div
                 className={`app-detail-gallery-controls${galleryState.hasOverflow ? " has-overflow" : ""}`}
@@ -638,7 +636,7 @@ export function AppDetailOverlay({
           </div>
           <div
             className="device-detail-copy"
-            data-description-key={`${app.id}:${selectedDevice ?? "none"}`}
+            data-description-key={`${app.id}:${selectedScreen}`}
             aria-live="polite"
           >
             <div className="device-keywords">
@@ -649,22 +647,23 @@ export function AppDetailOverlay({
             <p>{selectedContent?.description}</p>
           </div>
           <div
-            className="app-detail-device-selector"
+            className="app-detail-screen-selector"
             role="group"
-            aria-label={messages.appDetail.deviceSelectorLabel}
+            aria-label={messages.appDetail.screenSelectorLabel}
           >
-            {availableDevices.map((device) => (
+            {DETAIL_SCREEN_ORDER.map((screen) => (
               <button
-                className="app-detail-device-button"
+                className="app-detail-screen-button"
                 type="button"
-                key={device}
-                aria-label={DEVICE_ARIA_LABELS[device]}
-                aria-pressed={selectedDevice === device}
-                onClick={() => setSelectedDevice(device)}
+                key={screen}
+                aria-label={SCREEN_LABELS[screen]}
+                aria-pressed={selectedScreen === screen}
+                disabled={!availableScreens.includes(screen)}
+                onClick={() => setSelectedScreen(screen)}
               >
-                <DeviceSilhouette device={device} />
-                <span className="app-detail-device-label">
-                  {DEVICE_LABELS[device]}
+                <ScreenFormIcon screen={screen} />
+                <span className="app-detail-screen-label">
+                  {SCREEN_LABELS[screen]}
                 </span>
               </button>
             ))}
@@ -684,9 +683,7 @@ export function AppDetailOverlay({
           errorLabel={messages.appDetail.previewUnavailableLabel}
           imageAlt={format(messages.appDetail.previewAlt, {
             app: app.name,
-            device: selectedDevice
-              ? DEVICE_ARIA_LABELS[selectedDevice]
-              : "",
+            device: SCREEN_LABELS[selectedScreen],
             current: Math.min(lightboxIndex, screenshots.length - 1) + 1,
             total: screenshots.length,
           })}

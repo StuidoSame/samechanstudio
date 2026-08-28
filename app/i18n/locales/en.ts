@@ -172,7 +172,7 @@ export const en = {
     closeLightboxLabel: "Close enlarged image",
     previousImageLabel: "View previous image",
     nextImageLabel: "View next image",
-    deviceSelectorLabel: "Select a device",
+    screenSelectorLabel: "Select a screen size",
     fallback: {
       keywords: ["Core experience", "Simple flow", "Device optimized"],
       description: "Explore and use the app’s essential features through a simple flow on the selected device.",

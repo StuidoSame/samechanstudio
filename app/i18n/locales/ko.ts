@@ -172,7 +172,7 @@ export const ko = {
     closeLightboxLabel: "확대 이미지 닫기",
     previousImageLabel: "이전 이미지 보기",
     nextImageLabel: "다음 이미지 보기",
-    deviceSelectorLabel: "디바이스 선택",
+    screenSelectorLabel: "화면 형태 선택",
     fallback: {
       keywords: ["핵심 경험", "간결한 흐름", "기기 최적화"],
       description: "선택한 기기에서 앱의 핵심 기능을 간결한 흐름으로 확인하고 사용할 수 있습니다.",

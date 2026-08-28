@@ -172,7 +172,7 @@ export const ja = {
     closeLightboxLabel: "拡大画像を閉じる",
     previousImageLabel: "前の画像を見る",
     nextImageLabel: "次の画像を見る",
-    deviceSelectorLabel: "デバイスを選択",
+    screenSelectorLabel: "画面サイズを選択",
     fallback: {
       keywords: ["コア体験", "シンプルな流れ", "デバイス最適化"],
       description: "選択したデバイスで、アプリの主要機能をシンプルな流れで確認し、使用できます。",

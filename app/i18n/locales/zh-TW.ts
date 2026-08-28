@@ -172,7 +172,7 @@ export const zhTW = {
     closeLightboxLabel: "關閉放大圖片",
     previousImageLabel: "檢視上一張圖片",
     nextImageLabel: "檢視下一張圖片",
-    deviceSelectorLabel: "選擇裝置",
+    screenSelectorLabel: "選擇螢幕尺寸",
     fallback: {
       keywords: ["核心體驗", "簡潔流程", "裝置最佳化"],
       description: "在所選裝置上，透過簡潔的流程瞭解並使用應用程式的核心功能。",
