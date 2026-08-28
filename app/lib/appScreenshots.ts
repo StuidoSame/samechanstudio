@@ -164,6 +164,15 @@ const PINI_PHONE_SCREENSHOT_FILES = [
   "5.png",
 ] as const;
 
+const PEPESNAP_JAPANESE_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+  "6.png",
+] as const;
+
 const WAESSEUM_PHONE_SCREENSHOT_FILES = [
   "1.png",
   "2.png",
@@ -240,7 +249,13 @@ export const SCREENSHOT_MANIFEST = {
   },
   pepesnap: {
     screenshotId: "pepesnap",
-    phone: localizedScreenshots("pepesnap", "phone", 6),
+    phone: {
+      ...localizedScreenshots("pepesnap", "phone", 6),
+      ja: screenshotFiles(
+        "pepesnap/phone/ja",
+        PEPESNAP_JAPANESE_PHONE_SCREENSHOT_FILES,
+      ),
+    },
     pad: localizedScreenshots("pepesnap", "pad", 5),
   },
   tocklist: {

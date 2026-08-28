@@ -239,6 +239,14 @@ test("uses app platform data as the platform-logo source of truth", () => {
 
 test("keeps every app icon and screenshot manifest path loadable", async () => {
   const assetPaths = apps.map((app) => app.icon);
+  assert.deepEqual(SCREENSHOT_MANIFEST.pepesnap.phone?.ja, [
+    "/assets/screenshot/pepesnap/phone/ja/1.png",
+    "/assets/screenshot/pepesnap/phone/ja/2.png",
+    "/assets/screenshot/pepesnap/phone/ja/3.png",
+    "/assets/screenshot/pepesnap/phone/ja/4.png",
+    "/assets/screenshot/pepesnap/phone/ja/5.png",
+    "/assets/screenshot/pepesnap/phone/ja/6.png",
+  ]);
 
   for (const manifest of Object.values(SCREENSHOT_MANIFEST)) {
     for (const screen of [manifest.phone, manifest.pad]) {
