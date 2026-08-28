@@ -15,7 +15,7 @@ import {
 import { useI18n } from "../i18n/I18nProvider";
 
 const SUPPORT_APPS = [
-  { name: "ODOW", icon: "/assets/icons/ODOW_icon.png" },
+  { name: "EVRUNE", icon: "/assets/icons/evrune_icon.png" },
   { name: "Mapary", icon: "/assets/icons/Mapary_icon.png" },
   { name: "LOCAUNT", icon: "/assets/icons/Locaunt_icon.png" },
   { name: "Pulto", icon: "/assets/icons/pulto_icon.png" },

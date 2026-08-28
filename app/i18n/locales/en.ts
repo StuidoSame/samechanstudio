@@ -188,7 +188,7 @@ export const en = {
         watch: { keywords: ["Wrist tempo", "Instant start", "Run focused"], description: "Use your Apple Watch to start and check the rhythm right away, reducing phone interaction so your run stays uninterrupted." },
         android: { keywords: ["Running rhythm", "Tempo control", "Android workout"], description: "Set a running rhythm quickly on Android and focus on your pace with only the information you need during a workout." },
       },
-      odow: {
+      evrune: {
         iphone: { keywords: ["One word a day", "Quiet journal", "Simple answers"], description: "Meet one word and one question each day, then gently capture your thoughts in a short, pressure-free answer." },
         ipad: { keywords: ["Room to write", "Calm focus", "Past answers"], description: "Focus on today’s question on a larger screen, write with a more generous line length, and revisit earlier entries." },
         android: { keywords: ["One word a day", "Short answers", "Android journal"], description: "Check one daily question and quietly record the thoughts of the day in a short answer on Android." },

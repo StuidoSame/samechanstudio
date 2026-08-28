@@ -97,7 +97,7 @@ const ko = {
       id: "services", number: "04", eyebrow: "THIRD-PARTY SERVICES", title: "외부 서비스",
       intro: "적용 서비스는 앱과 사용 기능에 따라 다르며, 외부 서비스가 직접 처리하는 정보에는 각 제공자의 개인정보처리방침이 적용될 수 있습니다.",
       items: [
-        { label: "APPLE · GOOGLE · KAKAO · LINE", title: "소셜 로그인", text: "ODOW 등 로그인을 지원하는 일부 앱에서 계정 인증과 최소 식별 정보 제공을 위해 사용될 수 있습니다." },
+        { label: "APPLE · GOOGLE · KAKAO · LINE", title: "소셜 로그인", text: "EVRUNE 등 로그인을 지원하는 일부 앱에서 계정 인증과 최소 식별 정보 제공을 위해 사용될 수 있습니다." },
         { label: "APPLE MAPS", title: "지도 기능", text: "Mapary 등 지도 기반 기능에서 위치 표시와 장소 기록 경험을 제공하는 데 사용됩니다." },
         { label: "ICLOUD", title: "백업과 복원", text: "Mapary처럼 iCloud 백업을 지원하는 앱에서 사용자가 직접 기록을 백업하고 복원할 때 사용됩니다." },
         { label: "APP STORE · GOOGLE PLAY", title: "배포와 결제", text: "앱 설치, 결제, 구독 관리, 구매 확인과 구매 복원에 사용됩니다. 적용 스토어는 앱과 기기에 따라 다릅니다." },
@@ -183,7 +183,7 @@ const en: PrivacyMessages = {
       { label: "NOTIFICATIONS", title: "Notifications", text: "May be used to deliver place alerts, schedules, reminders, and notices at times you set." },
     ]},
     { ...ko.sections[3], title: "Third-party services", intro: "Services vary by app and feature. A provider’s own privacy policy may apply to information it processes directly.", items: [
-      { label: "APPLE · GOOGLE · KAKAO · LINE", title: "Social sign-in", text: "May be used for authentication and minimum account identifiers in ODOW and other apps that offer sign-in." },
+      { label: "APPLE · GOOGLE · KAKAO · LINE", title: "Social sign-in", text: "May be used for authentication and minimum account identifiers in EVRUNE and other apps that offer sign-in." },
       { label: "APPLE MAPS", title: "Map features", text: "Used to provide map display and place-recording experiences in Mapary and related map features." },
       { label: "ICLOUD", title: "Backup and restore", text: "Used when a user backs up or restores records in apps that support iCloud backup, such as Mapary." },
       { label: "APP STORE · GOOGLE PLAY", title: "Distribution and payments", text: "Used for installation, payments, subscription management, purchase verification, and restoration. The applicable store varies by app and device." },
@@ -261,7 +261,7 @@ const ja: PrivacyMessages = {
         "場所の通知、スケジュール、リマインダー、利用者が設定した時刻の案内を届けるために利用される場合があります。",
       ],
       [
-        "ODOWなどログインを提供する一部アプリで、認証と最小限のアカウント識別情報の取得に利用される場合があります。",
+        "EVRUNEなどログインを提供する一部アプリで、認証と最小限のアカウント識別情報の取得に利用される場合があります。",
         "Maparyなどの地図機能で、位置表示と場所の記録体験を提供するために利用します。",
         "MaparyなどiCloudバックアップに対応するアプリで、利用者が記録をバックアップまたは復元するときに利用します。",
         "アプリのインストール、決済、サブスクリプション管理、購入確認、購入復元に利用します。適用ストアはアプリと端末により異なります。",
@@ -343,7 +343,7 @@ const zhCN: PrivacyMessages = {
         "可能用于发送地点提醒、日程、提醒事项以及您设定时间的通知。",
       ],
       [
-        "可能用于 ODOW 等提供登录功能的应用，以完成账号认证并取得最少识别信息。",
+        "可能用于 EVRUNE 等提供登录功能的应用，以完成账号认证并取得最少识别信息。",
         "用于在 Mapary 等地图功能中提供位置显示和地点记录体验。",
         "用于 Mapary 等支持 iCloud 备份的应用，在您主动备份或恢复记录时提供服务。",
         "用于应用安装、付款、订阅管理、购买确认和恢复购买。适用的商店因应用和设备而异。",
@@ -429,7 +429,7 @@ const zhTW: PrivacyMessages = {
           "可能用於傳送地點提醒、日程、提醒事項，以及您設定時間的通知。",
         ],
         [
-          "可能用於 ODOW 等提供登入功能的應用程式，以完成帳號驗證並取得最少識別資訊。",
+          "可能用於 EVRUNE 等提供登入功能的應用程式，以完成帳號驗證並取得最少識別資訊。",
           "用於在 Mapary 等地圖功能中提供位置顯示與地點記錄體驗。",
           "用於 Mapary 等支援 iCloud 備份的應用程式，在您主動備份或復原記錄時提供服務。",
           "用於應用程式安裝、付款、訂閱管理、購買確認與復原購買。適用的商店因應用程式與裝置而異。",

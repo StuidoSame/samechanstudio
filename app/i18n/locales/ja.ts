@@ -188,7 +188,7 @@ export const ja = {
         watch: { keywords: ["手元のテンポ", "すぐに開始", "ランに集中"], description: "ランニング中のスマートフォン操作を減らし、Apple Watchですぐにリズムを開始・確認して運動の流れを保てます。" },
         android: { keywords: ["ランニングリズム", "テンポ設定", "Androidで実行"], description: "Androidスマートフォンでランニングのリズムをすばやく設定し、必要な情報だけを確認しながらペースに集中できます。" },
       },
-      odow: {
+      evrune: {
         iphone: { keywords: ["一日一語", "静かな記録", "短い回答"], description: "一日一つの言葉と質問に向き合い、気負わない短い回答でその日の考えを穏やかに残せます。" },
         ipad: { keywords: ["広々と記録", "穏やかに集中", "過去の回答"], description: "広い画面で今日の質問に集中し、ゆとりのある行幅で回答を書きながら以前の記録を振り返れます。" },
         android: { keywords: ["一日一語", "短い回答", "Androidで記録"], description: "Androidスマートフォンでも毎日一つの質問を確認し、その日の考えを短く静かに記録できます。" },

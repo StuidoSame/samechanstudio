@@ -1603,20 +1603,20 @@ button {
   background: linear-gradient(90deg, #ff5c69 40%, rgba(255, 255, 255, 0.18) 40%);
 }
 
-.card-odow {
+.card-evrune {
   color: #f6f2ff;
   background: linear-gradient(165deg, #817b94, #5c536e);
 }
 
-.screen-odow {
+.screen-evrune {
   position: absolute;
   z-index: 3;
   inset: 30% 18px auto;
   text-align: left;
 }
 
-.screen-odow span,
-.screen-odow b {
+.screen-evrune span,
+.screen-evrune b {
   display: block;
   color: rgba(255, 255, 255, 0.46);
   font-size: calc(8px * var(--font-scale));
@@ -1624,19 +1624,19 @@ button {
   letter-spacing: 0.2em;
 }
 
-.screen-odow strong {
+.screen-evrune strong {
   display: block;
   margin-top: 20px;
   font-size: calc(19px * var(--font-scale));
 }
 
-.screen-odow p {
+.screen-evrune p {
   color: rgba(255, 255, 255, 0.57);
   font-size: calc(8px * var(--font-scale));
   line-height: 1.65;
 }
 
-.screen-odow b {
+.screen-evrune b {
   margin-top: 25px;
 }
 

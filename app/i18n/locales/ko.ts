@@ -188,7 +188,7 @@ export const ko = {
         watch: { keywords: ["손목 템포", "즉시 시작", "러닝 집중"], description: "달리는 동안 휴대폰 조작을 줄이고 Apple Watch에서 리듬을 바로 시작하고 확인해 운동 흐름을 유지할 수 있습니다." },
         android: { keywords: ["러닝 리듬", "템포 설정", "Android 실행"], description: "Android 스마트폰에서 달리기 리듬을 빠르게 설정하고, 운동 중 필요한 정보만 확인하며 페이스에 집중할 수 있습니다." },
       },
-      odow: {
+      evrune: {
         iphone: { keywords: ["하루 한 단어", "조용한 기록", "간결한 답변"], description: "하루에 하나의 단어와 질문을 마주하고, 부담 없는 짧은 답변으로 그날의 생각을 차분하게 남길 수 있습니다." },
         ipad: { keywords: ["넓은 기록", "차분한 집중", "지난 답변"], description: "넓은 화면에서 오늘의 질문에 집중하고, 여유 있는 문장 폭으로 답변을 적으며 이전 기록을 돌아볼 수 있습니다." },
         android: { keywords: ["하루 한 단어", "짧은 답변", "Android 기록"], description: "Android 스마트폰에서도 매일 하나의 질문을 확인하고, 그날의 생각을 짧고 조용하게 기록할 수 있습니다." },

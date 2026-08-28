@@ -7,7 +7,7 @@ export const LOCALE_STORAGE_KEY = "same-studio-locale-v1";
 export const APP_TRANSLATION_IDS = [
   "mapary",
   "runtronome",
-  "odow",
+  "evrune",
   "locaunt",
   "pepesnap",
   "tocklist",

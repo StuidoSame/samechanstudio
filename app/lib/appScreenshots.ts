@@ -149,10 +149,10 @@ export const SCREENSHOT_MANIFEST = {
       PULTO_WATCH_SCREENSHOT_FILES,
     ),
   },
-  odow: {
-    screenshotId: "odow",
-    phone: localizedScreenshots("odow", "phone", 5),
-    ipad: localizedScreenshots("odow", "ipad", 5),
+  evrune: {
+    screenshotId: "evrune",
+    phone: localizedScreenshots("evrune", "phone", 5),
+    ipad: localizedScreenshots("evrune", "ipad", 5),
   },
   lacaunt: {
     screenshotId: "lacaunt",

@@ -10,7 +10,7 @@ export type AppItem = {
   screenshotId?: string;
   appStoreUrl?: string;
   googlePlayUrl?: string;
-  screen: "odow" | "teru" | "feeloo" | "runtronome" | "skkoo" | "locaunt" | "pepesnap" | "mapary" | "tocklist";
+  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "locaunt" | "pepesnap" | "mapary" | "tocklist";
 };
 
 export const apps: AppItem[] = [
@@ -44,17 +44,17 @@ export const apps: AppItem[] = [
     screen: "runtronome",
   },
   {
-    id: "odow",
-    name: "ODOW",
+    id: "evrune",
+    name: "EVRUNE",
     eyebrow: "ONE DAY · ONE WORD",
     tagline: "One day, one quiet answer.",
     platforms: "iOS",
-    icon: "/assets/icons/ODOW_icon.png",
+    icon: "/assets/icons/evrune_icon.png",
     accent: "#8c89a5",
     accentRgb: "140, 137, 165",
-    screenshotId: "odow",
+    screenshotId: "evrune",
     appStoreUrl: "https://apps.apple.com/kr/app/odow/id6766725193",
-    screen: "odow",
+    screen: "evrune",
   },
   {
     id: "locaunt",

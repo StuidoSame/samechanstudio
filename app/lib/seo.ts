@@ -53,7 +53,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       "delete-account": {
         title: "계정 및 데이터 삭제 요청 | SAME STUDIO",
         description:
-          "ODOW 등 SAME STUDIO 앱 계정과 연결 데이터의 삭제를 요청하고 처리 절차를 확인할 수 있는 공식 페이지입니다.",
+          "EVRUNE 등 SAME STUDIO 앱 계정과 연결 데이터의 삭제를 요청하고 처리 절차를 확인할 수 있는 공식 페이지입니다.",
       },
     },
     home: {
@@ -65,8 +65,8 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
           "Mapary는 장소별 기록을 지도에 남기고 다시 찾는 iOS·Android 지도 메모 앱입니다.",
         runtronome:
           "Pulto는 달리기 템포와 케이던스를 일정하게 맞추는 iOS·Android 러닝 메트로놈 앱입니다.",
-        odow:
-          "ODOW는 매일 하나의 질문에 답하며 하루를 기록하는 iOS 하루 질문 기록 앱이자 일기 앱입니다.",
+        evrune:
+          "EVRUNE는 매일 하나의 질문에 답하며 하루를 기록하는 iOS 하루 질문 기록 앱이자 일기 앱입니다.",
         locaunt:
           "Lacaunt(LOCAUNT)는 중요한 장소와 알림을 지도에 남기는 iOS 위치 기반 메모 앱입니다.",
         pepesnap:
@@ -107,7 +107,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       "delete-account": {
         title: "Account & Data Deletion Request | SAME STUDIO",
         description:
-          "Use this official page to request deletion of an ODOW or other supported SAME STUDIO app account and linked data.",
+          "Use this official page to request deletion of an EVRUNE or other supported SAME STUDIO app account and linked data.",
       },
     },
     home: {
@@ -117,7 +117,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       appDescriptions: {
         mapary: "Mapary is an iOS and Android map-note app for saving meaningful places and finding them again.",
         runtronome: "Pulto is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
-        odow: "ODOW is an iOS daily-question journal for capturing one thoughtful answer each day.",
+        evrune: "EVRUNE is an iOS daily-question journal for capturing one thoughtful answer each day.",
         locaunt: "Lacaunt (LOCAUNT) is an iOS location-based memo app for attaching reminders to important places.",
         pepesnap: "PepeSnap is an iOS photo-mission app that invites you to find and capture the shape of the day.",
         tocklist: "Tocklist is an iOS 24-hour to-do app for planning the day and reviewing its rhythm.",
@@ -152,7 +152,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       "delete-account": {
         title: "アカウントとデータの削除依頼 | SAME STUDIO",
         description:
-          "ODOWなど対応するSAME STUDIOアプリのアカウントと関連データの削除を依頼し、手続きを確認できる公式ページです。",
+          "EVRUNEなど対応するSAME STUDIOアプリのアカウントと関連データの削除を依頼し、手続きを確認できる公式ページです。",
       },
     },
     home: {
@@ -162,7 +162,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       appDescriptions: {
         mapary: "Maparyは、大切な場所を記録して見つけ直せるiOS・Android対応の地図メモアプリです。",
         runtronome: "Pultoは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
-        odow: "ODOWは、毎日ひとつの質問に答えて一日を残すiOS向け日記アプリです。",
+        evrune: "EVRUNEは、毎日ひとつの質問に答えて一日を残すiOS向け日記アプリです。",
         locaunt: "Lacaunt（LOCAUNT）は、大切な場所にリマインダーを残すiOS向け位置メモアプリです。",
         pepesnap: "PepeSnapは、今日の形を見つけて写真に残すiOS向けフォトミッションアプリです。",
         tocklist: "Tocklistは、一日の流れを計画して振り返るiOS向け24時間ToDoアプリです。",
@@ -197,7 +197,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       "delete-account": {
         title: "申请删除账号与数据 | SAME STUDIO",
         description:
-          "通过官方页面申请删除 ODOW 等受支持的 SAME STUDIO 应用账号及关联数据，并了解处理流程。",
+          "通过官方页面申请删除 EVRUNE 等受支持的 SAME STUDIO 应用账号及关联数据，并了解处理流程。",
       },
     },
     home: {
@@ -207,7 +207,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       appDescriptions: {
         mapary: "Mapary 是一款 iOS 与 Android 地图笔记应用，用于保存重要地点并随时重新找到它们。",
         runtronome: "Pulto 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
-        odow: "ODOW 是一款 iOS 每日提问日记应用，每天用一个回答记录自己的想法。",
+        evrune: "EVRUNE 是一款 iOS 每日提问日记应用，每天用一个回答记录自己的想法。",
         locaunt: "Lacaunt（LOCAUNT）是一款 iOS 位置笔记应用，可在重要地点留下提醒。",
         pepesnap: "PepeSnap 是一款 iOS 摄影任务应用，邀请你寻找并拍下当天的形状。",
         tocklist: "Tocklist 是一款 iOS 24 小时待办应用，用于规划并回顾一天的节奏。",
@@ -242,7 +242,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       "delete-account": {
         title: "申請刪除帳號與資料 | SAME STUDIO",
         description:
-          "透過官方頁面申請刪除 ODOW 等支援的 SAME STUDIO 應用程式帳號與關聯資料，並瞭解處理流程。",
+          "透過官方頁面申請刪除 EVRUNE 等支援的 SAME STUDIO 應用程式帳號與關聯資料，並瞭解處理流程。",
       },
     },
     home: {
@@ -252,7 +252,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
       appDescriptions: {
         mapary: "Mapary 是一款 iOS 與 Android 地圖筆記應用程式，用於保存重要地點並隨時重新找到它們。",
         runtronome: "Pulto 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
-        odow: "ODOW 是一款 iOS 每日提問日記應用程式，每天用一個回答記錄自己的想法。",
+        evrune: "EVRUNE 是一款 iOS 每日提問日記應用程式，每天用一個回答記錄自己的想法。",
         locaunt: "Lacaunt（LOCAUNT）是一款 iOS 位置筆記應用程式，可在重要地點留下提醒。",
         pepesnap: "PepeSnap 是一款 iOS 攝影任務應用程式，邀請你尋找並拍下當天的形狀。",
         tocklist: "Tocklist 是一款 iOS 24 小時待辦應用程式，用於規劃並回顧一天的節奏。",

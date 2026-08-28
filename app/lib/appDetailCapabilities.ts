@@ -35,7 +35,7 @@ export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
     devices: devices(true, false, true, true),
     stores: stores(true, true),
   },
-  odow: {
+  evrune: {
     devices: devices(true, true, false, true),
     stores: stores(true, true),
   },

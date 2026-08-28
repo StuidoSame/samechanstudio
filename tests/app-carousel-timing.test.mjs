@@ -44,7 +44,7 @@ test("starts emphasis only after the complete app name is visible", () => {
 });
 
 test("uses the shared timeline for short and long app names", () => {
-  for (const appName of ["ODOW", "Teru Bozu", "A Longer App Name"]) {
+  for (const appName of ["EVRUNE", "Teru Bozu", "A Longer App Name"]) {
     const duration = getAppNameSequenceDurationMs(appName);
     assert.equal(getAppNameSequenceSnapshot(appName, duration - 1).phase, "hold");
     assert.equal(getAppNameSequenceSnapshot(appName, duration).phase, "complete");

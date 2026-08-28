@@ -188,7 +188,7 @@ export const zhTW = {
         watch: { keywords: ["腕上節拍", "立即開始", "專注跑步"], description: "跑步時減少手機操作，直接在Apple Watch上開始並查看節奏，讓運動過程保持連貫。" },
         android: { keywords: ["跑步節奏", "速度設定", "Android訓練"], description: "在Android手機上快速設定跑步節奏，運動時只查看必要資訊，更專注地維持步頻。" },
       },
-      odow: {
+      evrune: {
         iphone: { keywords: ["每日一詞", "安靜記錄", "簡短回答"], description: "每天遇見一個詞和一個問題，用輕鬆簡短的回答，靜靜留下當天的想法。" },
         ipad: { keywords: ["寬屏記錄", "靜心專注", "過往回答"], description: "在寬廣畫面上專注於今天的問題，用舒展的行寬寫下回答，也能回顧先前的記錄。" },
         android: { keywords: ["每日一詞", "簡短回答", "Android記錄"], description: "在Android手機上也能每天查看一個問題，用簡短而安靜的方式記錄當天的想法。" },

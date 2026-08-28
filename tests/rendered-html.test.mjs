@@ -127,7 +127,7 @@ test("renders unique page metadata, canonical URLs, and social cards", async () 
     [
       "/delete-account/",
       "계정 및 데이터 삭제 요청 | SAME STUDIO",
-      "ODOW 등 SAME STUDIO 앱 계정과 연결 데이터의 삭제를 요청하고 처리 절차를 확인할 수 있는 공식 페이지입니다.",
+      "EVRUNE 등 SAME STUDIO 앱 계정과 연결 데이터의 삭제를 요청하고 처리 절차를 확인할 수 있는 공식 페이지입니다.",
       "https://samestudio.kr/delete-account/",
     ],
   ];
@@ -242,7 +242,7 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   assert.doesNotMatch(html, /support-app-pill/);
   assert.match(html, /aria-label="Mapary 선택" aria-pressed="true"/);
   for (const iconName of [
-    "ODOW_icon.png",
+    "evrune_icon.png",
     "Mapary_icon.png",
     "Locaunt_icon.png",
     "pulto_icon.png",
@@ -266,7 +266,7 @@ test("server-renders the public account deletion request page", async () => {
   assert.match(html, /<title>계정 및 데이터 삭제 요청 \| SAME STUDIO<\/title>/i);
   assert.match(html, /<h1[^>]*>계정 및 데이터 삭제<\/h1>/i);
   assert.match(html, /SAME STUDIO/);
-  assert.match(html, />ODOW<\/option>/);
+  assert.match(html, />EVRUNE<\/option>/);
   assert.match(html, /id="deletion-email"[^>]*type="email"/i);
   assert.match(html, /id="deletion-login"/i);
   assert.match(html, /type="checkbox"/i);
