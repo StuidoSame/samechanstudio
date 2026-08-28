@@ -246,7 +246,7 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
     "Mapary_icon.png",
     "pini_icon.png",
     "pulto_icon.png",
-    "pepesnap_icon.png",
+    "pepsnap.png",
     "tocklist_icon.png",
     "skkoo_icon.png",
     "terubozu_icon.png",

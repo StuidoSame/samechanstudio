@@ -72,11 +72,11 @@ export const apps: AppItem[] = [
   },
   {
     id: "pepesnap",
-    name: "PepeSnap",
+    name: "PEPESNAP",
     eyebrow: "FIND · SNAP",
     tagline: "Find shapes around you.",
     platforms: "iOS",
-    icon: "/assets/icons/pepesnap_icon.png",
+    icon: "/assets/icons/pepsnap.png",
     accent: "#9b73e9",
     accentRgb: "155, 115, 233",
     screenshotId: "pepesnap",

@@ -88,7 +88,7 @@ const ko = {
       intro: "권한은 관련 기능을 사용할 때 요청되며 기기 설정에서 언제든 변경할 수 있습니다. 거부하더라도 관련 기능을 제외한 나머지 기능은 가능한 범위에서 계속 이용할 수 있습니다.",
       items: [
         { label: "LOCATION", title: "위치", text: "Mapary·PINI처럼 장소 기반 기록, 지도 또는 위치 알림을 제공하는 기능에서 사용될 수 있습니다." },
-        { label: "CAMERA", title: "카메라", text: "PepeSnap 등 사진 촬영 기능을 제공하는 앱에서 촬영을 시작할 때 사용될 수 있습니다." },
+        { label: "CAMERA", title: "카메라", text: "PEPESNAP 등 사진 촬영 기능을 제공하는 앱에서 촬영을 시작할 때 사용될 수 있습니다." },
         { label: "PHOTOS", title: "사진", text: "사진 선택, 기록 첨부, 저장 또는 복원을 지원하는 앱에서 사용자가 고른 항목을 처리하는 데 사용될 수 있습니다." },
         { label: "NOTIFICATIONS", title: "알림", text: "장소 알림, 일정, 리마인더와 사용자가 설정한 시각의 안내를 전달하는 데 사용될 수 있습니다." },
       ],
@@ -178,7 +178,7 @@ const en: PrivacyMessages = {
     ]},
     { ...ko.sections[2], title: "Device permissions", intro: "Permissions are requested when a related feature is used and can be changed in device settings. Other features remain available where possible if access is denied.", items: [
       { label: "LOCATION", title: "Location", text: "May be used for place records, maps, or location alerts in features such as Mapary and PINI." },
-      { label: "CAMERA", title: "Camera", text: "May be used when starting photo capture in apps with camera features, such as PepeSnap." },
+      { label: "CAMERA", title: "Camera", text: "May be used when starting photo capture in apps with camera features, such as PEPESNAP." },
       { label: "PHOTOS", title: "Photos", text: "May be used to process items you select in apps that support photo selection, attachments, saving, or restoration." },
       { label: "NOTIFICATIONS", title: "Notifications", text: "May be used to deliver place alerts, schedules, reminders, and notices at times you set." },
     ]},
@@ -256,7 +256,7 @@ const ja: PrivacyMessages = {
       ],
       [
         "MaparyやPINIなど、場所の記録、地図、位置通知を提供する機能で利用される場合があります。",
-        "PepeSnapなど、写真撮影機能を提供するアプリで撮影開始時に利用される場合があります。",
+        "PEPESNAPなど、写真撮影機能を提供するアプリで撮影開始時に利用される場合があります。",
         "写真の選択、記録への添付、保存または復元を提供するアプリで、利用者が選んだ項目の処理に利用される場合があります。",
         "場所の通知、スケジュール、リマインダー、利用者が設定した時刻の案内を届けるために利用される場合があります。",
       ],
@@ -338,7 +338,7 @@ const zhCN: PrivacyMessages = {
       ],
       [
         "可能用于 Mapary、PINI 等功能中的地点记录、地图或位置提醒。",
-        "可能在 PepeSnap 等提供拍照功能的应用开始拍摄时使用。",
+        "可能在 PEPESNAP 等提供拍照功能的应用开始拍摄时使用。",
         "可能用于支持照片选择、记录附加、保存或恢复的应用，以处理您选择的项目。",
         "可能用于发送地点提醒、日程、提醒事项以及您设定时间的通知。",
       ],
@@ -424,7 +424,7 @@ const zhTW: PrivacyMessages = {
         ],
         [
           "可能用於 Mapary、PINI 等功能中的地點記錄、地圖或位置提醒。",
-          "可能在 PepeSnap 等提供拍照功能的應用程式開始拍攝時使用。",
+          "可能在 PEPESNAP 等提供拍照功能的應用程式開始拍攝時使用。",
           "可能用於支援照片選擇、記錄附加、保存或復原的應用程式，以處理您選擇的項目。",
           "可能用於傳送地點提醒、日程、提醒事項，以及您設定時間的通知。",
         ],

@@ -19,7 +19,7 @@ const SUPPORT_APPS = [
   { name: "Mapary", icon: "/assets/icons/Mapary_icon.png" },
   { name: "PINI", icon: "/assets/icons/pini_icon.png" },
   { name: "Pulto", icon: "/assets/icons/pulto_icon.png" },
-  { name: "PepeSnap", icon: "/assets/icons/pepesnap_icon.png" },
+  { name: "PEPESNAP", icon: "/assets/icons/pepsnap.png" },
   { name: "Tocklist", icon: "/assets/icons/tocklist_icon.png" },
   { name: "Skkoo", icon: "/assets/icons/skkoo_icon.png" },
   { name: "TeruBozu", icon: "/assets/icons/terubozu_icon.png" },

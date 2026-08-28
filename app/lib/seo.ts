@@ -70,7 +70,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         pini:
           "PINI는 중요한 장소와 알림을 지도에 남기는 iOS 위치 기반 메모 앱입니다.",
         pepesnap:
-          "PepeSnap은 오늘의 모양을 주변에서 찾아 사진으로 기록하는 iOS 사진 미션 앱입니다.",
+          "PEPESNAP은 오늘의 모양을 주변에서 찾아 사진으로 기록하는 iOS 사진 미션 앱입니다.",
         tocklist:
           "Tocklist는 하루의 흐름을 계획하고 돌아보는 iOS 24시간 투두 앱입니다.",
         skkoo:
@@ -119,7 +119,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         runtronome: "Pulto is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
         evrune: "EVRUNE is an iOS daily-question journal for capturing one thoughtful answer each day.",
         pini: "PINI is an iOS location-based memo app for attaching reminders to important places.",
-        pepesnap: "PepeSnap is an iOS photo-mission app that invites you to find and capture the shape of the day.",
+        pepesnap: "PEPESNAP is an iOS photo-mission app that invites you to find and capture the shape of the day.",
         tocklist: "Tocklist is an iOS 24-hour to-do app for planning the day and reviewing its rhythm.",
         skkoo: "SKKOO is an iOS digital diary and journal-decoration app for making everyday records your own.",
         terubozu: "Teru Bozu is an iOS weather-wish app for checking the day and leaving a small hope behind.",
@@ -164,7 +164,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         runtronome: "Pultoは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
         evrune: "EVRUNEは、毎日ひとつの質問に答えて一日を残すiOS向け日記アプリです。",
         pini: "PINI（PINI）は、大切な場所にリマインダーを残すiOS向け位置メモアプリです。",
-        pepesnap: "PepeSnapは、今日の形を見つけて写真に残すiOS向けフォトミッションアプリです。",
+        pepesnap: "PEPESNAPは、今日の形を見つけて写真に残すiOS向けフォトミッションアプリです。",
         tocklist: "Tocklistは、一日の流れを計画して振り返るiOS向け24時間ToDoアプリです。",
         skkoo: "SKKOOは、日々の記録を自分らしく飾るiOS向けデジタル日記・手帳デコアプリです。",
         terubozu: "Teru Bozuは、今日の天気を確認して小さな願いを残すiOS向け天気アプリです。",
@@ -209,7 +209,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         runtronome: "Pulto 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
         evrune: "EVRUNE 是一款 iOS 每日提问日记应用，每天用一个回答记录自己的想法。",
         pini: "PINI（PINI）是一款 iOS 位置笔记应用，可在重要地点留下提醒。",
-        pepesnap: "PepeSnap 是一款 iOS 摄影任务应用，邀请你寻找并拍下当天的形状。",
+        pepesnap: "PEPESNAP 是一款 iOS 摄影任务应用，邀请你寻找并拍下当天的形状。",
         tocklist: "Tocklist 是一款 iOS 24 小时待办应用，用于规划并回顾一天的节奏。",
         skkoo: "SKKOO 是一款 iOS 手账装饰与数字日记应用，让日常记录更具个人风格。",
         terubozu: "Teru Bozu 是一款 iOS 天气愿望应用，可查看天气并留下小小心愿。",
@@ -254,7 +254,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         runtronome: "Pulto 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
         evrune: "EVRUNE 是一款 iOS 每日提問日記應用程式，每天用一個回答記錄自己的想法。",
         pini: "PINI（PINI）是一款 iOS 位置筆記應用程式，可在重要地點留下提醒。",
-        pepesnap: "PepeSnap 是一款 iOS 攝影任務應用程式，邀請你尋找並拍下當天的形狀。",
+        pepesnap: "PEPESNAP 是一款 iOS 攝影任務應用程式，邀請你尋找並拍下當天的形狀。",
         tocklist: "Tocklist 是一款 iOS 24 小時待辦應用程式，用於規劃並回顧一天的節奏。",
         skkoo: "SKKOO 是一款 iOS 手帳裝飾與數位日記應用程式，讓日常記錄更具個人風格。",
         terubozu: "Teru Bozu 是一款 iOS 天氣願望應用程式，可查看天氣並留下小小心願。",
