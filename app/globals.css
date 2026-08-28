@@ -2142,6 +2142,37 @@ button {
   transform-origin: center;
 }
 
+.app-name-visual {
+  display: inline-grid;
+  max-width: 100%;
+}
+
+.app-name-reserve,
+.app-name-typed {
+  grid-area: 1 / 1;
+  white-space: pre;
+}
+
+.app-name-reserve {
+  visibility: hidden;
+}
+
+.app-name-typed {
+  justify-self: start;
+}
+
+.app-name-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .app-info-content.sequence-idle h2,
 .app-info-content.sequence-typing h2,
 .app-info-content.sequence-platform-reveal h2,
@@ -2152,7 +2183,7 @@ button {
 }
 
 .app-info-content.sequence-name-emphasis h2 {
-  animation: app-name-emphasis 0.3s ease-out both;
+  animation: app-name-emphasis var(--app-name-emphasis-duration) ease-out both;
 }
 
 .platform-icons {
@@ -2169,7 +2200,7 @@ button {
 }
 
 .app-info-content.sequence-platform-reveal .platform-icons {
-  animation: platform-row-reveal 0.25s ease-out both;
+  animation: platform-row-reveal var(--app-platform-reveal-duration) ease-out both;
 }
 
 .app-info-content.sequence-detail-reveal .platform-icons,
@@ -2236,7 +2267,7 @@ button {
 }
 
 .app-info-content.sequence-detail-reveal .view-app-sequence {
-  animation: detail-control-reveal 0.3s ease-out both;
+  animation: detail-control-reveal var(--app-detail-reveal-duration) ease-out both;
 }
 
 .app-info-content.sequence-hold .view-app-sequence,
