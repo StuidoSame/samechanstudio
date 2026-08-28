@@ -214,6 +214,11 @@ export const zhCN = {
       feeloo: {
         iphone: { keywords: ["情绪记录", "今日心情", "平静回顾"], description: "简短记录今天的感受，回望累积的情绪轨迹，平静地为一天收尾。" },
       },
+      waesseum: {
+        iphone: { keywords: ["每日签到", "连续签到", "收集印章"], description: "每天签到一次，延续连续与累计签到记录，并在过程中收集印章。" },
+        ipad: { keywords: ["月度记录", "累计签到", "印章一览"], description: "在更大的屏幕上集中查看月度签到记录、累计签到和已收集的印章。" },
+        android: { keywords: ["每日签到", "连续记录", "Android签到"], description: "在Android上每天签到一次，延续连续与累计记录，并继续收集印章。" },
+      },
     },
   },
   support: {

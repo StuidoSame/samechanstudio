@@ -214,6 +214,11 @@ export const ko = {
       feeloo: {
         iphone: { keywords: ["감정 기록", "오늘의 기분", "차분한 회고"], description: "오늘 느낀 감정을 짧게 기록하고, 쌓인 기분의 흐름을 돌아보며 하루를 차분하게 정리할 수 있습니다." },
       },
+      waesseum: {
+        iphone: { keywords: ["하루 출석", "연속 출석", "도장 수집"], description: "하루 한 번 출석을 기록하고 연속·누적 출석을 이어가며 도장을 모을 수 있습니다." },
+        ipad: { keywords: ["월간 기록", "누적 출석", "도장 모아보기"], description: "월간 출석 기록과 누적 출석 현황, 모은 도장을 넓은 화면에서 한눈에 확인할 수 있습니다." },
+        android: { keywords: ["하루 출석", "연속 기록", "Android 출석"], description: "Android에서도 하루 한 번 출석을 남기고 연속·누적 기록과 도장 수집을 이어갈 수 있습니다." },
+      },
     },
   },
   support: {

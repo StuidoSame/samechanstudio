@@ -23,7 +23,7 @@ const SUPPORT_APPS = [
   { name: "Tocklist", icon: "/assets/icons/tocklist_icon.png" },
   { name: "Skkoo", icon: "/assets/icons/skkoo_icon.png" },
   { name: "TeruBozu", icon: "/assets/icons/terubozu_icon.png" },
-  { name: "Waesseum", icon: "/assets/icons/waesseum_icon.png" },
+  { name: "WAESSEUM", icon: "/assets/icons/waesseum_icon.png" },
   { name: "Feeloo", icon: "/assets/icons/feeloo_icon.png" },
 ] as const;
 

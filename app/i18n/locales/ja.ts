@@ -214,6 +214,11 @@ export const ja = {
       feeloo: {
         iphone: { keywords: ["感情の記録", "今日の気分", "穏やかな振り返り"], description: "今日感じたことを短く記録し、積み重なった気分の流れを振り返りながら穏やかに一日を整えられます。" },
       },
+      waesseum: {
+        iphone: { keywords: ["毎日の出席", "連続出席", "スタンプ収集"], description: "一日一回出席を記録し、連続・累計出席を続けながらスタンプを集められます。" },
+        ipad: { keywords: ["月間記録", "累計出席", "スタンプ一覧"], description: "月間の出席記録、累計出席、集めたスタンプを大きな画面でまとめて確認できます。" },
+        android: { keywords: ["毎日の出席", "連続記録", "Android出席"], description: "Androidでも一日一回出席を残し、連続・累計記録とスタンプ収集を続けられます。" },
+      },
     },
   },
   support: {

@@ -10,7 +10,7 @@ export type AppItem = {
   screenshotId?: string;
   appStoreUrl?: string;
   googlePlayUrl?: string;
-  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "pini" | "pepesnap" | "mapary" | "tocklist";
+  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "pini" | "pepesnap" | "mapary" | "tocklist" | "waesseum";
 };
 
 export const apps: AppItem[] = [
@@ -133,6 +133,20 @@ export const apps: AppItem[] = [
     accent: "#b590f4",
     accentRgb: "181, 144, 244",
     screen: "feeloo",
+  },
+  {
+    id: "waesseum",
+    name: "WAESSEUM",
+    eyebrow: "DAILY ATTENDANCE",
+    tagline: "Keep showing up, one day at a time.",
+    platforms: "iOS · Android",
+    icon: "/assets/icons/waesseum_icon.png",
+    accent: "#b3df28",
+    accentRgb: "179, 223, 40",
+    screenshotId: "waesseum",
+    googlePlayUrl:
+      "https://play.google.com/store/apps/details?id=com.samestudio.waesseum",
+    screen: "waesseum",
   },
 ];
 

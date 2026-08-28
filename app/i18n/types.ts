@@ -14,6 +14,7 @@ export const APP_TRANSLATION_IDS = [
   "skkoo",
   "terubozu",
   "feeloo",
+  "waesseum",
 ] as const;
 
 export type AppTranslationId = (typeof APP_TRANSLATION_IDS)[number];

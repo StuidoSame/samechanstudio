@@ -63,6 +63,10 @@ export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
     devices: iphoneOnly(),
     stores: stores(false, false),
   },
+  waesseum: {
+    devices: devices(true, true, false, true),
+    stores: stores(true, true),
+  },
 };
 
 const DETAIL_DEVICE_ORDER: DetailDevice[] = [

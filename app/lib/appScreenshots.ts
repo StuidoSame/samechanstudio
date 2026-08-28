@@ -177,10 +177,10 @@ export const SCREENSHOT_MANIFEST = {
     screenshotId: "terubozu",
     phone: localizedScreenshots("terubozu", "phone", 6),
   },
-  weasseum: {
-    screenshotId: "weasseum",
-    phone: localizedScreenshots("weasseum", "phone", 6),
-    ipad: localizedScreenshots("weasseum", "ipad", 5),
+  waesseum: {
+    screenshotId: "waesseum",
+    phone: localizedScreenshots("waesseum", "phone", 6),
+    ipad: localizedScreenshots("waesseum", "ipad", 5),
   },
 } satisfies ScreenshotManifest;
 

@@ -2002,7 +2002,7 @@ export function HomeExperience() {
   };
 
   const openAppDetail = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!activeApp.appStoreUrl || detailApp) return;
+    if ((!activeApp.appStoreUrl && !activeApp.googlePlayUrl) || detailApp) return;
 
     detailTriggerRef.current = event.currentTarget;
     detailWasPlayingRef.current = isPlayingRef.current;
@@ -2335,7 +2335,7 @@ export function HomeExperience() {
               </h2>
               <PlatformIcons app={activeApp} />
               <span className="view-app-sequence">
-                {activeApp.appStoreUrl ? (
+                {activeApp.appStoreUrl || activeApp.googlePlayUrl ? (
                   <button
                     className="view-app"
                     type="button"

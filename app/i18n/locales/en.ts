@@ -214,6 +214,11 @@ export const en = {
       feeloo: {
         iphone: { keywords: ["Emotion journal", "Today’s mood", "Calm reflection"], description: "Briefly record how you felt today, look back at the flow of your moods, and bring the day to a calm close." },
       },
+      waesseum: {
+        iphone: { keywords: ["Daily check-in", "Attendance streak", "Stamp collection"], description: "Check in once a day, continue your current and total attendance records, and collect stamps along the way." },
+        ipad: { keywords: ["Monthly history", "Total attendance", "Stamp gallery"], description: "Review monthly check-ins, total attendance, and collected stamps together on a larger screen." },
+        android: { keywords: ["Daily check-in", "Attendance streak", "Android check-in"], description: "Check in once a day on Android, maintain current and total attendance records, and keep collecting stamps." },
+      },
     },
   },
   support: {
