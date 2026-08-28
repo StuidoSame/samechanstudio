@@ -17,6 +17,15 @@ export type LocalizedScreenshotManifest = Partial<
   Record<ScreenshotLocale, string[]>
 >;
 
+export type ScreenshotFilenameManifest = Partial<
+  Record<ScreenshotLocale, readonly string[]>
+>;
+
+export type ResolvedScreenshotSet = {
+  locale: ScreenshotLocale | null;
+  screenshots: string[];
+};
+
 export type AppScreenshotManifest = {
   screenshotId: string;
   phone?: LocalizedScreenshotManifest;
@@ -71,26 +80,42 @@ function localizedScreenshots(
   };
 }
 
+export function createLocalizedScreenshotManifest(
+  appDirectory: string,
+  deviceDirectory: string,
+  filenamesByLocale: ScreenshotFilenameManifest,
+): LocalizedScreenshotManifest {
+  return Object.fromEntries(
+    SCREENSHOT_LOCALES.flatMap((locale) => {
+      const filenames = filenamesByLocale[locale];
+      if (!filenames || filenames.length === 0) return [];
+
+      const screenshots = naturallySortedScreenshots(
+        filenames.map(
+          (filename) =>
+            `/assets/screenshot/${appDirectory}/${deviceDirectory}/${locale}/${filename}`,
+        ),
+      );
+
+      return [[locale, screenshots]];
+    }),
+  ) as LocalizedScreenshotManifest;
+}
+
 function localizedScreenshotFiles(
   appDirectory: string,
   deviceDirectory: string,
   filenames: readonly string[],
 ): Record<ScreenshotLocale, string[]> {
-  const screenshotsForLocale = (locale: ScreenshotLocale) =>
-    naturallySortedScreenshots(
-      filenames.map(
-        (filename) =>
-          `/assets/screenshot/${appDirectory}/${deviceDirectory}/${locale}/${filename}`,
-      ),
-    );
+  const filenamesByLocale = Object.fromEntries(
+    SCREENSHOT_LOCALES.map((locale) => [locale, filenames]),
+  ) as Record<ScreenshotLocale, readonly string[]>;
 
-  return {
-    ko: screenshotsForLocale("ko"),
-    en: screenshotsForLocale("en"),
-    ja: screenshotsForLocale("ja"),
-    zhg: screenshotsForLocale("zhg"),
-    zhb: screenshotsForLocale("zhb"),
-  };
+  return createLocalizedScreenshotManifest(
+    appDirectory,
+    deviceDirectory,
+    filenamesByLocale,
+  ) as Record<ScreenshotLocale, string[]>;
 }
 
 const MAPARY_PHONE_SCREENSHOT_FILES = [
@@ -184,32 +209,67 @@ function nonEmptyScreenshots(
   return screenshots && screenshots.length > 0 ? screenshots : null;
 }
 
-export function resolveLocalizedScreenshots(
+export function resolveLocalizedScreenshotSet(
   localizedScreenshots: LocalizedScreenshotManifest | undefined,
   locale: Locale,
-): string[] {
-  if (!localizedScreenshots) return [];
+): ResolvedScreenshotSet {
+  if (!localizedScreenshots) return { locale: null, screenshots: [] };
 
   const screenshotLocale = SCREENSHOT_LOCALE_MAP[locale];
   const localizedMatch = nonEmptyScreenshots(
     localizedScreenshots[screenshotLocale],
   );
-  if (localizedMatch) return localizedMatch;
-
-  const koreanFallback = nonEmptyScreenshots(localizedScreenshots.ko);
-  if (koreanFallback) return koreanFallback;
+  if (localizedMatch) {
+    return { locale: screenshotLocale, screenshots: localizedMatch };
+  }
 
   const englishFallback = nonEmptyScreenshots(localizedScreenshots.en);
-  if (englishFallback) return englishFallback;
+  if (englishFallback) return { locale: "en", screenshots: englishFallback };
 
   for (const fallbackLocale of SCREENSHOT_LOCALES) {
     const firstAvailable = nonEmptyScreenshots(
       localizedScreenshots[fallbackLocale],
     );
-    if (firstAvailable) return firstAvailable;
+    if (firstAvailable) {
+      return { locale: fallbackLocale, screenshots: firstAvailable };
+    }
   }
 
-  return [];
+  return { locale: null, screenshots: [] };
+}
+
+export function resolveLocalizedScreenshots(
+  localizedScreenshots: LocalizedScreenshotManifest | undefined,
+  locale: Locale,
+): string[] {
+  return resolveLocalizedScreenshotSet(localizedScreenshots, locale).screenshots;
+}
+
+export function getAppScreenshotSet({
+  appId,
+  screen,
+  locale,
+}: {
+  appId: string;
+  screen: DetailScreen;
+  locale: Locale;
+}): ResolvedScreenshotSet {
+  const appScreenshots: AppScreenshotManifest | undefined =
+    SCREENSHOT_MANIFEST[appId as keyof typeof SCREENSHOT_MANIFEST];
+
+  if (!appScreenshots) return { locale: null, screenshots: [] };
+
+  const resolved = resolveLocalizedScreenshotSet(
+    appScreenshots[screen],
+    locale,
+  );
+
+  return {
+    locale: resolved.locale,
+    screenshots: [
+      ...new Set(naturallySortedScreenshots(resolved.screenshots)),
+    ],
+  };
 }
 
 export function getAppScreenshots({
@@ -221,16 +281,5 @@ export function getAppScreenshots({
   screen: DetailScreen;
   locale: Locale;
 }): string[] {
-  const appScreenshots: AppScreenshotManifest | undefined =
-    SCREENSHOT_MANIFEST[appId as keyof typeof SCREENSHOT_MANIFEST];
-
-  if (!appScreenshots) return [];
-
-  return [
-    ...new Set(
-      naturallySortedScreenshots(
-        resolveLocalizedScreenshots(appScreenshots[screen], locale),
-      ),
-    ),
-  ];
+  return getAppScreenshotSet({ appId, screen, locale }).screenshots;
 }

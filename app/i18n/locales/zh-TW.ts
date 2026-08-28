@@ -161,7 +161,7 @@ export const zhTW = {
     storeSelectorLabel: "選擇應用程式商店",
     storeLinkLabel: "在{store}查看{app}",
     previewRegionLabel: "{app} {device}預覽圖庫",
-    previewAlt: "{app} {device}預覽 {current}/{total}",
+    previewAlt: "{app} {device} {language}預覽 {current}/{total}",
     previewLoadingLabel: "正在載入預覽...",
     previewUnavailableLabel: "預覽正在準備中。",
     previousScreenshotLabel: "{app}上一張預覽",

@@ -18,7 +18,7 @@ import {
   type DetailScreen,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
-import { getAppScreenshots } from "../../lib/appScreenshots";
+import { getAppScreenshotSet } from "../../lib/appScreenshots";
 import { ResilientScreenshotImage } from "./ResilientScreenshotImage";
 import { ScreenshotLightbox } from "./ScreenshotLightbox";
 
@@ -147,15 +147,17 @@ export function AppDetailOverlay({
     TRANSLATION_DEVICE_CANDIDATES[selectedScreen]
       .map((device) => appDetailContent?.[device])
       .find((content) => content !== undefined) ?? messages.appDetail.fallback;
-  const screenshots = useMemo(
+  const screenshotSet = useMemo(
     () =>
-      getAppScreenshots({
+      getAppScreenshotSet({
         appId: app.screenshotId ?? app.id,
         screen: selectedScreen,
         locale,
       }),
     [app.id, app.screenshotId, locale, selectedScreen],
   );
+  const screenshots = screenshotSet.screenshots;
+  const screenshotLanguage = screenshotSet.locale ?? locale;
   const [galleryState, setGalleryState] = useState<GalleryState>(
     INITIAL_GALLERY_STATE,
   );
@@ -446,7 +448,7 @@ export function AppDetailOverlay({
               app: app.name,
               device: SCREEN_LABELS[selectedScreen],
             })}
-            data-preview-key={`${app.id}:${selectedScreen}`}
+            data-preview-key={`${app.id}:${selectedScreen}:${screenshotLanguage}`}
           >
             {screenshots.length > 0 ? (
               <div
@@ -549,7 +551,7 @@ export function AppDetailOverlay({
                       className="app-detail-gallery-item"
                       type="button"
                       data-screenshot-index={index}
-                      key={`${app.id}:${selectedScreen}:${screenshot}`}
+                      key={`${app.id}:${selectedScreen}:${screenshotLanguage}:${screenshot}`}
                       aria-label={format(
                         messages.appDetail.enlargeScreenshotLabel,
                         { app: app.name, current: index + 1 },
@@ -567,6 +569,7 @@ export function AppDetailOverlay({
                         alt={format(messages.appDetail.previewAlt, {
                           app: app.name,
                           device: SCREEN_LABELS[selectedScreen],
+                          language: screenshotLanguage,
                           current: index + 1,
                           total: screenshots.length,
                         })}
@@ -684,6 +687,7 @@ export function AppDetailOverlay({
           imageAlt={format(messages.appDetail.previewAlt, {
             app: app.name,
             device: SCREEN_LABELS[selectedScreen],
+            language: screenshotLanguage,
             current: Math.min(lightboxIndex, screenshots.length - 1) + 1,
             total: screenshots.length,
           })}

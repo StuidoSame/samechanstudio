@@ -161,7 +161,7 @@ export const zhCN = {
     storeSelectorLabel: "选择应用商店",
     storeLinkLabel: "在{store}中查看{app}",
     previewRegionLabel: "{app} {device}预览图库",
-    previewAlt: "{app} {device}预览 {current}/{total}",
+    previewAlt: "{app} {device} {language}预览 {current}/{total}",
     previewLoadingLabel: "正在加载预览...",
     previewUnavailableLabel: "预览正在准备中。",
     previousScreenshotLabel: "{app}上一张预览",

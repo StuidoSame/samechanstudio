@@ -161,7 +161,7 @@ export const ko = {
     storeSelectorLabel: "스토어 선택",
     storeLinkLabel: "{store}에서 {app} 보기",
     previewRegionLabel: "{app} {device} 미리보기 갤러리",
-    previewAlt: "{app} {device} 미리보기 {current}/{total}",
+    previewAlt: "{app} {device} {language} 미리보기 {current}/{total}",
     previewLoadingLabel: "미리보기를 불러오는 중...",
     previewUnavailableLabel: "미리보기를 준비 중입니다.",
     previousScreenshotLabel: "{app} 이전 미리보기",

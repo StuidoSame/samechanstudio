@@ -161,7 +161,7 @@ export const en = {
     storeSelectorLabel: "Select a store",
     storeLinkLabel: "View {app} on {store}",
     previewRegionLabel: "{app} {device} preview gallery",
-    previewAlt: "{app} {device} preview {current} of {total}",
+    previewAlt: "{app} {device} {language} preview {current} of {total}",
     previewLoadingLabel: "Loading preview...",
     previewUnavailableLabel: "Preview coming soon.",
     previousScreenshotLabel: "Previous {app} preview",

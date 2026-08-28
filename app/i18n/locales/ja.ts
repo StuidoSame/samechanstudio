@@ -161,7 +161,7 @@ export const ja = {
     storeSelectorLabel: "ストアを選択",
     storeLinkLabel: "{store}で{app}を見る",
     previewRegionLabel: "{app}の{device}プレビューギャラリー",
-    previewAlt: "{app}の{device}プレビュー {current}/{total}",
+    previewAlt: "{app}の{device} {language}プレビュー {current}/{total}",
     previewLoadingLabel: "プレビューを読み込み中...",
     previewUnavailableLabel: "プレビューを準備中です。",
     previousScreenshotLabel: "{app}の前のプレビュー",

@@ -7,9 +7,38 @@ import {
   getAvailableDetailScreens,
 } from "../app/lib/appDetailCapabilities.ts";
 import {
+  createLocalizedScreenshotManifest,
   getAppScreenshots,
+  resolveLocalizedScreenshotSet,
   SCREENSHOT_MANIFEST,
 } from "../app/lib/appScreenshots.ts";
+
+test("builds explicit localized manifests in natural filename order", () => {
+  const manifest = createLocalizedScreenshotManifest("sample", "phone", {
+    en: ["10.png", "2.png", "1.png"],
+  });
+
+  assert.deepEqual(manifest.en, [
+    "/assets/screenshot/sample/phone/en/1.png",
+    "/assets/screenshot/sample/phone/en/2.png",
+    "/assets/screenshot/sample/phone/en/10.png",
+  ]);
+  assert.equal(manifest.ko, undefined);
+});
+
+test("falls back from the requested locale to English, then the first available locale", () => {
+  assert.deepEqual(
+    resolveLocalizedScreenshotSet(
+      { en: ["/en.png"], ja: ["/ja.png"] },
+      "ko",
+    ),
+    { locale: "en", screenshots: ["/en.png"] },
+  );
+  assert.deepEqual(
+    resolveLocalizedScreenshotSet({ ja: ["/ja.png"] }, "zh-CN"),
+    { locale: "ja", screenshots: ["/ja.png"] },
+  );
+});
 
 test("uses the current official app names and icon files", async () => {
   const expected = {
