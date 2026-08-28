@@ -39,7 +39,7 @@ export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
     devices: devices(true, true, false, true),
     stores: stores(true, true),
   },
-  locaunt: {
+  pini: {
     devices: iphoneOnly(),
     stores: stores(true, false),
   },

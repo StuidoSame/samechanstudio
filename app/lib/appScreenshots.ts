@@ -154,9 +154,9 @@ export const SCREENSHOT_MANIFEST = {
     phone: localizedScreenshots("evrune", "phone", 5),
     ipad: localizedScreenshots("evrune", "ipad", 5),
   },
-  lacaunt: {
-    screenshotId: "lacaunt",
-    phone: localizedScreenshots("lacaunt", "phone", 6),
+  pini: {
+    screenshotId: "pini",
+    phone: localizedScreenshots("pini", "phone", 6),
   },
   pepesnap: {
     screenshotId: "pepesnap",

@@ -193,7 +193,7 @@ export const en = {
         ipad: { keywords: ["Room to write", "Calm focus", "Past answers"], description: "Focus on today’s question on a larger screen, write with a more generous line length, and revisit earlier entries." },
         android: { keywords: ["One word a day", "Short answers", "Android journal"], description: "Check one daily question and quietly record the thoughts of the day in a short answer on Android." },
       },
-      locaunt: {
+      pini: {
         iphone: { keywords: ["Place memory", "Map journal", "Personal reminders"], description: "Leave important places and useful details on the map, then return to your personal notes through the places connected to them." },
       },
       pepesnap: {

@@ -17,7 +17,7 @@ import { useI18n } from "../i18n/I18nProvider";
 const SUPPORT_APPS = [
   { name: "EVRUNE", icon: "/assets/icons/evrune_icon.png" },
   { name: "Mapary", icon: "/assets/icons/Mapary_icon.png" },
-  { name: "LOCAUNT", icon: "/assets/icons/Locaunt_icon.png" },
+  { name: "PINI", icon: "/assets/icons/pini_icon.png" },
   { name: "Pulto", icon: "/assets/icons/pulto_icon.png" },
   { name: "PepeSnap", icon: "/assets/icons/pepesnap_icon.png" },
   { name: "Tocklist", icon: "/assets/icons/tocklist_icon.png" },

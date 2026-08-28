@@ -193,7 +193,7 @@ export const ja = {
         ipad: { keywords: ["広々と記録", "穏やかに集中", "過去の回答"], description: "広い画面で今日の質問に集中し、ゆとりのある行幅で回答を書きながら以前の記録を振り返れます。" },
         android: { keywords: ["一日一語", "短い回答", "Androidで記録"], description: "Androidスマートフォンでも毎日一つの質問を確認し、その日の考えを短く静かに記録できます。" },
       },
-      locaunt: {
+      pini: {
         iphone: { keywords: ["場所の記憶", "地図記録", "自分だけの通知"], description: "忘れたくない場所と必要な内容を地図に残し、場所を起点に自分の記録をもう一度確認できます。" },
       },
       pepesnap: {

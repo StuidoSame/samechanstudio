@@ -1774,11 +1774,11 @@ button {
   letter-spacing: 0.2em;
 }
 
-.card-locaunt {
+.card-pini {
   background: linear-gradient(160deg, #fff5ee, #f6d8c8);
 }
 
-.screen-locaunt {
+.screen-pini {
   position: absolute;
   z-index: 2;
   inset: 20% 0 0;
@@ -1812,7 +1812,7 @@ button {
   transform: rotate(78deg);
 }
 
-.screen-locaunt i {
+.screen-pini i {
   position: absolute;
   left: 54%;
   top: 42%;
@@ -1825,7 +1825,7 @@ button {
   box-shadow: 0 8px 12px rgba(234, 104, 70, 0.22);
 }
 
-.screen-locaunt p {
+.screen-pini p {
   position: absolute;
   left: 18px;
   bottom: 24px;

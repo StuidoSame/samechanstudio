@@ -193,7 +193,7 @@ export const ko = {
         ipad: { keywords: ["넓은 기록", "차분한 집중", "지난 답변"], description: "넓은 화면에서 오늘의 질문에 집중하고, 여유 있는 문장 폭으로 답변을 적으며 이전 기록을 돌아볼 수 있습니다." },
         android: { keywords: ["하루 한 단어", "짧은 답변", "Android 기록"], description: "Android 스마트폰에서도 매일 하나의 질문을 확인하고, 그날의 생각을 짧고 조용하게 기록할 수 있습니다." },
       },
-      locaunt: {
+      pini: {
         iphone: { keywords: ["장소 기억", "지도 기록", "나만의 알림"], description: "잊고 싶지 않은 장소와 필요한 내용을 지도 위에 남겨두고, 장소를 중심으로 개인적인 기록을 다시 확인할 수 있습니다." },
       },
       pepesnap: {
