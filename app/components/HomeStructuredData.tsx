@@ -38,7 +38,9 @@ const graph = [
       "@id": `${SITE_URL}/#software-${app.id}`,
       name: app.name,
       applicationCategory: "LifestyleApplication",
-      operatingSystem: app.platforms,
+      operatingSystem: app.platforms
+        .map((platform) => (platform === "apple" ? "iOS" : "Android"))
+        .join(", "),
       description: SEO_CONTENT.ko.home.appDescriptions[app.id],
       url: `${SITE_URL}/#app-${app.id}`,
       downloadUrl: app.appStoreUrl ?? app.googlePlayUrl,

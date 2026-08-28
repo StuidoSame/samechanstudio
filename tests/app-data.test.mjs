@@ -59,3 +59,15 @@ test("connects WAESSEUM detail devices and localized screenshots", () => {
   assert.equal(screenshots.length, 6);
   assert.ok(screenshots.every((path) => path.includes("/waesseum/")));
 });
+
+test("uses app platform data as the platform-logo source of truth", () => {
+  for (const app of apps) {
+    assert.deepEqual(
+      app.platforms,
+      app.id === "tocklist" || app.id === "skkoo"
+        ? ["apple"]
+        : ["apple", "android"],
+      app.id,
+    );
+  }
+});

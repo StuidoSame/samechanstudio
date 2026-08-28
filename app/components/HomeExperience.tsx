@@ -35,7 +35,6 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
-import { HERO_ANDROID_APP_IDS } from "../lib/appDetailCapabilities";
 import {
   consumeInternalHomeNavigation,
   usePageTransition,
@@ -452,8 +451,8 @@ function PlatformIcon({ platform }: { platform: "apple" | "android" }) {
 }
 
 function PlatformIcons({ app }: { app: AppItem }) {
-  const supportsApple = true;
-  const supportsAndroid = HERO_ANDROID_APP_IDS.has(app.id);
+  const supportsApple = app.platforms.includes("apple");
+  const supportsAndroid = app.platforms.includes("android");
   const platformNames = [
     supportsApple ? "Apple" : null,
     supportsAndroid ? "Android" : null,

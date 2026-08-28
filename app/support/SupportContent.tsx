@@ -13,19 +13,9 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from "react";
 import { useI18n } from "../i18n/I18nProvider";
+import { apps } from "../lib/apps";
 
-const SUPPORT_APPS = [
-  { name: "EVRUNE", icon: "/assets/icons/evrune_icon.png" },
-  { name: "Mapary", icon: "/assets/icons/Mapary_icon.png" },
-  { name: "PINI", icon: "/assets/icons/pini_icon.png" },
-  { name: "Pulto", icon: "/assets/icons/pulto_icon.png" },
-  { name: "PEPESNAP", icon: "/assets/icons/pepsnap.png" },
-  { name: "Tocklist", icon: "/assets/icons/tocklist_icon.png" },
-  { name: "Skkoo", icon: "/assets/icons/skkoo_icon.png" },
-  { name: "TeruBozu", icon: "/assets/icons/terubozu_icon.png" },
-  { name: "WAESSEUM", icon: "/assets/icons/waesseum_icon.png" },
-  { name: "Feeloo", icon: "/assets/icons/feeloo_icon.png" },
-] as const;
+const SUPPORT_APPS = apps.map(({ name, icon }) => ({ name, icon }));
 
 type SupportAppName = (typeof SUPPORT_APPS)[number]["name"];
 

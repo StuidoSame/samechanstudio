@@ -1,9 +1,11 @@
+export type AppPlatform = "apple" | "android";
+
 export type AppItem = {
   id: string;
   name: string;
   eyebrow: string;
   tagline: string;
-  platforms: string;
+  platforms: readonly AppPlatform[];
   icon: string;
   accent: string;
   accentRgb: string;
@@ -19,7 +21,7 @@ export const apps: AppItem[] = [
     name: "Mapary",
     eyebrow: "MEMORY MAP",
     tagline: "Map the moments that stay.",
-    platforms: "iOS · Android",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/Mapary_icon.png",
     accent: "#70b7e7",
     accentRgb: "112, 183, 231",
@@ -34,7 +36,7 @@ export const apps: AppItem[] = [
     name: "Pulto",
     eyebrow: "RUNNING RHYTHM",
     tagline: "Find your rhythm.",
-    platforms: "iOS · watchOS · Android · Wear OS",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/pulto_icon.png",
     accent: "#ff5559",
     accentRgb: "255, 85, 89",
@@ -48,7 +50,7 @@ export const apps: AppItem[] = [
     name: "EVRUNE",
     eyebrow: "ONE DAY · ONE WORD",
     tagline: "One day, one quiet answer.",
-    platforms: "iOS",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/evrune_icon.png",
     accent: "#8c89a5",
     accentRgb: "140, 137, 165",
@@ -61,7 +63,7 @@ export const apps: AppItem[] = [
     name: "PINI",
     eyebrow: "MEMORY MAPPED",
     tagline: "Remember where it matters.",
-    platforms: "iOS",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/pini_icon.png",
     accent: "#ff9d74",
     accentRgb: "255, 157, 116",
@@ -75,7 +77,7 @@ export const apps: AppItem[] = [
     name: "PEPESNAP",
     eyebrow: "FIND · SNAP",
     tagline: "Find shapes around you.",
-    platforms: "iOS",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/pepsnap.png",
     accent: "#9b73e9",
     accentRgb: "155, 115, 233",
@@ -89,7 +91,7 @@ export const apps: AppItem[] = [
     name: "Tocklist",
     eyebrow: "PLAN · REVIEW",
     tagline: "Plan a day in your rhythm.",
-    platforms: "iOS",
+    platforms: ["apple"],
     icon: "/assets/icons/tocklist_icon.png",
     accent: "#a98cff",
     accentRgb: "169, 140, 255",
@@ -102,7 +104,7 @@ export const apps: AppItem[] = [
     name: "SKKOO",
     eyebrow: "TODAY'S DIARY",
     tagline: "Make every day yours.",
-    platforms: "iOS",
+    platforms: ["apple"],
     icon: "/assets/icons/skkoo_icon.png",
     accent: "#ff83bc",
     accentRgb: "255, 131, 188",
@@ -115,7 +117,7 @@ export const apps: AppItem[] = [
     name: "Teru Bozu",
     eyebrow: "TODAY · SUNNY",
     tagline: "Make a wish with the weather.",
-    platforms: "iOS",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/terubozu_icon.png",
     accent: "#8fcaf3",
     accentRgb: "143, 202, 243",
@@ -128,7 +130,7 @@ export const apps: AppItem[] = [
     name: "Feeloo",
     eyebrow: "TODAY I FEEL",
     tagline: "Record the feeling.",
-    platforms: "Coming soon",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/feeloo_icon.png",
     accent: "#b590f4",
     accentRgb: "181, 144, 244",
@@ -139,7 +141,7 @@ export const apps: AppItem[] = [
     name: "WAESSEUM",
     eyebrow: "DAILY ATTENDANCE",
     tagline: "Keep showing up, one day at a time.",
-    platforms: "iOS · Android",
+    platforms: ["apple", "android"],
     icon: "/assets/icons/waesseum_icon.png",
     accent: "#b3df28",
     accentRgb: "179, 223, 40",

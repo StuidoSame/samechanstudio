@@ -76,12 +76,6 @@ const DETAIL_DEVICE_ORDER: DetailDevice[] = [
   "androidPhone",
 ];
 
-export const HERO_ANDROID_APP_IDS = new Set(
-  Object.entries(APP_DETAIL_CAPABILITIES)
-    .filter(([, capability]) => capability.devices.androidPhone)
-    .map(([appId]) => appId),
-);
-
 export function isDetailStoreAvailable(
   appId: string,
   store: DetailStore,
