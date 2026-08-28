@@ -83,13 +83,41 @@ test("adds WAESSEUM last without changing the existing app order", () => {
 
 test("connects WAESSEUM detail screens and localized screenshots", () => {
   assert.deepEqual(getAvailableDetailScreens("waesseum"), ["phone", "pad"]);
-  const screenshots = getAppScreenshots({
-    appId: "waesseum",
-    screen: "phone",
-    locale: "ko",
-  });
-  assert.equal(screenshots.length, 6);
-  assert.ok(screenshots.every((path) => path.includes("/waesseum/")));
+  const localeFolders = {
+    ko: "ko",
+    en: "en",
+    ja: "ja",
+    "zh-CN": "zhg",
+    "zh-TW": "zhb",
+  };
+
+  for (const [locale, folder] of Object.entries(localeFolders)) {
+    const phone = getAppScreenshotSet({
+      appId: "waesseum",
+      screen: "phone",
+      locale,
+    });
+    assert.equal(phone.locale, folder);
+    assert.equal(phone.screenshots.length, 6);
+    assert.ok(
+      phone.screenshots.every((path) =>
+        path.includes(`/screenshot/waesseum/phone/${folder}/`),
+      ),
+    );
+
+    const pad = getAppScreenshotSet({
+      appId: "waesseum",
+      screen: "pad",
+      locale,
+    });
+    assert.equal(pad.locale, folder);
+    assert.equal(pad.screenshots.length, 5);
+    assert.ok(
+      pad.screenshots.every((path) =>
+        path.includes(`/screenshot/waesseum/ipad/${folder}/`),
+      ),
+    );
+  }
 });
 
 test("connects EVRUNE to its actual localized Phone and Pad assets", () => {

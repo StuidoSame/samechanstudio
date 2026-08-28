@@ -164,6 +164,23 @@ const PINI_PHONE_SCREENSHOT_FILES = [
   "5.png",
 ] as const;
 
+const WAESSEUM_PHONE_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+  "6.png",
+] as const;
+
+const WAESSEUM_PAD_SCREENSHOT_FILES = [
+  "1.png",
+  "2.png",
+  "3.png",
+  "4.png",
+  "5.png",
+] as const;
+
 export const SCREENSHOT_MANIFEST = {
   mapary: {
     screenshotId: "mapary",
@@ -234,8 +251,18 @@ export const SCREENSHOT_MANIFEST = {
   },
   waesseum: {
     screenshotId: "waesseum",
-    phone: localizedScreenshots("waesseum", "phone", 6),
-    pad: localizedScreenshots("waesseum", "ipad", 5),
+    phone: localizedScreenshotFiles(
+      "waesseum",
+      "phone",
+      WAESSEUM_PHONE_SCREENSHOT_FILES,
+    ),
+    // The checked-in Pad assets still use the legacy directory name. Keep
+    // serving the real files until replacement captures exist in /pad.
+    pad: localizedScreenshotFiles(
+      "waesseum",
+      "ipad",
+      WAESSEUM_PAD_SCREENSHOT_FILES,
+    ),
   },
 } satisfies ScreenshotManifest;
 
