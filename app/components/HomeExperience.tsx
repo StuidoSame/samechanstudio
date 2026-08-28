@@ -97,6 +97,7 @@ type ActiveSequencePhase =
   | "detail-reveal"
   | "hold"
   | "complete";
+type AutoplayPauseReason = "interaction" | "detail-hover" | "detail-focus";
 type SpaceObject = {
   depth: "far" | "near";
   type: "dot" | "star" | "ring" | "sphere" | "diamond";
@@ -652,6 +653,7 @@ export function HomeExperience() {
     (clientX: number, clientY: number, pointerType?: string) => void
   >(() => {});
   const autoplayTimerRef = useRef<number | null>(null);
+  const autoplayScheduleTokenRef = useRef(0);
   const fastForwardTimerRef = useRef<number | null>(null);
   const fastForwardPointerIdRef = useRef(-1);
   const fastForwardSnapPendingRef = useRef(false);
@@ -662,7 +664,7 @@ export function HomeExperience() {
   const isTransitioningRef = useRef(false);
   const isFastForwardingRef = useRef(false);
   const autoplayPauseReasonsRef = useRef(
-    new Set<"interaction" | "detail-hover" | "detail-focus">(),
+    new Set<AutoplayPauseReason>(),
   );
   const detailTriggerRef = useRef<HTMLButtonElement | null>(null);
   const detailWasPlayingRef = useRef(false);
@@ -681,9 +683,15 @@ export function HomeExperience() {
   }, [pageTransitionActive]);
 
   const clearAutoplay = useCallback(() => {
+    autoplayScheduleTokenRef.current += 1;
     if (autoplayTimerRef.current === null) return;
     window.clearTimeout(autoplayTimerRef.current);
     autoplayTimerRef.current = null;
+  }, []);
+
+  const clearDetailPauseReasons = useCallback(() => {
+    autoplayPauseReasonsRef.current.delete("detail-hover");
+    autoplayPauseReasonsRef.current.delete("detail-focus");
   }, []);
 
   const clearFastForwardTimer = useCallback(() => {
@@ -694,12 +702,15 @@ export function HomeExperience() {
 
   const beginTransition = useCallback(() => {
     clearAutoplay();
+    // The detail trigger is keyed by the active app and can unmount before
+    // pointerleave/blur fires. Do not let a stale DOM pause outlive it.
+    clearDetailPauseReasons();
     autoplayAdvancePendingRef.current = false;
     transitionOriginRef.current = progressRef.current;
     isTransitioningRef.current = true;
     setIsTransitioning(true);
     setActiveSequencePhase("idle");
-  }, [clearAutoplay]);
+  }, [clearAutoplay, clearDetailPauseReasons]);
 
   const moveBy = useCallback(
     (offset: number) => {
@@ -768,7 +779,9 @@ export function HomeExperience() {
         0,
         autoplayResumeNotBeforeRef.current - performance.now(),
       );
+      const scheduleToken = autoplayScheduleTokenRef.current;
       autoplayTimerRef.current = window.setTimeout(() => {
+        if (scheduleToken !== autoplayScheduleTokenRef.current) return;
         autoplayTimerRef.current = null;
         if (
           !autoplayEnabledRef.current ||
@@ -789,7 +802,7 @@ export function HomeExperience() {
   );
 
   const pauseAutoplay = useCallback(
-    (reason: "interaction" | "detail-hover" | "detail-focus") => {
+    (reason: AutoplayPauseReason) => {
       autoplayPauseReasonsRef.current.add(reason);
       clearAutoplay();
     },
@@ -797,7 +810,7 @@ export function HomeExperience() {
   );
 
   const resumeAutoplay = useCallback(
-    (reason: "interaction" | "detail-hover" | "detail-focus") => {
+    (reason: AutoplayPauseReason) => {
       if (!autoplayPauseReasonsRef.current.delete(reason)) return;
       autoplayResumeNotBeforeRef.current =
         performance.now() + AUTOPLAY_RESUME_DELAY_MS;
@@ -810,14 +823,13 @@ export function HomeExperience() {
 
   const resumeTransientAutoplay = useCallback(() => {
     autoplayPauseReasonsRef.current.delete("interaction");
-    autoplayPauseReasonsRef.current.delete("detail-hover");
-    autoplayPauseReasonsRef.current.delete("detail-focus");
+    clearDetailPauseReasons();
     autoplayResumeNotBeforeRef.current =
       performance.now() + AUTOPLAY_RESUME_DELAY_MS;
     if (autoplayAdvancePendingRef.current) {
       queueAutoplayAdvance(AUTOPLAY_RESUME_DELAY_MS);
     }
-  }, [queueAutoplayAdvance]);
+  }, [clearDetailPauseReasons, queueAutoplayAdvance]);
 
   const resetPointerInteraction = useCallback(() => {
     const pointer = pointerRef.current;
@@ -1092,8 +1104,7 @@ export function HomeExperience() {
         resetPointerInteraction();
         clearAutoplay();
         autoplayPauseReasonsRef.current.delete("interaction");
-        autoplayPauseReasonsRef.current.delete("detail-hover");
-        autoplayPauseReasonsRef.current.delete("detail-focus");
+        clearDetailPauseReasons();
         return;
       }
       autoplayResumeNotBeforeRef.current =
@@ -1106,7 +1117,13 @@ export function HomeExperience() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [clearAutoplay, queueAutoplayAdvance, resetPointerInteraction, stopFastForward]);
+  }, [
+    clearAutoplay,
+    clearDetailPauseReasons,
+    queueAutoplayAdvance,
+    resetPointerInteraction,
+    stopFastForward,
+  ]);
 
   useEffect(() => {
     const handleWindowBlur = () => {
@@ -1114,8 +1131,7 @@ export function HomeExperience() {
       resetPointerInteraction();
       clearAutoplay();
       autoplayPauseReasonsRef.current.delete("interaction");
-      autoplayPauseReasonsRef.current.delete("detail-hover");
-      autoplayPauseReasonsRef.current.delete("detail-focus");
+      clearDetailPauseReasons();
     };
     const handleWindowResume = () => {
       if (document.visibilityState === "visible") {
@@ -1143,6 +1159,7 @@ export function HomeExperience() {
     };
   }, [
     clearAutoplay,
+    clearDetailPauseReasons,
     resetPointerInteraction,
     resumeAutoplay,
     resumeTransientAutoplay,
@@ -1989,8 +2006,7 @@ export function HomeExperience() {
 
     detailTriggerRef.current = event.currentTarget;
     detailWasPlayingRef.current = isPlayingRef.current;
-    autoplayPauseReasonsRef.current.delete("detail-hover");
-    autoplayPauseReasonsRef.current.delete("detail-focus");
+    clearDetailPauseReasons();
 
     if (isFastForwardingRef.current) {
       stopFastForward(true);
