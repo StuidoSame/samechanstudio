@@ -10,7 +10,7 @@ import {
   type Context,
   type ReactNode,
 } from "react";
-import type { ViteHotContext } from "vite/types/hot";
+import type { ViteHotContext } from "vite/types/hot.d.ts";
 import { resolveInitialLocale } from "./locale";
 import { formatMessage, getMessages } from "./messages";
 import {
