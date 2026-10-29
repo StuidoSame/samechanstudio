@@ -20,6 +20,7 @@ import {
   getAppNameCharacters,
   getAppNameSequenceDurationMs,
   getAppNameSequenceSnapshot,
+  wrapAppIndex,
 } from "./app-carousel/appCarouselTiming";
 import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { CosmicIntro } from "./cosmic-intro/CosmicIntro";
@@ -238,7 +239,7 @@ const getSpaceObjectStyle = (object: SpaceObject) =>
 const smoothStep = (value: number) => value * value * (3 - 2 * value);
 
 const wrapIndex = (index: number) =>
-  ((index % apps.length) + apps.length) % apps.length;
+  wrapAppIndex(index, apps.length);
 
 const getCircularSlot = (appIndex: number, progress: number) => {
   const nearestCycle = Math.round((progress - appIndex) / apps.length);
@@ -425,7 +426,8 @@ export function HomeExperience() {
     ],
     [messages.contact.description],
   );
-  const [activeIndex, setActiveIndex] = useState(DEFAULT_APP_INDEX);
+  const [activeIndexState, setActiveIndex] = useState(DEFAULT_APP_INDEX);
+  const activeIndex = wrapIndex(activeIndexState);
   const [menuOpen, setMenuOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -434,7 +436,9 @@ export function HomeExperience() {
   const [activeSequencePhase, setActiveSequencePhase] =
     useState<ActiveSequencePhase>("idle");
   const [typedNameLength, setTypedNameLength] = useState(0);
-  const [detailApp, setDetailApp] = useState<AppItem | null>(null);
+  const [detailAppState, setDetailApp] = useState<AppItem | null>(null);
+  // A catalog refresh must not keep a removed app's detail object alive.
+  const detailApp = apps.find((app) => app.id === detailAppState?.id) ?? null;
   const [detailOverlayOpen, setDetailOverlayOpen] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);

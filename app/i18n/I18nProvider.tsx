@@ -7,8 +7,10 @@ import {
   useEffect,
   useMemo,
   useState,
+  type Context,
   type ReactNode,
 } from "react";
+import type { ViteHotContext } from "vite/types/hot";
 import { resolveInitialLocale } from "./locale";
 import { formatMessage, getMessages } from "./messages";
 import {
@@ -24,7 +26,13 @@ type I18nContextValue = {
   setLocale: (locale: Locale) => void;
 };
 
-const I18nContext = createContext<I18nContextValue | null>(null);
+const hot = (import.meta as ImportMeta & { hot?: ViteHotContext }).hot;
+// Locale/catalog edits can refresh consumers before their provider. Retain
+// one context identity across development updates; production creates it once.
+const I18nContext =
+  (hot?.data.sameStudioI18nContext as Context<I18nContextValue | null> | undefined)
+  ?? createContext<I18nContextValue | null>(null);
+if (hot) hot.data.sameStudioI18nContext = I18nContext;
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("ko");

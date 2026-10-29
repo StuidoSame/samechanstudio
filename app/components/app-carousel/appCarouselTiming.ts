@@ -18,6 +18,9 @@ export type AppNameSequencePhase =
 
 export const getAppNameCharacters = (appName: string) => Array.from(appName);
 
+export const wrapAppIndex = (index: number, count: number) =>
+  ((index % count) + count) % count;
+
 export const getAppNameSequenceDurationMs = (appName: string) =>
   getAppNameCharacters(appName).length *
     APP_CAROUSEL_TIMING.typeCharacterIntervalMs +

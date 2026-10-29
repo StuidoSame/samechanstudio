@@ -5,6 +5,7 @@ import {
   getAppNameCharacters,
   getAppNameSequenceDurationMs,
   getAppNameSequenceSnapshot,
+  wrapAppIndex,
 } from "../app/components/app-carousel/appCarouselTiming.ts";
 
 test("types Teru Bozu from an empty title and preserves its space", () => {
@@ -22,6 +23,16 @@ test("types Teru Bozu from an empty title and preserves its space", () => {
     ).visibleCharacterCount,
     5,
   );
+});
+
+test("wraps previous selections into a shortened catalog in both directions", () => {
+  assert.equal(wrapAppIndex(9, 7), 2);
+  assert.equal(wrapAppIndex(7, 7), 0);
+  assert.equal(wrapAppIndex(-1, 7), 6);
+  assert.equal(wrapAppIndex(-8, 7), 6);
+  for (let index = -20; index <= 20; index++) {
+    assert.ok(wrapAppIndex(index, 7) >= 0 && wrapAppIndex(index, 7) < 7);
+  }
 });
 
 test("starts emphasis only after the complete app name is visible", () => {
