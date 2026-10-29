@@ -18,7 +18,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "typecheck": "tsc --noEmit",
-    "test:unit": "node --test tests/app-data.test.mjs tests/app-carousel-timing.test.mjs"
+    "test:unit": "node --test tests/app-data.test.mjs tests/app-carousel-timing.test.mjs tests/cosmic-intro.test.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",

@@ -3,6 +3,7 @@ import { FontSizeProvider } from "./accessibility/FontSizeProvider";
 import { FONT_SIZE_STORAGE_KEY } from "./accessibility/types";
 import { BackgroundAudioProvider } from "./audio/BackgroundAudioProvider";
 import { SeoLocaleSync } from "./components/SeoLocaleSync";
+import { cosmicIntroInitializationScript } from "./components/cosmic-intro/introLifecycle";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { createPageMetadata, ROOT_METADATA } from "./lib/seo";
 import { PageTransitionProvider } from "./navigation/PageTransitionProvider";
@@ -73,6 +74,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{ __html: fontSizeInitializationScript }}
         />
+        <script dangerouslySetInnerHTML={{ __html: cosmicIntroInitializationScript }} />
       </head>
       <body>
         <BackgroundAudioProvider>

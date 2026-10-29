@@ -22,6 +22,7 @@ import {
   getAppNameSequenceSnapshot,
 } from "./app-carousel/appCarouselTiming";
 import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
+import { CosmicIntro } from "./cosmic-intro/CosmicIntro";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import { PageSectionNavigation } from "./PageSectionNavigation";
 import { SectionCosmos } from "./SectionCosmos";
@@ -34,10 +35,6 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
-import {
-  consumeInternalHomeNavigation,
-  usePageTransition,
-} from "../navigation/PageTransitionProvider";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -183,6 +180,7 @@ const getGalaxyStarStyle = (star: GalaxyStar) =>
     "--galaxy-twinkle-delay": `-${star.twinkleDelay}s`,
     "--galaxy-float-duration": `${star.floatDuration}s`,
     "--galaxy-float-delay": `-${star.floatDelay}s`,
+    "--entry-ray-angle": `${(Math.atan2(star.y - 50, star.x - 50) * 180 / Math.PI).toFixed(3)}deg`,
   }) as CSSProperties;
 
 const SPACE_OBJECTS: SpaceObject[] = [
@@ -419,7 +417,6 @@ function PlatformIcons({ app }: { app: AppItem }) {
 
 export function HomeExperience() {
   const { messages } = useI18n();
-  const { pageTransitionActive } = usePageTransition();
   const contactRevealSteps = useMemo(
     () => [
       { text: "Contact", speed: 45 },
@@ -508,16 +505,6 @@ export function HomeExperience() {
   const detailWasPlayingRef = useRef(false);
 
   const activeApp = apps[activeIndex];
-
-  useLayoutEffect(() => {
-    if (pageTransitionActive || consumeInternalHomeNavigation()) {
-      window.queueMicrotask(() => {
-        window.requestAnimationFrame(() => {
-          delete document.documentElement.dataset.internalHomeNavigation;
-        });
-      });
-    }
-  }, [pageTransitionActive]);
 
   const clearAutoplay = useCallback(() => {
     autoplayScheduleTokenRef.current += 1;
@@ -1818,6 +1805,7 @@ export function HomeExperience() {
         className="site-shell is-ready"
         style={accentStyle}
       >
+        <CosmicIntro />
         <div
           ref={mainPointerGlowRef}
           className="main-pointer-glow"
