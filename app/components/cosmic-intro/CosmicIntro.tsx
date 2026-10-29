@@ -6,6 +6,7 @@ import {
   usePageTransition,
 } from "../../navigation/PageTransitionProvider";
 import { claimCosmicIntro, playCosmicIntro, COSMIC_INTRO_DEVELOPMENT } from "./introLifecycle";
+import { CosmicScenery } from "./CosmicScenery";
 import "./cosmic-intro.css";
 
 export function CosmicIntro() {
@@ -34,8 +35,11 @@ export function CosmicIntro() {
 
   // Default markup leaves content visible when scripts are unavailable.
   return (
-    <div className="cosmic-intro" aria-hidden="true">
-      <span className="cosmic-intro-wordmark">SAME STUDIO</span>
-    </div>
+    <>
+      <CosmicScenery />
+      <div className="cosmic-intro" aria-hidden="true">
+        <span className="cosmic-intro-wordmark">SAME STUDIO</span>
+      </div>
+    </>
   );
 }
