@@ -52,7 +52,7 @@
 | `/?intro=full` | 전체 모션을 명시적으로 확인한다. reduced motion이 켜져 있어도 이 개발 프리뷰에서만 전체 연출을 사용한다. |
 | `/` | 일반 방문 정책. 같은 탭 세션에서는 한 번만 재생한다. |
 
-프리뷰는 기존 세션 기록을 지우거나 완료 상태를 새로 저장하지 않는다. 위 파라미터는 `NODE_ENV=development`에서만 유효하다. 프로덕션 빌드는 파라미터를 무시하며 디버그 버튼이나 테스트 UI를 렌더링하지 않는다. 해시·복원된 스크롤 위치·진행 중인 내부 페이지 전환은 일반 방문에서 보존한다.
+프리뷰는 기존 세션 기록을 지우거나 시작·종료 상태를 새로 저장하지 않는다. 위 파라미터는 `NODE_ENV=development`에서만 유효하다. 프로덕션 빌드는 파라미터를 무시하며 디버그 버튼이나 테스트 UI를 렌더링하지 않는다. 해시·복원된 스크롤 위치는 일반 방문에서 보존한다. 내부 페이지 전환으로 홈에 처음 도착한 경우 URL·스크롤·focus 정리가 끝난 후 재생 여부를 판단한다. 내부 이동 자체는 첫 홈 재생 기회를 소모하지 않는다.
 
 ## 일반 방문과 접근성
 
@@ -62,11 +62,13 @@
 - 비활성 탭과 `pagehide`에서는 연출을 정리한다. 타이머·이벤트 리스너를 해제하며 스크롤이나 포커스를 강제로 옮기지 않는다.
 - `<head>`에서는 재생 조건만 정한다. 정리 기한은 실제 로고 CSS 애니메이션의 경과 시간에 맞추므로, SSR·자산 로딩 시간이 로고 표시 시간을 소진하지 않는다. hydration이 실패해도 CSS의 최종 상태는 메인 콘텐츠를 노출한다.
 
-세션 키는 `same-studio-cosmic-intro-v2`다. 이전 v1은 재생하지 않은 방문까지 완료로 표시했으므로 새 키를 사용한다. 이전 키와 다른 저장값을 삭제하지 않는다. 숨겨진 탭·내부 이동 등 생략된 방문은 완료로 저장하지 않는다.
+세션 키는 `same-studio-cosmic-intro-v2`다. 값은 `started`(CSS 로고 재생 확인), `1`(정상 animationend 완료), `skipped`(신뢰된 사용자 입력), `interrupted`(페이지 이탈·비활성화·수명주기 정리·deadline)로 구분한다. 이 네 상태는 모두 같은 탭에서의 반복을 막지만 정상 완료값 `1`은 정상 종료 때만 쓴다. 시작 전 head 초기화와 하위 페이지 방문은 기록하지 않는다. 저장소 읽기 실패는 인트로를 생략하고, 쓰기 실패·애니메이션 부재는 즉시 연출을 정리한다. 이전 v1과 다른 저장값은 삭제하지 않는다.
+
+독립적인 새 탭은 새 재생 기회를 갖는다. 브라우저의 탭 복제나 opener의 sessionStorage 복사로 상태를 상속한 탭은 상속된 방문 상태를 존중한다. 접근성 설정은 방문 상태와 별개이며 reduced 모드의 정상 종료·스킵에도 같은 반복 방지 정책을 적용한다. 상세 시나리오와 실제 검증 범위는 [라우팅·세션 감사](INTRO_ROUTING_AUDIT.md)를 따른다.
 
 ## 브라우저에서 확인할 증거
 
-개발 환경의 `<html>`에는 `data-cosmic-intro-state`, `data-cosmic-intro-session`, `data-cosmic-intro-preference`가 표시된다. `prepared → running → finished-animation` 또는 `skipped-seen`을 확인할 수 있다. 이 진단 상태는 프로덕션에서 기록하지 않는다.
+개발 환경의 `<html>`에는 `data-cosmic-intro-state`, `data-cosmic-intro-session`, `data-cosmic-intro-preference`가 표시된다. 재생 상태는 `prepared → running → finished-animation` 또는 `skipped-seen` 등이며 세션은 `new → started → complete/skipped/interrupted`로 구분된다. 이 진단 상태는 프로덕션에서 기록하지 않는다. 같은 문서에서 내부 이동한 경우 진단 상태가 이전 값을 유지할 수 있으므로 URL·현재 DOM·실제 표시 상태를 함께 확인한다.
 
 스크린샷과 함께 서로 다른 시점의 로고 opacity·좌표, far/near 별 레이어의 computed transform을 비교한다. 종료 시 `data-cosmic-intro`가 제거되고 로고는 `display:none`, 메인은 opacity 1이어야 한다. 바닥 격자 opacity가 전환 중 강제로 1이 되지 않는지도 확인한다.
 
