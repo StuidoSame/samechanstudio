@@ -206,6 +206,7 @@ test("renders policy pages with the shared header, footer, and navigation", asyn
     assert.match(html, />PRIVACY</i);
     assert.match(html, />TERMS</i);
     assert.doesNotMatch(html, /RETURN TO SAME STUDIO|SAME STUDIO ARCHIVE/);
+    assert.doesNotMatch(html, /class="cosmic-intro"|class="cosmic-intro-scenery"|\/assets\/cosmic-planets\//);
   }
 });
 
@@ -448,17 +449,23 @@ test("the built intro script executes and ignores development replay parameters"
   );
   assert.ok(script, "intro initialization must be in the server-rendered head");
   assert.ok(html.indexOf(script[0]) < html.indexOf("<body>"));
-  const execute = (seen, reducedMotion) => {
+  const execute = (seen, reducedMotion, pathname = "/", failure = null) => {
     const root = { dataset: {} };
     const document = { documentElement: root, visibilityState: "visible" };
     vm.runInNewContext(script[1], {
       document, URLSearchParams,
       window: {
         document,
-        location: { pathname: "/", hash: "", search: "?intro=full" },
+        location: { pathname, hash: "", search: "?intro=full" },
         scrollY: 0,
-        sessionStorage: { getItem: () => seen ? "1" : null },
-        matchMedia: () => ({ matches: reducedMotion }),
+        sessionStorage: { getItem: () => {
+          if (failure === "storage") throw new Error("Storage blocked");
+          return seen === true ? "1" : typeof seen === "string" ? seen : null;
+        } },
+        matchMedia: () => {
+          if (failure === "initialization") throw new Error("Initialization failed");
+          return { matches: reducedMotion };
+        },
         performance: { getEntriesByType: () => [{ type: "navigate" }] },
       },
     });
@@ -467,4 +474,12 @@ test("the built intro script executes and ignores development replay parameters"
   assert.deepEqual(execute(true, false), {});
   assert.deepEqual(execute(false, true), { cosmicIntro: "true", cosmicIntroMotion: "reduced" });
   assert.deepEqual(execute(false, false), { cosmicIntro: "true", cosmicIntroMotion: "full" });
+  for (const pathname of ["/support/", "/privacy/", "/terms/", "/delete-account/"]) {
+    assert.deepEqual(execute(false, false, pathname), {});
+  }
+  for (const stored of ["started", "skipped", "interrupted"]) {
+    assert.deepEqual(execute(stored, false), {});
+  }
+  assert.deepEqual(execute(false, false, "/", "storage"), {});
+  assert.deepEqual(execute(false, false, "/", "initialization"), {});
 });

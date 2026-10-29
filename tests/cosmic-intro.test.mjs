@@ -76,18 +76,35 @@ test("first-paint preparation does not consume a session before playback", () =>
   assert.equal(root.dataset.cosmicIntroState, undefined);
 });
 
-test("only an accepted playback consumes the visit, including storage-restricted contexts", () => {
-  for (const blocked of [false, true]) {
-    const { view, root, storage } = fixture();
-    if (blocked) Object.defineProperty(view, "sessionStorage", { get() { throw new Error("Storage blocked"); } });
-    assert.equal(claimCosmicIntro(view, false), true);
-    assert.equal(root.dataset.cosmicIntroSeen, undefined);
-    const dispose = playCosmicIntro(root, view, () => {});
-    assert.equal(root.dataset.cosmicIntroSeen, "true");
-    assert.equal(claimCosmicIntro(view, false), false);
-    dispose();
-    if (!blocked) assert.equal(claimCosmicIntro(fixture(storage).view, false), false);
-  }
+test("a visible accepted start prevents reload replay without claiming completion", () => {
+  const { view, root, storage } = fixture();
+  assert.equal(claimCosmicIntro(view, false), true);
+  const dispose = playCosmicIntro(root, view, () => {}, true);
+  assert.equal(root.dataset.cosmicIntroSeen, undefined);
+  assert.equal(root.dataset.cosmicIntroSession, "started");
+  assert.equal(storage.get(SESSION_KEY), "started");
+  assert.equal(claimCosmicIntro(view, false), false);
+  assert.equal(claimCosmicIntro(fixture(storage).view, false), false);
+  root.dispatchEvent(Object.assign(new Event("animationend"), { animationName: "cosmic-entry-logo" }));
+  assert.equal(root.dataset.cosmicIntroSeen, "true");
+  assert.equal(root.dataset.cosmicIntroSession, "complete");
+  assert.equal(storage.get(SESSION_KEY), "1");
+  dispose();
+});
+
+test("blocked storage favors immediate content instead of repeated intro waits", () => {
+  const { view, root } = fixture();
+  Object.defineProperty(view, "sessionStorage", { get() { throw new Error("Storage blocked"); } });
+  initialize(view, true);
+  assert.equal(root.dataset.cosmicIntroState, "skipped-storage");
+  assert.equal(root.dataset.cosmicIntro, undefined);
+  assert.equal(claimCosmicIntro(view, false), false);
+  const writeBlocked = fixture();
+  writeBlocked.view.sessionStorage.setItem = () => { throw new Error("Write blocked"); };
+  playCosmicIntro(writeBlocked.root, writeBlocked.view, () => {}, true);
+  assert.equal(writeBlocked.root.dataset.cosmicIntroState, "finished-storage");
+  assert.equal(writeBlocked.root.dataset.cosmicIntro, undefined);
+  assert.equal(writeBlocked.timers.size, 0);
 });
 
 test("skipped mounts do not consume future visible visits", () => {
@@ -116,7 +133,7 @@ test("an unreliable legacy completion marker cannot suppress the repaired intro"
   const { view, root, storage } = fixture(new Map([[legacy, "1"], ["unrelated", "keep"]]));
   assert.equal(claimCosmicIntro(view, false), true);
   const dispose = playCosmicIntro(root, view, () => {});
-  assert.deepEqual([...storage], [[legacy, "1"], ["unrelated", "keep"], [SESSION_KEY, "1"]]);
+  assert.deepEqual([...storage], [[legacy, "1"], ["unrelated", "keep"], [SESSION_KEY, "started"]]);
   dispose();
   assert.equal(claimCosmicIntro(fixture(storage).view, false), false);
 });
@@ -204,6 +221,9 @@ test("real pointer, keyboard and touch input dismisses without cancelling the ac
     assert.equal(finished, 1);
     assert.equal(root.dataset.cosmicIntro, undefined);
     assert.equal(root.dataset.cosmicIntroState, "finished-input");
+    assert.equal(root.dataset.cosmicIntroSession, "skipped");
+    assert.equal(root.dataset.cosmicIntroSeen, undefined);
+    assert.equal(claimCosmicIntro(view, false), false);
     assert.equal(timers.size + properties.size, 0);
     assert.equal(view.listenerCount + view.document.listenerCount + root.listenerCount + motion.listenerCount, 0);
   }
@@ -215,9 +235,10 @@ test("animation end, CSS failure, motion changes and hidden tabs clean up once",
     let finished = 0;
     const dispose = playCosmicIntro(root, view, () => finished++);
     if (complete === "animation") {
-      const unrelated = Object.assign(new Event("animationend"), { animationName: "apps-galaxy-twinkle" });
-      root.dispatchEvent(unrelated);
-      assert.equal(finished, 0);
+      for (const animationName of ["apps-galaxy-twinkle", "cosmic-entry-letter"]) {
+        root.dispatchEvent(Object.assign(new Event("animationend"), { animationName }));
+        assert.equal(finished, 0);
+      }
       root.dispatchEvent(Object.assign(new Event("animationend"), { animationName: "cosmic-entry-logo" }));
     } else if (complete === "deadline") {
       [...timers.keys()][0]();
@@ -233,8 +254,48 @@ test("animation end, CSS failure, motion changes and hidden tabs clean up once",
     dispose();
     assert.equal(finished, 1);
     assert.equal(root.dataset.cosmicIntro, undefined);
+    assert.equal(view.sessionStorage.getItem(SESSION_KEY), complete === "animation" ? "1" : "interrupted");
     assert.equal(timers.size, 0);
     assert.equal(view.listenerCount + view.document.listenerCount + root.listenerCount + motion.listenerCount, 0);
+  }
+});
+
+test("absent or broken CSS animation APIs release content without consuming a visit", () => {
+  for (const failure of ["missing", "throws", "paused"]) {
+    const { view, root, animations, timers, storage, motion } = fixture();
+    if (failure === "missing") animations.length = 0;
+    if (failure === "paused") animations[0].playState = "paused";
+    if (failure === "throws") view.document.querySelector = () => { throw new Error("Animation API failure"); };
+    let finished = 0;
+    playCosmicIntro(root, view, () => finished++, true);
+    assert.equal(finished, 1);
+    assert.equal(root.dataset.cosmicIntro, undefined);
+    assert.equal(root.dataset.cosmicIntroState, "finished-unavailable");
+    assert.equal(storage.size + timers.size + view.listenerCount + root.listenerCount + motion.listenerCount, 0);
+  }
+});
+
+test("initialization API errors leave content visible and session untouched", () => {
+  const { view, root, storage } = fixture();
+  view.matchMedia = () => { throw new Error("Media query initialization failure"); };
+  initialize(view, true);
+  assert.equal(root.dataset.cosmicIntro, undefined);
+  assert.equal(root.dataset.cosmicIntroState, "skipped-initialization");
+  assert.equal(storage.size, 0);
+});
+
+test("refresh, history and terminal session states do not replay; previews preserve them", () => {
+  for (const stored of ["started", "1", "skipped", "interrupted"]) {
+    const { view, storage } = fixture(new Map([[SESSION_KEY, stored]]));
+    for (const type of ["navigate", "reload", "back_forward"]) {
+      view.performance.getEntriesByType = () => [{ type }];
+      assert.equal(getCosmicIntroDecision(view, false, false).mode, null);
+    }
+    view.location.search = "?intro=full";
+    assert.equal(claimCosmicIntro(view, false, true), true);
+    const dispose = playCosmicIntro(view.document.documentElement, view, () => {}, true);
+    dispose();
+    assert.equal(storage.get(SESSION_KEY), stored);
   }
 });
 
