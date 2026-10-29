@@ -12,7 +12,7 @@ export type AppItem = {
   screenshotId?: string;
   appStoreUrl?: string;
   googlePlayUrl?: string;
-  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "pepesnap" | "mapary" | "tocklist" | "waesseum";
+  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "mapary" | "tocklist" | "waesseum";
 };
 
 export const apps: AppItem[] = [
@@ -57,20 +57,6 @@ export const apps: AppItem[] = [
     screenshotId: "evrune",
     appStoreUrl: "https://apps.apple.com/kr/app/odow/id6766725193",
     screen: "evrune",
-  },
-  {
-    id: "pepesnap",
-    name: "PEPESNAP",
-    eyebrow: "FIND · SNAP",
-    tagline: "Find shapes around you.",
-    platforms: ["apple", "android"],
-    icon: "/assets/icons/pepsnap.png",
-    accent: "#9b73e9",
-    accentRgb: "155, 115, 233",
-    screenshotId: "pepesnap",
-    appStoreUrl:
-      "https://apps.apple.com/kr/app/pepesnap-%EC%98%A4%EB%8A%98%EC%9D%98-%EB%8F%84%ED%98%95-%EB%AF%B8%EC%85%98/id6781632351",
-    screen: "pepesnap",
   },
   {
     id: "tocklist",

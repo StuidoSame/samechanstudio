@@ -193,10 +193,6 @@ export const en = {
         ipad: { keywords: ["Room to write", "Calm focus", "Past answers"], description: "Focus on today’s question on a larger screen, write with a more generous line length, and revisit earlier entries." },
         android: { keywords: ["One word a day", "Short answers", "Android journal"], description: "Check one daily question and quietly record the thoughts of the day in a short answer on Android." },
       },
-      pepesnap: {
-        iphone: { keywords: ["Find shapes", "Daily mission", "Photo journal"], description: "Discover the shape of the day around you and save it as a photo, seeing familiar everyday scenes from a fresh perspective." },
-        ipad: { keywords: ["Larger photos", "Mission gallery", "Shape discovery"], description: "Review captured shapes and mission entries on a larger screen, and compare everyday forms at a more relaxed pace." },
-      },
       tocklist: {
         iphone: { keywords: ["Today’s plan", "Rhythm planning", "Daily reflection"], description: "Plan the day around your own rhythm, check progress simply, and look back on the day with a calm sense of closure." },
         ipad: { keywords: ["Expanded planning", "Schedule clarity", "Thoughtful review"], description: "See the day’s plan and progress together on a larger screen, with more room to organize tasks and reflections." },

@@ -44,7 +44,6 @@ test("falls back from the requested locale to English, then the first available 
 test("uses the current official app names and icon files", async () => {
   const expected = {
     evrune: ["EVRUNE", "/assets/icons/evrune_icon.png"],
-    pepesnap: ["PEPESNAP", "/assets/icons/pepsnap.png"],
     waesseum: ["WAESSEUM", "/assets/icons/waesseum_icon.png"],
   };
 
@@ -64,7 +63,6 @@ test("adds WAESSEUM last without changing the existing app order", () => {
       "mapary",
       "runtronome",
       "evrune",
-      "pepesnap",
       "tocklist",
       "skkoo",
       "terubozu",
@@ -72,7 +70,7 @@ test("adds WAESSEUM last without changing the existing app order", () => {
       "waesseum",
     ],
   );
-  assert.equal(apps.length, 9);
+  assert.equal(apps.length, 8);
   assert.equal(
     apps.at(-1)?.googlePlayUrl,
     "https://play.google.com/store/apps/details?id=com.samestudio.waesseum",
@@ -204,14 +202,6 @@ test("uses app platform data as the platform-logo source of truth", () => {
 
 test("keeps every app icon and screenshot manifest path loadable", async () => {
   const assetPaths = apps.map((app) => app.icon);
-  assert.deepEqual(SCREENSHOT_MANIFEST.pepesnap.phone?.ja, [
-    "/assets/screenshot/pepesnap/phone/ja/1.png",
-    "/assets/screenshot/pepesnap/phone/ja/2.png",
-    "/assets/screenshot/pepesnap/phone/ja/3.png",
-    "/assets/screenshot/pepesnap/phone/ja/4.png",
-    "/assets/screenshot/pepesnap/phone/ja/5.png",
-    "/assets/screenshot/pepesnap/phone/ja/6.png",
-  ]);
 
   for (const manifest of Object.values(SCREENSHOT_MANIFEST)) {
     for (const screen of [manifest.phone, manifest.pad]) {
@@ -236,7 +226,6 @@ test("exposes detail screenshots by screen form with Phone first", () => {
   const padApps = new Set([
     "mapary",
     "evrune",
-    "pepesnap",
     "tocklist",
     "skkoo",
     "waesseum",
@@ -266,7 +255,7 @@ test("exposes detail screenshots by screen form with Phone first", () => {
   }
 });
 
-const REMOVED_APP_IDS = ["pini"];
+const REMOVED_APP_IDS = ["pini", "pepesnap"];
 test("removed apps have no catalog records, detail capability, screenshots or icons", async () => {
   const icons = { pini: "pini_icon.png", pepesnap: "pepsnap.png", feeloo: "feeloo_icon.png" };
   for (const id of REMOVED_APP_IDS) {
