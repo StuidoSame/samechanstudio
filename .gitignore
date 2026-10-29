@@ -42,3 +42,7 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# Regenerable Graft graph and machine-local executable selection
+/graft/
+/.graft/
