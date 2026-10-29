@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 320 320">
+<defs>
+  <clipPath id="disc"><circle cx="160" cy="160" r="156"/></clipPath>
+  <radialGradient id="shade" cx="27%" cy="23%" r="82%">
+    <stop stop-color="#fff0dd" stop-opacity="0.14"/>
+    <stop offset="0.35" stop-color="#03040b" stop-opacity="0"/>
+    <stop offset="0.62" stop-color="#03040b" stop-opacity="0.32"/>
+    <stop offset="0.82" stop-color="#03040b" stop-opacity="0.91"/>
+    <stop offset="1" stop-color="#04050d" stop-opacity="0.99"/>
+  </radialGradient>
+  <radialGradient id="limb"><stop offset="0.72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#01020a" stop-opacity="0.6"/></radialGradient>
+  <radialGradient id="crater" cx="60%" cy="66%" r="65%">
+    <stop stop-color="#252324" stop-opacity="0.85"/>
+    <stop offset="0.58" stop-color="#292625" stop-opacity="0.5"/>
+    <stop offset="0.72" stop-color="#d3c5b1" stop-opacity="0.62"/>
+    <stop offset="0.87" stop-color="#37312c" stop-opacity="0.1"/>
+    <stop offset="1" stop-color="#37312c" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="terrain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="31" result="noise"/>
+    <feColorMatrix values="0.18 0 0 0 0.06 0.35 0 0 0 0.12 0.32 0 0 0 0.16 0 0 0 0 1" result="albedo"/>
+    <feDiffuseLighting in="noise" surfaceScale="1.5" diffuseConstant="1.2" lighting-color="#f4e5d6" result="relief"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting>
+    <feBlend in="albedo" in2="relief" mode="multiply"/>
+  </filter>
+  <filter id="flow" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.015 0.05" numOctaves="3" seed="31" result="flow"/><feDisplacementMap in="SourceGraphic" in2="flow" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <radialGradient id="air"><stop offset="0.91" stop-color="#75b4e0" stop-opacity="0"/><stop offset="0.965" stop-color="#75b4e0" stop-opacity="0.28"/><stop offset="1" stop-color="#75b4e0" stop-opacity="0"/></radialGradient>
+  <linearGradient id="airlight" x2="1" y2="1"><stop offset="0.3" stop-color="#fff"/><stop offset="0.8" stop-color="#000"/></linearGradient>
+  <mask id="sunlit-air"><rect width="320" height="320" fill="url(#airlight)"/></mask>
+</defs>
+<g clip-path="url(#disc)">
+  <circle cx="160" cy="160" r="156" fill="#28576b"/>
+  <circle cx="160" cy="160" r="156" filter="url(#terrain)"/>
+  <path fill="#becbd2" opacity="0.55" filter="url(#flow)" d="M30 80 Q100 42 180 91T310 83 L310 94 Q220 128 165 106T30 102Z M-10 175 Q80 132 164 171T340 180 L340 192 Q240 214 157 189T-10 193Z"/>
+  <circle cx="160" cy="160" r="156" fill="url(#limb)"/>
+  <circle cx="160" cy="160" r="156" fill="url(#shade)"/>
+</g>
+<circle cx="160" cy="160" r="159" fill="url(#air)" mask="url(#sunlit-air)"/>
+</svg>

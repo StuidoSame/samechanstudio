@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="384" viewBox="0 0 320 320">
+<defs>
+  <clipPath id="disc"><circle cx="160" cy="160" r="156"/></clipPath>
+  <radialGradient id="shade" cx="27%" cy="23%" r="82%">
+    <stop stop-color="#fff0dd" stop-opacity="0.14"/>
+    <stop offset="0.35" stop-color="#03040b" stop-opacity="0"/>
+    <stop offset="0.62" stop-color="#03040b" stop-opacity="0.32"/>
+    <stop offset="0.82" stop-color="#03040b" stop-opacity="0.91"/>
+    <stop offset="1" stop-color="#04050d" stop-opacity="0.99"/>
+  </radialGradient>
+  <radialGradient id="limb"><stop offset="0.72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#01020a" stop-opacity="0.6"/></radialGradient>
+  <radialGradient id="crater" cx="60%" cy="66%" r="65%">
+    <stop stop-color="#252324" stop-opacity="0.85"/>
+    <stop offset="0.58" stop-color="#292625" stop-opacity="0.5"/>
+    <stop offset="0.72" stop-color="#d3c5b1" stop-opacity="0.62"/>
+    <stop offset="0.87" stop-color="#37312c" stop-opacity="0.1"/>
+    <stop offset="1" stop-color="#37312c" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="terrain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="18" result="noise"/>
+    <feColorMatrix values="0.32 0 0 0 0.30 0.28 0 0 0 0.26 0.20 0 0 0 0.22 0 0 0 0 1" result="albedo"/>
+    <feDiffuseLighting in="noise" surfaceScale="1.5" diffuseConstant="1.2" lighting-color="#f4e5d6" result="relief"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting>
+    <feBlend in="albedo" in2="relief" mode="multiply"/>
+  </filter>
+  <filter id="flow" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.015 0.05" numOctaves="3" seed="18" result="flow"/><feDisplacementMap in="SourceGraphic" in2="flow" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <radialGradient id="air"><stop offset="0.91" stop-color="#000" stop-opacity="0"/><stop offset="0.965" stop-color="#000" stop-opacity="0.28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  <linearGradient id="airlight" x2="1" y2="1"><stop offset="0.3" stop-color="#fff"/><stop offset="0.8" stop-color="#000"/></linearGradient>
+  <mask id="sunlit-air"><rect width="320" height="320" fill="url(#airlight)"/></mask>
+</defs>
+<g clip-path="url(#disc)">
+  <circle cx="160" cy="160" r="156" fill="#b7a38c"/>
+  <circle cx="160" cy="160" r="156" filter="url(#terrain)"/>
+  <g filter="url(#flow)"><path d="M-20 0 Q160 14 340 -3 L340 8 Q160 22 -20 7Z" fill="#c5b69a" opacity="0.52"/><path d="M-20 9 Q160 23 340 6 L340 17 Q160 31 -20 16Z" fill="#95785d" opacity="0.86"/><path d="M-20 18 Q160 32 340 15 L340 26 Q160 40 -20 25Z" fill="#d1c3a7" opacity="0.47"/><path d="M-20 27 Q160 41 340 24 L340 35 Q160 49 -20 34Z" fill="#806752" opacity="0.57"/><path d="M-20 36 Q160 50 340 33 L340 44 Q160 58 -20 43Z" fill="#b79a7a" opacity="0.59"/><path d="M-20 45 Q160 59 340 42 L340 53 Q160 67 -20 52Z" fill="#e0d4bc" opacity="0.44"/><path d="M-20 54 Q160 68 340 51 L340 62 Q160 76 -20 61Z" fill="#c5b69a" opacity="0.45"/><path d="M-20 63 Q160 77 340 60 L340 71 Q160 85 -20 70Z" fill="#95785d" opacity="0.47"/><path d="M-20 72 Q160 86 340 69 L340 80 Q160 94 -20 79Z" fill="#d1c3a7" opacity="0.73"/><path d="M-20 81 Q160 95 340 78 L340 89 Q160 103 -20 88Z" fill="#806752" opacity="0.71"/><path d="M-20 90 Q160 104 340 87 L340 98 Q160 112 -20 97Z" fill="#b79a7a" opacity="0.88"/><path d="M-20 99 Q160 113 340 96 L340 107 Q160 121 -20 106Z" fill="#e0d4bc" opacity="0.43"/><path d="M-20 108 Q160 122 340 105 L340 116 Q160 130 -20 115Z" fill="#c5b69a" opacity="0.50"/><path d="M-20 117 Q160 131 340 114 L340 125 Q160 139 -20 124Z" fill="#95785d" opacity="0.41"/><path d="M-20 126 Q160 140 340 123 L340 134 Q160 148 -20 133Z" fill="#d1c3a7" opacity="0.46"/><path d="M-20 135 Q160 149 340 132 L340 143 Q160 157 -20 142Z" fill="#806752" opacity="0.85"/><path d="M-20 144 Q160 158 340 141 L340 152 Q160 166 -20 151Z" fill="#b79a7a" opacity="0.63"/><path d="M-20 153 Q160 167 340 150 L340 161 Q160 175 -20 160Z" fill="#e0d4bc" opacity="0.69"/><path d="M-20 162 Q160 176 340 159 L340 170 Q160 184 -20 169Z" fill="#c5b69a" opacity="0.78"/><path d="M-20 171 Q160 185 340 168 L340 179 Q160 193 -20 178Z" fill="#95785d" opacity="0.70"/><path d="M-20 180 Q160 194 340 177 L340 188 Q160 202 -20 187Z" fill="#d1c3a7" opacity="0.88"/><path d="M-20 189 Q160 203 340 186 L340 197 Q160 211 -20 196Z" fill="#806752" opacity="0.74"/><path d="M-20 198 Q160 212 340 195 L340 206 Q160 220 -20 205Z" fill="#b79a7a" opacity="0.63"/><path d="M-20 207 Q160 221 340 204 L340 215 Q160 229 -20 214Z" fill="#e0d4bc" opacity="0.67"/><path d="M-20 216 Q160 230 340 213 L340 224 Q160 238 -20 223Z" fill="#c5b69a" opacity="0.46"/><path d="M-20 225 Q160 239 340 222 L340 233 Q160 247 -20 232Z" fill="#95785d" opacity="0.51"/><path d="M-20 234 Q160 248 340 231 L340 242 Q160 256 -20 241Z" fill="#d1c3a7" opacity="0.79"/><path d="M-20 243 Q160 257 340 240 L340 251 Q160 265 -20 250Z" fill="#806752" opacity="0.61"/><path d="M-20 252 Q160 266 340 249 L340 260 Q160 274 -20 259Z" fill="#b79a7a" opacity="0.42"/><path d="M-20 261 Q160 275 340 258 L340 269 Q160 283 -20 268Z" fill="#e0d4bc" opacity="0.52"/><path d="M-20 270 Q160 284 340 267 L340 278 Q160 292 -20 277Z" fill="#c5b69a" opacity="0.86"/><path d="M-20 279 Q160 293 340 276 L340 287 Q160 301 -20 286Z" fill="#95785d" opacity="0.81"/><path d="M-20 288 Q160 302 340 285 L340 296 Q160 310 -20 295Z" fill="#d1c3a7" opacity="0.76"/><path d="M-20 297 Q160 311 340 294 L340 305 Q160 319 -20 304Z" fill="#806752" opacity="0.55"/><path d="M-20 306 Q160 320 340 303 L340 314 Q160 328 -20 313Z" fill="#b79a7a" opacity="0.47"/><path d="M-20 315 Q160 329 340 312 L340 323 Q160 337 -20 322Z" fill="#e0d4bc" opacity="0.52"/><ellipse cx="204" cy="194" rx="27" ry="10" fill="#92715b"/><ellipse cx="202" cy="192" rx="20" ry="6" fill="#b49a7d"/><ellipse cx="200" cy="191" rx="12" ry="3" fill="#cdb393"/></g>
+  <circle cx="160" cy="160" r="156" fill="url(#limb)"/>
+  <circle cx="160" cy="160" r="156" fill="url(#shade)"/>
+</g>
+
+</svg>

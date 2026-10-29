@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 320 320">
+<defs>
+  <clipPath id="disc"><circle cx="160" cy="160" r="156"/></clipPath>
+  <radialGradient id="shade" cx="27%" cy="23%" r="82%">
+    <stop stop-color="#fff0dd" stop-opacity="0.14"/>
+    <stop offset="0.35" stop-color="#03040b" stop-opacity="0"/>
+    <stop offset="0.62" stop-color="#03040b" stop-opacity="0.32"/>
+    <stop offset="0.82" stop-color="#03040b" stop-opacity="0.91"/>
+    <stop offset="1" stop-color="#04050d" stop-opacity="0.99"/>
+  </radialGradient>
+  <radialGradient id="limb"><stop offset="0.72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#01020a" stop-opacity="0.6"/></radialGradient>
+  <radialGradient id="crater" cx="60%" cy="66%" r="65%">
+    <stop stop-color="#252324" stop-opacity="0.85"/>
+    <stop offset="0.58" stop-color="#292625" stop-opacity="0.5"/>
+    <stop offset="0.72" stop-color="#d3c5b1" stop-opacity="0.62"/>
+    <stop offset="0.87" stop-color="#37312c" stop-opacity="0.1"/>
+    <stop offset="1" stop-color="#37312c" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="terrain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.055" numOctaves="4" seed="88" result="noise"/>
+    <feColorMatrix values="0.30 0 0 0 0.16 0.19 0 0 0 0.13 0.23 0 0 0 0.16 0 0 0 0 1" result="albedo"/>
+    <feDiffuseLighting in="noise" surfaceScale="4" diffuseConstant="1.2" lighting-color="#f4e5d6" result="relief"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting>
+    <feBlend in="albedo" in2="relief" mode="multiply"/>
+  </filter>
+  <filter id="flow" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.015 0.05" numOctaves="3" seed="88" result="flow"/><feDisplacementMap in="SourceGraphic" in2="flow" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <radialGradient id="air"><stop offset="0.91" stop-color="#000" stop-opacity="0"/><stop offset="0.965" stop-color="#000" stop-opacity="0.28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  <linearGradient id="airlight" x2="1" y2="1"><stop offset="0.3" stop-color="#fff"/><stop offset="0.8" stop-color="#000"/></linearGradient>
+  <mask id="sunlit-air"><rect width="320" height="320" fill="url(#airlight)"/></mask>
+</defs>
+<g clip-path="url(#disc)">
+  <circle cx="160" cy="160" r="156" fill="#64585b"/>
+  <circle cx="160" cy="160" r="156" filter="url(#terrain)"/>
+  <ellipse cx="99.12" cy="96.56" rx="11.03" ry="9.06" fill="url(#crater)" opacity="0.67"/><ellipse cx="36.33" cy="138.91" rx="13.85" ry="8.03" fill="url(#crater)" opacity="0.40"/><ellipse cx="100.33" cy="196.36" rx="20.14" ry="17.95" fill="url(#crater)" opacity="0.30"/><ellipse cx="180.56" cy="198.43" rx="11.39" ry="10.93" fill="url(#crater)" opacity="0.51"/><ellipse cx="76.64" cy="199.55" rx="19.23" ry="15.40" fill="url(#crater)" opacity="0.57"/><ellipse cx="117.75" cy="46.27" rx="15.33" ry="9.44" fill="url(#crater)" opacity="0.52"/><ellipse cx="118.52" cy="65.92" rx="6.57" ry="4.89" fill="url(#crater)" opacity="0.35"/><ellipse cx="218.32" cy="148.63" rx="1.87" ry="1.72" fill="url(#crater)" opacity="0.57"/><ellipse cx="65.26" cy="223.41" rx="8.22" ry="5.53" fill="url(#crater)" opacity="0.63"/><ellipse cx="289.28" cy="162.24" rx="1.78" ry="0.97" fill="url(#crater)" opacity="0.48"/><ellipse cx="209.10" cy="126.27" rx="7.37" ry="6.80" fill="url(#crater)" opacity="0.62"/><ellipse cx="88.02" cy="50.34" rx="1.71" ry="0.90" fill="url(#crater)" opacity="0.59"/><ellipse cx="161.72" cy="207.00" rx="1.94" ry="1.84" fill="url(#crater)" opacity="0.63"/><ellipse cx="117.43" cy="89.35" rx="7.10" ry="6.00" fill="url(#crater)" opacity="0.62"/><ellipse cx="121.26" cy="70.29" rx="7.97" ry="6.16" fill="url(#crater)" opacity="0.40"/>
+  <circle cx="160" cy="160" r="156" fill="url(#limb)"/>
+  <circle cx="160" cy="160" r="156" fill="url(#shade)"/>
+</g>
+
+</svg>
