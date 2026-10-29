@@ -12,7 +12,7 @@ export type AppItem = {
   screenshotId?: string;
   appStoreUrl?: string;
   googlePlayUrl?: string;
-  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "pini" | "pepesnap" | "mapary" | "tocklist" | "waesseum";
+  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "pepesnap" | "mapary" | "tocklist" | "waesseum";
 };
 
 export const apps: AppItem[] = [
@@ -57,20 +57,6 @@ export const apps: AppItem[] = [
     screenshotId: "evrune",
     appStoreUrl: "https://apps.apple.com/kr/app/odow/id6766725193",
     screen: "evrune",
-  },
-  {
-    id: "pini",
-    name: "PINI",
-    eyebrow: "MEMORY MAPPED",
-    tagline: "Remember where it matters.",
-    platforms: ["apple", "android"],
-    icon: "/assets/icons/pini_icon.png",
-    accent: "#ff9d74",
-    accentRgb: "255, 157, 116",
-    screenshotId: "pini",
-    appStoreUrl:
-      "https://apps.apple.com/kr/app/locaunt-%EC%A7%80%EB%8F%84-%EC%9C%84%EC%97%90-%EB%82%A8%EA%B8%B0%EB%8A%94-%EB%82%98%EB%A7%8C%EC%9D%98-%EC%95%8C%EB%A6%BC/id6769651582",
-    screen: "pini",
   },
   {
     id: "pepesnap",

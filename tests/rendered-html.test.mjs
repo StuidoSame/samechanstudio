@@ -249,7 +249,6 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   for (const iconName of [
     "evrune_icon.png",
     "Mapary_icon.png",
-    "pini_icon.png",
     "pulto_icon.png",
     "pepsnap.png",
     "tocklist_icon.png",

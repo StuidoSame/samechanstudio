@@ -44,7 +44,6 @@ test("falls back from the requested locale to English, then the first available 
 test("uses the current official app names and icon files", async () => {
   const expected = {
     evrune: ["EVRUNE", "/assets/icons/evrune_icon.png"],
-    pini: ["PINI", "/assets/icons/pini_icon.png"],
     pepesnap: ["PEPESNAP", "/assets/icons/pepsnap.png"],
     waesseum: ["WAESSEUM", "/assets/icons/waesseum_icon.png"],
   };
@@ -65,7 +64,6 @@ test("adds WAESSEUM last without changing the existing app order", () => {
       "mapary",
       "runtronome",
       "evrune",
-      "pini",
       "pepesnap",
       "tocklist",
       "skkoo",
@@ -74,7 +72,7 @@ test("adds WAESSEUM last without changing the existing app order", () => {
       "waesseum",
     ],
   );
-  assert.equal(apps.length, 10);
+  assert.equal(apps.length, 9);
   assert.equal(
     apps.at(-1)?.googlePlayUrl,
     "https://play.google.com/store/apps/details?id=com.samestudio.waesseum",
@@ -157,39 +155,6 @@ test("connects EVRUNE to its actual localized Phone and Pad assets", () => {
       ),
     );
     assert.ok(pad.screenshots.every((path) => !path.includes("/ipad/")));
-  }
-});
-
-test("connects PINI to its actual localized Phone assets without inventing Pad captures", () => {
-  const localeFolders = {
-    ko: "ko",
-    en: "en",
-    ja: "ja",
-    "zh-CN": "zhg",
-    "zh-TW": "zhb",
-  };
-
-  assert.deepEqual(getAvailableDetailScreens("pini"), ["phone"]);
-
-  for (const [locale, folder] of Object.entries(localeFolders)) {
-    const phone = getAppScreenshotSet({
-      appId: "pini",
-      screen: "phone",
-      locale,
-    });
-    assert.equal(phone.locale, folder);
-    assert.equal(phone.screenshots.length, 5);
-    assert.ok(
-      phone.screenshots.every((path) =>
-        path.includes(`/screenshot/pini/phone/${folder}/`),
-      ),
-    );
-    assert.ok(phone.screenshots.every((path) => !path.includes("lacaunt")));
-
-    assert.deepEqual(
-      getAppScreenshotSet({ appId: "pini", screen: "pad", locale }),
-      { locale: null, screenshots: [] },
-    );
   }
 });
 
@@ -298,5 +263,19 @@ test("exposes detail screenshots by screen form with Phone first", () => {
         `${app.id}:${screen}`,
       );
     }
+  }
+});
+
+const REMOVED_APP_IDS = ["pini"];
+test("removed apps have no catalog records, detail capability, screenshots or icons", async () => {
+  const icons = { pini: "pini_icon.png", pepesnap: "pepsnap.png", feeloo: "feeloo_icon.png" };
+  for (const id of REMOVED_APP_IDS) {
+    assert.equal(apps.some((app) => app.id === id), false, id);
+    assert.equal(Object.hasOwn(SCREENSHOT_MANIFEST, id), false, id);
+    assert.deepEqual(getAvailableDetailScreens(id), [], id);
+    for (const screen of ["phone", "pad"]) {
+      assert.deepEqual(getAppScreenshots({ appId: id, screen, locale: "ko" }), [], id);
+    }
+    await assert.rejects(access(new URL(`../public/assets/icons/${icons[id]}`, import.meta.url)));
   }
 });

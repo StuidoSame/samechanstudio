@@ -67,8 +67,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
           "Pulto는 달리기 템포와 케이던스를 일정하게 맞추는 iOS·Android 러닝 메트로놈 앱입니다.",
         evrune:
           "EVRUNE은 매일 하나의 질문에 답하며 하루를 기록하는 iOS·Android 하루 질문 기록 앱이자 일기 앱입니다.",
-        pini:
-          "PINI는 중요한 장소와 알림을 지도에 남기는 iOS·Android 위치 기반 메모 앱입니다.",
         pepesnap:
           "PEPESNAP은 오늘의 모양을 주변에서 찾아 사진으로 기록하는 iOS·Android 사진 미션 앱입니다.",
         tocklist:
@@ -120,7 +118,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Mapary is an iOS and Android map-note app for saving meaningful places and finding them again.",
         runtronome: "Pulto is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
         evrune: "EVRUNE is an iOS and Android daily-question journal for capturing one thoughtful answer each day.",
-        pini: "PINI is an iOS and Android location-based memo app for attaching reminders to important places.",
         pepesnap: "PEPESNAP is an iOS and Android photo-mission app that invites you to find and capture the shape of the day.",
         tocklist: "Tocklist is an iOS 24-hour to-do app for planning the day and reviewing its rhythm.",
         skkoo: "SKKOO is an iOS digital diary and journal-decoration app for making everyday records your own.",
@@ -166,7 +163,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Maparyは、大切な場所を記録して見つけ直せるiOS・Android対応の地図メモアプリです。",
         runtronome: "Pultoは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
         evrune: "EVRUNEは、毎日ひとつの質問に答えて一日を残すiOS・Android対応の日記アプリです。",
-        pini: "PINIは、大切な場所にリマインダーを残すiOS・Android対応の位置メモアプリです。",
         pepesnap: "PEPESNAPは、今日の形を見つけて写真に残すiOS・Android対応のフォトミッションアプリです。",
         tocklist: "Tocklistは、一日の流れを計画して振り返るiOS向け24時間ToDoアプリです。",
         skkoo: "SKKOOは、日々の記録を自分らしく飾るiOS向けデジタル日記・手帳デコアプリです。",
@@ -212,7 +208,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Mapary 是一款 iOS 与 Android 地图笔记应用，用于保存重要地点并随时重新找到它们。",
         runtronome: "Pulto 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
         evrune: "EVRUNE 是一款 iOS 与 Android 每日提问日记应用，每天用一个回答记录自己的想法。",
-        pini: "PINI 是一款 iOS 与 Android 位置笔记应用，可在重要地点留下提醒。",
         pepesnap: "PEPESNAP 是一款 iOS 与 Android 摄影任务应用，邀请你寻找并拍下当天的形状。",
         tocklist: "Tocklist 是一款 iOS 24 小时待办应用，用于规划并回顾一天的节奏。",
         skkoo: "SKKOO 是一款 iOS 手账装饰与数字日记应用，让日常记录更具个人风格。",
@@ -258,7 +253,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Mapary 是一款 iOS 與 Android 地圖筆記應用程式，用於保存重要地點並隨時重新找到它們。",
         runtronome: "Pulto 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
         evrune: "EVRUNE 是一款 iOS 與 Android 每日提問日記應用程式，每天用一個回答記錄自己的想法。",
-        pini: "PINI 是一款 iOS 與 Android 位置筆記應用程式，可在重要地點留下提醒。",
         pepesnap: "PEPESNAP 是一款 iOS 與 Android 攝影任務應用程式，邀請你尋找並拍下當天的形狀。",
         tocklist: "Tocklist 是一款 iOS 24 小時待辦應用程式，用於規劃並回顧一天的節奏。",
         skkoo: "SKKOO 是一款 iOS 手帳裝飾與數位日記應用程式，讓日常記錄更具個人風格。",

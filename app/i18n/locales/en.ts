@@ -193,9 +193,6 @@ export const en = {
         ipad: { keywords: ["Room to write", "Calm focus", "Past answers"], description: "Focus on today’s question on a larger screen, write with a more generous line length, and revisit earlier entries." },
         android: { keywords: ["One word a day", "Short answers", "Android journal"], description: "Check one daily question and quietly record the thoughts of the day in a short answer on Android." },
       },
-      pini: {
-        iphone: { keywords: ["Place memory", "Map journal", "Personal reminders"], description: "Leave important places and useful details on the map, then return to your personal notes through the places connected to them." },
-      },
       pepesnap: {
         iphone: { keywords: ["Find shapes", "Daily mission", "Photo journal"], description: "Discover the shape of the day around you and save it as a photo, seeing familiar everyday scenes from a fresh perspective." },
         ipad: { keywords: ["Larger photos", "Mission gallery", "Shape discovery"], description: "Review captured shapes and mission entries on a larger screen, and compare everyday forms at a more relaxed pace." },

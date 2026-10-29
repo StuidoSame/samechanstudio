@@ -193,9 +193,6 @@ export const zhCN = {
         ipad: { keywords: ["宽屏记录", "静心专注", "过往回答"], description: "在宽广屏幕上专注于今天的问题，用舒展的行宽写下回答，也可回顾之前的记录。" },
         android: { keywords: ["每日一词", "简短回答", "Android记录"], description: "在Android手机上也能每天查看一个问题，用简短而安静的方式记录当天的想法。" },
       },
-      pini: {
-        iphone: { keywords: ["地点记忆", "地图记录", "专属提醒"], description: "把不想忘记的地点和所需内容留在地图上，再以地点为线索查看自己的专属记录。" },
-      },
       pepesnap: {
         iphone: { keywords: ["寻找形状", "今日任务", "照片记录"], description: "在身边发现今天的形状并拍照记录，以全新的视角观察熟悉的日常景象。" },
         ipad: { keywords: ["大图浏览", "任务合集", "观察形状"], description: "在更大的屏幕上查看拍摄的形状与任务记录，从容比较日常生活中发现的不同形态。" },

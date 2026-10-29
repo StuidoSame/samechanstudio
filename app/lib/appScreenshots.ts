@@ -156,14 +156,6 @@ const EVRUNE_PAD_SCREENSHOT_FILES = [
   "4.png",
 ] as const;
 
-const PINI_PHONE_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-] as const;
-
 const PEPESNAP_JAPANESE_PHONE_SCREENSHOT_FILES = [
   "1.png",
   "2.png",
@@ -238,14 +230,6 @@ export const SCREENSHOT_MANIFEST = {
       zhg: EVRUNE_PAD_SCREENSHOT_FILES,
       zhb: EVRUNE_PAD_SCREENSHOT_FILES,
     }),
-  },
-  pini: {
-    screenshotId: "pini",
-    phone: localizedScreenshotFiles(
-      "pini",
-      "phone",
-      PINI_PHONE_SCREENSHOT_FILES,
-    ),
   },
   pepesnap: {
     screenshotId: "pepesnap",

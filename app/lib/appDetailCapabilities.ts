@@ -29,10 +29,6 @@ export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
     screens: screens(true, true),
     stores: stores(true, true),
   },
-  pini: {
-    screens: phoneOnly(),
-    stores: stores(true, false),
-  },
   pepesnap: {
     screens: screens(true, true),
     stores: stores(true, true),

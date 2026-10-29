@@ -8,7 +8,6 @@ export const APP_TRANSLATION_IDS = [
   "mapary",
   "runtronome",
   "evrune",
-  "pini",
   "pepesnap",
   "tocklist",
   "skkoo",

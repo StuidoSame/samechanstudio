@@ -1767,17 +1767,6 @@ button {
   letter-spacing: 0.2em;
 }
 
-.card-pini {
-  background: linear-gradient(160deg, #fff5ee, #f6d8c8);
-}
-
-.screen-pini {
-  position: absolute;
-  z-index: 2;
-  inset: 20% 0 0;
-  overflow: hidden;
-}
-
 .map-line {
   position: absolute;
   display: block;
@@ -1803,28 +1792,6 @@ button {
   left: 30%;
   top: 4%;
   transform: rotate(78deg);
-}
-
-.screen-pini i {
-  position: absolute;
-  left: 54%;
-  top: 42%;
-  width: 17px;
-  height: 17px;
-  border: 5px solid #ff9a73;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  background: white;
-  box-shadow: 0 8px 12px rgba(234, 104, 70, 0.22);
-}
-
-.screen-pini p {
-  position: absolute;
-  left: 18px;
-  bottom: 24px;
-  color: #b47d69;
-  font-size: calc(8px * var(--font-scale));
-  letter-spacing: 0.16em;
 }
 
 .card-pepesnap {
