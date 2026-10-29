@@ -60,7 +60,7 @@ export const apps: AppItem[] = [
   },
   {
     id: "tocklist",
-    name: "Tocklist",
+    name: "TOCOBI",
     eyebrow: "PLAN · REVIEW",
     tagline: "Plan a day in your rhythm.",
     platforms: ["apple"],

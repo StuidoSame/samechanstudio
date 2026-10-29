@@ -102,6 +102,22 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
+test("renders the seven-app catalog and TOCOBI without removed app references", async () => {
+  const home = await (await render()).text();
+  const jsonLd = JSON.parse(home.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  const software = jsonLd["@graph"].filter((item) => item["@type"] === "SoftwareApplication");
+  assert.deepEqual(software.map((app) => app.name), [
+    "Mapary", "Pulto", "EVRUNE", "TOCOBI", "SKKOO", "Teru Bozu", "WAESSEUM",
+  ]);
+  assert.equal(software.find((app) => app.name === "TOCOBI").downloadUrl,
+    "https://apps.apple.com/kr/app/tocklist/id6782831874");
+  for (const path of ["/", "/support/", "/privacy/", "/terms/", "/delete-account/"]) {
+    const html = path === "/" ? home : await (await render(path)).text();
+    assert.doesNotMatch(html, /PINI|PEPESNAP|Feeloo|FEELOO|Tocklist|TOCKLIST/, path);
+    if (path === "/" || path === "/support/") assert.match(html, /TOCOBI/);
+  }
+});
+
 test("renders unique page metadata, canonical URLs, and social cards", async () => {
   const pages = [
     [

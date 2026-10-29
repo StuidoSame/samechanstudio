@@ -3,6 +3,7 @@ import { access } from "node:fs/promises";
 import test from "node:test";
 import { apps } from "../app/lib/apps.ts";
 import {
+  APP_DETAIL_CAPABILITIES,
   DETAIL_SCREEN_ORDER,
   getAvailableDetailScreens,
 } from "../app/lib/appDetailCapabilities.ts";
@@ -13,6 +14,13 @@ import {
   resolveLocalizedScreenshotSet,
   SCREENSHOT_MANIFEST,
 } from "../app/lib/appScreenshots.ts";
+import { APP_TRANSLATION_IDS } from "../app/i18n/types.ts";
+import { SEO_CONTENT } from "../app/lib/seo.ts";
+import { ko } from "../app/i18n/locales/ko.ts";
+import { en } from "../app/i18n/locales/en.ts";
+import { ja } from "../app/i18n/locales/ja.ts";
+import { zhCN } from "../app/i18n/locales/zh-CN.ts";
+import { zhTW } from "../app/i18n/locales/zh-TW.ts";
 
 test("builds explicit localized manifests in natural filename order", () => {
   const manifest = createLocalizedScreenshotManifest("sample", "phone", {
@@ -44,6 +52,7 @@ test("falls back from the requested locale to English, then the first available 
 test("uses the current official app names and icon files", async () => {
   const expected = {
     evrune: ["EVRUNE", "/assets/icons/evrune_icon.png"],
+    tocklist: ["TOCOBI", "/assets/icons/tocklist_icon.png"],
     waesseum: ["WAESSEUM", "/assets/icons/waesseum_icon.png"],
   };
 
@@ -56,7 +65,7 @@ test("uses the current official app names and icon files", async () => {
   }
 });
 
-test("adds WAESSEUM last without changing the existing app order", () => {
+test("keeps the seven remaining apps in their original relative order", () => {
   assert.deepEqual(
     apps.map((app) => app.id),
     [
@@ -260,10 +269,38 @@ test("removed apps have no catalog records, detail capability, screenshots or ic
   for (const id of REMOVED_APP_IDS) {
     assert.equal(apps.some((app) => app.id === id), false, id);
     assert.equal(Object.hasOwn(SCREENSHOT_MANIFEST, id), false, id);
+    assert.equal(Object.hasOwn(APP_DETAIL_CAPABILITIES, id), false, id);
     assert.deepEqual(getAvailableDetailScreens(id), [], id);
     for (const screen of ["phone", "pad"]) {
       assert.deepEqual(getAppScreenshots({ appId: id, screen, locale: "ko" }), [], id);
     }
     await assert.rejects(access(new URL(`../public/assets/icons/${icons[id]}`, import.meta.url)));
+  }
+});
+
+test("TOCOBI preserves its identity, icon, store URL and localized Phone/Pad captures", () => {
+  const app = apps.find((candidate) => candidate.id === "tocklist");
+  assert.equal(app.name, "TOCOBI");
+  assert.equal(app.icon, "/assets/icons/tocklist_icon.png");
+  assert.equal(app.screenshotId, "tocklist");
+  assert.equal(app.screen, "tocklist");
+  assert.equal(app.appStoreUrl, "https://apps.apple.com/kr/app/tocklist/id6782831874");
+  assert.equal(app.googlePlayUrl, undefined);
+  for (const locale of ["ko", "en", "ja", "zh-CN", "zh-TW"]) {
+    assert.equal(getAppScreenshots({ appId: app.id, screen: "phone", locale }).length, 6);
+    assert.equal(getAppScreenshots({ appId: app.id, screen: "pad", locale }).length, 5);
+  }
+});
+
+test("all five locale detail and SEO catalogs match the remaining apps", () => {
+  const expected = apps.map((app) => app.id).sort();
+  assert.deepEqual([...APP_TRANSLATION_IDS].sort(), expected);
+  for (const messages of [ko, en, ja, zhCN, zhTW]) {
+    assert.deepEqual(Object.keys(messages.appDetail.apps).sort(), expected);
+  }
+  for (const seo of Object.values(SEO_CONTENT)) {
+    assert.deepEqual(Object.keys(seo.home.appDescriptions).sort(), expected);
+    assert.match(seo.home.appDescriptions.tocklist, /TOCOBI/);
+    assert.doesNotMatch(JSON.stringify(seo), /PINI|PEPESNAP|Feeloo|Tocklist/);
   }
 });

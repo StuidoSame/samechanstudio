@@ -68,7 +68,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         evrune:
           "EVRUNE은 매일 하나의 질문에 답하며 하루를 기록하는 iOS·Android 하루 질문 기록 앱이자 일기 앱입니다.",
         tocklist:
-          "Tocklist는 하루의 흐름을 계획하고 돌아보는 iOS 24시간 투두 앱입니다.",
+          "TOCOBI는 하루의 흐름을 계획하고 돌아보는 iOS 24시간 투두 앱입니다.",
         skkoo:
           "SKKOO는 일상을 꾸미고 기록하는 iOS 다꾸 앱이자 디지털 다이어리입니다.",
         terubozu:
@@ -114,7 +114,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Mapary is an iOS and Android map-note app for saving meaningful places and finding them again.",
         runtronome: "Pulto is an iOS and Android running metronome that helps runners maintain tempo and cadence.",
         evrune: "EVRUNE is an iOS and Android daily-question journal for capturing one thoughtful answer each day.",
-        tocklist: "Tocklist is an iOS 24-hour to-do app for planning the day and reviewing its rhythm.",
+        tocklist: "TOCOBI is an iOS 24-hour to-do app for planning the day and reviewing its rhythm.",
         skkoo: "SKKOO is an iOS digital diary and journal-decoration app for making everyday records your own.",
         terubozu: "Teru Bozu is an iOS and Android weather-wish app for checking the day and leaving a small hope behind.",
         waesseum: "WAESSEUM is an iOS and Android attendance app for daily check-ins, streaks, monthly history, and stamp collecting.",
@@ -157,7 +157,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Maparyは、大切な場所を記録して見つけ直せるiOS・Android対応の地図メモアプリです。",
         runtronome: "Pultoは、走るテンポとケイデンスを整えるiOS・Android対応のランニングメトロノームです。",
         evrune: "EVRUNEは、毎日ひとつの質問に答えて一日を残すiOS・Android対応の日記アプリです。",
-        tocklist: "Tocklistは、一日の流れを計画して振り返るiOS向け24時間ToDoアプリです。",
+        tocklist: "TOCOBIは、一日の流れを計画して振り返るiOS向け24時間ToDoアプリです。",
         skkoo: "SKKOOは、日々の記録を自分らしく飾るiOS向けデジタル日記・手帳デコアプリです。",
         terubozu: "Teru Bozuは、今日の天気を確認して小さな願いを残すiOS・Android対応の天気アプリです。",
         waesseum: "WAESSEUMは、毎日の出席、連続・累計出席、月間記録、スタンプ収集に対応したiOS・Android向け出席記録アプリです。",
@@ -200,7 +200,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Mapary 是一款 iOS 与 Android 地图笔记应用，用于保存重要地点并随时重新找到它们。",
         runtronome: "Pulto 是一款 iOS 与 Android 跑步节拍器，帮助跑者稳定节奏与步频。",
         evrune: "EVRUNE 是一款 iOS 与 Android 每日提问日记应用，每天用一个回答记录自己的想法。",
-        tocklist: "Tocklist 是一款 iOS 24 小时待办应用，用于规划并回顾一天的节奏。",
+        tocklist: "TOCOBI 是一款 iOS 24 小时待办应用，用于规划并回顾一天的节奏。",
         skkoo: "SKKOO 是一款 iOS 手账装饰与数字日记应用，让日常记录更具个人风格。",
         terubozu: "Teru Bozu 是一款 iOS 与 Android 天气愿望应用，可查看天气并留下小小心愿。",
         waesseum: "WAESSEUM 是一款支持每日签到、连续与累计签到、月度记录和印章收集的 iOS 与 Android 签到应用。",
@@ -243,7 +243,7 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         mapary: "Mapary 是一款 iOS 與 Android 地圖筆記應用程式，用於保存重要地點並隨時重新找到它們。",
         runtronome: "Pulto 是一款 iOS 與 Android 跑步節拍器，協助跑者穩定節奏與步頻。",
         evrune: "EVRUNE 是一款 iOS 與 Android 每日提問日記應用程式，每天用一個回答記錄自己的想法。",
-        tocklist: "Tocklist 是一款 iOS 24 小時待辦應用程式，用於規劃並回顧一天的節奏。",
+        tocklist: "TOCOBI 是一款 iOS 24 小時待辦應用程式，用於規劃並回顧一天的節奏。",
         skkoo: "SKKOO 是一款 iOS 手帳裝飾與數位日記應用程式，讓日常記錄更具個人風格。",
         terubozu: "Teru Bozu 是一款 iOS 與 Android 天氣願望應用程式，可查看天氣並留下小小心願。",
         waesseum: "WAESSEUM 是一款支援每日簽到、連續與累計簽到、每月記錄和印章收集的 iOS 與 Android 簽到應用程式。",
