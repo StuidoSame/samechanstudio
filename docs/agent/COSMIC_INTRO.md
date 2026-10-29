@@ -19,6 +19,16 @@
 
 추가 장식은 루트를 포함해 DOM/SVG 23개다. 새 JS 프레임 루프·타이머·리스너는 추가하지 않았으며 기존 수명주기 정리를 사용한다. GPU FPS·메모리·Core Web Vitals는 별도 측정 대상이다.
 
+## 로고 문자 강조
+
+`CosmicIntro.tsx`는 `SAME STUDIO`를 문자 span 11개(문자 10개·공백 1개)로 분리한다. 공백 span은 `white-space:pre`로 폭을 보존하고 움직이지 않는다. wordmark의 전체 `aria-label`로 브랜드명을 제공하며 개별 문자는 보조 기술에서 숨긴다. 인트로 자체는 기존처럼 장식 요소로 숨기고 메인 헤더의 접근 가능한 홈 링크를 유지한다.
+
+전체 로고가 먼저 등장한 뒤 240ms부터 문자별 45ms 간격으로 한 번씩 강조한다. 각 문자는 280ms 동안 최대 9px 위로 이동하고 1.11배 커지며 흰보라색과 짧은 text-shadow로 강조된다. 전체 강조 구간은 공백 간격을 포함해 730ms이며, 마지막 문자는 970ms에 원래 크기·색·위치로 돌아온다. 강한 별빛 streak 앞에서 로고가 안정되고 기존 2.4초 인트로의 퇴장과 Hero 노출이 이어진다.
+
+767px 이하에서는 상승 폭을 6px로, glow alpha를 0.4로 줄인다. reduced 모드에서는 문자 애니메이션을 적용하지 않아 완전한 정적 로고가 보인다. 명시적인 개발 `intro=full`에서는 OS의 reduced motion 설정과 관계없이 문자 모션까지 확인할 수 있으며 `intro=replay`는 설정을 존중한다.
+
+문자 애니메이션은 `data-cosmic-intro=true`와 `motion=full`에만 연결된다. 종료 또는 스킵 시 기존 수명주기가 해당 속성을 제거하므로 문자 `animation-name`과 `transform`도 `none`으로 돌아간다. 문자 animationend는 인트로 완료로 취급하지 않고 바깥 로고의 기존 종료 이벤트만 사용한다. 추가 의존성·rAF·타이머·리스너는 없으며 DOM 증가량은 span 11개다.
+
 ## 개발 중 디자인 확인
 
 기존 `npm run dev` 서버를 사용한다. 현재 미리보기 주소는 `http://localhost:3000/`이다.
@@ -50,3 +60,7 @@
 2026-10-29 Windows 내장 Chromium에서 일반 URL의 새 탭·같은 세션 재방문·개발 프리뷰·실제 reduced motion 설정을 확인했다. 전체 모션은 정식 `intro=full` 경로로 검사했으며 OS 설정이나 `matchMedia`를 모의로 바꾸지 않았다. 데스크톱·모바일 크기의 연속 프레임과 computed style 기록은 로컬 ignored `outputs/cosmic-repair-*`에 저장했다. macOS와 실제 모바일 기기의 실행 검증은 별도다.
 
 강화 연출은 같은 Windows 브라우저에서 1440×900, 390×844, 820×1180 크기로 확인했다. `outputs/cosmic-enhanced-*`에는 행성 좌표·로고와의 비중첩·별의 깊이별 transform·streak·종료 상태를 기록했다. 동일한 near 별의 화면 중심 반경이 관측 0.42초에 약 67px, 1.66초에 182px, 1.86초에 687px으로 증가했다. 이는 시각 연출의 가속 증거이며 GPU 성능 측정값은 아니다. Canvas는 0개였고 종료 후 장식과 로고가 숨겨지며 메인 opacity는 1이었다. 캐러셀, EVRUNE Phone/Pad 상세, 큰 글자 설정, 지원 페이지 왕복도 확인했다.
+
+문자 강조는 2026-10-29 Windows 내장 Chromium의 기본 데스크톱 화면과 390×844·820×1180 viewport에서 확인했다. 로컬 ignored `outputs/cosmic-bounce-*`에 초기·강조 중·강조 후 스크린샷과 시간별 computed transform·색·text-shadow를 기록했다. 모바일 연속 관측에서 첫 S의 상승 시작 → M/E → 두 번째 S → U/D → 마지막 O의 강조가 이어지고 약 978ms 관측 시점에는 모든 문자가 원래 크기·위치로 돌아왔다. 관측 시간은 호출 시작 기준이며 CSS timeline과 정확히 일치하는 성능 측정값은 아니다. 공백과 전체 텍스트가 유지되고 가로 overflow는 없었다. 실제 reduced motion의 replay에서는 로고 opacity 1·모든 문자 animation/transform none을 확인했다. 종료 후 메인 opacity 1·장식 display none·문자 animation/transform none을 확인했고 콘솔 오류는 없었다.
+
+이번 문자 강조 변경의 TypeScript, 전체 ESLint, 단위 테스트 26개, 빌드, HTML 테스트 10개가 통과했다. 캐러셀 키보드 전환, EVRUNE Phone 5개/Pad 4개 갤러리, 큰 글자 적용·기본값 복원, 지원 페이지 왕복을 실행했다. macOS와 실제 모바일 기기는 실행하지 않았으며 CSS·npm 명령의 플랫폼 중립성만 정적으로 검토했다. FPS·GPU 메모리·Core Web Vitals는 측정하지 않았다.
