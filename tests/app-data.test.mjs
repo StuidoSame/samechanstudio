@@ -66,11 +66,10 @@ test("adds WAESSEUM last without changing the existing app order", () => {
       "tocklist",
       "skkoo",
       "terubozu",
-      "feeloo",
       "waesseum",
     ],
   );
-  assert.equal(apps.length, 8);
+  assert.equal(apps.length, 7);
   assert.equal(
     apps.at(-1)?.googlePlayUrl,
     "https://play.google.com/store/apps/details?id=com.samestudio.waesseum",
@@ -255,7 +254,7 @@ test("exposes detail screenshots by screen form with Phone first", () => {
   }
 });
 
-const REMOVED_APP_IDS = ["pini", "pepesnap"];
+const REMOVED_APP_IDS = ["pini", "pepesnap", "feeloo"];
 test("removed apps have no catalog records, detail capability, screenshots or icons", async () => {
   const icons = { pini: "pini_icon.png", pepesnap: "pepsnap.png", feeloo: "feeloo_icon.png" };
   for (const id of REMOVED_APP_IDS) {

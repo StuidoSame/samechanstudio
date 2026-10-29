@@ -204,9 +204,6 @@ export const en = {
       terubozu: {
         iphone: { keywords: ["Today’s weather", "Small wish", "Quick check"], description: "Check today’s weather at a glance and begin the day on a bright note by leaving a small wish with Teru Teru Bozu." },
       },
-      feeloo: {
-        iphone: { keywords: ["Emotion journal", "Today’s mood", "Calm reflection"], description: "Briefly record how you felt today, look back at the flow of your moods, and bring the day to a calm close." },
-      },
       waesseum: {
         iphone: { keywords: ["Daily check-in", "Attendance streak", "Stamp collection"], description: "Check in once a day, continue your current and total attendance records, and collect stamps along the way." },
         ipad: { keywords: ["Monthly history", "Total attendance", "Stamp gallery"], description: "Review monthly check-ins, total attendance, and collected stamps together on a larger screen." },

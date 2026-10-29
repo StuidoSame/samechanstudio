@@ -12,7 +12,7 @@ export type AppItem = {
   screenshotId?: string;
   appStoreUrl?: string;
   googlePlayUrl?: string;
-  screen: "evrune" | "teru" | "feeloo" | "runtronome" | "skkoo" | "mapary" | "tocklist" | "waesseum";
+  screen: "evrune" | "teru" | "runtronome" | "skkoo" | "mapary" | "tocklist" | "waesseum";
 };
 
 export const apps: AppItem[] = [
@@ -96,17 +96,6 @@ export const apps: AppItem[] = [
     screenshotId: "terubozu",
     appStoreUrl: "https://apps.apple.com/kr/app/terubozu/id6789223358",
     screen: "teru",
-  },
-  {
-    id: "feeloo",
-    name: "Feeloo",
-    eyebrow: "TODAY I FEEL",
-    tagline: "Record the feeling.",
-    platforms: ["apple", "android"],
-    icon: "/assets/icons/feeloo_icon.png",
-    accent: "#b590f4",
-    accentRgb: "181, 144, 244",
-    screen: "feeloo",
   },
   {
     id: "waesseum",

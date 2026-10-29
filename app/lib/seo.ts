@@ -73,8 +73,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
           "SKKOO는 일상을 꾸미고 기록하는 iOS 다꾸 앱이자 디지털 다이어리입니다.",
         terubozu:
           "Teru Bozu는 오늘의 날씨를 확인하고 작은 소원을 남기는 iOS·Android 날씨 소원 앱입니다.",
-        feeloo:
-          "Feeloo는 하루의 감정을 기록하고 돌아보는 iOS·Android 감정 위젯 앱으로 출시를 준비하고 있습니다.",
         waesseum:
           "WAESSEUM은 하루 한 번 출석을 기록하고 연속·누적 출석과 월간 기록을 확인하며 도장을 모으는 iOS·Android 출석 기록 앱입니다.",
       },
@@ -119,7 +117,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         tocklist: "Tocklist is an iOS 24-hour to-do app for planning the day and reviewing its rhythm.",
         skkoo: "SKKOO is an iOS digital diary and journal-decoration app for making everyday records your own.",
         terubozu: "Teru Bozu is an iOS and Android weather-wish app for checking the day and leaving a small hope behind.",
-        feeloo: "Feeloo is an upcoming iOS and Android emotion-widget app for recording and reflecting on how each day felt.",
         waesseum: "WAESSEUM is an iOS and Android attendance app for daily check-ins, streaks, monthly history, and stamp collecting.",
       },
     },
@@ -163,7 +160,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         tocklist: "Tocklistは、一日の流れを計画して振り返るiOS向け24時間ToDoアプリです。",
         skkoo: "SKKOOは、日々の記録を自分らしく飾るiOS向けデジタル日記・手帳デコアプリです。",
         terubozu: "Teru Bozuは、今日の天気を確認して小さな願いを残すiOS・Android対応の天気アプリです。",
-        feeloo: "Feelooは、その日の感情を記録して振り返るiOS・Android対応の感情ウィジェットアプリとして公開準備中です。",
         waesseum: "WAESSEUMは、毎日の出席、連続・累計出席、月間記録、スタンプ収集に対応したiOS・Android向け出席記録アプリです。",
       },
     },
@@ -207,7 +203,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         tocklist: "Tocklist 是一款 iOS 24 小时待办应用，用于规划并回顾一天的节奏。",
         skkoo: "SKKOO 是一款 iOS 手账装饰与数字日记应用，让日常记录更具个人风格。",
         terubozu: "Teru Bozu 是一款 iOS 与 Android 天气愿望应用，可查看天气并留下小小心愿。",
-        feeloo: "Feeloo 是一款正在准备推出的 iOS 与 Android 情绪小组件应用，用于记录并回顾每天的感受。",
         waesseum: "WAESSEUM 是一款支持每日签到、连续与累计签到、月度记录和印章收集的 iOS 与 Android 签到应用。",
       },
     },
@@ -251,7 +246,6 @@ export const SEO_CONTENT: Record<Locale, SeoLocaleContent> = {
         tocklist: "Tocklist 是一款 iOS 24 小時待辦應用程式，用於規劃並回顧一天的節奏。",
         skkoo: "SKKOO 是一款 iOS 手帳裝飾與數位日記應用程式，讓日常記錄更具個人風格。",
         terubozu: "Teru Bozu 是一款 iOS 與 Android 天氣願望應用程式，可查看天氣並留下小小心願。",
-        feeloo: "Feeloo 是一款正在準備推出的 iOS 與 Android 情緒小工具應用程式，用於記錄並回顧每天的感受。",
         waesseum: "WAESSEUM 是一款支援每日簽到、連續與累計簽到、每月記錄和印章收集的 iOS 與 Android 簽到應用程式。",
       },
     },

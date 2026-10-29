@@ -254,7 +254,6 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
     "skkoo_icon.png",
     "terubozu_icon.png",
     "waesseum_icon.png",
-    "feeloo_icon.png",
   ]) {
     assert.match(html, new RegExp(iconName.replace(".", "\\.")));
   }

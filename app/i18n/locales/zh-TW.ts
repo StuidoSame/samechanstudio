@@ -204,9 +204,6 @@ export const zhTW = {
       terubozu: {
         iphone: { keywords: ["今日天氣", "小小心願", "快速查看"], description: "輕鬆查看今天的天氣，和晴天娃娃一起留下一個小小心願，愉快地展開新的一天。" },
       },
-      feeloo: {
-        iphone: { keywords: ["情緒記錄", "今日心情", "平靜回顧"], description: "簡短記錄今天的感受，回望累積的情緒軌跡，平靜地為一天收尾。" },
-      },
       waesseum: {
         iphone: { keywords: ["每日簽到", "連續簽到", "收集印章"], description: "每天簽到一次，延續連續與累計簽到記錄，並在過程中收集印章。" },
         ipad: { keywords: ["每月記錄", "累計簽到", "印章一覽"], description: "在更大的畫面上集中查看每月簽到記錄、累計簽到和已收集的印章。" },

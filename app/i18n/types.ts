@@ -11,7 +11,6 @@ export const APP_TRANSLATION_IDS = [
   "tocklist",
   "skkoo",
   "terubozu",
-  "feeloo",
   "waesseum",
 ] as const;
 

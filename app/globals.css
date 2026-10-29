@@ -1689,40 +1689,6 @@ button {
   letter-spacing: 0.2em;
 }
 
-.card-feeloo {
-  background: linear-gradient(160deg, #f9e8ff, #e8d6fa);
-}
-
-.screen-feeloo {
-  position: absolute;
-  z-index: 3;
-  inset: 31% 14% auto;
-}
-
-.screen-feeloo p {
-  color: #9d73bd;
-  font-size: calc(8px * var(--font-scale));
-  letter-spacing: 0.16em;
-}
-
-.screen-feeloo div {
-  display: grid;
-  grid-template-columns: repeat(2, 42px);
-  justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.screen-feeloo span {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 14px rgba(108, 62, 147, 0.08);
-}
-
 .card-skkoo {
   color: #5c3a61;
   background: linear-gradient(160deg, #fff6fa, #f7dce9);

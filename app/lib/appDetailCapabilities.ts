@@ -41,10 +41,6 @@ export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
     screens: phoneOnly(),
     stores: stores(true, true),
   },
-  feeloo: {
-    screens: phoneOnly(),
-    stores: stores(false, false),
-  },
   waesseum: {
     screens: screens(true, true),
     stores: stores(true, true),
