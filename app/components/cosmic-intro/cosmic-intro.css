@@ -1,5 +1,5 @@
 html[data-cosmic-intro="true"] {
-  --cosmic-entry-duration: 2100ms;
+  --cosmic-entry-duration: 2400ms;
 }
 
 .cosmic-intro {
@@ -128,16 +128,37 @@ html[data-cosmic-intro="true"] .wordmark {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html[data-cosmic-intro="true"] .cosmic-intro,
-  html[data-cosmic-intro="true"] .hero::before,
-  html[data-cosmic-intro="true"] .apps-galaxy-near .is-dot::after {
-    display: none;
-  }
+/* Mode is derived from the media preference. Only an explicit development
+   preview can opt into full motion when reduced motion is enabled. */
+html[data-cosmic-intro="true"] .cosmic-intro,
+html[data-cosmic-intro="true"] .hero::before,
+html[data-cosmic-intro="true"] .apps-galaxy-layer,
+html[data-cosmic-intro="true"] .apps-galaxy-near .is-dot::after,
+html[data-cosmic-intro="true"] .hero > :is(
+  .site-header, .carousel-stage, .app-info, .carousel-arrow,
+  .decorations, .ambient-glow, .perspective-floor
+),
+html[data-cosmic-intro="true"] .wordmark {
+  animation-duration: var(--cosmic-entry-duration) !important;
+}
 
-  html[data-cosmic-intro="true"] .apps-galaxy-layer,
-  html[data-cosmic-intro="true"] .hero > *,
-  html[data-cosmic-intro="true"] .wordmark {
-    animation: none;
-  }
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] {
+  --cosmic-entry-duration: 1200ms;
+}
+
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .cosmic-intro {
+  animation-name: cosmic-entry-logo-reduced;
+}
+
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .apps-galaxy-layer {
+  animation: none;
+}
+
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .apps-galaxy-near .is-dot::after {
+  display: none;
+}
+
+@keyframes cosmic-entry-logo-reduced {
+  0%, 65% { opacity: 1; }
+  100% { opacity: 0; }
 }

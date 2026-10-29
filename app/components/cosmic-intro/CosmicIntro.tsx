@@ -5,7 +5,7 @@ import {
   consumeInternalHomeNavigation,
   usePageTransition,
 } from "../../navigation/PageTransitionProvider";
-import { claimCosmicIntro, playCosmicIntro } from "./introLifecycle";
+import { claimCosmicIntro, playCosmicIntro, COSMIC_INTRO_DEVELOPMENT } from "./introLifecycle";
 import "./cosmic-intro.css";
 
 export function CosmicIntro() {
@@ -17,18 +17,19 @@ export function CosmicIntro() {
     const internalNavigation = consumeInternalHomeNavigation();
     delete document.documentElement.dataset.internalHomeNavigation;
     if (eligible.current === null) {
-      eligible.current = claimCosmicIntro(window, pageTransitionActive || internalNavigation);
+      eligible.current = claimCosmicIntro(window, pageTransitionActive || internalNavigation, COSMIC_INTRO_DEVELOPMENT);
     }
     if (pageTransitionActive) eligible.current = false;
     if (!eligible.current || pageTransitionActive) {
       delete root.dataset.cosmicIntro;
-      delete root.dataset.cosmicIntroStarted;
+      delete root.dataset.cosmicIntroMotion;
+      delete root.dataset.cosmicIntroPreview;
       return;
     }
 
     return playCosmicIntro(root, window, () => {
       eligible.current = false;
-    });
+    }, COSMIC_INTRO_DEVELOPMENT);
   }, [pageTransitionActive]);
 
   // Default markup leaves content visible when scripts are unavailable.
