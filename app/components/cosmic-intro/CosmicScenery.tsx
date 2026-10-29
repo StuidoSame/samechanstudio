@@ -11,6 +11,8 @@ const CONSTELLATIONS = [
   },
 ] as const;
 
+const PLANETS = ["distant", "atmosphere", "ice", "moon", "gas", "rocky"] as const;
+
 export function CosmicScenery() {
   return (
     <div className="cosmic-intro-scenery" aria-hidden="true">
@@ -27,15 +29,11 @@ export function CosmicScenery() {
           ))}
         </svg>
       ))}
-      <span className="cosmic-intro-planet cosmic-intro-planet--far">
-        <span className="cosmic-intro-planet-sphere" />
-      </span>
-      <span className="cosmic-intro-planet cosmic-intro-planet--moon">
-        <span className="cosmic-intro-planet-sphere" />
-      </span>
-      <span className="cosmic-intro-planet cosmic-intro-planet--near">
-        <span className="cosmic-intro-planet-sphere" />
-      </span>
+      {PLANETS.map((planet) => (
+        <span key={planet} className={`cosmic-intro-planet cosmic-intro-planet--${planet}`}>
+          <span className="cosmic-intro-planet-sphere" />
+        </span>
+      ))}
     </div>
   );
 }
