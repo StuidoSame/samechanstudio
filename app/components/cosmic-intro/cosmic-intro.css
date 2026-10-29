@@ -13,7 +13,7 @@ html[data-cosmic-intro="true"] {
 }
 
 .cosmic-intro-wordmark {
-  color: #c1a5fa;
+  color: #d7c2ff;
   font-size: clamp(24px, 4.3vw, 62px);
   font-weight: 400;
   line-height: 1.2;
@@ -51,26 +51,31 @@ html[data-cosmic-intro="true"] .apps-galaxy-layer {
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-far {
-  --entry-scale: 0.72;
+  --entry-scale: 0.84;
   --entry-opacity: 0.82;
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-mid {
-  --entry-scale: 0.48;
+  --entry-scale: 0.45;
   --entry-opacity: 0.88;
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-near {
-  --entry-scale: 0.26;
+  --entry-scale: 0.14;
   --entry-opacity: 0.92;
 }
 
-html[data-cosmic-intro="true"] .apps-galaxy-near .is-dot::after {
+/* Paint containment on the resting stars clips a trail wider than the star. */
+html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot {
+  contain: layout;
+}
+
+html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot::after {
   content: "";
   position: absolute;
   right: 50%;
   top: 50%;
-  width: 16px;
+  width: clamp(12px, 2.2vw, 32px);
   height: 1px;
   background: linear-gradient(to right, transparent, rgba(185, 156, 255, 0.5));
   transform-origin: right center;
@@ -80,8 +85,9 @@ html[data-cosmic-intro="true"] .apps-galaxy-near .is-dot::after {
 
 html[data-cosmic-intro="true"] .hero > :is(
   .site-header, .carousel-stage, .app-info, .carousel-arrow,
-  .decorations, .ambient-glow, .perspective-floor
-) {
+  .decorations, .section-cosmos--hero
+),
+html[data-cosmic-intro="true"] .page-section-navigation {
   animation: cosmic-entry-content var(--cosmic-entry-duration) ease-in-out both;
 }
 
@@ -91,8 +97,8 @@ html[data-cosmic-intro="true"] .wordmark {
 
 @keyframes cosmic-entry-logo {
   0% { opacity: 0; transform: scale(0.97); }
-  18%, 48% { opacity: 1; transform: scale(1); }
-  80%, 100% { opacity: 0; transform: scale(1.025); }
+  8%, 54% { opacity: 1; transform: scale(1); }
+  76%, 100% { opacity: 0; transform: scale(1.025); }
 }
 
 @keyframes cosmic-entry-veil {
@@ -102,17 +108,17 @@ html[data-cosmic-intro="true"] .wordmark {
 
 @keyframes cosmic-entry-stars {
   0% { transform: scale(var(--entry-scale)); opacity: 0; }
-  24% { transform: scale(var(--entry-scale)); opacity: var(--entry-opacity); }
+  14% { transform: scale(var(--entry-scale)); opacity: var(--entry-opacity); }
   100% { transform: scale(1); opacity: var(--entry-opacity); }
 }
 
 @keyframes cosmic-entry-trail {
-  0%, 28%, 90%, 100% { opacity: 0; }
-  58% { opacity: 0.4; }
+  0%, 20%, 94%, 100% { opacity: 0; }
+  52% { opacity: 0.72; }
 }
 
 @keyframes cosmic-entry-content {
-  0%, 38% { opacity: 0; }
+  0%, 52% { opacity: 0; }
   100% { opacity: 1; }
 }
 
@@ -133,11 +139,12 @@ html[data-cosmic-intro="true"] .wordmark {
 html[data-cosmic-intro="true"] .cosmic-intro,
 html[data-cosmic-intro="true"] .hero::before,
 html[data-cosmic-intro="true"] .apps-galaxy-layer,
-html[data-cosmic-intro="true"] .apps-galaxy-near .is-dot::after,
+html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot::after,
 html[data-cosmic-intro="true"] .hero > :is(
   .site-header, .carousel-stage, .app-info, .carousel-arrow,
-  .decorations, .ambient-glow, .perspective-floor
+  .decorations, .section-cosmos--hero
 ),
+html[data-cosmic-intro="true"] .page-section-navigation,
 html[data-cosmic-intro="true"] .wordmark {
   animation-duration: var(--cosmic-entry-duration) !important;
 }
@@ -154,7 +161,7 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .apps-galaxy-
   animation: none;
 }
 
-html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .apps-galaxy-near .is-dot::after {
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot::after {
   display: none;
 }
 
