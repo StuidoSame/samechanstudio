@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import {
   consumeInternalHomeNavigation,
   usePageTransition,
@@ -38,7 +38,18 @@ export function CosmicIntro() {
     <>
       <CosmicScenery />
       <div className="cosmic-intro" aria-hidden="true">
-        <span className="cosmic-intro-wordmark">SAME STUDIO</span>
+        <span className="cosmic-intro-wordmark" role="img" aria-label="SAME STUDIO">
+          {Array.from("SAME STUDIO", (letter, index) => (
+            <span
+              key={index}
+              className={letter === " " ? "cosmic-intro-letter-gap" : "cosmic-intro-letter"}
+              style={{ "--cosmic-letter-index": index } as CSSProperties}
+              aria-hidden="true"
+            >
+              {letter}
+            </span>
+          ))}
+        </span>
       </div>
     </>
   );

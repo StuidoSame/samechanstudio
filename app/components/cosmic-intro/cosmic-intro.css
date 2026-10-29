@@ -13,6 +13,8 @@ html[data-cosmic-intro="true"] {
 }
 
 .cosmic-intro-wordmark {
+  --cosmic-letter-rise: -9px;
+  --cosmic-letter-glow: 0.6;
   color: #d7c2ff;
   font-size: clamp(24px, 4.3vw, 62px);
   font-weight: 400;
@@ -21,6 +23,35 @@ html[data-cosmic-intro="true"] {
   padding-left: 0.22em;
   white-space: nowrap;
   text-shadow: 0 0 24px rgba(168, 115, 255, 0.25);
+}
+
+.cosmic-intro-letter,
+.cosmic-intro-letter-gap {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* Keep the whole mark visible before a single, short emphasis travels across it.
+   The enclosing logo remains the only animation that ends the intro. */
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-letter {
+  animation: cosmic-entry-letter 280ms cubic-bezier(0.22, 0.7, 0.3, 1) both;
+  animation-delay: calc(240ms + var(--cosmic-letter-index) * 45ms);
+  animation-duration: 280ms !important;
+}
+
+@keyframes cosmic-entry-letter {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    color: inherit;
+    text-shadow: inherit;
+  }
+  30% {
+    transform: translateY(var(--cosmic-letter-rise)) scale(1.11);
+    color: #f4edff;
+    text-shadow: 0 0 12px rgba(194, 151, 255, var(--cosmic-letter-glow)),
+      0 0 26px rgba(168, 115, 255, 0.24);
+  }
+  65% { transform: translateY(1px) scale(0.99); }
 }
 
 html[data-cosmic-intro="true"] .cosmic-intro {
@@ -170,6 +201,8 @@ html[data-cosmic-intro="true"] .wordmark {
   }
 
   .cosmic-intro-wordmark {
+    --cosmic-letter-rise: -6px;
+    --cosmic-letter-glow: 0.4;
     font-size: clamp(22px, 6vw, 40px);
     letter-spacing: 0.18em;
   }
