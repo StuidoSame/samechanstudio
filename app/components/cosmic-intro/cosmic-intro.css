@@ -46,23 +46,22 @@ html[data-cosmic-intro="true"] .apps-galaxy {
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-layer {
-  transform-origin: 50% 50%;
-  animation: cosmic-entry-stars var(--cosmic-entry-duration) cubic-bezier(0.6, 0, 0.24, 1) both;
+  transform-origin: 50% calc(50svh - 72px);
+  animation: cosmic-entry-far-stars var(--cosmic-entry-duration) linear both;
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-far {
-  --entry-scale: 0.84;
   --entry-opacity: 0.82;
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-mid {
-  --entry-scale: 0.45;
   --entry-opacity: 0.88;
+  animation-name: cosmic-entry-mid-stars;
 }
 
 html[data-cosmic-intro="true"] .apps-galaxy-near {
-  --entry-scale: 0.14;
   --entry-opacity: 0.92;
+  animation-name: cosmic-entry-near-stars;
 }
 
 /* Paint containment on the resting stars clips a trail wider than the star. */
@@ -75,12 +74,16 @@ html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot:
   position: absolute;
   right: 50%;
   top: 50%;
-  width: clamp(12px, 2.2vw, 32px);
+  width: var(--entry-streak-length, clamp(12px, 2vw, 28px));
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(185, 156, 255, 0.5));
+  background: linear-gradient(to right, transparent, rgba(215, 192, 255, 0.9));
   transform-origin: right center;
-  transform: rotate(var(--entry-ray-angle));
+  transform: rotate(var(--entry-ray-angle)) scaleX(0.15);
   animation: cosmic-entry-trail var(--cosmic-entry-duration) ease-in-out both;
+}
+
+html[data-cosmic-intro="true"] .apps-galaxy-near {
+  --entry-streak-length: clamp(24px, 4vw, 56px);
 }
 
 html[data-cosmic-intro="true"] .hero > :is(
@@ -102,23 +105,57 @@ html[data-cosmic-intro="true"] .wordmark {
 }
 
 @keyframes cosmic-entry-veil {
-  0%, 32% { opacity: 1; }
+  0%, 50% { opacity: 1; }
   100% { opacity: 0; }
 }
 
-@keyframes cosmic-entry-stars {
-  0% { transform: scale(var(--entry-scale)); opacity: 0; }
-  14% { transform: scale(var(--entry-scale)); opacity: var(--entry-opacity); }
-  100% { transform: scale(1); opacity: var(--entry-opacity); }
+@keyframes cosmic-entry-far-stars {
+  0% { transform: perspective(900px) translateZ(-240px); opacity: 0; }
+  12%, 24% {
+    transform: perspective(900px) translateZ(-240px);
+    opacity: var(--entry-opacity);
+    animation-timing-function: ease-in-out;
+  }
+  86%, 100% { transform: perspective(900px) translateZ(0); opacity: var(--entry-opacity); }
+}
+
+@keyframes cosmic-entry-mid-stars {
+  0% { transform: perspective(900px) translateZ(-1150px); opacity: 0; }
+  12%, 24% {
+    transform: perspective(900px) translateZ(-1150px);
+    opacity: var(--entry-opacity);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.88, 0.72);
+  }
+  74% { opacity: var(--entry-opacity); }
+  80% { transform: perspective(900px) translateZ(250px); opacity: var(--entry-opacity); }
+  82%, 84% { transform: perspective(900px) translateZ(250px); opacity: 0; }
+  86% { transform: perspective(900px) translateZ(0); opacity: 0; }
+  100% { transform: perspective(900px) translateZ(0); opacity: var(--entry-opacity); }
+}
+
+@keyframes cosmic-entry-near-stars {
+  0% { transform: perspective(900px) translateZ(-3600px); opacity: 0; }
+  12%, 24% {
+    transform: perspective(900px) translateZ(-3600px);
+    opacity: var(--entry-opacity);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.9, 0.65);
+  }
+  74% { opacity: var(--entry-opacity); }
+  76% { transform: perspective(900px) translateZ(460px); opacity: var(--entry-opacity); }
+  82%, 84% { transform: perspective(900px) translateZ(460px); opacity: 0; }
+  86% { transform: perspective(900px) translateZ(0); opacity: 0; }
+  100% { transform: perspective(900px) translateZ(0); opacity: var(--entry-opacity); }
 }
 
 @keyframes cosmic-entry-trail {
-  0%, 20%, 94%, 100% { opacity: 0; }
-  52% { opacity: 0.72; }
+  0%, 24%, 86%, 100% { opacity: 0; transform: rotate(var(--entry-ray-angle)) scaleX(0.15); }
+  46% { opacity: 0.1; transform: rotate(var(--entry-ray-angle)) scaleX(0.28); }
+  72% { opacity: 0.85; transform: rotate(var(--entry-ray-angle)) scaleX(1); }
+  82%, 84% { opacity: 0; transform: rotate(var(--entry-ray-angle)) scaleX(1.35); }
 }
 
 @keyframes cosmic-entry-content {
-  0%, 52% { opacity: 0; }
+  0%, 68% { opacity: 0; }
   100% { opacity: 1; }
 }
 
@@ -128,6 +165,10 @@ html[data-cosmic-intro="true"] .wordmark {
 }
 
 @media (max-width: 767px) {
+  html[data-cosmic-intro="true"] .apps-galaxy-layer {
+    transform-origin: 50% calc(50svh - 62px);
+  }
+
   .cosmic-intro-wordmark {
     font-size: clamp(22px, 6vw, 40px);
     letter-spacing: 0.18em;
