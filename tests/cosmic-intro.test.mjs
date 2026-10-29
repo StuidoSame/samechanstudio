@@ -121,6 +121,18 @@ test("an unreliable legacy completion marker cannot suppress the repaired intro"
   assert.equal(claimCosmicIntro(fixture(storage).view, false), false);
 });
 
+test("direct subpage visits preserve the first settled home playback", () => {
+  for (const pathname of ["/support/", "/terms/", "/privacy/", "/delete-account/"]) {
+    const { view, storage } = fixture();
+    view.location.pathname = pathname;
+    initialize(view);
+    assert.equal(claimCosmicIntro(view, false), false);
+    assert.equal(storage.size, 0);
+    view.location.pathname = "/";
+    assert.equal(claimCosmicIntro(view, false), true);
+  }
+});
+
 test("reduced motion shows the brand without moving the starfield", () => {
   const { view, root, motion, timers } = fixture();
   motion.matches = true;

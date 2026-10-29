@@ -15,13 +15,18 @@ export function CosmicIntro() {
 
   useLayoutEffect(() => {
     const root = document.documentElement;
-    const internalNavigation = consumeInternalHomeNavigation();
+    consumeInternalHomeNavigation();
     delete document.documentElement.dataset.internalHomeNavigation;
-    if (eligible.current === null) {
-      eligible.current = claimCosmicIntro(window, pageTransitionActive || internalNavigation, COSMIC_INTRO_DEVELOPMENT);
+    // A first home mount can precede the router URL update. Decide only after
+    // the destination has settled; returning from Support does not use a visit.
+    if (pageTransitionActive) {
+      if (eligible.current) eligible.current = false;
+      return;
     }
-    if (pageTransitionActive) eligible.current = false;
-    if (!eligible.current || pageTransitionActive) {
+    if (eligible.current === null) {
+      eligible.current = claimCosmicIntro(window, false, COSMIC_INTRO_DEVELOPMENT);
+    }
+    if (!eligible.current) {
       delete root.dataset.cosmicIntro;
       delete root.dataset.cosmicIntroMotion;
       delete root.dataset.cosmicIntroPreview;
