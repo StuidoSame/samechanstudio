@@ -7,7 +7,7 @@ import {
   COSMIC_INTRO_REDUCED_DURATION_MS,
 } from "../app/components/cosmic-intro/introLifecycle.ts";
 
-const SESSION_KEY = "same-studio-cosmic-intro-v1";
+const SESSION_KEY = "same-studio-cosmic-intro-v2";
 class TrackedTarget extends EventTarget {
   listeners = new Map();
   addEventListener(type, listener, options) {
@@ -109,6 +109,16 @@ test("skipped mounts do not consume future visible visits", () => {
   const { view, storage } = fixture();
   assert.equal(claimCosmicIntro(view, true), false);
   assert.equal(storage.size, 0);
+});
+
+test("an unreliable legacy completion marker cannot suppress the repaired intro", () => {
+  const legacy = "same-studio-cosmic-intro-v1";
+  const { view, root, storage } = fixture(new Map([[legacy, "1"], ["unrelated", "keep"]]));
+  assert.equal(claimCosmicIntro(view, false), true);
+  const dispose = playCosmicIntro(root, view, () => {});
+  assert.deepEqual([...storage], [[legacy, "1"], ["unrelated", "keep"], [SESSION_KEY, "1"]]);
+  dispose();
+  assert.equal(claimCosmicIntro(fixture(storage).view, false), false);
 });
 
 test("reduced motion shows the brand without moving the starfield", () => {

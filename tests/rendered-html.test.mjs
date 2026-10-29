@@ -440,3 +440,31 @@ test("initializes and validates the saved font size before hydration", async () 
     persistedValues: [],
   });
 });
+
+test("the built intro script executes and ignores development replay parameters", async () => {
+  const html = await (await render()).text();
+  const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].find(
+    (match) => match[1].includes("same-studio-cosmic-intro-v2"),
+  );
+  assert.ok(script, "intro initialization must be in the server-rendered head");
+  assert.ok(html.indexOf(script[0]) < html.indexOf("<body>"));
+  const execute = (seen, reducedMotion) => {
+    const root = { dataset: {} };
+    const document = { documentElement: root, visibilityState: "visible" };
+    vm.runInNewContext(script[1], {
+      document, URLSearchParams,
+      window: {
+        document,
+        location: { pathname: "/", hash: "", search: "?intro=full" },
+        scrollY: 0,
+        sessionStorage: { getItem: () => seen ? "1" : null },
+        matchMedia: () => ({ matches: reducedMotion }),
+        performance: { getEntriesByType: () => [{ type: "navigate" }] },
+      },
+    });
+    return root.dataset;
+  };
+  assert.deepEqual(execute(true, false), {});
+  assert.deepEqual(execute(false, true), { cosmicIntro: "true", cosmicIntroMotion: "reduced" });
+  assert.deepEqual(execute(false, false), { cosmicIntro: "true", cosmicIntroMotion: "full" });
+});

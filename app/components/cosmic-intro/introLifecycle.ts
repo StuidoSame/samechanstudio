@@ -23,7 +23,7 @@ export function getCosmicIntroDecision(
   const preview = request === "replay" || request === "full";
   let seen = root.dataset.cosmicIntroSeen === "true";
   try {
-    seen = view.sessionStorage.getItem("same-studio-cosmic-intro-v1") === "1" || seen;
+    seen = view.sessionStorage.getItem("same-studio-cosmic-intro-v2") === "1" || seen;
   } catch {
     // Internal navigation still has the document marker without storage access.
   }
@@ -135,7 +135,7 @@ export function playCosmicIntro(
   // Skipped mounts never consume a visit. Explicit dev previews preserve it too.
   if (root.dataset.cosmicIntroPreview !== "true") {
     root.dataset.cosmicIntroSeen = "true";
-    try { view.sessionStorage.setItem("same-studio-cosmic-intro-v1", "1"); } catch {}
+    try { view.sessionStorage.setItem("same-studio-cosmic-intro-v2", "1"); } catch {}
   }
 
   const logo = view.document.querySelector(".cosmic-intro");
