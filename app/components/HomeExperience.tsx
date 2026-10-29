@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
   useCallback,
@@ -40,18 +39,6 @@ import {
   usePageTransition,
 } from "../navigation/PageTransitionProvider";
 
-const LoaderJellyCanvas = dynamic(() => import("./JellyCanvas"), {
-  ssr: false,
-  loading: () => (
-    <div
-      className="jelly-fallback preloader-jelly preloader-module-fallback"
-      aria-hidden="true"
-    >
-      <span />
-    </div>
-  ),
-});
-
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 const smoothstep = (edge0: number, edge1: number, value: number) => {
@@ -59,14 +46,6 @@ const smoothstep = (edge0: number, edge1: number, value: number) => {
   return progress * progress * (3 - 2 * progress);
 };
 
-const LOADER_WORDS = ["SAME", "STUDIO"] as const;
-const LOADER_DURATION = 2400;
-const LOADER_COMPLETE_HOLD_MS = 250;
-const LOADER_JELLY_EXIT_MS = 420;
-const LOADER_LOGO_MOVE_MS = 650;
-const LOADER_EFFECT_MS = 550;
-const FINAL_LOGO_HOLD_MS = 800;
-const LOADER_EXIT_MS = 450;
 const AUTOPLAY_RESUME_DELAY_MS = APP_CAROUSEL_TIMING.autoplayResumeDelayMs;
 const PLAY_RESUME_DELAY_MS = APP_CAROUSEL_TIMING.playResumeDelayMs;
 const FAST_FORWARD_TRANSITION_MS = 280;
@@ -76,13 +55,6 @@ const ABOUT_REVEAL_STEPS = [
   { text: "SAME STUDIO / ABOUT", speed: 32 },
   { text: "Small apps, made\nwith a lot of care.", speed: 45 },
 ] as const;
-type LoaderPhase =
-  | "loading"
-  | "complete"
-  | "revealing"
-  | "effect"
-  | "final"
-  | "leaving";
 type ActiveSequencePhase =
   | "idle"
   | "typing"
@@ -329,32 +301,6 @@ const EXIT_TENSION_CURVE = [
   [1, 0],
 ] as const;
 
-const presentationProgress = (elapsed: number) => {
-  const points = [
-    [0, 0],
-    [400, 0.12],
-    [800, 0.28],
-    [1200, 0.48],
-    [1600, 0.67],
-    [2000, 0.84],
-    [2300, 0.95],
-    [LOADER_DURATION, 1],
-  ] as const;
-  const time = clamp(elapsed, 0, LOADER_DURATION);
-
-  for (let index = 1; index < points.length; index += 1) {
-    const [endTime, endProgress] = points[index];
-    if (time > endTime) continue;
-    const [startTime, startProgress] = points[index - 1];
-    const segmentProgress = smoothStep(
-      (time - startTime) / (endTime - startTime),
-    );
-    return startProgress + (endProgress - startProgress) * segmentProgress;
-  }
-
-  return 1;
-};
-
 const getCarouselPositionAnchors = (width: number) => {
   if (width < 768) {
     const first = clamp(width * 0.58, 185, 235);
@@ -471,82 +417,6 @@ function PlatformIcons({ app }: { app: AppItem }) {
   );
 }
 
-function Loader({
-  progress,
-  interactionRef,
-  reducedMotion,
-  phase,
-  completionMediaVisible,
-  containerRef,
-}: {
-  progress: number;
-  interactionRef: React.MutableRefObject<JellyInteraction>;
-  reducedMotion: boolean;
-  phase: LoaderPhase;
-  completionMediaVisible: boolean;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-}) {
-  const normalizedProgress = clamp(progress / 100, 0, 1);
-  const displayProgress = Math.floor(progress);
-
-  return (
-    <div
-      ref={containerRef}
-      className={`preloader is-${phase}`}
-      role="status"
-      aria-live="polite"
-      aria-label={phase === "loading" ? `Loading ${displayProgress}%` : "Loading complete"}
-      data-loader-progress={normalizedProgress.toFixed(3)}
-      data-loader-phase={phase}
-      style={
-        {
-          "--loader-progress": normalizedProgress,
-          "--loader-wordmark-shift": `${(1 - normalizedProgress) * 115}px`,
-          "--loader-wordmark-mobile-shift": `${(1 - normalizedProgress) * 84}px`,
-          "--loader-wordmark-short-shift": `${(1 - normalizedProgress) * 46}px`,
-        } as CSSProperties
-      }
-    >
-      <div className="preloader-pointer-glow" aria-hidden="true" />
-      <span className="preloader-wordmark" aria-label="SAME STUDIO">
-        {LOADER_WORDS.map((word, wordIndex) => (
-          <span className="preloader-word" aria-hidden="true" key={word}>
-            {[...word].map((letter, letterIndex) => {
-              const revealIndex = letterIndex + (wordIndex === 0 ? 0 : 4);
-              return (
-                <span
-                  className={`preloader-letter ${
-                    displayProgress >= revealIndex * 10 ? "is-visible" : ""
-                  }`}
-                  key={`${word}-${letterIndex}`}
-                  style={{ "--final-letter-index": revealIndex } as CSSProperties}
-                >
-                  {letter}
-                </span>
-              );
-            })}
-          </span>
-        ))}
-      </span>
-      <div className="preloader-final-glow" aria-hidden="true" />
-      {completionMediaVisible && (
-        <>
-          <LoaderJellyCanvas
-            className="preloader-jelly"
-            interactionRef={interactionRef}
-            reducedMotion={reducedMotion}
-            loader
-            loaderProgress={normalizedProgress}
-          />
-          <span className="preloader-count">
-            {String(displayProgress).padStart(3, "0")}<small>%</small>
-          </span>
-        </>
-      )}
-    </div>
-  );
-}
-
 export function HomeExperience() {
   const { messages } = useI18n();
   const { pageTransitionActive } = usePageTransition();
@@ -561,10 +431,6 @@ export function HomeExperience() {
   const [activeIndex, setActiveIndex] = useState(DEFAULT_APP_INDEX);
   const [menuOpen, setMenuOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [loadProgress, setLoadProgress] = useState(0);
-  const [loaderPhase, setLoaderPhase] = useState<LoaderPhase>("loading");
-  const [loaderCompletionMediaVisible, setLoaderCompletionMediaVisible] = useState(true);
-  const [loaderVisible, setLoaderVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isFastForwarding, setIsFastForwarding] = useState(false);
@@ -577,7 +443,6 @@ export function HomeExperience() {
   const heroRef = useRef<HTMLElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const mainPointerGlowRef = useRef<HTMLDivElement>(null);
-  const loaderRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const progressRef = useRef(DEFAULT_APP_INDEX);
   const targetRef = useRef(DEFAULT_APP_INDEX);
@@ -617,28 +482,6 @@ export function HomeExperience() {
     pointerY: 0,
     pointerStrength: 0,
   });
-  const loaderInteractionRef = useRef<JellyInteraction>({
-    phase: "idle",
-    velocity: 0,
-    direction: 1,
-    stretch: 0.02,
-    transition: 0,
-    enterDirection: 1,
-    exitDirection: -1,
-    enterStrength: 0,
-    exitStrength: 0,
-    releaseDirection: 1,
-    releaseStrength: 0,
-    springResponse: 0,
-    settleAmplitude: 0,
-    settlePhase: 0,
-    idleStrength: 1,
-    fastForwarding: false,
-    accent: "#a873ff",
-    pointerX: 0,
-    pointerY: 0,
-    pointerStrength: 0,
-  });
   const depthTargetRef = useRef({ x: 0, y: 0, strength: 0 });
   const depthCurrentRef = useRef({ x: 0, y: 0, strength: 0 });
   const depthBoundsRef = useRef({ left: 0, top: 0, width: 1, height: 1 });
@@ -669,7 +512,6 @@ export function HomeExperience() {
   useLayoutEffect(() => {
     if (pageTransitionActive || consumeInternalHomeNavigation()) {
       window.queueMicrotask(() => {
-        setLoaderVisible(false);
         window.requestAnimationFrame(() => {
           delete document.documentElement.dataset.internalHomeNavigation;
         });
@@ -1082,7 +924,7 @@ export function HomeExperience() {
 
   useEffect(() => {
     // Reduced motion changes transition presentation, not autoplay intent.
-    autoplayEnabledRef.current = !loaderVisible;
+    autoplayEnabledRef.current = true;
     if (reducedMotion && isFastForwardingRef.current) {
       stopFastForward();
     }
@@ -1094,7 +936,6 @@ export function HomeExperience() {
     return clearAutoplay;
   }, [
     clearAutoplay,
-    loaderVisible,
     queueAutoplayAdvance,
     reducedMotion,
     stopFastForward,
@@ -1170,7 +1011,7 @@ export function HomeExperience() {
   ]);
 
   useEffect(() => {
-    if (loaderVisible || isTransitioning || isFastForwarding) return;
+    if (isTransitioning || isFastForwarding) return;
 
     queueAutoplayAdvance(getAppNameSequenceDurationMs(activeApp.name));
 
@@ -1181,12 +1022,11 @@ export function HomeExperience() {
     clearAutoplay,
     isFastForwarding,
     isTransitioning,
-    loaderVisible,
     queueAutoplayAdvance,
   ]);
 
   useEffect(() => {
-    if (loaderVisible || isTransitioning || isFastForwarding) return;
+    if (isTransitioning || isFastForwarding) return;
 
     const characters = getAppNameCharacters(activeApp.name);
     let sequenceFrame = 0;
@@ -1230,100 +1070,17 @@ export function HomeExperience() {
     activeApp.name,
     isFastForwarding,
     isTransitioning,
-    loaderVisible,
     reducedMotion,
   ]);
 
   useEffect(() => {
-    if (!loaderVisible) return;
-
-    let loaded = 0;
-    let done = false;
-    let animationFrame = 0;
-    const phaseTimers: number[] = [];
-    const started = performance.now();
-    let previousTick = started;
-    let displayedProgress = 0;
-    // Only warm the icons that can appear in the first carousel viewport.
-    // Remaining app icons keep the browser's native lazy-loading behavior.
-    const initialViewportApps = apps.slice(0, Math.min(5, apps.length));
-    const assets = initialViewportApps.map(
-      (app) =>
-        new Promise<void>((resolve) => {
-          const image = new window.Image();
-          let settled = false;
-          const finish = () => {
-            if (settled) return;
-            settled = true;
-            loaded += 1;
-            resolve();
-          };
-          image.onload = finish;
-          image.onerror = finish;
-          image.src = app.icon;
-          if (image.complete) finish();
-        }),
-    );
-    Promise.all(assets).then(() => {
-      done = true;
+    // Warm only the first viewport; asset readiness never gates the homepage.
+    apps.slice(0, Math.min(5, apps.length)).forEach((app) => {
+      const image = new window.Image();
+      image.decoding = "async";
+      image.src = app.icon;
     });
-
-    const tick = (now: number) => {
-      const assetRatio = loaded / assets.length;
-      const elapsed = now - started;
-      const timelineProgress = presentationProgress(elapsed);
-      const loadingCap = done ? 1 : 0.92 + assetRatio * 0.06;
-      const targetProgress = Math.min(timelineProgress, loadingCap);
-      const maxFrameStep = Math.max(0.002, (now - previousTick) * 0.0005);
-      previousTick = now;
-      displayedProgress = Math.min(
-        targetProgress,
-        displayedProgress + maxFrameStep,
-      );
-      const normalizedProgress = clamp(displayedProgress, 0, 1);
-      setLoadProgress(normalizedProgress * 100);
-      loaderInteractionRef.current.stretch =
-        0.018 + Math.pow(normalizedProgress, 1.7) * 0.11;
-      loaderInteractionRef.current.transition =
-        normalizedProgress > 0.9 ? (normalizedProgress - 0.9) / 0.1 : 0;
-      loaderInteractionRef.current.velocity = 0.16 + normalizedProgress * 0.2;
-      if (
-        done &&
-        elapsed >= LOADER_DURATION &&
-        normalizedProgress >= 0.999
-      ) {
-        setLoadProgress(100);
-        setLoaderPhase("complete");
-
-        const revealStart = LOADER_COMPLETE_HOLD_MS;
-        const effectStart = revealStart + LOADER_LOGO_MOVE_MS;
-        const finalStart = effectStart + LOADER_EFFECT_MS;
-        const leavingStart = finalStart + FINAL_LOGO_HOLD_MS;
-
-        phaseTimers.push(
-          window.setTimeout(() => setLoaderPhase("revealing"), revealStart),
-          window.setTimeout(
-            () => setLoaderCompletionMediaVisible(false),
-            revealStart + LOADER_JELLY_EXIT_MS,
-          ),
-          window.setTimeout(() => setLoaderPhase("effect"), effectStart),
-          window.setTimeout(() => setLoaderPhase("final"), finalStart),
-          window.setTimeout(() => setLoaderPhase("leaving"), leavingStart),
-          window.setTimeout(
-            () => setLoaderVisible(false),
-            leavingStart + LOADER_EXIT_MS,
-          ),
-        );
-        return;
-      }
-      animationFrame = requestAnimationFrame(tick);
-    };
-    animationFrame = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(animationFrame);
-      phaseTimers.forEach((timer) => window.clearTimeout(timer));
-    };
-  }, [loaderVisible]);
+  }, []);
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -1424,22 +1181,6 @@ export function HomeExperience() {
       // Three.js uses an upward-positive Y axis, unlike CSS transforms.
       interactionRef.current.pointerY = -y;
       interactionRef.current.pointerStrength = proximity * 0.095 * strength;
-      loaderInteractionRef.current.pointerX = x;
-      loaderInteractionRef.current.pointerY = -y;
-      loaderInteractionRef.current.pointerStrength = proximity * 0.13 * strength;
-
-      const loader = loaderRef.current;
-      if (loader) {
-        loader.style.setProperty(
-          "--preloader-pointer-offset-x",
-          `${x * window.innerWidth * 0.5}px`,
-        );
-        loader.style.setProperty(
-          "--preloader-pointer-offset-y",
-          `${y * window.innerHeight * 0.5}px`,
-        );
-        loader.style.setProperty("--preloader-pointer-strength", String(strength));
-      }
     };
 
     const renderDepth = () => {
@@ -1484,7 +1225,7 @@ export function HomeExperience() {
         clientX <= depthBoundsRef.current.left + depthBoundsRef.current.width &&
         clientY >= depthBoundsRef.current.top &&
         clientY <= depthBoundsRef.current.top + depthBoundsRef.current.height;
-      if (!loaderRef.current && !insideHero) {
+      if (!insideHero) {
         depthTargetRef.current = { x: 0, y: 0, strength: 0 };
       } else {
         depthTargetRef.current = {
@@ -1523,7 +1264,7 @@ export function HomeExperience() {
       requestDepthFrameRef.current = () => {};
       updatePointerTargetRef.current = () => {};
     };
-  }, [loaderVisible, reducedMotion]);
+  }, [reducedMotion]);
 
   useEffect(() => {
     const main = mainRef.current;
@@ -2072,19 +1813,9 @@ export function HomeExperience() {
 
   return (
     <>
-      {loaderVisible && (
-        <Loader
-          progress={loadProgress}
-          interactionRef={loaderInteractionRef}
-          reducedMotion={reducedMotion}
-          phase={loaderPhase}
-          completionMediaVisible={loaderCompletionMediaVisible}
-          containerRef={loaderRef}
-        />
-      )}
       <main
         ref={mainRef}
-        className={`site-shell ${loaderVisible && loaderPhase !== "leaving" ? "is-loading" : "is-ready"}`}
+        className="site-shell is-ready"
         style={accentStyle}
       >
         <div
@@ -2094,7 +1825,7 @@ export function HomeExperience() {
         />
         <CosmicInteractionLayer reducedMotion={reducedMotion} />
         <PageSectionNavigation
-          hidden={loaderVisible || menuOpen || Boolean(detailApp)}
+          hidden={menuOpen || Boolean(detailApp)}
         />
         <section
           className="hero"
