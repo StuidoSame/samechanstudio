@@ -1,5 +1,7 @@
 # 프로젝트 구조와 기능 기준선
 
+현재 앱 카탈로그는 7개이며 Tocklist의 표시 이름은 TOCOBI다. PINI·PEPESNAP·FEELOO 제거 이후의 현황과 검증은 [APP_CATALOG_CLEANUP](APP_CATALOG_CLEANUP.md)을 따른다. 아래 10개 앱 기준선은 당시 조사 기록으로 보존한다.
+
 조사일: 2026-10-29. 기준 HEAD: `df3fd9f32b9783f9034249a21e2bd48d6fbc9406`. 코드·설정을 우선하고 [공식 홈페이지](https://samestudio.kr/)의 실제 메뉴·10개 앱·지원 및 정책 링크를 대조했다. 아래 상태는 코드 존재와 이번 검증 범위를 뜻하며 서비스 전체의 무결성을 보증하지 않는다.
 
 ## 기술 스택
