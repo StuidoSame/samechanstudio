@@ -84,3 +84,5 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 후속 실사 기반 shell·7종 재질·대기·고리 개선과 Windows 시각·상호작용·인트로 회귀 검증은 [PHOTOREAL_PLANETARY_SHOWCASE](PHOTOREAL_PLANETARY_SHOWCASE.md)에 기록했다. TypeScript·ESLint·단위 테스트 51개·최종 빌드·HTML 검사 14개·Graft 검증이 통과했다. 기존 서버를 유지하고 push·배포는 수행하지 않았다.
 
 행성과 앱 아이콘의 밀착 합성은 [PLANET_ICON_COMPOSITION](PLANET_ICON_COMPOSITION.md)에서 별도 부유 오브젝트 구도로 수정했다. 같은 Pulto 화면 전후 비교, Windows 반응형·캐러셀·Phone/Pad·Support·인트로 검증과 TypeScript·ESLint·단위 51개·HTML 14개·빌드·Graft 검사를 완료했다.
+
+최신 [COSMIC_APP_SHOWCASE](COSMIC_APP_SHOWCASE.md)는 이전 앱별 행성 구도를 아이콘 중심 캐러셀과 공통 원거리 배경으로 대체한다. Windows 전후 시각 비교·9개 화면 크기·5개 언어·캐러셀·상세·Support·인트로 및 타입·린트·단위 51개·HTML 14개·빌드·Graft 검증을 완료했다. 기존 서버를 유지하며 push·배포는 하지 않았다.
