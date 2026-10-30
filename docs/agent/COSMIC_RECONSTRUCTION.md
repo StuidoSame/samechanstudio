@@ -1,5 +1,7 @@
 # 우주 인트로 시각 재구성
 
+이 문서는 `85de911`의 이전 5초 구현 이력이다. 사용자의 후속 피드백 이후 현재 8초 구현은 [DEEP_SPACE_FLIGHT](DEEP_SPACE_FLIGHT.md)로 교체되었다. 아래 판정은 현재 UX의 성공 근거로 재사용하지 않는다.
+
 2026-10-30 Windows 내장 Chromium 검증. 시작 HEAD `c17883af2d42f8309ddcad397e945a1167f1cd8b`, 브랜치 `main`, 시작 working tree clean. Fetch와 `git pull --no-rebase --ff-only`는 already up to date였다. 기존 localhost 개발 서버 하나를 재사용했다. Push·배포·세션 데이터 삭제 없음.
 
 판정: **COSMIC_INTRO_RECONSTRUCTED_AND_VISUALLY_VERIFIED**. 기존 성공 보고를 근거로 삼지 않고 수정 전·후의 실제 화면과 시간별 DOM·computed style을 다시 확인했다.

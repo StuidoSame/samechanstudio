@@ -1,6 +1,18 @@
 # 우주 인트로 실행·재생
 
-현재 기준은 2026-10-30의 **5초 시퀀스**다. 이전 2.4초 시퀀스의 검증은 아래 날짜별 이력으로 보존한다. 실제 재현 원인과 새 프레임 증거는 [시각 재구성 기록](COSMIC_RECONSTRUCTION.md)을 따른다.
+현재 기준은 2026-10-30의 **8초 공통 카메라 비행**이다. 구현·측정·연속 프레임은 [DEEP_SPACE_FLIGHT](DEEP_SPACE_FLIGHT.md)를 따른다.
+
+## 현재 구성과 재생 정책
+
+`spaceFlight.ts`가 고정된 세계 좌표, 공통 카메라의 가속·등속·감속과 핀홀 원근 투영을 계산한다. `CosmicScenery.tsx`와 `space-flight.css`는 기존 SVG 천체와 두 별자리 평면, 깊이별 별빛을 DOM/SVG로 그린다. 별도의 Canvas나 WebGL 컨텍스트는 추가하지 않는다. `CosmicIntro.tsx`는 기존 수명주기의 종료·스킵·unmount에 새 rAF 루프와 resize 리스너 정리를 연결한다.
+
+전체 모션은 8초다. 1.2–2.295초에 10개 문자의 75ms stagger·420ms 바운스, 2.3–7.1초에 공간 비행, 7.1–8초에 Hero 전환을 수행한다. 개발 `/?intro=full`은 전체 모션, `/?intro=replay`는 사용자 모션 설정을 존중한다. reduced motion은 기존 1.2초 정적 로고이며 공간 루프를 시작하지 않는다. 생산 빌드는 개발 파라미터를 무시한다.
+
+메인 `/` 전용·탭 세션당 한 번·하위 페이지 생략·실제 입력으로 즉시 스킵·기존 세션 값 보존 정책은 유지한다. 비활성화·페이지 이탈·스킵·정상 종료·unmount에 프레임 콜백과 리스너를 해제한다. GPU 메모리와 실제 모바일 기기 성능은 별도 검증 대상이다.
+
+## 이전 CSS 인트로 구현·검증 이력
+
+이하 5초·2.4초 설명과 `cosmic-scenery.css` 경로는 이전 구현의 기록이다. 해당 CSS는 공통 공간 렌더러로 교체하면서 제거했다. 5초 작업의 [시각 재구성 기록](COSMIC_RECONSTRUCTION.md)은 현재 UX 성공 판정으로 재사용하지 않는다.
 
 `CosmicIntro.tsx`, `introLifecycle.ts`, `cosmic-intro.css`가 재생 정책과 별 이동을 맡는다. `CosmicScenery.tsx`와 `cosmic-scenery.css`는 행성·별자리를 더한다. 메인 별 레이어를 재사용하며 추가 Canvas나 라이브러리는 없다. 메인 DOM·이벤트·이미지 초기화는 인트로 완료를 기다리지 않는다.
 
