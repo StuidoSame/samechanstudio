@@ -117,13 +117,16 @@ test("planetary cards preserve app identities, initial keyboard focus and decora
   for (const [index, [, , , content]] of cards.entries()) {
     assert.match(content, /class="planet-icon-frame"><img/);
     assert.ok(content.includes(apps[index].icon.replaceAll("&", "&amp;")));
-    for (const decoration of ["planet-orbit planet-orbit-back", "planet-shell", "planet-orbit planet-orbit-front", "planet-dust"]) {
+    for (const decoration of ["planet-body", "planet-orbit planet-orbit-back", "planet-shell", "planet-atmosphere", "planet-orbit planet-orbit-front", "planet-icon-shadow"]) {
       assert.ok(content.includes(`class="${decoration}" aria-hidden="true"`));
     }
+    const body = content.match(/<span class="planet-body" aria-hidden="true">(.*?)<\/span><span class="planet-icon-shadow"/);
+    assert.ok(body, "planet and floating icon are separate sibling layers");
+    assert.doesNotMatch(body[1], /<img|planet-icon-frame/);
   }
   assert.match(html, /aria-label="Select Mapary" aria-current="true" tabindex="0"/);
   assert.equal((html.match(/class="app-card planetary-app"[^>]*tabindex="-1"/g) ?? []).length, 6);
-  assert.match(html, /class="planetary-environment"[^>]*aria-hidden="true"/);
+  assert.doesNotMatch(html, /planetary-environment|planetary-orbit-wide|planet-dust/);
   assert.match(html, /aria-label="Previous app"/);
   assert.match(html, /aria-label="Next app"/);
   assert.match(html, /class="view-app-label">VIEW DETAIL/);

@@ -82,3 +82,5 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 2026-10-30 행성형 캐러셀·Pulto 아이콘 복구의 최신 실행 결과와 남은 터치/macOS 검증 범위는 [PLANETARY_APP_SHOWCASE](PLANETARY_APP_SHOWCASE.md)에 기록했다. TypeScript·ESLint·단위 테스트 50개·최종 빌드·HTML 검사 14개·Graft 검증은 통과했으며 기존 개발 서버를 유지했다.
 
 후속 실사 기반 shell·7종 재질·대기·고리 개선과 Windows 시각·상호작용·인트로 회귀 검증은 [PHOTOREAL_PLANETARY_SHOWCASE](PHOTOREAL_PLANETARY_SHOWCASE.md)에 기록했다. TypeScript·ESLint·단위 테스트 51개·최종 빌드·HTML 검사 14개·Graft 검증이 통과했다. 기존 서버를 유지하고 push·배포는 수행하지 않았다.
+
+행성과 앱 아이콘의 밀착 합성은 [PLANET_ICON_COMPOSITION](PLANET_ICON_COMPOSITION.md)에서 별도 부유 오브젝트 구도로 수정했다. 같은 Pulto 화면 전후 비교, Windows 반응형·캐러셀·Phone/Pad·Support·인트로 검증과 TypeScript·ESLint·단위 51개·HTML 14개·빌드·Graft 검사를 완료했다.
