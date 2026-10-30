@@ -132,6 +132,11 @@ export type TranslationMessages = {
     >;
   };
   support: {
+    etc: {
+      inquiryType: string;
+      description: string;
+      other: string;
+    };
     hero: {
       label: string;
       title: string;

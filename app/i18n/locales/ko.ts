@@ -212,6 +212,11 @@ export const ko = {
     },
   },
   support: {
+    etc: {
+      inquiryType: "문의 유형",
+      description: "PINI, PEPESNAP과 목록에 없는 앱 또는 일반 문의를 선택해주세요.",
+      other: "기타 문의 (Other)",
+    },
     hero: {
       label: "고객지원 센터",
       title: "SUPPORT",

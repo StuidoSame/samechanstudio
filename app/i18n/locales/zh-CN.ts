@@ -212,6 +212,11 @@ export const zhCN = {
     },
   },
   support: {
+    etc: {
+      inquiryType: "咨询类型",
+      description: "请选择 PINI、PEPESNAP，或其他未列出的应用及一般咨询。",
+      other: "其他咨询（Other）",
+    },
     hero: { label: "支持中心", title: "SUPPORT", description: "如果您在使用 SAME STUDIO 应用时遇到问题\n或需要帮助，请通过下方联系我们。" },
     sections: { contact: "选择应用", details: "咨询信息", responseTime: "回复说明", faq: "常见问题" },
     fields: { appName: "应用名称", device: "使用设备", osVersion: "系统版本", message: "咨询内容" },

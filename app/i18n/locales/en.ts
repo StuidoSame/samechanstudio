@@ -212,6 +212,11 @@ export const en = {
     },
   },
   support: {
+    etc: {
+      inquiryType: "Inquiry type",
+      description: "Choose PINI, PEPESNAP, or Other for apps not listed and general inquiries.",
+      other: "Other",
+    },
     hero: {
       label: "Support Center",
       title: "SUPPORT",

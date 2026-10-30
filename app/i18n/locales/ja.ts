@@ -212,6 +212,11 @@ export const ja = {
     },
   },
   support: {
+    etc: {
+      inquiryType: "お問い合わせの種類",
+      description: "PINI、PEPESNAP、一覧にないアプリや一般のお問い合わせを選択してください。",
+      other: "その他のお問い合わせ（Other）",
+    },
     hero: { label: "サポートセンター", title: "SUPPORT", description: "SAME STUDIOのアプリで問題が発生した場合や\nサポートが必要な場合は、以下からお問い合わせください。" },
     sections: { contact: "アプリを選択", details: "お問い合わせ内容", responseTime: "返信について", faq: "よくある質問" },
     fields: { appName: "アプリ名", device: "使用端末", osVersion: "OSバージョン", message: "お問い合わせ内容" },
