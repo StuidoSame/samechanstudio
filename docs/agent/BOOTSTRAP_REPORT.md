@@ -86,3 +86,5 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 행성과 앱 아이콘의 밀착 합성은 [PLANET_ICON_COMPOSITION](PLANET_ICON_COMPOSITION.md)에서 별도 부유 오브젝트 구도로 수정했다. 같은 Pulto 화면 전후 비교, Windows 반응형·캐러셀·Phone/Pad·Support·인트로 검증과 TypeScript·ESLint·단위 51개·HTML 14개·빌드·Graft 검사를 완료했다.
 
 최신 [COSMIC_APP_SHOWCASE](COSMIC_APP_SHOWCASE.md)는 이전 앱별 행성 구도를 아이콘 중심 캐러셀과 공통 원거리 배경으로 대체한다. Windows 전후 시각 비교·9개 화면 크기·5개 언어·캐러셀·상세·Support·인트로 및 타입·린트·단위 51개·HTML 14개·빌드·Graft 검증을 완료했다. 기존 서버를 유지하며 push·배포는 하지 않았다.
+
+[ANDROID_PLATFORM_DISPLAY](ANDROID_PLATFORM_DISPLAY.md)에서 TOCOBI·SKKOO의 카탈로그와 상세 지원 배지를 일치시켰다. Windows 메인·상세·320px 큰 글자·7개 앱 플랫폼·재생/키보드 전환을 확인했고 타입·린트·단위 52개·HTML 14개·빌드·Graft 검사를 통과했다. 실제 Play URL이 없는 플랫폼은 비대화형 배지로 표시하며 기존 서버와 스토어 링크를 유지했다. push·배포는 수행하지 않았다.
