@@ -80,3 +80,5 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 ## 8. 후속 앱 쇼케이스 검증
 
 2026-10-30 행성형 캐러셀·Pulto 아이콘 복구의 최신 실행 결과와 남은 터치/macOS 검증 범위는 [PLANETARY_APP_SHOWCASE](PLANETARY_APP_SHOWCASE.md)에 기록했다. TypeScript·ESLint·단위 테스트 50개·최종 빌드·HTML 검사 14개·Graft 검증은 통과했으며 기존 개발 서버를 유지했다.
+
+후속 실사 기반 shell·7종 재질·대기·고리 개선과 Windows 시각·상호작용·인트로 회귀 검증은 [PHOTOREAL_PLANETARY_SHOWCASE](PHOTOREAL_PLANETARY_SHOWCASE.md)에 기록했다. TypeScript·ESLint·단위 테스트 51개·최종 빌드·HTML 검사 14개·Graft 검증이 통과했다. 기존 서버를 유지하고 push·배포는 수행하지 않았다.

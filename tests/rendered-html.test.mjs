@@ -117,7 +117,7 @@ test("planetary cards preserve app identities, initial keyboard focus and decora
   for (const [index, [, , , content]] of cards.entries()) {
     assert.match(content, /class="planet-icon-frame"><img/);
     assert.ok(content.includes(apps[index].icon.replaceAll("&", "&amp;")));
-    for (const decoration of ["planet-orbit planet-orbit-back", "planet-orbit planet-orbit-front", "planet-dust"]) {
+    for (const decoration of ["planet-orbit planet-orbit-back", "planet-shell", "planet-orbit planet-orbit-front", "planet-dust"]) {
       assert.ok(content.includes(`class="${decoration}" aria-hidden="true"`));
     }
   }
