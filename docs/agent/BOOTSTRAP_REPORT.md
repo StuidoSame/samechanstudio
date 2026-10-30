@@ -76,3 +76,7 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 **CURRENT_OS_VERIFIED / OTHER_OS_STATICALLY_CHECKED / OTHER_OS_RUNTIME_NOT_VERIFIED**. macOS 실행 환경은 없어 설치·서버·네이티브 Graft parser를 실제 검증하지 못했다. 5개 언어·두 테마·모든 viewport·모든 상호작용·screen reader의 광범위한 회귀 QA도 이번 범위가 아니다.
 
 코드 탐색, 계층형 운영 지침, Windows 실행 환경이 확보되어 로컬 디자인 개선을 시작할 수 있다. 운영 출시는 취약점 검토와 별도 통합 QA 이후 판단한다. 모든 작업은 로컬 커밋으로만 남기며 push·태그·원격 브랜치·배포는 수행하지 않는다.
+
+## 8. 후속 앱 쇼케이스 검증
+
+2026-10-30 행성형 캐러셀·Pulto 아이콘 복구의 최신 실행 결과와 남은 터치/macOS 검증 범위는 [PLANETARY_APP_SHOWCASE](PLANETARY_APP_SHOWCASE.md)에 기록했다. TypeScript·ESLint·단위 테스트 50개·최종 빌드·HTML 검사 14개·Graft 검증은 통과했으며 기존 개발 서버를 유지했다.

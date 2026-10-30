@@ -5,6 +5,7 @@ import vm from "node:vm";
 import { DELETE_ACCOUNT_MESSAGES } from "../app/delete-account/deleteAccountMessages.ts";
 import { COSMIC_INTRO_TIMELINE_CSS } from "../app/components/cosmic-intro/introTiming.mjs";
 import { ko } from "../app/i18n/locales/ko.ts";
+import { apps } from "../app/lib/apps.ts";
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -107,6 +108,25 @@ test("server-renders the SAME STUDIO app explorer", async () => {
     /Rhythm recording controls|Record rhythm|Stop recording|Play recorded rhythm|Clear recorded rhythm|Mute drums/,
   );
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
+});
+
+test("planetary cards preserve app identities, initial keyboard focus and decorative semantics", async () => {
+  const html = await (await render()).text();
+  const cards = [...html.matchAll(/<button class="app-card planetary-app" data-planet="([^"]+)"[^>]*aria-label="([^"]+)"[^>]*>(.*?)<\/button>/g)];
+  assert.deepEqual(cards.map(([, id, label]) => [id, label]), apps.map(({ id, name }) => [id, `Select ${name}`]));
+  for (const [index, [, , , content]] of cards.entries()) {
+    assert.match(content, /class="planet-icon-frame"><img/);
+    assert.ok(content.includes(apps[index].icon.replaceAll("&", "&amp;")));
+    for (const decoration of ["planet-orbit planet-orbit-back", "planet-orbit planet-orbit-front", "planet-dust"]) {
+      assert.ok(content.includes(`class="${decoration}" aria-hidden="true"`));
+    }
+  }
+  assert.match(html, /aria-label="Select Mapary" aria-current="true" tabindex="0"/);
+  assert.equal((html.match(/class="app-card planetary-app"[^>]*tabindex="-1"/g) ?? []).length, 6);
+  assert.match(html, /class="planetary-environment"[^>]*aria-hidden="true"/);
+  assert.match(html, /aria-label="Previous app"/);
+  assert.match(html, /aria-label="Next app"/);
+  assert.match(html, /class="view-app-label">VIEW DETAIL/);
 });
 
 test("renders the seven-app catalog and TOCOBI without restoring removed app entries", async () => {
