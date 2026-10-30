@@ -5,6 +5,7 @@ import {
   FLIGHT_CONSTELLATIONS, SPACE_FLIGHT_DURATION_MS, startSpaceFlight,
 } from "../app/components/cosmic-intro/spaceFlight.ts";
 import { COSMIC_INTRO_DURATION_MS } from "../app/components/cosmic-intro/introLifecycle.ts";
+import { COSMIC_INTRO_TIMING } from "../app/components/cosmic-intro/introTiming.mjs";
 
 const closeTo = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} ≈ ${expected}`);
 
@@ -46,11 +47,46 @@ test("six fixed world bodies and two constellation planes pass at distinct times
   assert.equal(new Set(times).size, 6);
   assert.ok(times.every((t) => t > 2500 && t < 5200));
   assert.ok(times[0] < 3000 && times.at(-1) > 5000);
+  for (let i = 1; i < times.length; i++) {
+    assert.ok(times[i] - times[i - 1] >= 300 && times[i] - times[i - 1] <= 550,
+      "passes are staggered without long waits or simultaneous exits");
+  }
   assert.ok(passTime(FLIGHT_CONSTELLATIONS[0]) < 3700);
   assert.ok(passTime(FLIGHT_CONSTELLATIONS[1]) > 4500 && passTime(FLIGHT_CONSTELLATIONS[1]) < 5200);
   assert.deepEqual(getFlightBodies(390).filter((body) => body.enabled).map((body) => body.id), ["rocky", "gas", "atmosphere"]);
   assert.equal(getFlightBodies(820).filter((body) => body.enabled).length, 5);
   assert.ok(passTime(getFlightBodies(390)[2]) > 5000);
+});
+
+test("all enabled bodies visibly cross an edge before Hero reveal without covering the viewport", () => {
+  for (const [width, height] of [[1440, 900], [820, 1180], [390, 844], [1280, 480]]) {
+    for (const body of getFlightBodies(width).filter((body) => body.enabled)) {
+      let crossedEdge = false;
+      let exited = false;
+      for (let t = COSMIC_INTRO_TIMING.bodiesVisibleMs; t < COSMIC_INTRO_TIMING.revealMs; t += 5) {
+        const point = projectWorldPoint(body, getFlightCamera(t), width, height);
+        if (!point) { exited = true; break; }
+        const radius = body.diameter * point.scale / 2;
+        const left = point.x - radius, right = point.x + radius;
+        const top = point.y - radius, bottom = point.y + radius;
+        const inView = right > 0 && left < width && bottom > 0 && top < height;
+        assert.ok(!(left <= 0 && right >= width && top <= 0 && bottom >= height), `${width}: ${body.id} obscures the viewport`);
+        if (inView && (left < 0 || right > width || top < 0 || bottom > height)) crossedEdge = true;
+      }
+      assert.ok(crossedEdge && exited, `${width}: ${body.id} must fly past an edge before the fade`);
+    }
+  }
+});
+
+test("perspective produces a rapid close flyby and different apparent speeds at different depths", () => {
+  const [rocky, , , , , distant] = getFlightBodies(1440);
+  const screenSpeed = (body, t) => {
+    const a = projectWorldPoint(body, getFlightCamera(t), 1440, 900);
+    const b = projectWorldPoint(body, getFlightCamera(t + 10), 1440, 900);
+    return Math.hypot(b.x - a.x, b.y - a.y) / 0.01;
+  };
+  assert.ok(screenSpeed(rocky, 2700) > screenSpeed(rocky, 2400) * 4);
+  assert.ok(screenSpeed(rocky, 2700) > screenSpeed(distant, 2700) * 10);
 });
 
 test("stars recycle behind the camera to a new distant position without repeating the same placement", () => {
@@ -97,7 +133,7 @@ test("the flight loop stops and removes its resize listener on completion or dis
   for (const listener of listeners) listener();
   tick(3200);
   assert.equal(planets[1].style.width, "310px", "resizing preserves world body size");
-  assert.equal(planets[1].dataset.flightDepth, (2850 - getFlightCamera(3200).z).toFixed(1));
+  assert.equal(planets[1].dataset.flightDepth, (getFlightBodies(1280)[1].z - getFlightCamera(3200).z).toFixed(1));
   delete root.dataset.cosmicIntro;
   tick(6000);
   assert.equal(callbacks.size + listeners.size, 0);

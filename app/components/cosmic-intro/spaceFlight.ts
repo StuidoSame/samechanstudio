@@ -46,25 +46,28 @@ export function projectWorldPoint(point: WorldPoint, camera: FlightCamera, width
 }
 
 export function getFlightBodies(width: number): FlightBody[] {
+  // Resolve scheduled passes to fixed world depths once, never per frame.
+  const depthAt = (id: keyof typeof COSMIC_INTRO_TIMING.planetPassMs) =>
+    getFlightCamera(COSMIC_INTRO_TIMING.planetPassMs[id]).z;
   const bodies = [
-    { id: "rocky", x: -260, y: 180, z: 1700, diameter: 220, enabled: true },
-    { id: "gas", x: 400, y: -180, z: 2850, diameter: 310, enabled: true },
-    { id: "atmosphere", x: -220, y: -230, z: 4000, diameter: 180, enabled: true },
-    { id: "ice", x: 370, y: 180, z: 5100, diameter: 210, enabled: width >= 768 },
-    { id: "moon", x: -200, y: 90, z: 6050, diameter: 150, enabled: width >= 768 },
-    { id: "distant", x: 180, y: -160, z: 6700, diameter: 200, enabled: width >= 1024 },
+    { id: "rocky", x: -260, y: 180, z: depthAt("rocky"), diameter: 220, enabled: true },
+    { id: "gas", x: 400, y: -180, z: depthAt("gas"), diameter: 310, enabled: true },
+    { id: "atmosphere", x: -220, y: -230, z: depthAt("atmosphere"), diameter: 180, enabled: true },
+    { id: "ice", x: 370, y: 180, z: depthAt("ice"), diameter: 210, enabled: width >= 768 },
+    { id: "moon", x: -200, y: 90, z: depthAt("moon"), diameter: 150, enabled: width >= 768 },
+    { id: "distant", x: 180, y: -160, z: depthAt("distant"), diameter: 200, enabled: width >= 1024 },
   ];
   if (width < 768) {
     Object.assign(bodies[0], { x: -130, y: 90, diameter: 170 });
-    Object.assign(bodies[1], { x: 170, y: -150, z: 4000, diameter: 240 });
-    Object.assign(bodies[2], { x: -130, y: 100, z: 6400, diameter: 170 });
+    Object.assign(bodies[1], { x: 170, y: -150, z: getFlightCamera(COSMIC_INTRO_TIMING.mobilePassMs.gas).z, diameter: 240 });
+    Object.assign(bodies[2], { x: -130, y: 100, z: getFlightCamera(COSMIC_INTRO_TIMING.mobilePassMs.atmosphere).z, diameter: 170 });
   }
   return bodies;
 }
 
 export const FLIGHT_CONSTELLATIONS = [
-  { id: "north", x: -30, y: -20, z: 3150, points: [[-295, 50], [-140, -145], [20, -90], [215, -170], [290, 0], [100, 150]] },
-  { id: "south", x: 40, y: 25, z: 5700, points: [[-280, -130], [-150, 100], [0, -40], [200, 140], [290, -20], [130, -155]] },
+  { id: "north", x: -30, y: -20, z: getFlightCamera(COSMIC_INTRO_TIMING.constellationPassMs.north).z, points: [[-295, 50], [-140, -145], [20, -90], [215, -170], [290, 0], [100, 150]] },
+  { id: "south", x: 40, y: 25, z: getFlightCamera(COSMIC_INTRO_TIMING.constellationPassMs.south).z, points: [[-280, -130], [-150, 100], [0, -40], [200, 140], [290, -20], [130, -155]] },
 ] as const;
 
 const random = (seed: number) => {

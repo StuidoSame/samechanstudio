@@ -14,6 +14,9 @@ export const COSMIC_INTRO_TIMING = Object.freeze({
   cruiseMs: 2500,
   revealMs: 5200,
   maxSpeed: 2300,
+  planetPassMs: Object.freeze({ rocky: 2900, gas: 3350, atmosphere: 3850, ice: 4300, moon: 4750, distant: 5120 }),
+  mobilePassMs: Object.freeze({ gas: 3850, atmosphere: 5050 }),
+  constellationPassMs: Object.freeze({ north: 3650, south: 4700 }),
 });
 
 const at = (ms) => `${(100 * ms / COSMIC_INTRO_TIMING.durationMs).toFixed(6)}%`;
