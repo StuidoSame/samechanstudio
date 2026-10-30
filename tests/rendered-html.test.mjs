@@ -66,6 +66,10 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /SAME STUDIO/);
   assert.match(html, /class="site-shell is-ready"/);
   assert.match(html, /class="cosmic-intro" aria-hidden="true"/);
+  const letters = [...html.matchAll(/class="cosmic-intro-letter" style="--cosmic-letter-index:(\d+)" aria-hidden="true">([^<]+)<\/span>/g)];
+  assert.deepEqual(letters.map((match) => [Number(match[1]), match[2]]),
+    Array.from("SAMESTUDIO", (letter, index) => [index, letter]));
+  assert.match(html, /class="cosmic-intro-letter-gap"[^>]*> <\/span>/);
   assert.doesNotMatch(html, /preloader|data-loader-progress|Loading \d+%|site-shell is-loading/);
   assert.match(html, /\/assets\/icons\/Mapary_icon\.png/);
   assert.match(html, /aria-label="Select Pulto"/);

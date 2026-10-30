@@ -202,6 +202,21 @@ test("resource loading before first paint cannot exhaust the CSS animation deadl
   dispose();
 });
 
+test("full playback lasts five seconds while reduced playback keeps its short accessible duration", () => {
+  assert.equal(COSMIC_INTRO_DURATION_MS, 5000);
+  assert.equal(COSMIC_INTRO_REDUCED_DURATION_MS, 1200);
+  for (const reduced of [false, true]) {
+    const { view, root, motion, timers, properties } = fixture();
+    motion.matches = reduced;
+    claimCosmicIntro(view, false);
+    const dispose = playCosmicIntro(root, view, () => {});
+    const duration = reduced ? 1200 : 5000;
+    assert.equal(properties.get("--cosmic-entry-duration"), `${duration}ms`);
+    assert.deepEqual([...timers.values()], [duration + 200]);
+    dispose();
+  }
+});
+
 test("automatic focus, scroll and synthetic inputs cannot instantly skip the logo", () => {
   const { view, root } = fixture();
   let finished = 0;

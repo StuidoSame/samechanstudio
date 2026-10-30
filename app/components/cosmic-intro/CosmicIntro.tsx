@@ -48,7 +48,7 @@ export function CosmicIntro() {
             <span
               key={index}
               className={letter === " " ? "cosmic-intro-letter-gap" : "cosmic-intro-letter"}
-              style={{ "--cosmic-letter-index": index } as CSSProperties}
+              style={{ "--cosmic-letter-index": index > 4 ? index - 1 : index } as CSSProperties}
               aria-hidden="true"
             >
               {letter}
