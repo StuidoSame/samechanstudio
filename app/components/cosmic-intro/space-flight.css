@@ -51,8 +51,6 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-flight-p
   animation-duration: var(--cosmic-entry-duration) !important;
 }
 
-@keyframes cosmic-body-arrival { 0%, 25% { opacity: 0; } 40%, 100% { opacity: 1; } }
-
 .cosmic-intro-planet-sphere {
   position: absolute;
   inset: 0;
@@ -81,9 +79,3 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-flight-p
 }
 
 .cosmic-intro-planet--gas::after { z-index: 1; clip-path: inset(50% 0 0); }
-
-@keyframes cosmic-space-reveal {
-  0% { opacity: 0; }
-  10%, 88.75% { opacity: 1; }
-  100% { opacity: 0; }
-}

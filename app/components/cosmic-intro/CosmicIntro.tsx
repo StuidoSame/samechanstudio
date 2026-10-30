@@ -8,6 +8,7 @@ import {
 import { claimCosmicIntro, playCosmicIntro, COSMIC_INTRO_DEVELOPMENT } from "./introLifecycle";
 import { CosmicScenery } from "./CosmicScenery";
 import { startSpaceFlight } from "./spaceFlight";
+import { COSMIC_INTRO_TIMELINE_CSS } from "./introTiming.mjs";
 import "./cosmic-intro.css";
 
 export function CosmicIntro() {
@@ -47,6 +48,7 @@ export function CosmicIntro() {
   // Default markup leaves content visible when scripts are unavailable.
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: COSMIC_INTRO_TIMELINE_CSS }} />
       <CosmicScenery />
       <div className="cosmic-intro" aria-hidden="true">
         <span className="cosmic-intro-wordmark" role="img" aria-label="SAME STUDIO">

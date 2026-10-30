@@ -8,19 +8,19 @@ import { COSMIC_INTRO_DURATION_MS } from "../app/components/cosmic-intro/introLi
 
 const closeTo = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} ≈ ${expected}`);
 
-test("one camera accelerates, cruises and decelerates continuously over the eight-second intro", () => {
+test("one camera accelerates, cruises and decelerates continuously over the six-second intro", () => {
   assert.equal(SPACE_FLIGHT_DURATION_MS, COSMIC_INTRO_DURATION_MS);
-  assert.equal(getFlightCamera(2300).z, 0);
-  assert.equal(getFlightCamera(3500).z, 900);
-  closeTo(getFlightCamera(7100).z, 6300);
-  assert.equal(getFlightCamera(8000).z, 6975);
-  assert.equal(getFlightCamera(8000).speed, 0);
+  assert.equal(getFlightCamera(2000).z, 0);
+  assert.equal(getFlightCamera(2500).z, 575);
+  closeTo(getFlightCamera(5200).z, 6785);
+  assert.equal(getFlightCamera(6000).z, 7705);
+  assert.equal(getFlightCamera(6000).speed, 0);
   let previous = getFlightCamera(0);
-  for (let t = 5; t <= 8000; t += 5) {
+  for (let t = 5; t <= 6000; t += 5) {
     const camera = getFlightCamera(t);
     assert.ok(camera.z >= previous.z);
-    assert.ok(camera.speed >= 0 && camera.speed <= 1500);
-    assert.ok(Math.abs(camera.speed - previous.speed) < 15);
+    assert.ok(camera.speed >= 0 && camera.speed <= 2300);
+    assert.ok(Math.abs(camera.speed - previous.speed) < 37);
     previous = camera;
   }
 });
@@ -39,18 +39,18 @@ test("projection follows focal length over camera-relative depth and clips the c
 test("six fixed world bodies and two constellation planes pass at distinct times", () => {
   const bodies = getFlightBodies(1280);
   const passTime = ({ z }) => {
-    for (let t = 2300; t <= 8000; t += 10) if (z - getFlightCamera(t).z <= 16) return t;
+    for (let t = 2000; t <= 6000; t += 10) if (z - getFlightCamera(t).z <= 16) return t;
     return null;
   };
   const times = bodies.map(passTime);
   assert.equal(new Set(times).size, 6);
-  assert.ok(times.every((t) => t > 3500 && t < 8000));
-  assert.ok(times[0] < 4500 && times.at(-1) > 7100);
-  assert.ok(passTime(FLIGHT_CONSTELLATIONS[0]) < 5500);
-  assert.ok(passTime(FLIGHT_CONSTELLATIONS[1]) > 5500 && passTime(FLIGHT_CONSTELLATIONS[1]) < 7100);
+  assert.ok(times.every((t) => t > 2500 && t < 5200));
+  assert.ok(times[0] < 3000 && times.at(-1) > 5000);
+  assert.ok(passTime(FLIGHT_CONSTELLATIONS[0]) < 3700);
+  assert.ok(passTime(FLIGHT_CONSTELLATIONS[1]) > 4500 && passTime(FLIGHT_CONSTELLATIONS[1]) < 5200);
   assert.deepEqual(getFlightBodies(390).filter((body) => body.enabled).map((body) => body.id), ["rocky", "gas", "atmosphere"]);
   assert.equal(getFlightBodies(820).filter((body) => body.enabled).length, 5);
-  assert.ok(passTime(getFlightBodies(390)[2]) > 7100);
+  assert.ok(passTime(getFlightBodies(390)[2]) > 5000);
 });
 
 test("stars recycle behind the camera to a new distant position without repeating the same placement", () => {
@@ -89,17 +89,17 @@ test("the flight loop stops and removes its resize listener on completion or dis
     animation.currentTime = t;
     callback(t);
   };
-  tick(4000);
-  assert.equal(scene.dataset.flightCameraZ, getFlightCamera(4000).z.toFixed(1));
+  tick(3100);
+  assert.equal(scene.dataset.flightCameraZ, getFlightCamera(3100).z.toFixed(1));
   assert.equal(callbacks.size, 1);
   scene.clientWidth = 390;
   scene.clientHeight = 844;
   for (const listener of listeners) listener();
-  tick(4100);
+  tick(3200);
   assert.equal(planets[1].style.width, "310px", "resizing preserves world body size");
-  assert.equal(planets[1].dataset.flightDepth, (2850 - getFlightCamera(4100).z).toFixed(1));
+  assert.equal(planets[1].dataset.flightDepth, (2850 - getFlightCamera(3200).z).toFixed(1));
   delete root.dataset.cosmicIntro;
-  tick(8000);
+  tick(6000);
   assert.equal(callbacks.size + listeners.size, 0);
   assert.equal(scene.dataset.flightRunning, "false");
   stop();

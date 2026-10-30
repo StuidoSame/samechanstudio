@@ -1,8 +1,10 @@
-export const SPACE_FLIGHT_DURATION_MS = 8000;
-export const FLIGHT_START_MS = 2300;
-export const FLIGHT_CRUISE_MS = 3500;
-export const FLIGHT_REVEAL_MS = 7100;
-const MAX_SPEED = 1500;
+import { COSMIC_INTRO_TIMING } from "./introTiming.mjs";
+
+export const SPACE_FLIGHT_DURATION_MS = COSMIC_INTRO_TIMING.durationMs;
+export const FLIGHT_START_MS = COSMIC_INTRO_TIMING.flightStartMs;
+export const FLIGHT_CRUISE_MS = COSMIC_INTRO_TIMING.cruiseMs;
+export const FLIGHT_REVEAL_MS = COSMIC_INTRO_TIMING.revealMs;
+const MAX_SPEED = COSMIC_INTRO_TIMING.maxSpeed;
 const STAR_SPAN = 6500;
 const NEAR_PLANE = 16;
 const FOCAL_FACTOR = 1 / (2 * Math.tan(55 * Math.PI / 360));
@@ -15,18 +17,23 @@ export type FlightBody = WorldPoint & { id: string; diameter: number; enabled: b
 // Every object shares this camera. World coordinates never follow CSS keyframes.
 export function getFlightCamera(elapsedMs: number): FlightCamera {
   const seconds = Math.max(0, Math.min(SPACE_FLIGHT_DURATION_MS, elapsedMs) - FLIGHT_START_MS) / 1000;
+  const acceleration = (FLIGHT_CRUISE_MS - FLIGHT_START_MS) / 1000;
+  const cruise = (FLIGHT_REVEAL_MS - FLIGHT_CRUISE_MS) / 1000;
+  const deceleration = (SPACE_FLIGHT_DURATION_MS - FLIGHT_REVEAL_MS) / 1000;
+  const cruiseZ = MAX_SPEED * acceleration / 2;
+  const revealZ = cruiseZ + MAX_SPEED * cruise;
   let z = 0;
   let speed = 0;
-  if (seconds <= 1.2) {
-    speed = MAX_SPEED * (1 - Math.cos(Math.PI * seconds / 1.2)) / 2;
-    z = MAX_SPEED * (seconds / 2 - 1.2 * Math.sin(Math.PI * seconds / 1.2) / (2 * Math.PI));
-  } else if (seconds <= 4.8) {
+  if (seconds <= acceleration) {
+    speed = MAX_SPEED * (1 - Math.cos(Math.PI * seconds / acceleration)) / 2;
+    z = MAX_SPEED * (seconds / 2 - acceleration * Math.sin(Math.PI * seconds / acceleration) / (2 * Math.PI));
+  } else if (seconds <= acceleration + cruise) {
     speed = MAX_SPEED;
-    z = 900 + MAX_SPEED * (seconds - 1.2);
+    z = cruiseZ + MAX_SPEED * (seconds - acceleration);
   } else {
-    const t = Math.min(0.9, seconds - 4.8);
-    speed = MAX_SPEED * (1 + Math.cos(Math.PI * t / 0.9)) / 2;
-    z = 6300 + MAX_SPEED * (t / 2 + 0.9 * Math.sin(Math.PI * t / 0.9) / (2 * Math.PI));
+    const t = Math.min(deceleration, seconds - acceleration - cruise);
+    speed = MAX_SPEED * (1 + Math.cos(Math.PI * t / deceleration)) / 2;
+    z = revealZ + MAX_SPEED * (t / 2 + deceleration * Math.sin(Math.PI * t / deceleration) / (2 * Math.PI));
   }
   return { x: 26 * Math.sin(z / 1800), y: 14 * Math.sin(z / 2300), z, speed };
 }

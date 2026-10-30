@@ -1,5 +1,7 @@
-export const COSMIC_INTRO_DURATION_MS = 8000;
-export const COSMIC_INTRO_REDUCED_DURATION_MS = 1200;
+import { COSMIC_INTRO_TIMING } from "./introTiming.mjs";
+
+export const COSMIC_INTRO_DURATION_MS = COSMIC_INTRO_TIMING.durationMs;
+export const COSMIC_INTRO_REDUCED_DURATION_MS = COSMIC_INTRO_TIMING.reducedDurationMs;
 export const COSMIC_INTRO_DEVELOPMENT = process.env.NODE_ENV === "development";
 
 type IntroDecision = {
