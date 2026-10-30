@@ -37,7 +37,8 @@ export const apps: AppItem[] = [
     eyebrow: "RUNNING RHYTHM",
     tagline: "Find your rhythm.",
     platforms: ["apple", "android"],
-    icon: "/assets/icons/pulto_icon.png",
+    // Refresh cached failures from before this replacement icon was available.
+    icon: "/assets/icons/pulto_icon.png?v=aa92ad34",
     accent: "#ff5559",
     accentRgb: "255, 85, 89",
     screenshotId: "runtronome",

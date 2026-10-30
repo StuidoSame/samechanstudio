@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { access } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import test from "node:test";
 import { apps } from "../app/lib/apps.ts";
 import {
@@ -83,6 +84,15 @@ test("keeps the seven remaining apps in their original relative order", () => {
     apps.at(-1)?.googlePlayUrl,
     "https://play.google.com/store/apps/details?id=com.samestudio.waesseum",
   );
+});
+
+test("Pulto keeps its original PNG with a content version that refreshes cached failures", async () => {
+  const app = apps.find(({ id }) => id === "runtronome");
+  const icon = new URL(app.icon, "https://samestudio.kr");
+  assert.equal(icon.pathname, "/assets/icons/pulto_icon.png");
+  const bytes = await readFile(new URL(`../public${icon.pathname}`, import.meta.url));
+  assert.equal(icon.searchParams.get("v"), createHash("sha256").update(bytes).digest("hex").slice(0, 8));
+  assert.equal(app.name, "Pulto");
 });
 
 test("connects WAESSEUM detail screens and localized screenshots", () => {
