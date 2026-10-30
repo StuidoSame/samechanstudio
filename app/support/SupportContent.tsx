@@ -4,7 +4,6 @@ import Image from "next/image";
 import {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -14,15 +13,20 @@ import {
 } from "react";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps } from "../lib/apps";
+import {
+  createSupportCategories,
+  createSupportRequest,
+  ETC_INQUIRY_TYPES,
+  type EtcInquiryType,
+} from "./supportInquiries";
 
-const SUPPORT_APPS = apps.map(({ name, icon }) => ({ name, icon }));
-
-type SupportAppName = (typeof SUPPORT_APPS)[number]["name"];
+const SUPPORT_CATEGORIES = createSupportCategories(apps);
 
 export function SupportContent() {
   const { messages, format } = useI18n();
   const support = messages.support;
-  const [selectedApp, setSelectedApp] = useState<SupportAppName>("Mapary");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(SUPPORT_CATEGORIES[0].id);
+  const [inquiryType, setInquiryType] = useState<EtcInquiryType>("other");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const appRailRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef<number | null>(null);
@@ -37,13 +41,10 @@ export function SupportContent() {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const emailHref = useMemo(() => {
-    const subject = encodeURIComponent(support.email.subject);
-    const body = encodeURIComponent(
-      format(support.email.body, { app: selectedApp }),
-    );
-    return `mailto:contact@samestudio.kr?subject=${subject}&body=${body}`;
-  }, [format, selectedApp, support.email]);
+  const selectedCategory = SUPPORT_CATEGORIES.find(({ id }) => id === selectedCategoryId)
+    ?? SUPPORT_CATEGORIES[0];
+  const { inquiryName, emailHref } = createSupportRequest(selectedCategory, inquiryType, support);
+  const etcSelected = selectedCategoryId === "etc";
 
   const openEmailSupport = (event: ReactMouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -196,26 +197,35 @@ export function SupportContent() {
               dragRef.current.dragged = false;
             }}
           >
-            {SUPPORT_APPS.map((app) => (
+            {SUPPORT_CATEGORIES.map((app) => (
               <button
-                key={app.name}
+                key={app.id}
                 type="button"
                 className="support-app-icon-button"
                 aria-label={format(support.accessibility.selectApp, { app: app.name })}
-                aria-pressed={selectedApp === app.name}
-                onClick={() => setSelectedApp(app.name)}
+                aria-pressed={selectedCategoryId === app.id}
+                onClick={() => setSelectedCategoryId(app.id)}
               >
                 <span className="support-app-icon-frame">
-                  <Image
-                    src={app.icon}
-                    alt={format(support.accessibility.appIconAlt, { app: app.name })}
-                    width={96}
-                    height={96}
-                    sizes="(max-width: 680px) 66px, 88px"
-                    draggable={false}
-                    unoptimized
-                    onLoad={updateGalleryState}
-                  />
+                  {app.kind === "etc" ? (
+                    <span className="support-etc-art" aria-hidden="true">
+                      <svg viewBox="0 0 48 48" focusable="false">
+                        <path d="M12 11h24a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H22l-10 7v-7a5 5 0 0 1-5-5V16a5 5 0 0 1 5-5Z" />
+                        <path d="M20 21a4 4 0 1 1 6 3.5c-1.5.9-2 1.5-2 3M24 31v.1" />
+                      </svg>
+                    </span>
+                  ) : (
+                    <Image
+                      src={app.icon}
+                      alt={format(support.accessibility.appIconAlt, { app: app.name })}
+                      width={96}
+                      height={96}
+                      sizes="(max-width: 680px) 66px, 88px"
+                      draggable={false}
+                      unoptimized
+                      onLoad={updateGalleryState}
+                    />
+                  )}
                 </span>
                 <span className="support-app-icon-label">{app.name}</span>
               </button>
@@ -233,6 +243,26 @@ export function SupportContent() {
             </button>
           )}
         </div>
+        {etcSelected && (
+          <fieldset className="support-etc-inquiries" aria-describedby="support-etc-description">
+            <legend>{support.etc.inquiryType}</legend>
+            <p id="support-etc-description">{support.etc.description}</p>
+            <div className="support-inquiry-options">
+              {ETC_INQUIRY_TYPES.map((type) => (
+                <label key={type} className="support-inquiry-option">
+                  <input
+                    type="radio"
+                    name="support-inquiry-type"
+                    value={type}
+                    checked={inquiryType === type}
+                    onChange={() => setInquiryType(type)}
+                  />
+                  <span>{type === "other" ? support.etc.other : type.toUpperCase()}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
       </section>
 
       <section className="support-section support-form-section" aria-labelledby="support-form-title">
@@ -243,9 +273,9 @@ export function SupportContent() {
         </div>
         <div className="support-form-grid" aria-label={support.accessibility.form}>
           <div className="support-form-field">
-            <span className="support-form-label">{support.fields.appName}</span>
-            <strong className="support-form-selected">{selectedApp}</strong>
-            <span className="support-form-example">{support.examples.appName}</span>
+            <span className="support-form-label">{etcSelected ? support.etc.inquiryType : support.fields.appName}</span>
+            <strong className="support-form-selected" aria-live="polite">{inquiryName}</strong>
+            {!etcSelected && <span className="support-form-example">{support.examples.appName}</span>}
           </div>
           <div className="support-form-field">
             <span className="support-form-label">{support.fields.device}</span>

@@ -118,6 +118,17 @@ test("renders the seven-app catalog and TOCOBI without removed app references", 
   }
 });
 
+test("Support adds ETC after the seven apps without restoring legacy app cards", async () => {
+  const html = await (await render("/support/")).text();
+  const cards = [...html.matchAll(/class="support-app-icon-button"[^>]*aria-label="([^"]+)"/g)];
+  assert.deepEqual(cards.map((match) => match[1]), [
+    "Mapary 선택", "Pulto 선택", "EVRUNE 선택", "TOCOBI 선택", "SKKOO 선택", "Teru Bozu 선택", "WAESSEUM 선택", "ETC 선택",
+  ]);
+  assert.match(html, /class="support-etc-art" aria-hidden="true"/);
+  assert.match(html, /mailto:contact@samestudio\.kr\?subject=%5BSAME%20STUDIO%5D%20Support/);
+  assert.doesNotMatch(html, /PINI 선택|PEPESNAP 선택|FEELOO 선택|pini_icon|pepsnap\.png|feeloo_icon/);
+});
+
 test("renders unique page metadata, canonical URLs, and social cards", async () => {
   const pages = [
     [

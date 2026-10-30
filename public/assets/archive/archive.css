@@ -2213,6 +2213,95 @@ body.archive-page.is-returning {
   transition: color 0.22s ease;
 }
 
+.support-etc-art {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: 23%;
+  color: #e4d2ff;
+  background:
+    radial-gradient(circle at 21% 24%, #d9c5ff 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 68%, #c5a4ef 0 1px, transparent 2px),
+    radial-gradient(circle at 73% 18%, #9873c4 0 1px, transparent 2px),
+    radial-gradient(ellipse at 30% 80%, #533276, transparent 75%),
+    #261538;
+  filter: brightness(0.54) saturate(0.48);
+  opacity: 0.78;
+}
+
+.support-etc-art svg {
+  width: 58%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.support-app-icon-button[aria-pressed="true"] .support-etc-art {
+  filter: none;
+  opacity: 1;
+}
+
+.support-etc-inquiries {
+  min-width: 0;
+  margin: 24px 0 0;
+  padding: 0;
+  border: 0;
+  color: var(--theme-text);
+}
+
+.support-etc-inquiries legend {
+  padding: 0;
+  font-size: calc(16px * var(--font-scale));
+}
+
+.support-etc-inquiries p {
+  margin: 9px 0 16px;
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.7;
+  opacity: 0.76;
+}
+
+.support-inquiry-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.support-inquiry-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(163, 122, 220, 0.28);
+  border-radius: 14px;
+  background: rgba(151, 104, 220, 0.08);
+  font-size: calc(14px * var(--font-scale));
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.support-inquiry-option:has(input:checked) {
+  border-color: var(--theme-accent);
+  background: rgba(151, 104, 220, 0.18);
+}
+
+.support-inquiry-option input {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--theme-accent);
+}
+
+.support-inquiry-option input:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 4px;
+}
+
 .support-app-icon-button[aria-pressed="true"] {
   color: rgba(246, 238, 255, 0.92);
 }
