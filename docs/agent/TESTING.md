@@ -18,7 +18,7 @@ node --test tests/rendered-html.test.mjs
 node scripts/verify-graft.mjs
 ```
 
-`test:unit`은 app-data·carousel-timing·cosmic-intro·support-inquiries·space-flight 5개 파일을 실행한다. 공간 비행 검사는 카메라 연속성·투영·near clipping·개별 통과·별 재배치·resize 시 세계 좌표 보존·rAF 정리를 포함한다. `npm test`는 **빌드를 다시 수행한 후 rendered-html만** 실행한다. 이미 최신 빌드가 있으면 `node --test tests/rendered-html.test.mjs`로 불필요한 재빌드를 피한다. HTML 검사는 브라우저 hydration·WebGL·모바일 장치를 대신하지 않는다. 인트로의 개발 전용 재생과 시각 검증은 [COSMIC_INTRO](COSMIC_INTRO.md)를 따른다.
+`test:unit`은 app-data·carousel-timing·cosmic-intro·support-inquiries·space-flight·cosmic-navigation 6개 파일을 실행한다. 공간 비행 검사는 카메라 연속성·투영·near clipping·개별 통과·별 재배치·resize 시 세계 좌표 보존·rAF 정리를 포함한다. 페이지 전환 검사는 즉시 이동 요청·최신 탐색 우선·지연/오류/취소·타이머 정리·인트로 연결·history 좌표 보존을 포함한다. `npm test`는 **빌드를 다시 수행한 후 rendered-html만** 실행한다. 이미 최신 빌드가 있으면 `node --test tests/rendered-html.test.mjs`로 불필요한 재빌드를 피한다. HTML 검사는 브라우저 hydration·WebGL·모바일 장치를 대신하지 않는다. 인트로의 개발 전용 재생과 시각 검증은 [COSMIC_INTRO](COSMIC_INTRO.md)를 따른다.
 
 현재 린트는 ESLint flat config이며 build 소스는 기존 ignore 정책으로 제외되어 있다. 새 스크립트는 Node `--check`도 적용한다. 새 테스트는 동작의 의미 있는 실패를 잡을 때만 추가하고 사소한 문구 변경에 구현을 복제하는 테스트를 만들지 않는다.
 

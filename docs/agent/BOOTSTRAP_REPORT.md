@@ -90,3 +90,5 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 [ANDROID_PLATFORM_DISPLAY](ANDROID_PLATFORM_DISPLAY.md)에서 TOCOBI·SKKOO의 카탈로그와 상세 지원 배지를 일치시켰다. Windows 메인·상세·320px 큰 글자·7개 앱 플랫폼·재생/키보드 전환을 확인했고 타입·린트·단위 52개·HTML 14개·빌드·Graft 검사를 통과했다. 실제 Play URL이 없는 플랫폼은 비대화형 배지로 표시하며 기존 서버와 스토어 링크를 유지했다. push·배포는 수행하지 않았다.
 
 [SUPPORT_APP_SELECTION](SUPPORT_APP_SELECTION.md)에서 가로로 넘치는 Support 레일의 조기 포인터 캡처로 카드 클릭이 사라지는 문제를 재현·수정했다. 7개 앱·ETC의 클릭/강조/메일 본문, ETC 세부 유형·왕복, 키보드·드래그, 320px 큰 글자를 확인했고 타입·린트·단위 52개·HTML 14개·빌드·Graft 검사를 통과했다. 실제 터치·모바일 실기기·macOS는 미실행이며 기존 개발 서버를 유지했다. push·배포 없음.
+
+[COSMIC_PAGE_TRANSITIONS](COSMIC_PAGE_TRANSITIONS.md)는 기존 공통 Link/Provider에 즉시 이동 요청과 경로별 CSS/SVG 우주 워프를 연결한다. Windows 실제 프레임·5개 경로·history·포커스·빠른 재탐색·인트로 연결·320px 큰 글자·820px·reduced motion과 타입·린트·단위 65개·HTML 15개·빌드·Graft를 확인했다. 마우스 locator의 폐기된 DOM 시도와 실제 활성화 검증, 고장 주입 단위 검사와 미실행 기기 범위는 보고서에서 구분한다. 기존 서버 유지, push·배포 없음.
