@@ -38,8 +38,13 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
   --planet-x: -55vw;
   --planet-y: max(40vh, 290px);
   --planet-start: -1050px;
-  --planet-mid: -620px;
-  --planet-pass: 380px;
+  --planet-mid: -500px;
+  --planet-mid-x: -43vw;
+  --planet-mid-y: max(32vh, 210px);
+  --planet-brush: 80px;
+  --planet-brush-x: -32vw;
+  --planet-brush-y: max(20vh, 120px);
+  --planet-pass: 420px;
 }
 
 .cosmic-intro-planet--gas {
@@ -48,8 +53,14 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
   --planet-x: 65vw;
   --planet-y: min(-45vh, -340px);
   --planet-start: -1350px;
-  --planet-mid: -850px;
-  --planet-pass: 260px;
+  --planet-mid: -650px;
+  --planet-mid-x: 50vw;
+  --planet-mid-y: min(-34vh, -220px);
+  --planet-brush: 160px;
+  --planet-brush-x: 32vw;
+  --planet-brush-y: min(-17vh, -100px);
+  --planet-pass: 430px;
+  animation-name: cosmic-planet-gasflight;
 }
 
 .cosmic-intro-planet--gas::before,
@@ -76,8 +87,12 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
   --planet-x: -47vw;
   --planet-y: min(-52vh, -250px);
   --planet-start: -1400px;
-  --planet-mid: -1050px;
-  --planet-pass: -150px;
+  --planet-mid: -650px;
+  --planet-mid-x: -42vw;
+  --planet-mid-y: min(-38vh, -200px);
+  --planet-pass: 100px;
+  --planet-end-x: -68vw;
+  --planet-end-y: -48vh;
   animation-name: cosmic-planet-midflight;
 }
 
@@ -87,8 +102,12 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
   --planet-x: 42vw;
   --planet-y: max(56vh, 240px);
   --planet-start: -1550px;
-  --planet-mid: -1100px;
-  --planet-pass: -240px;
+  --planet-mid: -800px;
+  --planet-mid-x: 42vw;
+  --planet-mid-y: max(40vh, 220px);
+  --planet-pass: 30px;
+  --planet-end-x: 72vw;
+  --planet-end-y: 48vh;
   animation-name: cosmic-planet-midflight;
 }
 
@@ -98,8 +117,14 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
   --planet-x: 68vw;
   --planet-y: max(38vh, 230px);
   --planet-start: -1000px;
-  --planet-mid: -650px;
-  --planet-pass: 300px;
+  --planet-mid: -420px;
+  --planet-mid-x: 46vw;
+  --planet-mid-y: max(28vh, 170px);
+  --planet-brush: 160px;
+  --planet-brush-x: 32vw;
+  --planet-brush-y: max(14vh, 100px);
+  --planet-pass: 430px;
+  animation-name: cosmic-planet-moonflight;
 }
 
 .cosmic-intro-planet--distant {
@@ -134,12 +159,16 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
   left: 9%;
   top: 18%;
   transform-origin: 130% 160%;
+  --constellation-exit-x: -22vw;
+  --constellation-exit-y: -22vh;
 }
 
 .cosmic-intro-constellation--south {
   right: 8%;
   bottom: 18%;
   transform-origin: -30% -60%;
+  --constellation-exit-x: 22vw;
+  --constellation-exit-y: 22vh;
 }
 
 html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-scenery,
@@ -151,44 +180,68 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
 
 @keyframes cosmic-scenery-reveal {
   0% { opacity: 0; }
-  8%, 74% { opacity: 1; }
-  88%, 100% { opacity: 0; }
+  10%, 44% { opacity: 0.72; }
+  56%, 84% { opacity: 1; }
+  94%, 100% { opacity: 0; }
 }
 
 /* Hold during the letter bounce; acceleration shares the starfield's rush.
    A common vanishing point and different Z distances produce radial parallax. */
 @keyframes cosmic-planet-flyby {
-  0%, 40% {
+  0%, 44% {
     opacity: 1;
     transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%);
   }
   58% {
     opacity: 1;
-    transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-mid)) translate(-50%, -50%);
-    animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.7);
+    transform: translate3d(var(--planet-mid-x), var(--planet-mid-y), var(--planet-mid)) translate(-50%, -50%);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.85, 0.7);
   }
-  82%, 100% {
-    opacity: 0;
+  72% {
+    opacity: 1;
+    transform: translate3d(var(--planet-brush-x), var(--planet-brush-y), var(--planet-brush)) translate(-50%, -50%);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.85, 0.8);
+  }
+  80% {
+    opacity: 1;
     transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%);
   }
+  84%, 100% { opacity: 0; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
+}
+
+@keyframes cosmic-planet-gasflight {
+  0%, 44% { opacity: 1; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%); }
+  60% { opacity: 1; transform: translate3d(var(--planet-mid-x), var(--planet-mid-y), var(--planet-mid)) translate(-50%, -50%); animation-timing-function: cubic-bezier(0.5, 0, 0.85, 0.7); }
+  76% { opacity: 1; transform: translate3d(var(--planet-brush-x), var(--planet-brush-y), var(--planet-brush)) translate(-50%, -50%); animation-timing-function: cubic-bezier(0.45, 0, 0.85, 0.8); }
+  84% { opacity: 1; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
+  86%, 100% { opacity: 0; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
+}
+
+@keyframes cosmic-planet-moonflight {
+  0%, 44% { opacity: 1; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%); }
+  56% { opacity: 1; transform: translate3d(var(--planet-mid-x), var(--planet-mid-y), var(--planet-mid)) translate(-50%, -50%); animation-timing-function: cubic-bezier(0.5, 0, 0.85, 0.7); }
+  64% { opacity: 1; transform: translate3d(var(--planet-brush-x), var(--planet-brush-y), var(--planet-brush)) translate(-50%, -50%); }
+  74% { opacity: 1; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
+  76%, 100% { opacity: 0; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
 }
 
 @keyframes cosmic-planet-midflight {
-  0%, 38% { opacity: 0.92; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%); }
-  62% { opacity: 0.92; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-mid)) translate(-50%, -50%); }
-  86%, 100% { opacity: 0; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
+  0%, 44% { opacity: 0.92; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%); }
+  64% { opacity: 0.92; transform: translate3d(var(--planet-mid-x), var(--planet-mid-y), var(--planet-mid)) translate(-50%, -50%); animation-timing-function: cubic-bezier(0.5, 0, 0.85, 0.7); }
+  84% { opacity: 0.92; transform: translate3d(var(--planet-end-x), var(--planet-end-y), var(--planet-pass)) translate(-50%, -50%); }
+  88%, 100% { opacity: 0; transform: translate3d(var(--planet-end-x), var(--planet-end-y), var(--planet-pass)) translate(-50%, -50%); }
 }
 
 @keyframes cosmic-planet-distant {
-  0%, 30% { opacity: 0.65; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%); }
-  66% { opacity: 0.6; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-mid)) translate(-50%, -50%); }
-  86%, 100% { opacity: 0; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
+  0%, 44% { opacity: 0.65; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-start)) translate(-50%, -50%); }
+  80% { opacity: 0.6; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-mid)) translate(-50%, -50%); }
+  94%, 100% { opacity: 0; transform: translate3d(var(--planet-x), var(--planet-y), var(--planet-pass)) translate(-50%, -50%); }
 }
 
 @keyframes cosmic-constellation-retreat {
-  0%, 26% { opacity: 0.85; transform: translateZ(-30px); }
-  58% { opacity: 0.35; transform: translateZ(-200px); }
-  76%, 100% { opacity: 0; transform: translateZ(-420px); }
+  0%, 44% { opacity: 0.65; transform: translateZ(-30px); }
+  66% { opacity: 0.85; transform: translateZ(100px); }
+  84%, 100% { opacity: 0; transform: translate3d(var(--constellation-exit-x), var(--constellation-exit-y), 540px); }
 }
 
 @media (max-width: 1023px) {
@@ -197,9 +250,9 @@ html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-sc
 
 @media (max-width: 767px) {
   .cosmic-intro-scenery { perspective: 600px; }
-  .cosmic-intro-planet--rocky { width: 200px; --planet-x: -65vw; --planet-y: max(38vh, 160px); }
-  .cosmic-intro-planet--gas { width: 205px; --planet-x: 75vw; --planet-y: min(-52vh, -180px); }
-  .cosmic-intro-planet--atmosphere { width: 130px; --planet-x: -63vw; --planet-y: -65vh; }
+  .cosmic-intro-planet--rocky { width: 200px; --planet-x: -65vw; --planet-y: max(38vh, 160px); --planet-mid-x: -56vw; --planet-mid-y: 28vh; --planet-brush-x: -35vw; --planet-brush: 150px; --planet-brush-y: 16vh; }
+  .cosmic-intro-planet--gas { width: 205px; --planet-x: 75vw; --planet-y: min(-52vh, -180px); --planet-mid-x: 60vw; --planet-mid-y: -38vh; --planet-brush-x: 35vw; --planet-brush-y: -18vh; }
+  .cosmic-intro-planet--atmosphere { width: 130px; --planet-x: -63vw; --planet-y: -65vh; --planet-mid-x: -58vw; --planet-end-x: -80vw; }
   .cosmic-intro-planet--moon,
   .cosmic-intro-planet--ice,
   .cosmic-intro-constellation--south { display: none; }
