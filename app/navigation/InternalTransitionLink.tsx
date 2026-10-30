@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ComponentProps, MouseEvent as ReactMouseEvent } from "react";
-import { usePageTransition } from "./PageTransitionProvider";
+import { usePageTransition } from "./PageTransitionContext";
 
 type InternalTransitionLinkProps = Omit<
   ComponentProps<typeof Link>,

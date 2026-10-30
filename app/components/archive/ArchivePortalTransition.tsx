@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import type { WarpState } from "../../navigation/cosmicNavigation";
 
 export type ArchiveDocumentTitle =
   | "SUPPORT"
@@ -13,72 +14,58 @@ export type PageTransitionDestination =
   | "APPS"
   | "CONTACT";
 
-export type PageTransitionState = {
+export type PageTransitionState = WarpState & {
   destination: PageTransitionDestination;
-  href: string;
-  x: number;
-  y: number;
 };
 
 type ArchivePortalTransitionProps = {
-  reducedMotion: boolean;
   transition: PageTransitionState | null;
 };
 
-const PORTAL_DUST = [
-  { x: -32, y: -22, delay: 0 },
-  { x: 28, y: -30, delay: 34 },
-  { x: -44, y: 9, delay: 68 },
-  { x: 39, y: 18, delay: 18 },
-  { x: -21, y: 35, delay: 96 },
-  { x: 17, y: 42, delay: 52 },
-  { x: -56, y: -6, delay: 112 },
-  { x: 54, y: -2, delay: 80 },
-] as const;
+// The intro's pale lavender stars become radial streaks around one vanishing point.
+const WARP_RAYS = Array.from({ length: 40 }, (_, index) => ({
+  angle: index * 137.508,
+  depth: 100 + (index * 67) % 260,
+  delay: (index % 8) * 9,
+}));
 
 export function ArchivePortalTransition({
-  reducedMotion,
   transition,
 }: ArchivePortalTransitionProps) {
-  if (!transition) return null;
-
-  const portalStyle = {
-    "--archive-portal-x": `${transition.x}px`,
-    "--archive-portal-y": `${transition.y}px`,
-  } as CSSProperties;
+  if (!transition || transition.timing.duration === 0) return null;
 
   return (
     <div
-      className={`archive-portal-transition${reducedMotion ? " is-reduced-motion" : ""}`}
-      style={portalStyle}
+      key={transition.id}
+      className="cosmic-warp"
       aria-hidden="true"
       data-page-destination={transition.destination.toLowerCase()}
+      data-warp-phase={transition.phase}
     >
-      <span className="archive-portal-backdrop" />
-      <span className="archive-portal-surface" />
-      <span className="archive-portal-glow" />
-      <span className="archive-portal-ring archive-portal-ring-outer" />
-      <span className="archive-portal-ring archive-portal-ring-inner" />
-      <span className="archive-portal-noise" />
-      <span className="archive-portal-orb" />
-      <span className="archive-portal-spark archive-portal-spark-one" />
-      <span className="archive-portal-spark archive-portal-spark-two" />
-      <span className="archive-portal-spark archive-portal-spark-three" />
-      <span className="archive-portal-dust-field">
-        {PORTAL_DUST.map((dust, index) => (
-          <i
-            key={`${dust.x}-${dust.y}`}
-            style={
-              {
-                "--portal-dust-x": `${dust.x}vmin`,
-                "--portal-dust-y": `${dust.y}vmin`,
-                "--portal-dust-delay": `${dust.delay}ms`,
-              } as CSSProperties
-            }
-            data-portal-dust={index + 1}
-          />
-        ))}
-      </span>
+      <span className="cosmic-warp-veil" />
+      {!transition.timing.reduced && (
+        <svg className="cosmic-warp-field" viewBox="-700 -450 1400 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <defs>
+            <linearGradient id="cosmic-warp-ray-light" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="32" y2="0">
+              <stop stopColor="#ac82eb" stopOpacity="0" />
+              <stop offset=".72" stopColor="#d5bdf8" stopOpacity=".65" />
+              <stop offset="1" stopColor="#f0e8ff" />
+            </linearGradient>
+          </defs>
+          <g className="cosmic-warp-waves" fill="none" stroke="#bb98ef">
+            <ellipse className="cosmic-warp-wave" rx="96" ry="62" />
+            <ellipse className="cosmic-warp-wave cosmic-warp-wave--outer" rx="130" ry="88" />
+          </g>
+          <g className="cosmic-warp-rays">{WARP_RAYS.map((ray, index) => (
+            <g key={index} transform={"rotate(" + ray.angle + ")"} className="cosmic-warp-ray-orbit">
+              <g className="cosmic-warp-ray" style={{ "--ray-depth": ray.depth + "px", "--ray-delay": ray.delay + "ms" } as CSSProperties}>
+                <path d="M0 0H32" stroke="url(#cosmic-warp-ray-light)" strokeWidth={index % 3 === 0 ? 1.8 : 1} />
+                <path d="M30 -2v4m-2-2h4" stroke="#eee3ff" strokeWidth=".8" />
+              </g>
+            </g>
+          ))}</g>
+        </svg>
+      )}
     </div>
   );
 }

@@ -1,10 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -17,25 +15,15 @@ import {
   type PageTransitionDestination,
   type PageTransitionState,
 } from "../components/archive/ArchivePortalTransition";
+import { getCosmicIntroDecision } from "../components/cosmic-intro/introLifecycle";
+import { createWarpLifecycle, getWarpTiming, navigationKind, routePath, warpPreviewEnabled } from "./cosmicNavigation";
+import { createScrollRecorder, persistRouterScroll } from "./routerScrollPosition";
+import { PageTransitionContext } from "./PageTransitionContext";
+import "./cosmic-navigation.css";
 
-const PAGE_TRANSITION_ROUTE_DELAY_MS = 520;
-const PAGE_TRANSITION_FINISH_DELAY_MS = 260;
-const REDUCED_ROUTE_DELAY_MS = 90;
-const REDUCED_FINISH_DELAY_MS = 90;
 const HEADER_SCROLL_GAP_PX = 24;
 const INTERNAL_HOME_NAVIGATION_KEY = "same-studio-internal-home-navigation-v1";
 const PENDING_DESTINATION_KEY = "same-studio-pending-destination-v1";
-
-type PageTransitionContextValue = {
-  pageTransitionActive: boolean;
-  navigateWithTransition: (
-    event: ReactMouseEvent<HTMLAnchorElement>,
-    href: string,
-  ) => boolean;
-};
-
-const PageTransitionContext =
-  createContext<PageTransitionContextValue | null>(null);
 
 function getDestination(href: string): PageTransitionDestination {
   const url = new URL(href, window.location.href);
@@ -48,18 +36,6 @@ function getDestination(href: string): PageTransitionDestination {
   if (pathname === "/privacy") return "PRIVACY";
   if (pathname === "/delete-account") return "DELETE ACCOUNT";
   return "HOME";
-}
-
-function isModifiedNavigation(event: ReactMouseEvent<HTMLAnchorElement>) {
-  return (
-    event.button !== 0 ||
-    event.metaKey ||
-    event.ctrlKey ||
-    event.shiftKey ||
-    event.altKey ||
-    event.currentTarget.target === "_blank" ||
-    event.currentTarget.hasAttribute("download")
-  );
 }
 
 function focusWithoutScrolling(element: HTMLElement | null) {
@@ -104,7 +80,8 @@ function settleDestination(href: string) {
 
   scrollImmediately(0);
   focusWithoutScrolling(
-    document.querySelector<HTMLElement>("main h1, main [data-focus-target], main"),
+    document.querySelector<HTMLElement>("main h1, main [data-focus-target]")
+      ?? document.querySelector<HTMLElement>("main"),
   );
   return true;
 }
@@ -112,9 +89,14 @@ function settleDestination(href: string) {
 function destinationIsReady(href: string) {
   const url = new URL(href, window.location.href);
   const routeMatches =
-    window.location.pathname === url.pathname &&
+    routePath(window.location.pathname) === routePath(url.pathname) &&
     window.location.search === url.search;
   if (!routeMatches) return false;
+  if (routePath(url.pathname) === "/" && !document.querySelector(".site-shell")) return false;
+  const archivePage = routePath(url.pathname).slice(1);
+  if (["support", "privacy", "terms", "delete-account"].includes(archivePage)
+    && document.body.dataset.archiveDocument !== archivePage) return false;
+  if (!document.querySelector("main")) return false;
   return !url.hash || Boolean(
     document.getElementById(decodeURIComponent(url.hash.slice(1))),
   );
@@ -135,222 +117,148 @@ export function consumeInternalHomeNavigation() {
   return documentMarker || storedMarker;
 }
 
+// Route commits keep this provider; one lifecycle owns all transient visual work.
 export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [transition, setTransition] = useState<PageTransitionState | null>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const routeTimerRef = useRef<number | null>(null);
-  const finishTimerRef = useRef<number | null>(null);
-  const arrivalTimerRef = useRef<number | null>(null);
-  const transitionLockedRef = useRef(false);
-
-  const clearTimers = useCallback(() => {
-    if (routeTimerRef.current !== null) {
-      window.clearTimeout(routeTimerRef.current);
-      routeTimerRef.current = null;
-    }
-    if (finishTimerRef.current !== null) {
-      window.clearTimeout(finishTimerRef.current);
-      finishTimerRef.current = null;
-    }
-    if (arrivalTimerRef.current !== null) {
-      window.clearTimeout(arrivalTimerRef.current);
-      arrivalTimerRef.current = null;
-    }
-  }, []);
-
-  const finishTransition = useCallback(
-    (href: string) => {
-      let attempts = 0;
-      const settleAndFinish = () => {
-        attempts += 1;
-        const destinationReady = destinationIsReady(href);
-        if (!destinationReady && attempts < 60) {
-          finishTimerRef.current = window.setTimeout(settleAndFinish, 30);
-          return;
-        }
-
-        finishTimerRef.current = null;
-        try {
-          if (!destinationReady) {
-            console.error(
-              `[PageTransition] Destination did not become ready: ${href}`,
-            );
-          } else {
-            settleDestination(href);
-          }
-          window.sessionStorage.removeItem(PENDING_DESTINATION_KEY);
-        } catch {
-          // Destination cleanup still completes when storage is unavailable.
-        } finally {
-          document.body.classList.remove("is-page-transitioning");
-          document.body.removeAttribute("aria-busy");
-          setTransition(null);
-          transitionLockedRef.current = false;
-          document.documentElement.style.removeProperty("--archive-portal-x");
-          document.documentElement.style.removeProperty("--archive-portal-y");
-        }
-      };
-      settleAndFinish();
-    },
-    [],
-  );
-
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    let pendingHref: string | null = null;
-    try {
-      pendingHref = window.sessionStorage.getItem(PENDING_DESTINATION_KEY);
-      window.sessionStorage.removeItem(PENDING_DESTINATION_KEY);
-    } catch {
-      // A persisted destination is optional; normal route rendering still works.
-    }
-    if (!pendingHref) return;
-
-    let attempts = 0;
-    const settleArrival = () => {
-      attempts += 1;
-      if (!destinationIsReady(pendingHref) && attempts < 60) {
-        arrivalTimerRef.current = window.setTimeout(settleArrival, 30);
-        return;
-      }
-      arrivalTimerRef.current = null;
-      document.body.classList.remove("is-page-transitioning");
-      document.body.removeAttribute("aria-busy");
-      settleDestination(pendingHref);
-    };
-    settleArrival();
-
-    return () => {
-      if (arrivalTimerRef.current !== null) {
-        window.clearTimeout(arrivalTimerRef.current);
-        arrivalTimerRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(
-    () => () => {
-      clearTimers();
-      document.body.classList.remove("is-page-transitioning");
-      document.body.removeAttribute("aria-busy");
-      document.documentElement.style.removeProperty("--archive-portal-x");
-      document.documentElement.style.removeProperty("--archive-portal-y");
-    },
-    [clearTimers],
-  );
-
-  const navigateWithTransition = useCallback(
-    (event: ReactMouseEvent<HTMLAnchorElement>, href: string) => {
-      if (isModifiedNavigation(event)) return false;
-
-      const destinationUrl = new URL(href, window.location.href);
-      if (
-        destinationUrl.origin !== window.location.origin ||
-        !["http:", "https:"].includes(destinationUrl.protocol)
-      ) {
-        return false;
-      }
-
-      const currentLocation = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-      const destinationLocation = `${destinationUrl.pathname}${destinationUrl.search}${destinationUrl.hash}`;
-      event.preventDefault();
-      if (currentLocation === destinationLocation || transitionLockedRef.current) {
-        return true;
-      }
-
-      transitionLockedRef.current = true;
-      const bounds = event.currentTarget.getBoundingClientRect();
-      const keyboardActivation = event.clientX === 0 && event.clientY === 0;
-      const x = keyboardActivation ? bounds.left + bounds.width / 2 : event.clientX;
-      const y = keyboardActivation ? bounds.top + bounds.height / 2 : event.clientY;
-      const nextTransition = {
-        destination: getDestination(href),
-        href,
-        x,
-        y,
-      } satisfies PageTransitionState;
-
-      document.documentElement.style.setProperty("--archive-portal-x", `${x}px`);
-      document.documentElement.style.setProperty("--archive-portal-y", `${y}px`);
+  const [announcement, setAnnouncement] = useState("");
+  const previewRef = useRef(false);
+  const lastPathRef = useRef(pathname);
+  const [lifecycle] = useState(() => createWarpLifecycle({
+    now: () => window.performance.now(),
+    setTimer: (callback, delay) => window.setTimeout(callback, delay),
+    clearTimer: (timer) => window.clearTimeout(timer),
+    isReady: destinationIsReady,
+    onPhase: (state) => {
       document.body.classList.add("is-page-transitioning");
       document.body.setAttribute("aria-busy", "true");
-      setTransition(nextTransition);
-
-      routeTimerRef.current = window.setTimeout(
-        () => {
-          routeTimerRef.current = null;
-          const destinationUrl = new URL(href, window.location.href);
-          if (destinationUrl.pathname === "/") {
-            document.documentElement.dataset.internalHomeNavigation = "true";
-          }
-          try {
-            window.sessionStorage.setItem(PENDING_DESTINATION_KEY, href);
-            if (destinationUrl.pathname === "/") {
-              window.sessionStorage.setItem(
-                INTERNAL_HOME_NAVIGATION_KEY,
-                "1",
-              );
-            }
-          } catch {
-            // The live provider state remains the fallback when storage is unavailable.
-          }
-          try {
-            router.push(href, { scroll: false });
-          } catch (error) {
-            console.error(`[PageTransition] Navigation failed: ${href}`, error);
-            finishTransition(href);
-            return;
-          }
-          finishTimerRef.current = window.setTimeout(
-            () => {
-              finishTimerRef.current = null;
-              finishTransition(href);
-            },
-            reducedMotion
-              ? REDUCED_FINISH_DELAY_MS
-              : PAGE_TRANSITION_FINISH_DELAY_MS,
-          );
-        },
-        reducedMotion ? REDUCED_ROUTE_DELAY_MS : PAGE_TRANSITION_ROUTE_DELAY_MS,
-      );
-      return true;
+      document.body.dataset.warpPhase = state.phase;
+      document.body.dataset.warpMotion = state.timing.duration === 0 ? "handoff" : state.timing.reduced ? "reduced" : "full";
+      document.body.style.setProperty("--warp-duration", state.timing.duration + "ms");
+      document.body.style.setProperty("--warp-departure", state.timing.departure + "ms");
+      document.body.style.setProperty("--warp-arrival", state.timing.arrival + "ms");
+      setTransition({ ...state, destination: getDestination(state.href) });
     },
-    [finishTransition, reducedMotion, router],
-  );
+    onReady: (href) => {
+      settleDestination(href);
+      persistRouterScroll(window.history, window.scrollX, window.scrollY);
+      setAnnouncement(document.title);
+    },
+    onFinish: (reason) => {
+      document.body.classList.remove("is-page-transitioning");
+      document.body.removeAttribute("aria-busy");
+      delete document.body.dataset.warpPhase;
+      delete document.body.dataset.warpMotion;
+      for (const property of ["--warp-duration", "--warp-departure", "--warp-arrival"]) document.body.style.removeProperty(property);
+      setTransition(null);
+      if (reason === "timeout" || reason === "error") console.warn("[CosmicNavigation] Visual transition cleared safely.");
+    },
+  }));
 
-  const value = useMemo(
-    () => ({
-      pageTransitionActive: transition !== null,
-      navigateWithTransition,
-    }),
-    [navigateWithTransition, transition],
-  );
+  useEffect(() => {
+    // Accept a pending destination from the previous provider without replaying departure.
+    try {
+      const pending = window.sessionStorage.getItem(PENDING_DESTINATION_KEY);
+      window.sessionStorage.removeItem(PENDING_DESTINATION_KEY);
+      if (pending && destinationIsReady(pending)) settleDestination(pending);
+    } catch { /* Navigation also works when storage is restricted. */ }
+    const scrollRecorder = createScrollRecorder({
+      setTimer: (callback, delay) => window.setTimeout(callback, delay),
+      clearTimer: (timer) => window.clearTimeout(timer),
+      save: () => persistRouterScroll(window.history, window.scrollX, window.scrollY),
+    });
+    const cancel = () => {
+      scrollRecorder.cancel();
+      lifecycle.cancel();
+    };
+    const onPageHide = () => { scrollRecorder.flush(); cancel(); };
+    const onHistoryKey = (event: KeyboardEvent) => {
+      if ((event.altKey && ["ArrowLeft", "ArrowRight"].includes(event.key))
+        || (event.metaKey && ["[", "]"].includes(event.key))) scrollRecorder.flush();
+    };
+    const onVisibility = () => { if (document.visibilityState === "hidden") cancel(); };
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onMotion = () => { if (motion.matches) cancel(); };
+    window.addEventListener("popstate", cancel);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("error", cancel);
+    window.addEventListener("unhandledrejection", cancel);
+    window.addEventListener("scroll", scrollRecorder.schedule, { passive: true });
+    window.addEventListener("blur", scrollRecorder.flush);
+    window.addEventListener("keydown", onHistoryKey);
+    document.addEventListener("visibilitychange", onVisibility);
+    motion.addEventListener("change", onMotion);
+    scrollRecorder.flush();
+    return () => {
+      cancel();
+      window.removeEventListener("popstate", cancel);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("error", cancel);
+      window.removeEventListener("unhandledrejection", cancel);
+      window.removeEventListener("scroll", scrollRecorder.schedule);
+      window.removeEventListener("blur", scrollRecorder.flush);
+      window.removeEventListener("keydown", onHistoryKey);
+      document.removeEventListener("visibilitychange", onVisibility);
+      motion.removeEventListener("change", onMotion);
+    };
+  }, [lifecycle]);
 
+  useEffect(() => {
+    if (lastPathRef.current === pathname) return;
+    lastPathRef.current = pathname;
+    if (lifecycle.active) return;
+    // History keeps browser scroll restoration; focus must not reset that position.
+    const frame = window.requestAnimationFrame(() => {
+      focusWithoutScrolling(document.querySelector<HTMLElement>("main h1, main [data-focus-target]")
+        ?? document.querySelector<HTMLElement>("main"));
+      setAnnouncement(document.title);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, lifecycle]);
+
+  const navigateWithTransition = useCallback((event: ReactMouseEvent<HTMLAnchorElement>, href: string) => {
+    const current = new URL(window.location.href);
+    const destination = new URL(href, current);
+    const kind = navigationKind(current, destination, {
+      button: event.button, metaKey: event.metaKey, ctrlKey: event.ctrlKey,
+      shiftKey: event.shiftKey, altKey: event.altKey,
+      target: event.currentTarget.target, download: event.currentTarget.hasAttribute("download"),
+    });
+    if (kind === "native") return false;
+    if (kind === "anchor") {
+      lifecycle.cancel();
+      if (current.href !== destination.href) router.push(href, { scroll: false });
+      event.preventDefault();
+      settleDestination(href);
+      persistRouterScroll(window.history, window.scrollX, window.scrollY);
+      return true; // Move focus out of the closing menu without starting a warp.
+    }
+    event.preventDefault();
+    const development = process.env.NODE_ENV === "development";
+    previewRef.current = warpPreviewEnabled(current.search, development, previewRef.current);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches && !previewRef.current;
+    const compact = window.matchMedia("(max-width: 767px)").matches;
+    const home = routePath(destination.pathname) === "/";
+    const introPreview = development && ["full", "replay"].includes(destination.searchParams.get("intro") ?? "");
+    const introHandoff = home && !destination.hash && (introPreview || !getCosmicIntroDecision(window, false, development).seen);
+    const timing = getWarpTiming(current.pathname, destination.pathname, reduced, compact, introHandoff);
+    lifecycle.start(href, timing, () => {
+      if (home) {
+        document.documentElement.dataset.internalHomeNavigation = "true";
+        try { window.sessionStorage.setItem(INTERNAL_HOME_NAVIGATION_KEY, "1"); } catch { /* Optional marker. */ }
+      }
+      router.push(href, { scroll: false });
+    });
+    return true;
+  }, [router, lifecycle]);
+
+  const value = useMemo(() => ({ pageTransitionActive: transition !== null, navigateWithTransition }), [transition, navigateWithTransition]);
   return (
     <PageTransitionContext.Provider value={value}>
       {children}
-      <ArchivePortalTransition
-        transition={transition}
-        reducedMotion={reducedMotion}
-      />
+      <span className="cosmic-navigation-announcement" role="status" aria-live="polite" aria-atomic="true">{announcement}</span>
+      <ArchivePortalTransition transition={transition} />
     </PageTransitionContext.Provider>
   );
-}
-
-export function usePageTransition() {
-  const value = useContext(PageTransitionContext);
-  if (!value) {
-    throw new Error(
-      "usePageTransition must be used within PageTransitionProvider",
-    );
-  }
-  return value;
 }

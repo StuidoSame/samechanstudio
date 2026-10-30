@@ -1,0 +1,146 @@
+.cosmic-navigation-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.cosmic-warp {
+  position: fixed;
+  z-index: 1500;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  isolation: isolate;
+}
+
+.cosmic-warp-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 46%, #10091e 0 7%, rgba(50, 24, 83, .93) 26%, rgba(21, 12, 39, .96) 58%, rgba(10, 7, 20, .94) 100%);
+  opacity: 0;
+  animation: cosmic-warp-veil var(--warp-duration) ease-in-out both !important;
+}
+
+.cosmic-warp-field {
+  position: absolute;
+  inset: -14% -10% -6%;
+  width: 120%;
+  height: 120%;
+  overflow: visible;
+  opacity: 0;
+  animation: cosmic-warp-field var(--warp-duration) linear both !important;
+}
+
+.cosmic-warp-ray {
+  opacity: 0;
+  animation: cosmic-warp-ray var(--warp-duration) cubic-bezier(.4, 0, .8, .45) var(--ray-delay) both !important;
+}
+
+.cosmic-warp-wave {
+  opacity: 0;
+  stroke-width: .8;
+  transform-origin: 0 0;
+  animation: cosmic-warp-wave var(--warp-duration) cubic-bezier(.38, 0, .72, .6) both !important;
+}
+
+.cosmic-warp-wave--outer {
+  stroke-opacity: .45;
+  animation-delay: 45ms !important;
+}
+
+/* Persistent navigation stays still so a second pointer activation remains reliable. */
+body[data-warp-motion="full"][data-warp-phase="departing"] :is(.archive-main, .carousel-stage, .studio-about, .device-showcase, .contact-section) {
+  transform-origin: 50% 50%;
+  animation: cosmic-warp-depart var(--warp-departure) cubic-bezier(.3, 0, .65, .7) both !important;
+}
+
+body[data-warp-motion="full"][data-warp-phase="travelling"] :is(.archive-main, .carousel-stage, .studio-about, .device-showcase, .contact-section) {
+  transform-origin: 50% 50%;
+  transform: perspective(1200px) translateZ(-70px) scale(.97);
+  opacity: .82;
+}
+
+body[data-warp-motion="full"][data-warp-phase="arriving"] :is(.archive-main, .carousel-stage, .studio-about, .device-showcase, .contact-section) {
+  transform-origin: 50% 50%;
+  animation: cosmic-warp-arrive var(--warp-arrival) cubic-bezier(.2, .65, .25, 1) both !important;
+}
+
+body[data-warp-motion="full"][data-warp-phase="arriving"] main h1 {
+  animation: cosmic-warp-title var(--warp-arrival) ease-out both !important;
+}
+
+body[data-warp-motion="reduced"] .cosmic-warp-veil {
+  background: var(--theme-page, #191522);
+  animation-name: cosmic-warp-reduced !important;
+}
+
+@keyframes cosmic-warp-depart {
+  from { transform: perspective(1200px) translateZ(0) scale(1); opacity: 1; }
+  to { transform: perspective(1200px) translateZ(-70px) scale(.97); opacity: .82; }
+}
+
+@keyframes cosmic-warp-arrive {
+  from { transform: perspective(1200px) translateZ(-24px) scale(.99); opacity: .62; }
+  to { transform: perspective(1200px) translateZ(0) scale(1); opacity: 1; }
+}
+
+@keyframes cosmic-warp-title {
+  from { translate: 0 5px; }
+  to { translate: 0 0; }
+}
+
+@keyframes cosmic-warp-veil {
+  0% { opacity: 0; }
+  24% { opacity: .84; }
+  45% { opacity: .94; }
+  74% { opacity: .58; }
+  100% { opacity: 0; }
+}
+
+@keyframes cosmic-warp-field {
+  0% { opacity: 0; }
+  15% { opacity: .6; }
+  42% { opacity: 1; }
+  78% { opacity: .7; }
+  100% { opacity: 0; }
+}
+
+@keyframes cosmic-warp-ray {
+  0% { transform: translateX(var(--ray-depth)) scaleX(.2); opacity: 0; }
+  18% { transform: translateX(80px) scaleX(.3); opacity: .55; }
+  38% { transform: translateX(150px) scaleX(2); opacity: 1; }
+  72% { transform: translateX(720px) scaleX(7); opacity: .85; }
+  100% { transform: translateX(1250px) scaleX(4); opacity: 0; }
+}
+
+@keyframes cosmic-warp-wave {
+  0% { transform: scale(.15); opacity: 0; }
+  30% { opacity: .44; }
+  75% { opacity: .18; }
+  100% { transform: scale(11); opacity: 0; }
+}
+
+@keyframes cosmic-warp-reduced {
+  0%, 100% { opacity: 0; }
+  50% { opacity: .12; }
+}
+
+@keyframes archive-link-select {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.28); }
+}
+
+@media (max-width: 1023px) {
+  .cosmic-warp-ray-orbit:nth-of-type(n + 29) { display: none; }
+}
+
+@media (max-width: 767px) {
+  .cosmic-warp-ray-orbit:nth-of-type(n + 19) { display: none; }
+  .cosmic-warp-wave--outer { display: none; }
+}

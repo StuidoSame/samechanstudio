@@ -1425,7 +1425,6 @@ body.archive-page.is-returning {
   display: flex;
   flex-direction: column;
   transform-origin: var(--archive-portal-x) var(--archive-portal-y);
-  animation: archive-shell-arrive 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
 }
 
 .policy-page-layout {

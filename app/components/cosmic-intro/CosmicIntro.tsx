@@ -3,8 +3,8 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import {
   consumeInternalHomeNavigation,
-  usePageTransition,
 } from "../../navigation/PageTransitionProvider";
+import { usePageTransition } from "../../navigation/PageTransitionContext";
 import { claimCosmicIntro, playCosmicIntro, COSMIC_INTRO_DEVELOPMENT } from "./introLifecycle";
 import { CosmicScenery } from "./CosmicScenery";
 import { startSpaceFlight } from "./spaceFlight";

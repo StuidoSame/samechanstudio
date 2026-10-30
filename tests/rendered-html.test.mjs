@@ -168,6 +168,14 @@ test("Support adds ETC after the seven apps without restoring legacy app cards",
   assert.doesNotMatch(html, /PINI 선택|PEPESNAP 선택|FEELOO 선택|pini_icon|pepsnap\.png|feeloo_icon/);
 });
 
+test("direct route HTML exposes a live destination status without a departure overlay", async () => {
+  for (const path of ["/", "/support/", "/privacy/", "/terms/", "/delete-account/"]) {
+    const html = await (await render(path)).text();
+    assert.match(html, /class="cosmic-navigation-announcement" role="status" aria-live="polite" aria-atomic="true"/);
+    assert.doesNotMatch(html, /<body\b[^>]*data-warp-phase=|<div\b[^>]*class="(?:cosmic-warp|archive-portal-transition)/);
+  }
+});
+
 test("binds six world bodies and two constellation planes to the spatial flight renderer", async () => {
   const html = await (await render()).text();
   assert.deepEqual([...html.matchAll(/data-flight-planet="([^"]+)"/g)].map((match) => match[1]),
