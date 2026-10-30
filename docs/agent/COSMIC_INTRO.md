@@ -1,12 +1,12 @@
 # 우주 인트로 실행·재생
 
-현재 기준은 2026-10-30의 **8초 공통 카메라 비행**이다. 구현·측정·연속 프레임은 [DEEP_SPACE_FLIGHT](DEEP_SPACE_FLIGHT.md)를 따른다.
+현재 기준은 2026-10-30의 **6초 공통 카메라 비행**이다. 최신 타이밍·측정·연속 프레임은 [COSMIC_TIMING_OPTIMIZATION](COSMIC_TIMING_OPTIMIZATION.md)을 따른다. 기존 공간 구조와 8초 시퀀스 검증 이력은 [DEEP_SPACE_FLIGHT](DEEP_SPACE_FLIGHT.md)에 보존한다.
 
 ## 현재 구성과 재생 정책
 
 `spaceFlight.ts`가 고정된 세계 좌표, 공통 카메라의 가속·등속·감속과 핀홀 원근 투영을 계산한다. `CosmicScenery.tsx`와 `space-flight.css`는 기존 SVG 천체와 두 별자리 평면, 깊이별 별빛을 DOM/SVG로 그린다. 별도의 Canvas나 WebGL 컨텍스트는 추가하지 않는다. `CosmicIntro.tsx`는 기존 수명주기의 종료·스킵·unmount에 새 rAF 루프와 resize 리스너 정리를 연결한다.
 
-전체 모션은 8초다. 1.2–2.295초에 10개 문자의 75ms stagger·420ms 바운스, 2.3–7.1초에 공간 비행, 7.1–8초에 Hero 전환을 수행한다. 개발 `/?intro=full`은 전체 모션, `/?intro=replay`는 사용자 모션 설정을 존중한다. reduced motion은 기존 1.2초 정적 로고이며 공간 루프를 시작하지 않는다. 생산 빌드는 개발 파라미터를 무시한다.
+전체 모션은 6초다. `introTiming.mjs`가 수명주기·카메라·SSR CSS keyframe의 공통 시간 기준이다. 1.0–2.095초에 10개 문자의 75ms stagger·420ms 바운스, 2.0–2.5초에 카메라 가속, 2.5–5.2초에 연속 공간 비행, 5.2–6초에 Hero 전환을 수행한다. 로고는 마지막 문자 정착 이후인 2.2초까지 완전히 보인다. 개발 `/?intro=full`은 전체 모션, `/?intro=replay`는 사용자 모션 설정을 존중한다. reduced motion은 기존 1.2초 정적 로고이며 공간 루프를 시작하지 않는다. 생산 빌드는 개발 파라미터를 무시한다.
 
 메인 `/` 전용·탭 세션당 한 번·하위 페이지 생략·실제 입력으로 즉시 스킵·기존 세션 값 보존 정책은 유지한다. 비활성화·페이지 이탈·스킵·정상 종료·unmount에 프레임 콜백과 리스너를 해제한다. GPU 메모리와 실제 모바일 기기 성능은 별도 검증 대상이다.
 
