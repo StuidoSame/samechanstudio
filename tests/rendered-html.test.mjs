@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { DELETE_ACCOUNT_MESSAGES } from "../app/delete-account/deleteAccountMessages.ts";
+import { COSMIC_INTRO_TIMELINE_CSS } from "../app/components/cosmic-intro/introTiming.mjs";
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -66,6 +67,7 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.match(html, /SAME STUDIO/);
   assert.match(html, /class="site-shell is-ready"/);
   assert.match(html, /class="cosmic-intro" aria-hidden="true"/);
+  assert.ok(html.includes(COSMIC_INTRO_TIMELINE_CSS), "SSR supplies the shared six-second CSS clock before hydration");
   const letters = [...html.matchAll(/class="cosmic-intro-letter" style="--cosmic-letter-index:(\d+)" aria-hidden="true">([^<]+)<\/span>/g)];
   assert.deepEqual(letters.map((match) => [Number(match[1]), match[2]]),
     Array.from("SAMESTUDIO", (letter, index) => [index, letter]));

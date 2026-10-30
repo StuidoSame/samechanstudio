@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import vm from "node:vm";
+import { COSMIC_INTRO_TIMING } from "../app/components/cosmic-intro/introTiming.mjs";
 import {
   claimCosmicIntro, playCosmicIntro, getCosmicIntroDecision,
   createCosmicIntroInitializationScript, COSMIC_INTRO_DURATION_MS,
@@ -215,6 +216,16 @@ test("full playback lasts six seconds while reduced playback keeps its short acc
     assert.deepEqual([...timers.values()], [duration + 200]);
     dispose();
   }
+});
+
+test("all ten letter bounces settle while the logo is fully visible before cruising", () => {
+  const timing = COSMIC_INTRO_TIMING;
+  assert.equal(timing.letterStaggerMs, 75);
+  assert.equal(timing.letterDurationMs, 420);
+  const lastLetterEnd = timing.letterStartMs + 9 * timing.letterStaggerMs + timing.letterDurationMs;
+  assert.equal(lastLetterEnd, 2095);
+  assert.ok(lastLetterEnd < timing.logoHoldMs && timing.logoHoldMs < timing.logoExitMs);
+  assert.ok(lastLetterEnd < timing.cruiseMs);
 });
 
 test("automatic focus, scroll and synthetic inputs cannot instantly skip the logo", () => {
