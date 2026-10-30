@@ -2070,6 +2070,7 @@ body.archive-page.is-returning {
   max-width: 100%;
   min-width: 0;
   margin-top: 18px;
+  padding-inline: 52px;
   border: 1px solid rgba(205, 174, 248, 0.1);
   border-radius: 26px;
   background:
@@ -2104,7 +2105,7 @@ body.archive-page.is-returning {
 
 .support-app-rail {
   width: 100%;
-  padding: 17px 52px 15px;
+  padding: 17px 0 15px;
   display: flex;
   gap: clamp(13px, 1.7vw, 18px);
   overflow-x: auto;
@@ -3425,6 +3426,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
 
   .support-app-gallery {
     margin-top: 14px;
+    padding-inline: 40px;
     border-radius: 20px;
   }
 
@@ -3434,9 +3436,7 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   }
 
   .support-app-rail {
-    margin-right: -18px;
-    width: calc(100% + 18px);
-    padding: 14px 34px 13px 12px;
+    padding: 14px 0 13px;
     gap: 12px;
   }
 
