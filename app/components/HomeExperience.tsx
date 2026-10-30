@@ -254,8 +254,8 @@ const interpolateSlotValue = (absoluteSlot: number, anchors: readonly number[]) 
   return anchors[lower] + (anchors[upper] - anchors[lower]) * progress;
 };
 
-const CAROUSEL_SCALE_ANCHORS = [1.24, 0.7, 0.5, 0.36, 0.3] as const;
-const CAROUSEL_OPACITY_ANCHORS = [1, 0.82, 0.54, 0.3, 0.2] as const;
+const CAROUSEL_SCALE_ANCHORS = [1.24, 0.94, 0.54, 0.36, 0.3] as const;
+const CAROUSEL_OPACITY_ANCHORS = [1, 0.86, 0.54, 0.3, 0.2] as const;
 const CAROUSEL_BRIGHTNESS_ANCHORS = [1, 0.88, 0.76, 0.68, 0.64] as const;
 const CAROUSEL_SATURATION_ANCHORS = [1, 0.85, 0.68, 0.54, 0.48] as const;
 const CAROUSEL_BLUR_ANCHORS = [0, 0, 0, 0.35, 0.5] as const;
@@ -356,6 +356,7 @@ function AppCard({
       onClick={() => onSelect(index)}
     >
       <span className="planet-orbit planet-orbit-back" aria-hidden="true" />
+      <span className="planet-shell" aria-hidden="true" />
       <span className="planet-icon-frame">
         <Image
           className="carousel-app-icon"
@@ -1425,7 +1426,7 @@ export function HomeExperience() {
         if (!card) return;
         const slot = getCircularSlot(index, progress);
         const absolute = Math.abs(slot);
-        const visibleRadius = width < 768 ? 1.65 : width < 1024 ? 2.6 : 3.1;
+        const visibleRadius = width < 768 ? 1.65 : width < 1024 ? 2.1 : 2.6;
         const x = easeSlot(slot, width);
         const scale = interpolateSlotValue(absolute, CAROUSEL_SCALE_ANCHORS);
         const opacity = interpolateSlotValue(absolute, CAROUSEL_OPACITY_ANCHORS);
@@ -1441,13 +1442,13 @@ export function HomeExperience() {
         const rotation =
           -Math.sign(slot) *
           (absolute <= 1
-            ? absolute * 10
+            ? absolute * 6
             : absolute <= 2
-              ? 10 + (absolute - 1) * 7
-              : 17 + Math.min(absolute - 2, 1) * 5);
-        const depth = interpolateSlotValue(absolute, [140, -65, -170, -250, -280]);
-        const orbitY = interpolateSlotValue(absolute, [8, -30, 24, -12, 0])
-          + Math.sign(slot) * interpolateSlotValue(absolute, [0, 22, 28, 8, 0]);
+              ? 6 + (absolute - 1) * 4
+              : 10 + Math.min(absolute - 2, 1) * 5);
+        const depth = interpolateSlotValue(absolute, [140, 35, -155, -250, -280]);
+        const orbitY = interpolateSlotValue(absolute, [16, -10, 24, -12, 0])
+          + Math.sign(slot) * interpolateSlotValue(absolute, [0, 14, 28, 8, 0]);
         const pointerDepth = depthCurrentRef.current;
         const centerInfluence = 1 - smoothstep(0.15, 1.15, absolute);
         const parallaxX = pointerDepth.x * (8.5 - centerInfluence * 5.25);

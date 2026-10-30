@@ -1,4 +1,4 @@
-/* Orbiting app identities share the existing carousel clock and pointer depth. */
+/* Static materials share the existing carousel clock and pointer depth. */
 .hero .planetary-stage {
   --planet-orbit-ink: rgba(202, 183, 240, 0.16);
   --planet-glint: rgba(246, 238, 255, 0.76);
@@ -22,10 +22,18 @@
 .planetary-orbit-distant { opacity: 0.48; }
 .planetary-beacons { fill: var(--planet-glint); stroke: none; }
 
-.hero .app-card.planetary-app {
+.planetary-app {
   --planet-focus: 0;
-  --planet-orbit-angle: -24deg;
-  width: clamp(278px, 21.5vw, 320px);
+  --planet-orbit-angle: -22deg;
+  --planet-rim-rgb: 148, 192, 202;
+  --planet-material-rgb: 64, 91, 87;
+  --planet-air: 0.6;
+  --planet-ring: 0.7;
+}
+
+.hero .app-card.planetary-app {
+  width: clamp(278px, 21.5vw, 300px);
+  isolation: isolate;
   overflow: visible;
   border-radius: 24%;
   background: transparent;
@@ -41,40 +49,61 @@
 }
 
 .planetary-app::before {
-  z-index: -1;
-  inset: -14%;
-  background:
-    radial-gradient(circle at 33% 24%, rgba(255, 255, 255, 0.13), transparent 42%),
-    radial-gradient(circle at 48% 46%, rgba(var(--planet-accent-rgb), 0.14), rgba(var(--planet-accent-rgb), 0.07) 57%, transparent 72%);
-  border: 1px solid rgba(var(--planet-accent-rgb), 0.13);
-  box-shadow:
-    inset 8px 10px 30px rgba(var(--planet-accent-rgb), 0.05),
-    0 0 60px rgba(var(--planet-accent-rgb), 0.12);
-  opacity: calc(0.3 + var(--planet-focus) * 0.7);
-  transform: scale(calc(0.94 + var(--planet-focus) * 0.06));
+  z-index: -2;
+  inset: -29%;
+  background: radial-gradient(circle, transparent 48%, rgba(var(--planet-rim-rgb), 0.13) 58%, transparent 72%);
+  opacity: calc(var(--planet-air) * (0.4 + var(--planet-focus) * 0.6));
 }
 
 .planetary-app::after {
-  z-index: -2;
-  left: 5%;
-  right: 5%;
-  top: 116%;
-  height: 10%;
-  background: radial-gradient(ellipse, rgba(var(--planet-accent-rgb), 0.18), transparent 70%);
-  opacity: calc(0.2 + var(--planet-focus) * 0.8);
+  z-index: -1;
+  inset: -15%;
+  box-shadow: 14px 18px calc(24px + var(--planet-focus) * 18px) rgba(4, 5, 15, 0.48);
+  opacity: calc(0.4 + var(--planet-focus) * 0.6);
+}
+
+.planet-shell {
+  position: absolute;
+  z-index: 1;
+  inset: -15%;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--planet-texture) center / cover no-repeat, rgb(var(--planet-material-rgb));
+  box-shadow: inset 1px 1px 2px rgba(231, 237, 240, 0.28), inset -2px -3px 4px rgba(2, 4, 13, 0.55);
+}
+
+.planet-shell::before,
+.planet-shell::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* A veil reduces texture contrast on satellites without another image or filter. */
+.planet-shell::before {
+  inset: 0;
+  background: linear-gradient(135deg, rgba(var(--planet-material-rgb), 0.58), rgba(3, 5, 15, 0.82));
+  opacity: calc((1 - var(--planet-focus)) * 0.6);
+}
+
+.planet-shell::after {
+  inset: -2%;
+  background: conic-gradient(from -45deg, rgba(var(--planet-rim-rgb), 0.75), rgba(var(--planet-rim-rgb), 0.13) 24%, transparent 47% 72%, rgba(var(--planet-rim-rgb), 0.7));
+  mask-image: radial-gradient(closest-side, transparent 94%, #000 97%, transparent 100%);
+  opacity: calc(var(--planet-air) * (0.42 + var(--planet-focus) * 0.58));
 }
 
 .planet-icon-frame {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   inset: 0;
   display: block;
   overflow: hidden;
   border-radius: 24%;
   background: rgba(var(--planet-accent-rgb), 0.06);
-  box-shadow:
-    0 24px 42px rgba(9, 5, 20, 0.28),
-    0 0 30px rgba(var(--planet-accent-rgb), 0.1);
+  box-shadow: 10px 14px 30px rgba(3, 5, 15, 0.36), 0 1px 1px rgba(235, 236, 244, 0.15);
 }
 
 .planet-icon-frame::after {
@@ -88,35 +117,37 @@
 
 .planet-orbit {
   position: absolute;
-  z-index: 1;
-  left: -29%;
-  top: 28%;
-  width: 158%;
-  height: 44%;
-  border: 1px solid rgba(var(--planet-accent-rgb), 0.52);
-  border-top-color: rgba(238, 224, 255, 0.34);
+  z-index: 0;
+  left: -33%;
+  top: 23%;
+  width: 166%;
+  height: 54%;
+  border: calc(1px + var(--planet-focus) * 3px) solid rgba(var(--planet-rim-rgb), 0.85);
+  border-top-color: rgba(var(--planet-rim-rgb), 0.38);
+  border-right-color: rgba(var(--planet-rim-rgb), 0.5);
   border-radius: 50%;
   transform: rotate(var(--planet-orbit-angle));
   pointer-events: none;
-  opacity: calc(0.18 + var(--planet-focus) * 0.64);
+  opacity: calc(var(--planet-ring) * (0.18 + var(--planet-focus) * 0.24));
+  box-shadow: inset 0 1px 0 rgba(242, 235, 251, 0.16);
 }
 
 .planet-orbit-back::after {
   content: "";
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 3px;
+  height: 3px;
   top: 20%;
   right: 9%;
   border-radius: 50%;
   background: var(--planet-glint);
-  box-shadow: 0 0 8px rgba(var(--planet-accent-rgb), 0.8);
+  box-shadow: 0 0 6px rgba(var(--planet-rim-rgb), 0.6);
 }
 
 .planet-orbit-front {
-  z-index: 3;
-  clip-path: inset(52% 0 0);
-  border-bottom-color: rgba(var(--planet-accent-rgb), 0.72);
+  z-index: 2;
+  clip-path: inset(50% 0 0);
+  border-bottom-color: rgba(var(--planet-rim-rgb), 0.95);
 }
 
 .planet-dust {
@@ -127,41 +158,70 @@
   opacity: calc(var(--planet-focus) * 0.8);
   background:
     radial-gradient(circle at 13% 34%, var(--planet-glint) 0 1px, transparent 2px),
-    radial-gradient(circle at 84% 70%, rgba(var(--planet-accent-rgb), 0.85) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 84% 70%, rgba(var(--planet-rim-rgb), 0.65) 0 1px, transparent 2px),
     radial-gradient(circle at 65% 8%, var(--planet-glint) 0 1px, transparent 2px);
 }
 
-/* Distinct environments, without changing a pixel of any app icon. */
-.planetary-app[data-planet="mapary"] { --planet-orbit-angle: -30deg; }
-.planetary-app[data-planet="mapary"]::before {
-  background:
-    repeating-radial-gradient(ellipse at 70% 32%, transparent 0 19px, rgba(var(--planet-accent-rgb), 0.12) 20px 21px, transparent 22px 35px),
-    radial-gradient(circle, rgba(var(--planet-accent-rgb), 0.12), transparent 72%);
+/* Planet identities are separate from the catalog's unchanged UI accents. */
+.planetary-app[data-planet="mapary"] {
+  --planet-texture: url("/assets/showcase-planets/mapary.svg");
+  --planet-orbit-angle: -30deg;
+  --planet-rim-rgb: 119, 186, 184;
+  --planet-material-rgb: 65, 91, 79;
+  --planet-air: 0.42;
+  --planet-ring: 0.5;
 }
-.planetary-app[data-planet="runtronome"] { --planet-orbit-angle: -14deg; }
-.planetary-app[data-planet="runtronome"]::before {
-  background: repeating-radial-gradient(circle, rgba(var(--planet-accent-rgb), 0.12) 0 1px, transparent 2px 18px);
-  mask-image: radial-gradient(circle, transparent 28%, #000 48%, transparent 73%);
+.planetary-app[data-planet="mapary"] .planet-orbit { border-width: 1px; border-style: dashed; }
+.planetary-app[data-planet="runtronome"] {
+  --planet-texture: url("/assets/showcase-planets/runtronome.svg");
+  --planet-orbit-angle: -18deg;
+  --planet-rim-rgb: 153, 151, 239;
+  --planet-material-rgb: 79, 67, 122;
+  --planet-air: 1;
+  --planet-ring: 1;
 }
-.planetary-app[data-planet="evrune"] { --planet-orbit-angle: 27deg; }
-.planetary-app[data-planet="evrune"]::before {
-  border-color: rgba(207, 210, 250, 0.2);
-  box-shadow: inset 16px 3px 18px rgba(209, 213, 255, 0.13), 0 0 55px rgba(160, 165, 234, 0.13);
+.planetary-app[data-planet="evrune"] {
+  --planet-texture: url("/assets/showcase-planets/evrune.svg");
+  --planet-orbit-angle: 24deg;
+  --planet-rim-rgb: 178, 181, 212;
+  --planet-material-rgb: 48, 43, 68;
+  --planet-air: 0.5;
+  --planet-ring: 0.16;
 }
-.planetary-app[data-planet="tocklist"] { --planet-orbit-angle: -8deg; }
-.planetary-app[data-planet="tocklist"] .planet-orbit-back { border-style: dashed; }
-.planetary-app[data-planet="skkoo"] { --planet-orbit-angle: 15deg; }
-.planetary-app[data-planet="skkoo"]::before {
-  background: radial-gradient(circle at 32% 25%, rgba(255, 232, 207, 0.19), rgba(var(--planet-accent-rgb), 0.08) 60%, transparent 74%);
-  border-style: dotted;
+.planetary-app[data-planet="tocklist"] {
+  --planet-texture: url("/assets/showcase-planets/tocklist.svg");
+  --planet-orbit-angle: -9deg;
+  --planet-rim-rgb: 181, 175, 210;
+  --planet-material-rgb: 116, 112, 129;
+  --planet-air: 0.45;
+  --planet-ring: 0.85;
 }
-.planetary-app[data-planet="terubozu"] { --planet-orbit-angle: -34deg; }
-.planetary-app[data-planet="terubozu"]::before {
-  background: radial-gradient(circle at 26% 20%, rgba(255, 220, 143, 0.25), rgba(var(--planet-accent-rgb), 0.11) 48%, transparent 73%);
+.planetary-app[data-planet="skkoo"] {
+  --planet-texture: url("/assets/showcase-planets/skkoo.svg");
+  --planet-orbit-angle: 15deg;
+  --planet-rim-rgb: 227, 209, 177;
+  --planet-material-rgb: 168, 151, 126;
+  --planet-air: 0.3;
+  --planet-ring: 0.24;
 }
-.planetary-app[data-planet="waesseum"] { --planet-orbit-angle: 9deg; }
-.planetary-app[data-planet="waesseum"]::before { border-color: rgba(190, 219, 221, 0.2); }
-.planetary-app[data-planet="waesseum"] .planet-orbit { width: 142%; left: -21%; height: 30%; top: 35%; }
+.planetary-app[data-planet="terubozu"] {
+  --planet-texture: url("/assets/showcase-planets/terubozu.svg");
+  --planet-orbit-angle: -25deg;
+  --planet-rim-rgb: 173, 211, 232;
+  --planet-material-rgb: 99, 150, 175;
+  --planet-air: 0.9;
+  --planet-ring: 0.12;
+}
+.planetary-app[data-planet="waesseum"] {
+  --planet-texture: url("/assets/showcase-planets/waesseum.svg");
+  --planet-rim-rgb: 193, 200, 215;
+  --planet-material-rgb: 134, 135, 149;
+  --planet-air: 0.12;
+  --planet-ring: 0;
+}
+.planetary-app[data-planet="waesseum"] .planet-shell::after { inset: -0.5%; mask-image: radial-gradient(closest-side, transparent 98%, #000 99%, transparent 100%); }
+
+.hero .planetary-stage + .app-info { top: clamp(612px, 74svh, 684px); }
 
 .hero .planetary-app:focus-visible { outline: none; }
 .hero .planetary-app:focus-visible .planet-icon-frame {
@@ -173,7 +233,7 @@ html[data-theme="light"] .planetary-stage {
   --planet-orbit-ink: rgba(104, 76, 156, 0.17);
   --planet-glint: rgba(104, 76, 156, 0.65);
 }
-html[data-theme="light"] .planet-icon-frame { box-shadow: 0 24px 42px rgba(70, 46, 112, 0.18); }
+html[data-theme="light"] .planet-icon-frame { box-shadow: 10px 14px 30px rgba(39, 35, 66, 0.28); }
 
 /* Keep carousel arrows clear of the fixed section navigation hit targets. */
 @media (min-width: 769px) {
@@ -185,34 +245,40 @@ html[data-theme="light"] .planet-icon-frame { box-shadow: 0 24px 42px rgba(70, 4
   .hero .app-card.planetary-app { width: clamp(230px, 32vw, 275px); }
 }
 
-@media (min-width: 768px) and (min-height: 721px) and (max-height: 800px) {
-  .hero .app-card.planetary-app { width: clamp(250px, 27vw, 280px); }
-  .hero .planetary-stage + .app-info { top: max(min(67svh, 604px), 540px); }
+@media (min-width: 768px) and (min-height: 721px) and (max-height: 860px) {
+  .hero .app-card.planetary-app { width: clamp(234px, calc(75svh - 350px), 280px); }
+  .hero .planetary-stage + .app-info { top: max(548px, 74svh); }
+  .site-shell > .hero { min-height: max(800px, calc(74svh + 236px)); }
 }
 
 @media (max-width: 767px) {
-  .hero .app-card.planetary-app { width: clamp(176px, 51vw, 208px); }
-  .hero .planetary-stage + .app-info { top: clamp(436px, calc(26svh + 256px), 476px); }
+  .hero .app-card.planetary-app { width: clamp(172px, 50vw, 204px); }
+  .hero .planetary-stage + .app-info { top: clamp(486px, calc(26svh + 306px), 526px); }
   .planetary-environment { opacity: 0.55; }
   .planetary-orbit-distant, .planetary-beacons { display: none; }
-  .planetary-app::before { inset: -10%; box-shadow: none; }
-  .planet-orbit { left: -21%; width: 142%; height: 38%; top: 31%; }
+  .planetary-app::after { box-shadow: 10px 14px 24px rgba(4, 5, 15, 0.3); }
+  .planet-shell::before { opacity: calc((1 - var(--planet-focus)) * 0.8); }
+  .planet-shell::after { inset: -1.5%; }
+  .planet-orbit { left: -28%; width: 156%; height: 46%; top: 27%; border-width: calc(1px + var(--planet-focus) * 1px); }
   .planet-dust { background: radial-gradient(circle at 84% 70%, var(--planet-glint) 0 1px, transparent 2px); }
 }
 
 @media (max-width: 359px) and (min-height: 681px) {
-  .hero .planetary-stage + .app-info { top: calc(clamp(318px, 56svh, 440px) + 8px); }
+  .hero .app-card.planetary-app { width: 160px; }
+  .hero .planetary-stage + .app-info { top: calc(clamp(318px, 56svh, 440px) + 58px); }
 }
 
 @media (max-height: 720px) and (min-width: 768px) {
-  .hero .app-card.planetary-app { width: 244px; }
+  .hero .app-card.planetary-app { width: 210px; }
+  .hero .planetary-stage + .app-info { top: 500px; }
   .site-shell > .hero { min-height: 720px; }
 }
 
 @media (max-height: 680px) and (max-width: 767px) {
   .hero .app-card.planetary-app { width: clamp(160px, 49vw, 184px); }
-  .hero .planetary-stage + .app-info { top: 369px; }
-  .site-shell > .hero { min-height: 600px; }
+  .hero .planetary-stage { top: 104px; }
+  .hero .planetary-stage + .app-info { top: 430px; }
+  .site-shell > .hero { min-height: 650px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
