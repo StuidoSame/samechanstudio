@@ -110,23 +110,22 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
-test("planetary cards preserve app identities, initial keyboard focus and decorative semantics", async () => {
+test("icon-first cards preserve app identities and keep shared planetary scenery outside the carousel", async () => {
   const html = await (await render()).text();
-  const cards = [...html.matchAll(/<button class="app-card planetary-app" data-planet="([^"]+)"[^>]*aria-label="([^"]+)"[^>]*>(.*?)<\/button>/g)];
+  const cards = [...html.matchAll(/<button class="app-card cosmic-app" data-app="([^"]+)"[^>]*aria-label="([^"]+)"[^>]*>(.*?)<\/button>/g)];
   assert.deepEqual(cards.map(([, id, label]) => [id, label]), apps.map(({ id, name }) => [id, `Select ${name}`]));
   for (const [index, [, , , content]] of cards.entries()) {
-    assert.match(content, /class="planet-icon-frame"><img/);
+    assert.match(content, /class="cosmic-icon-frame"><img/);
     assert.ok(content.includes(apps[index].icon.replaceAll("&", "&amp;")));
-    for (const decoration of ["planet-body", "planet-orbit planet-orbit-back", "planet-shell", "planet-atmosphere", "planet-orbit planet-orbit-front", "planet-icon-shadow"]) {
-      assert.ok(content.includes(`class="${decoration}" aria-hidden="true"`));
-    }
-    const body = content.match(/<span class="planet-body" aria-hidden="true">(.*?)<\/span><span class="planet-icon-shadow"/);
-    assert.ok(body, "planet and floating icon are separate sibling layers");
-    assert.doesNotMatch(body[1], /<img|planet-icon-frame/);
+    assert.doesNotMatch(content, /planet-body|planet-shell|planet-orbit|planet-atmosphere|planet-icon-shadow|cosmic-distant-planet/);
   }
   assert.match(html, /aria-label="Select Mapary" aria-current="true" tabindex="0"/);
-  assert.equal((html.match(/class="app-card planetary-app"[^>]*tabindex="-1"/g) ?? []).length, 6);
-  assert.doesNotMatch(html, /planetary-environment|planetary-orbit-wide|planet-dust/);
+  assert.equal((html.match(/class="app-card cosmic-app"[^>]*tabindex="-1"/g) ?? []).length, 6);
+  const backdrop = html.match(/<div class="cosmic-showcase-backdrop" aria-hidden="true">(.*?)<\/div>/)?.[1];
+  assert.ok(backdrop);
+  assert.equal((backdrop.match(/class="cosmic-distant-planet /g) ?? []).length, 2);
+  assert.doesNotMatch(backdrop, /<button|<img|data-app/);
+  assert.doesNotMatch(html, /planetary-app|planetary-stage|planetary-environment|planetary-orbit-wide|planet-dust/);
   assert.match(html, /aria-label="Previous app"/);
   assert.match(html, /aria-label="Next app"/);
   assert.match(html, /class="view-app-label">VIEW DETAIL/);

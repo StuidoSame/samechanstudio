@@ -36,7 +36,7 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
-import "./app-carousel/planetary-showcase.css";
+import "./app-carousel/cosmic-showcase.css";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -303,7 +303,7 @@ const EXIT_TENSION_CURVE = [
 
 const getCarouselPositionAnchors = (width: number) => {
   if (width < 768) {
-    const first = clamp(width * 0.58, 185, 235);
+    const first = clamp(width * 0.48, 158, 205);
     const second = first + clamp(width * 0.34, 105, 145);
     const third = second + clamp(width * 0.25, 80, 110);
     return [0, first, second, third, third + 75];
@@ -347,29 +347,21 @@ function AppCard({
   return (
     <button
       ref={setRef}
-      className="app-card planetary-app"
-      data-planet={app.id}
-      style={{ "--planet-accent-rgb": app.accentRgb } as CSSProperties}
+      className="app-card cosmic-app"
+      data-app={app.id}
       type="button"
       aria-label={`Select ${app.name}`}
       aria-current={index === DEFAULT_APP_INDEX ? "true" : undefined}
       tabIndex={index === DEFAULT_APP_INDEX ? 0 : -1}
       onClick={() => onSelect(index)}
     >
-      <span className="planet-body" aria-hidden="true">
-        <span className="planet-orbit planet-orbit-back" aria-hidden="true" />
-        <span className="planet-shell" aria-hidden="true" />
-        <span className="planet-atmosphere" aria-hidden="true" />
-        <span className="planet-orbit planet-orbit-front" aria-hidden="true" />
-      </span>
-      <span className="planet-icon-shadow" aria-hidden="true" />
-      <span className="planet-icon-frame">
+      <span className="cosmic-icon-frame">
         <Image
           className="carousel-app-icon"
           src={app.icon}
           alt=""
           fill
-          sizes="(max-width: 767px) 112px, 160px"
+          sizes="(max-width: 767px) 200px, 260px"
           draggable={false}
           unoptimized
         />
@@ -1425,16 +1417,13 @@ export function HomeExperience() {
         transitionWasActive ||
         pointer.dragging ||
         Math.abs(velocityRef.current) > 0.001;
-      const floatY = !reducedMotion && isPlayingRef.current &&
-        document.visibilityState === "visible" && window.scrollY < window.innerHeight
-        ? Math.sin(time * (Math.PI * 2 / 6800)) * 1.5
-        : 0;
 
       cardRefs.current.forEach((card, index) => {
         if (!card) return;
         const slot = getCircularSlot(index, progress);
         const absolute = Math.abs(slot);
-        const visibleRadius = width < 1152 ? 1.65 : 2.6;
+        const visibleRadius = 1.75;
+        const visibility = 1 - smoothstep(1.05, visibleRadius, absolute);
         const x = easeSlot(slot, width);
         const scale = interpolateSlotValue(absolute, CAROUSEL_SCALE_ANCHORS);
         const opacity = interpolateSlotValue(absolute, CAROUSEL_OPACITY_ANCHORS);
@@ -1455,8 +1444,7 @@ export function HomeExperience() {
               ? 6 + (absolute - 1) * 4
               : 10 + Math.min(absolute - 2, 1) * 5);
         const depth = interpolateSlotValue(absolute, [140, 35, -155, -250, -280]);
-        const orbitY = interpolateSlotValue(absolute, [4, -10, 24, -12, 0])
-          + Math.sign(slot) * interpolateSlotValue(absolute, [0, 14, 28, 8, 0]);
+        const orbitY = interpolateSlotValue(absolute, [0, 24, 48, 66, 80]);
         const pointerDepth = depthCurrentRef.current;
         const centerInfluence = 1 - smoothstep(0.15, 1.15, absolute);
         const parallaxX = pointerDepth.x * (8.5 - centerInfluence * 5.25);
@@ -1465,12 +1453,10 @@ export function HomeExperience() {
         const parallaxRotation = pointerDepth.x * (1.15 - centerInfluence * 0.5);
 
         const tiltX = -pointerDepth.y * centerInfluence * 2;
-        card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${orbitY + parallaxY + floatY}px), ${depth + parallaxZ}px) rotateX(${tiltX}deg) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
-        card.style.setProperty("--planet-focus", centerInfluence.toFixed(3));
-        card.style.opacity = String(absolute < visibleRadius ? opacity : 0);
-        card.style.setProperty("--planet-filter", `brightness(${brightness}) saturate(${saturation}) blur(${blur}px)`);
-        card.style.setProperty("--icon-depth", reducedMotion ? "none" :
-          `perspective(500px) translate3d(${pointerDepth.x * centerInfluence * 3}px, ${pointerDepth.y * centerInfluence * 2}px, 0) rotateY(-5deg) rotateX(3deg)`);
+        card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${orbitY + parallaxY}px), ${depth + parallaxZ}px) rotateX(${tiltX}deg) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
+        card.style.setProperty("--carousel-focus", centerInfluence.toFixed(3));
+        card.style.opacity = String(opacity * visibility);
+        card.style.setProperty("--carousel-icon-filter", `brightness(${brightness}) saturate(${saturation}) blur(${blur}px)`);
         card.style.zIndex = String(100 - Math.round(absolute * 10));
         card.style.willChange =
           carouselMoving || absolute < 1.6
@@ -1967,9 +1953,13 @@ export function HomeExperience() {
               </div>
             </div>
           </div>
+          <div className="cosmic-showcase-backdrop" aria-hidden="true">
+            <span className="cosmic-distant-planet cosmic-distant-moon" />
+            <span className="cosmic-distant-planet cosmic-distant-gas" />
+          </div>
           <SectionCosmos variant="hero" />
 
-          <div className="carousel-stage planetary-stage" aria-live="polite">
+          <div className="carousel-stage cosmic-stage" aria-live="polite">
             <div className="cards-space">
               {apps.map((app, index) => (
                 <AppCard

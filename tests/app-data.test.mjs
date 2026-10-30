@@ -66,25 +66,24 @@ test("uses the current official app names and icon files", async () => {
   }
 });
 
-test("every app has a distinct self-contained showcase material wired to its card", async () => {
-  const css = await readFile(new URL("../app/components/app-carousel/planetary-showcase.css", import.meta.url), "utf8");
+test("cosmic showcase reuses two independent background materials without app-planet mappings", async () => {
+  const css = await readFile(new URL("../app/components/app-carousel/cosmic-showcase.css", import.meta.url), "utf8");
+  const paths = [...css.matchAll(/background-image: url\("([^"]+)"\)/g)].map(([, path]) => path);
+  assert.deepEqual(paths, ["/assets/cosmic-planets/moon.svg", "/assets/cosmic-planets/gas.svg"]);
+  assert.doesNotMatch(css, /data-planet|showcase-planets\//);
   const hashes = new Set();
   let totalBytes = 0;
-  for (const { id } of apps) {
-    const path = `/assets/showcase-planets/${id}.svg`;
-    const block = css.match(new RegExp(`\\[data-planet="${id}"\\] \\{([^}]+)\\}`))?.[1];
-    assert.ok(block?.includes(`url("${path}")`), `${id}: material mapping`);
+  for (const path of paths) {
     const svg = await readFile(new URL(`../public${path}`, import.meta.url), "utf8");
-    assert.match(svg, /^<svg[^>]+width="384" height="384" viewBox="0 0 400 400">/);
+    assert.match(svg, /^<svg[^>]+viewBox="0 0 320 320">/);
     assert.match(svg, /<feDistantLight azimuth="225" elevation="48"\/>/);
-    assert.match(svg, /<radialGradient id="light" cx="27%" cy="22%"/);
     assert.match(svg, /<\/svg>\s*$/);
     assert.doesNotMatch(svg, /<script|<animate|<foreignObject|\bhref=|url\((?!#)/i);
     hashes.add(createHash("sha256").update(svg).digest("hex"));
     totalBytes += Buffer.byteLength(svg);
   }
-  assert.equal(hashes.size, apps.length);
-  assert.ok(totalBytes < 64_000, `showcase material budget: ${totalBytes}`);
+  assert.equal(hashes.size, 2);
+  assert.ok(totalBytes < 32_000, `background material budget: ${totalBytes}`);
 });
 
 test("keeps the seven remaining apps in their original relative order", () => {
