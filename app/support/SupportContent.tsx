@@ -121,6 +121,7 @@ export function SupportContent() {
   };
 
   const startAppRailDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    dragRef.current.dragged = false;
     if (event.pointerType !== "mouse" || event.button !== 0) return;
     const rail = appRailRef.current;
     if (!rail || rail.scrollWidth <= rail.clientWidth + 2) return;
@@ -130,16 +131,20 @@ export function SupportContent() {
       startScrollLeft: rail.scrollLeft,
       dragged: false,
     };
-    setDragging(true);
-    rail.setPointerCapture(event.pointerId);
   };
 
   const moveAppRail = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rail = appRailRef.current;
     const drag = dragRef.current;
-    if (!rail || drag.pointerId !== event.pointerId) return;
+    if (!rail || drag.pointerId !== event.pointerId || event.buttons !== 1) return;
     const distance = event.clientX - drag.startX;
-    if (Math.abs(distance) > 5) drag.dragged = true;
+    if (!drag.dragged) {
+      if (Math.abs(distance) <= 5) return;
+      // Preserve the button's click target until this is an actual drag.
+      drag.dragged = true;
+      setDragging(true);
+      rail.setPointerCapture(event.pointerId);
+    }
     rail.scrollLeft = drag.startScrollLeft - distance;
   };
 
@@ -191,7 +196,7 @@ export function SupportContent() {
             onPointerCancel={finishAppRailDrag}
             onLostPointerCapture={finishAppRailDrag}
             onClickCapture={(event) => {
-              if (!dragRef.current.dragged) return;
+              if (event.detail === 0 || !dragRef.current.dragged) return;
               event.preventDefault();
               event.stopPropagation();
               dragRef.current.dragged = false;
