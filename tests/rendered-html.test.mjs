@@ -133,6 +133,16 @@ test("Support adds ETC after the seven apps without restoring legacy app cards",
   assert.doesNotMatch(html, /PINI 선택|PEPESNAP 선택|FEELOO 선택|pini_icon|pepsnap\.png|feeloo_icon/);
 });
 
+test("binds six world bodies and two constellation planes to the spatial flight renderer", async () => {
+  const html = await (await render()).text();
+  assert.deepEqual([...html.matchAll(/data-flight-planet="([^"]+)"/g)].map((match) => match[1]),
+    ["rocky", "gas", "atmosphere", "ice", "moon", "distant"]);
+  assert.deepEqual([...html.matchAll(/data-flight-constellation="([^"]+)"/g)].map((match) => match[1]),
+    ["north", "south"]);
+  const starCount = [...html.matchAll(/class="cosmic-flight-star"/g)].length;
+  assert.ok(starCount > 0 && starCount <= 144, "keep the shared SVG starfield within its DOM budget");
+});
+
 test("renders unique page metadata, canonical URLs, and social cards", async () => {
   const pages = [
     [
