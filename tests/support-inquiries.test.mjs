@@ -22,6 +22,41 @@ const parseEmail = ({ emailHref }) => {
   return { subject: url.searchParams.get("subject"), body: url.searchParams.get("body") };
 };
 
+test("common Korean FAQ follows the twelve requested support topics in order", () => {
+  assert.deepEqual(ko.support.faq.map(({ question }) => question), [
+    "앱이 실행되지 않거나 바로 종료돼요.",
+    "앱에서 저장한 데이터가 보이지 않아요.",
+    "구매한 프리미엄 기능을 복원하고 싶어요.",
+    "결제했는데 프리미엄 기능이 적용되지 않아요.",
+    "다른 기기로 데이터를 옮기고 싶어요.",
+    "알림이 오지 않아요.",
+    "사진이나 데이터가 저장되지 않아요.",
+    "개인정보 삭제를 요청하고 싶어요.",
+    "광고 제거 구매가 적용되지 않아요.",
+    "앱 사용 방법이나 기능이 궁금해요.",
+    "새로운 기능을 제안하고 싶어요.",
+    "문의를 보냈는데 답변은 언제 받을 수 있나요?",
+  ]);
+});
+
+test("all five FAQ catalogs provide matching complete guidance without Korean fallback", () => {
+  for (const [locale, messages] of Object.entries({ ko, en, ja, zhCN, zhTW })) {
+    const items = messages.support.faq;
+    assert.equal(items.length, 12, locale);
+    assert.equal(new Set(items.map(({ question }) => question)).size, 12, locale);
+    for (const [index, { question, answer }] of items.entries()) {
+      assert.ok(question.trim().length > 5, `${locale}.${index}.question`);
+      assert.ok(answer.length >= 5 && answer.length <= 10, `${locale}.${index}.answer`);
+      assert.equal(answer.length, ko.support.faq[index].answer.length, `${locale}.${index}.meaning units`);
+      assert.equal(new Set(answer).size, answer.length, `${locale}.${index}.duplicate paragraphs`);
+      for (const paragraph of answer) {
+        assert.ok(paragraph.trim().length >= 10, `${locale}.${index}.empty guidance`);
+        if (locale !== "ko") assert.doesNotMatch(paragraph, /[가-힣]/, `${locale}.${index}.fallback`);
+      }
+    }
+  }
+});
+
 test("ETC follows the unchanged showcase order without promoting legacy apps", () => {
   assert.deepEqual(SUPPORT_CATEGORIES.map(({ id }) => id), [...apps.map(({ id }) => id), "etc"]);
   assert.deepEqual(ETC_INQUIRY_TYPES, ["pini", "pepesnap", "other"]);
