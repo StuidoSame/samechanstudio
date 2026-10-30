@@ -327,10 +327,12 @@ export function SupportContent() {
           {support.faq.map((item, index) => {
             const open = openFaqIndex === index;
             const panelId = `support-faq-panel-${index}`;
+            const questionId = `support-faq-question-${index}`;
             return (
               <div className="support-faq-item" key={item.question}>
                 <h3>
                   <button
+                    id={questionId}
                     type="button"
                     aria-expanded={open}
                     aria-controls={panelId}
@@ -346,9 +348,10 @@ export function SupportContent() {
                   id={panelId}
                   className="support-faq-answer"
                   role="region"
+                  aria-labelledby={questionId}
                   aria-hidden={!open}
                 >
-                  <div><p>{item.answer}</p></div>
+                  <div>{item.answer.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
                 </div>
               </div>
             );

@@ -4,6 +4,7 @@ import test from "node:test";
 import vm from "node:vm";
 import { DELETE_ACCOUNT_MESSAGES } from "../app/delete-account/deleteAccountMessages.ts";
 import { COSMIC_INTRO_TIMELINE_CSS } from "../app/components/cosmic-intro/introTiming.mjs";
+import { ko } from "../app/i18n/locales/ko.ts";
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -108,7 +109,7 @@ test("server-renders the SAME STUDIO app explorer", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
-test("renders the seven-app catalog and TOCOBI without removed app references", async () => {
+test("renders the seven-app catalog and TOCOBI without restoring removed app entries", async () => {
   const home = await (await render()).text();
   const jsonLd = JSON.parse(home.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const software = jsonLd["@graph"].filter((item) => item["@type"] === "SoftwareApplication");
@@ -119,7 +120,12 @@ test("renders the seven-app catalog and TOCOBI without removed app references", 
     "https://apps.apple.com/kr/app/tocklist/id6782831874");
   for (const path of ["/", "/support/", "/privacy/", "/terms/", "/delete-account/"]) {
     const html = path === "/" ? home : await (await render(path)).text();
-    assert.doesNotMatch(html, /PINI|PEPESNAP|Feeloo|FEELOO|Tocklist|TOCKLIST/, path);
+    // Support may explain ETC's PINI/PEPESNAP inquiry options; its cards are
+    // checked separately below so this guidance cannot restore catalog entries.
+    const retiredNames = path === "/support/"
+      ? /Feeloo|FEELOO|Tocklist|TOCKLIST/
+      : /PINI|PEPESNAP|Feeloo|FEELOO|Tocklist|TOCKLIST/;
+    assert.doesNotMatch(html, retiredNames, path);
     if (path === "/" || path === "/support/") assert.match(html, /TOCOBI/);
   }
 });
@@ -268,24 +274,23 @@ test("server-renders the SUPPORT contact flow and FAQ", async () => {
   assert.match(html, />contact@samestudio\.kr<\/a>/);
   assert.match(html, /body=[^"']*%EC%95%B1%20%EC%9D%B4%EB%A6%84%3A%20Mapary/);
   assert.match(html, />답변 안내</);
-  assert.match(html, /앱에서 오류가 발생했어요\./);
   assert.match(html, /개인정보 삭제를 요청하고 싶어요\./);
   assert.equal(
     (html.match(/class="support-faq-item"/g) ?? []).length,
-    10,
+    12,
   );
-  for (const question of [
-    "구매한 항목을 복원하고 싶어요.",
-    "앱이 실행되지 않거나 바로 종료돼요.",
-    "알림이 오지 않아요.",
-    "사진이나 데이터가 저장되지 않아요.",
-    "다른 기기로 데이터를 옮기고 싶어요.",
-    "광고 제거 구매가 적용되지 않아요.",
-    "앱 사용 방법이나 기능이 궁금해요.",
-    "새로운 기능을 제안하고 싶어요.",
-  ]) {
-    assert.ok(html.includes(question));
+  let previousQuestion = -1;
+  for (const [index, { question, answer }] of ko.support.faq.entries()) {
+    const position = html.indexOf(question);
+    assert.ok(position > previousQuestion, question);
+    previousQuestion = position;
+    assert.match(html, new RegExp(`id="support-faq-question-${index}"[^>]*aria-expanded="false" aria-controls="support-faq-panel-${index}"`));
+    assert.match(html, new RegExp(`id="support-faq-panel-${index}"[^>]*role="region" aria-labelledby="support-faq-question-${index}" aria-hidden="true"`));
+    assert.ok(answer.every((paragraph) => html.includes(paragraph)), question);
   }
+  const panels = [...html.matchAll(/class="support-faq-answer"[^>]*><div>(.*?)<\/div>/g)];
+  assert.equal(panels.length, 12);
+  assert.ok(panels.every(([, content]) => (content.match(/<p>/g) ?? []).length === 6));
   assert.doesNotMatch(html, /도움이 필요한 앱을 선택해주세요\./);
   assert.doesNotMatch(html, /support-app-pill/);
   assert.match(html, /aria-label="Mapary 선택" aria-pressed="true"/);

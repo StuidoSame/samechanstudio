@@ -27,7 +27,7 @@ export type TranslatedAppDetail = {
 
 export type SupportFaqItem = {
   question: string;
-  answer: string;
+  answer: TranslationLines;
 };
 
 export type TranslationLines = readonly [string, ...string[]];

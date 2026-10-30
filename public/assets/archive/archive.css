@@ -2596,11 +2596,15 @@ body.archive-page.is-returning {
 
 .support-faq-answer p {
   margin: 0;
-  padding: 0 20px 20px;
+  padding: 0 20px;
   color: rgba(222, 207, 241, 0.5);
   font-size: calc(12px * var(--font-scale));
   line-height: 1.75;
+  overflow-wrap: anywhere;
 }
+
+.support-faq-answer p + p { margin-top: 0.5em; }
+.support-faq-answer p:last-child { padding-bottom: 20px; }
 
 /* SUPPORT reuses the main site's light theme tokens; the archive dark theme stays unchanged. */
 :root[data-theme="light"] body.archive-page[data-archive-document="support"] {
@@ -3490,8 +3494,10 @@ html:is([lang="ja"], [lang="zh-CN"], [lang="zh-TW"])
   }
 
   .support-faq-answer p {
-    padding: 0 16px 18px;
+    padding: 0 16px;
   }
+
+  .support-faq-answer p:last-child { padding-bottom: 18px; }
 
   .archive-constellation {
     left: -28px;

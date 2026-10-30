@@ -82,15 +82,18 @@ function assertLocaleShape(locale: Locale, messages: TranslationMessages) {
   }
 
   if (
-    messages.support.faq.length !== 10 ||
+    messages.support.faq.length !== 12 ||
     messages.support.faq.some(
-      ({ question, answer }) => !question.trim() || !answer.trim(),
+      ({ question, answer }) => !question.trim() || answer.length < 5 || answer.length > 10,
     )
   ) {
     throw new Error(
-      `Translation "${locale}.support.faq" must contain 10 complete items.`,
+      `Translation "${locale}.support.faq" must contain 12 items with 5–10 answer paragraphs each.`,
     );
   }
+  messages.support.faq.forEach(({ answer }, index) => {
+    assertMeaningfulLines(locale, `support.faq.${index}.answer`, answer);
+  });
 
   validatedLocales.add(locale);
 }
