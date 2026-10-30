@@ -88,3 +88,5 @@ Next.js의 정상 서버와 Vinext의 실제 실행 경로는 다르다. 의존�
 최신 [COSMIC_APP_SHOWCASE](COSMIC_APP_SHOWCASE.md)는 이전 앱별 행성 구도를 아이콘 중심 캐러셀과 공통 원거리 배경으로 대체한다. Windows 전후 시각 비교·9개 화면 크기·5개 언어·캐러셀·상세·Support·인트로 및 타입·린트·단위 51개·HTML 14개·빌드·Graft 검증을 완료했다. 기존 서버를 유지하며 push·배포는 하지 않았다.
 
 [ANDROID_PLATFORM_DISPLAY](ANDROID_PLATFORM_DISPLAY.md)에서 TOCOBI·SKKOO의 카탈로그와 상세 지원 배지를 일치시켰다. Windows 메인·상세·320px 큰 글자·7개 앱 플랫폼·재생/키보드 전환을 확인했고 타입·린트·단위 52개·HTML 14개·빌드·Graft 검사를 통과했다. 실제 Play URL이 없는 플랫폼은 비대화형 배지로 표시하며 기존 서버와 스토어 링크를 유지했다. push·배포는 수행하지 않았다.
+
+[SUPPORT_APP_SELECTION](SUPPORT_APP_SELECTION.md)에서 가로로 넘치는 Support 레일의 조기 포인터 캡처로 카드 클릭이 사라지는 문제를 재현·수정했다. 7개 앱·ETC의 클릭/강조/메일 본문, ETC 세부 유형·왕복, 키보드·드래그, 320px 큰 글자를 확인했고 타입·린트·단위 52개·HTML 14개·빌드·Graft 검사를 통과했다. 실제 터치·모바일 실기기·macOS는 미실행이며 기존 개발 서버를 유지했다. push·배포 없음.
