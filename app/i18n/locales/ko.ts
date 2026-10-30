@@ -158,7 +158,7 @@ export const ko = {
   appDetail: {
     appIconAlt: "{app} 앱 아이콘",
     closeLabel: "앱 상세 닫기",
-    storeSelectorLabel: "스토어 선택",
+    storeSelectorLabel: "지원 플랫폼 및 스토어",
     storeLinkLabel: "{store}에서 {app} 보기",
     previewRegionLabel: "{app} {device} 미리보기 갤러리",
     previewAlt: "{app} {device} {language} 미리보기 {current}/{total}",

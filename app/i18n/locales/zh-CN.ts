@@ -158,7 +158,7 @@ export const zhCN = {
   appDetail: {
     appIconAlt: "{app}应用图标",
     closeLabel: "关闭应用详情",
-    storeSelectorLabel: "选择应用商店",
+    storeSelectorLabel: "支持的平台与商店",
     storeLinkLabel: "在{store}中查看{app}",
     previewRegionLabel: "{app} {device}预览图库",
     previewAlt: "{app} {device} {language}预览 {current}/{total}",

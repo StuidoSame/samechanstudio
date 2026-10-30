@@ -158,7 +158,7 @@ export const en = {
   appDetail: {
     appIconAlt: "{app} app icon",
     closeLabel: "Close app details",
-    storeSelectorLabel: "Select a store",
+    storeSelectorLabel: "Supported platforms and stores",
     storeLinkLabel: "View {app} on {store}",
     previewRegionLabel: "{app} {device} preview gallery",
     previewAlt: "{app} {device} {language} preview {current} of {total}",

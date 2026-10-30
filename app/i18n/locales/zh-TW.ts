@@ -158,7 +158,7 @@ export const zhTW = {
   appDetail: {
     appIconAlt: "{app}應用程式圖示",
     closeLabel: "關閉應用程式詳細資訊",
-    storeSelectorLabel: "選擇應用程式商店",
+    storeSelectorLabel: "支援的平台與商店",
     storeLinkLabel: "在{store}查看{app}",
     previewRegionLabel: "{app} {device}預覽圖庫",
     previewAlt: "{app} {device} {language}預覽 {current}/{total}",

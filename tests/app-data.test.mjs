@@ -7,6 +7,7 @@ import {
   APP_DETAIL_CAPABILITIES,
   DETAIL_SCREEN_ORDER,
   getAvailableDetailScreens,
+  getAppDetailPlatforms,
 } from "../app/lib/appDetailCapabilities.ts";
 import {
   createLocalizedScreenshotManifest,
@@ -230,12 +231,30 @@ test("uses app platform data as the platform-logo source of truth", () => {
   for (const app of apps) {
     assert.deepEqual(
       app.platforms,
-      app.id === "tocklist" || app.id === "skkoo"
-        ? ["apple"]
-        : ["apple", "android"],
+      ["apple", "android"],
       app.id,
     );
   }
+});
+
+test("detail platform badges follow catalog support without inventing store links", () => {
+  for (const app of apps) {
+    const platforms = getAppDetailPlatforms(app);
+    assert.deepEqual(platforms.map(({ platform }) => platform), app.platforms, app.id);
+    assert.equal(platforms[0].url, app.appStoreUrl, app.id);
+    assert.equal(platforms[1].url, app.googlePlayUrl, app.id);
+  }
+  for (const id of ["tocklist", "skkoo"]) {
+    const app = apps.find((candidate) => candidate.id === id);
+    assert.equal(app.googlePlayUrl, undefined);
+    assert.equal(getAppDetailPlatforms(app)[1].url, undefined);
+  }
+  const sample = apps[0];
+  assert.deepEqual(getAppDetailPlatforms({ ...sample, platforms: ["android", "apple", "android"] })
+    .map(({ platform }) => platform), ["apple", "android"]);
+  assert.deepEqual(getAppDetailPlatforms({ ...sample, platforms: ["apple"] })
+    .map(({ platform }) => platform), ["apple"]);
+  assert.ok(getAppDetailPlatforms({ ...sample, id: "unknown" }).every(({ url }) => url === undefined));
 });
 
 test("keeps every app icon and screenshot manifest path loadable", async () => {

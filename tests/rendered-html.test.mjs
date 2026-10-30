@@ -140,6 +140,11 @@ test("renders the seven-app catalog and TOCOBI without restoring removed app ent
   ]);
   assert.equal(software.find((app) => app.name === "TOCOBI").downloadUrl,
     "https://apps.apple.com/kr/app/tocklist/id6782831874");
+  for (const name of ["TOCOBI", "SKKOO"]) {
+    const app = software.find((candidate) => candidate.name === name);
+    assert.equal(app.operatingSystem, "iOS, Android");
+    assert.equal(app.sameAs.length, 1, "no unverified Google Play URL is published");
+  }
   for (const path of ["/", "/support/", "/privacy/", "/terms/", "/delete-account/"]) {
     const html = path === "/" ? home : await (await render(path)).text();
     // Support may explain ETC's PINI/PEPESNAP inquiry options; its cards are

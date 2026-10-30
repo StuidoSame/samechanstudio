@@ -158,7 +158,7 @@ export const ja = {
   appDetail: {
     appIconAlt: "{app}のアプリアイコン",
     closeLabel: "アプリの詳細を閉じる",
-    storeSelectorLabel: "ストアを選択",
+    storeSelectorLabel: "対応プラットフォームとストア",
     storeLinkLabel: "{store}で{app}を見る",
     previewRegionLabel: "{app}の{device}プレビューギャラリー",
     previewAlt: "{app}の{device} {language}プレビュー {current}/{total}",

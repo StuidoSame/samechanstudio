@@ -1,3 +1,5 @@
+import type { AppItem, AppPlatform } from "./apps";
+
 export type DetailStore = "apple" | "google";
 export type DetailScreen = "phone" | "pad";
 
@@ -55,6 +57,23 @@ export function isDetailStoreAvailable(
 ): boolean {
   const capability = APP_DETAIL_CAPABILITIES[appId];
   return capability?.stores[store] ?? false;
+}
+
+// Platform support comes from the catalog; a store link is optional.
+export function getAppDetailPlatforms(app: AppItem) {
+  const order: readonly [AppPlatform, DetailStore][] = [
+    ["apple", "apple"],
+    ["android", "google"],
+  ];
+  return order
+    .filter(([platform]) => app.platforms.includes(platform))
+    .map(([platform, store]) => ({
+      platform,
+      store,
+      url: isDetailStoreAvailable(app.id, store)
+        ? store === "apple" ? app.appStoreUrl : app.googlePlayUrl
+        : undefined,
+    }));
 }
 
 export function getAvailableDetailScreens(

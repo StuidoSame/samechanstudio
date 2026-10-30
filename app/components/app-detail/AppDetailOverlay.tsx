@@ -14,7 +14,7 @@ import type { AppItem } from "../../lib/apps";
 import {
   DETAIL_SCREEN_ORDER,
   getAvailableDetailScreens,
-  isDetailStoreAvailable,
+  getAppDetailPlatforms,
   type DetailScreen,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
@@ -59,8 +59,6 @@ const STORE_LABELS: Record<DetailStore, string> = {
   apple: "Apple App Store",
   google: "Google Play",
 };
-
-const DETAIL_STORES: DetailStore[] = ["apple", "google"];
 
 const SCREEN_LABELS: Record<DetailScreen, string> = {
   phone: "Phone",
@@ -410,31 +408,37 @@ export function AppDetailOverlay({
             className="app-detail-store-selector"
             aria-label={messages.appDetail.storeSelectorLabel}
           >
-            {DETAIL_STORES.map((store) => {
-              const storeUrl =
-                store === "apple" ? app.appStoreUrl : app.googlePlayUrl;
-              const storeAvailable = isDetailStoreAvailable(app.id, store);
-
-              if (!storeAvailable || !storeUrl) return null;
-
-              const ariaLabel = format(messages.appDetail.storeLinkLabel, {
-                store: STORE_LABELS[store],
-                app: app.name,
-              });
+            {getAppDetailPlatforms(app).map(({ platform, store, url }) => {
               const icon = (
                 <span className="app-detail-store-icon-slot">
                   <StoreIcon store={store} />
                 </span>
               );
 
+              if (!url) {
+                return (
+                  <span
+                    className="app-detail-store-button app-detail-platform-badge"
+                    role="img"
+                    aria-label={`${app.name}: ${platform === "apple" ? "Apple" : "Android"}`}
+                    key={store}
+                  >
+                    {icon}
+                  </span>
+                );
+              }
+
               return (
                 <a
                   className="app-detail-store-button"
-                  href={storeUrl}
+                  href={url}
                   key={store}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={ariaLabel}
+                  aria-label={format(messages.appDetail.storeLinkLabel, {
+                    store: STORE_LABELS[store],
+                    app: app.name,
+                  })}
                 >
                   {icon}
                 </a>

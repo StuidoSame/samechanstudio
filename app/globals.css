@@ -2360,14 +2360,18 @@ button {
     transform 0.2s ease;
 }
 
-.app-detail-store-button:hover {
+a.app-detail-store-button:hover {
   opacity: 0.82;
   transform: translateY(-1px);
 }
 
-.app-detail-store-button:focus-visible {
+a.app-detail-store-button:focus-visible {
   outline: 2px solid rgba(112, 69, 214, 0.58);
   outline-offset: 4px;
+}
+
+.app-detail-platform-badge {
+  cursor: default;
 }
 
 .app-detail-store-icon-slot {
