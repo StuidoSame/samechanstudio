@@ -1,4 +1,4 @@
-export const COSMIC_INTRO_DURATION_MS = 5000;
+export const COSMIC_INTRO_DURATION_MS = 8000;
 export const COSMIC_INTRO_REDUCED_DURATION_MS = 1200;
 export const COSMIC_INTRO_DEVELOPMENT = process.env.NODE_ENV === "development";
 

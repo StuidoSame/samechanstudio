@@ -1,6 +1,4 @@
-html[data-cosmic-intro="true"] {
-  --cosmic-entry-duration: 5000ms;
-}
+html[data-cosmic-intro="true"] { --cosmic-entry-duration: 8000ms; }
 
 .cosmic-intro {
   display: none;
@@ -32,26 +30,19 @@ html[data-cosmic-intro="true"] {
   transform-origin: 50% 80%;
 }
 
-/* Keep the whole mark visible before a single, short emphasis travels across it.
-   The enclosing logo remains the only animation that ends the intro. */
 html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] .cosmic-intro-letter {
   animation: cosmic-entry-letter 420ms cubic-bezier(0.22, 0.7, 0.3, 1) both;
-  animation-delay: calc(1100ms + var(--cosmic-letter-index) * 75ms);
+  animation-delay: calc(1200ms + var(--cosmic-letter-index) * 75ms);
   animation-duration: 420ms !important;
 }
 
 @keyframes cosmic-entry-letter {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    color: inherit;
-    text-shadow: inherit;
-  }
+  0%, 100% { transform: translateY(0) scale(1); color: inherit; text-shadow: inherit; }
   28% {
     transform: translateY(var(--cosmic-letter-rise)) scale(1.2);
     color: #fff1ff;
     text-shadow: 0 0 12px rgba(209, 165, 255, var(--cosmic-letter-glow)),
-      0 0 30px rgba(177, 100, 255, 0.78),
-      0 0 48px rgba(148, 64, 244, 0.38);
+      0 0 30px rgba(177, 100, 255, 0.78), 0 0 48px rgba(148, 64, 244, 0.38);
   }
   55% { transform: translateY(3px) scale(0.98); }
   76% { transform: translateY(-3px) scale(1.035); }
@@ -62,170 +53,37 @@ html[data-cosmic-intro="true"] .cosmic-intro {
   animation: cosmic-entry-logo var(--cosmic-entry-duration) linear both;
 }
 
-/* The existing hero and its stars stay mounted throughout the reveal. */
 html[data-cosmic-intro="true"] .hero::before {
   content: "";
   position: absolute;
   z-index: 1;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse at 50% 50%, rgba(115, 65, 174, 0.09), transparent 50%),
-    #09070f;
+  background: radial-gradient(ellipse at 50% 50%, rgba(115, 65, 174, 0.09), transparent 50%), #09070f;
   animation: cosmic-entry-veil var(--cosmic-entry-duration) ease-in-out both;
 }
 
-html[data-cosmic-intro="true"] .apps-galaxy {
-  z-index: 2;
-}
-
+/* Keep the resting home starfield intact underneath the flight renderer. */
 html[data-cosmic-intro="true"] .apps-galaxy-layer {
-  transform-origin: 50% calc(50svh - 72px);
-  animation: cosmic-entry-far-stars var(--cosmic-entry-duration) linear both;
+  animation: cosmic-entry-home-stars var(--cosmic-entry-duration) linear both;
 }
-
-html[data-cosmic-intro="true"] .apps-galaxy-far {
-  --entry-opacity: 0.82;
-  --entry-quiet-opacity: 0.5;
-}
-
-html[data-cosmic-intro="true"] .apps-galaxy-mid {
-  --entry-opacity: 0.88;
-  --entry-quiet-opacity: 0.3;
-  animation-name: cosmic-entry-mid-stars;
-}
-
-html[data-cosmic-intro="true"] .apps-galaxy-near {
-  --entry-opacity: 0.92;
-  --entry-quiet-opacity: 0.25;
-  animation-name: cosmic-entry-near-stars;
-}
-
-/* Paint containment on the resting stars clips a trail wider than the star. */
-html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot {
-  contain: layout;
-}
-
-html[data-cosmic-intro="true"][data-cosmic-intro-motion="full"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot {
-  /* The layers hold these stars back during the logo, then accelerate them.
-     A dim resting/twinkle opacity must not also dim the travel streak. */
-  opacity: 0.9 !important;
-}
-
-html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot::after {
-  content: "";
-  position: absolute;
-  right: 50%;
-  top: 50%;
-  width: var(--entry-streak-length, clamp(18px, 3vw, 48px));
-  height: 1px;
-  background: linear-gradient(to right, transparent, rgba(215, 192, 255, 0.9));
-  transform-origin: right center;
-  transform: rotate(var(--entry-ray-angle)) scaleX(0.15);
-  animation: cosmic-entry-trail var(--cosmic-entry-duration) ease-in-out both;
-}
-
-html[data-cosmic-intro="true"] .apps-galaxy-near {
-  --entry-streak-length: clamp(40px, 7vw, 96px);
-}
+html[data-cosmic-intro="true"] .apps-galaxy-far { --entry-opacity: 0.82; }
+html[data-cosmic-intro="true"] .apps-galaxy-mid { --entry-opacity: 0.88; }
+html[data-cosmic-intro="true"] .apps-galaxy-near { --entry-opacity: 0.92; }
 
 html[data-cosmic-intro="true"] .hero > :is(
   .site-header, .carousel-stage, .app-info, .carousel-arrow,
   .decorations, .section-cosmos--hero
 ),
-html[data-cosmic-intro="true"] .page-section-navigation {
+html[data-cosmic-intro="true"] .page-section-navigation,
+html[data-cosmic-intro="true"] .wordmark {
   animation: cosmic-entry-content var(--cosmic-entry-duration) ease-in-out both;
 }
 
-html[data-cosmic-intro="true"] .wordmark {
-  animation: cosmic-entry-header var(--cosmic-entry-duration) ease-in-out both;
-}
-
-@keyframes cosmic-entry-logo {
-  0% { opacity: 0; transform: scale(0.97); }
-  10%, 48% { opacity: 1; transform: scale(1); }
-  61%, 100% { opacity: 0; transform: scale(1.025); }
-}
-
-@keyframes cosmic-entry-veil {
-  0%, 84% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@keyframes cosmic-entry-far-stars {
-  0% { transform: perspective(900px) translateZ(-240px); opacity: 0; }
-  10%, 44% {
-    transform: perspective(900px) translateZ(-240px);
-    opacity: var(--entry-quiet-opacity);
-    animation-timing-function: ease-in-out;
-  }
-  94%, 100% { transform: perspective(900px) translateZ(0); opacity: var(--entry-opacity); }
-}
-
-@keyframes cosmic-entry-mid-stars {
-  0% { transform: perspective(900px) translateZ(-1150px); opacity: 0; }
-  10%, 44% {
-    transform: perspective(900px) translateZ(-1150px);
-    opacity: var(--entry-quiet-opacity);
-    animation-timing-function: cubic-bezier(0.6, 0, 0.88, 0.72);
-  }
-  78% { opacity: var(--entry-opacity); }
-  84% { transform: perspective(900px) translateZ(250px); opacity: var(--entry-opacity); }
-  86%, 88% { transform: perspective(900px) translateZ(250px); opacity: 0; }
-  90% { transform: perspective(900px) translateZ(0); opacity: 0; }
-  100% { transform: perspective(900px) translateZ(0); opacity: var(--entry-opacity); }
-}
-
-@keyframes cosmic-entry-near-stars {
-  0% { transform: perspective(900px) translateZ(-3600px); opacity: 0; }
-  10%, 44% {
-    transform: perspective(900px) translateZ(-3600px);
-    opacity: var(--entry-quiet-opacity);
-    animation-timing-function: cubic-bezier(0.65, 0, 0.9, 0.65);
-  }
-  76% { opacity: var(--entry-opacity); }
-  82% { transform: perspective(900px) translateZ(460px); opacity: var(--entry-opacity); }
-  84%, 88% { transform: perspective(900px) translateZ(460px); opacity: 0; }
-  90% { transform: perspective(900px) translateZ(0); opacity: 0; }
-  100% { transform: perspective(900px) translateZ(0); opacity: var(--entry-opacity); }
-}
-
-@keyframes cosmic-entry-trail {
-  0%, 44%, 90%, 100% { opacity: 0; transform: rotate(var(--entry-ray-angle)) scaleX(0.15); }
-  58% { opacity: 0.25; transform: rotate(var(--entry-ray-angle)) scaleX(0.4); }
-  76% { opacity: 0.95; transform: rotate(var(--entry-ray-angle)) scaleX(1.3); }
-  84%, 88% { opacity: 0; transform: rotate(var(--entry-ray-angle)) scaleX(1.6); }
-}
-
-@keyframes cosmic-entry-content {
-  0%, 84% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes cosmic-entry-header {
-  0%, 86% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@media (max-width: 767px) {
-  html[data-cosmic-intro="true"] .apps-galaxy-layer {
-    transform-origin: 50% calc(50svh - 62px);
-  }
-
-  .cosmic-intro-wordmark {
-    --cosmic-letter-rise: -12px;
-    --cosmic-letter-glow: 0.8;
-    font-size: clamp(22px, 6vw, 40px);
-    letter-spacing: 0.18em;
-  }
-}
-
-/* Mode is derived from the media preference. Only an explicit development
-   preview can opt into full motion when reduced motion is enabled. */
+/* Full developer playback may override the OS preference only inside the intro. */
 html[data-cosmic-intro="true"] .cosmic-intro,
 html[data-cosmic-intro="true"] .hero::before,
 html[data-cosmic-intro="true"] .apps-galaxy-layer,
-html[data-cosmic-intro="true"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot::after,
 html[data-cosmic-intro="true"] .hero > :is(
   .site-header, .carousel-stage, .app-info, .carousel-arrow,
   .decorations, .section-cosmos--hero
@@ -235,23 +93,36 @@ html[data-cosmic-intro="true"] .wordmark {
   animation-duration: var(--cosmic-entry-duration) !important;
 }
 
-html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] {
-  --cosmic-entry-duration: 1200ms;
+@keyframes cosmic-entry-logo {
+  0% { opacity: 0; transform: scale(0.97); }
+  8%, 30% { opacity: 1; transform: scale(1); }
+  42%, 100% { opacity: 0; transform: scale(1.025); }
 }
-
-html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .cosmic-intro {
-  animation-name: cosmic-entry-logo-reduced;
-}
-
-html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .apps-galaxy-layer {
-  animation: none;
-}
-
-html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] :is(.apps-galaxy-mid, .apps-galaxy-near) .is-dot::after {
-  display: none;
-}
-
-@keyframes cosmic-entry-logo-reduced {
-  0%, 65% { opacity: 1; }
+@keyframes cosmic-entry-veil {
+  0%, 88.75% { opacity: 1; }
   100% { opacity: 0; }
 }
+@keyframes cosmic-entry-content {
+  0%, 88.75% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes cosmic-entry-home-stars {
+  0%, 88.75% { opacity: 0; }
+  100% { opacity: var(--entry-opacity); }
+}
+
+@media (max-width: 767px) {
+  .cosmic-intro-wordmark {
+    --cosmic-letter-rise: -12px;
+    --cosmic-letter-glow: 0.8;
+    font-size: clamp(22px, 6vw, 40px);
+    letter-spacing: 0.18em;
+  }
+}
+
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] { --cosmic-entry-duration: 1200ms; }
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .cosmic-intro { animation-name: cosmic-entry-logo-reduced; }
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .hero > :is(.site-header, .carousel-stage, .app-info, .carousel-arrow),
+html[data-cosmic-intro="true"][data-cosmic-intro-motion="reduced"] .wordmark { animation-name: cosmic-entry-content-reduced; }
+@keyframes cosmic-entry-logo-reduced { 0%, 65% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cosmic-entry-content-reduced { 0%, 60% { opacity: 0; } 100% { opacity: 1; } }

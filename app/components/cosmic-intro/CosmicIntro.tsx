@@ -7,6 +7,7 @@ import {
 } from "../../navigation/PageTransitionProvider";
 import { claimCosmicIntro, playCosmicIntro, COSMIC_INTRO_DEVELOPMENT } from "./introLifecycle";
 import { CosmicScenery } from "./CosmicScenery";
+import { startSpaceFlight } from "./spaceFlight";
 import "./cosmic-intro.css";
 
 export function CosmicIntro() {
@@ -33,9 +34,14 @@ export function CosmicIntro() {
       return;
     }
 
-    return playCosmicIntro(root, window, () => {
+    let stopFlight = () => {};
+    const stopIntro = playCosmicIntro(root, window, () => {
+      stopFlight();
       eligible.current = false;
     }, COSMIC_INTRO_DEVELOPMENT);
+    const scene = document.querySelector<HTMLElement>(".cosmic-intro-scenery");
+    if (scene) stopFlight = startSpaceFlight(scene, window, COSMIC_INTRO_DEVELOPMENT);
+    return () => { stopFlight(); stopIntro(); };
   }, [pageTransitionActive]);
 
   // Default markup leaves content visible when scripts are unavailable.

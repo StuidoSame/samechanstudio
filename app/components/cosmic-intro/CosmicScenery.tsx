@@ -1,36 +1,26 @@
-import "./cosmic-scenery.css";
+import { FLIGHT_CONSTELLATIONS, getFlightBodies } from "./spaceFlight";
+import "./space-flight.css";
 
-const CONSTELLATIONS = [
-  {
-    name: "north",
-    points: [[12, 72], [54, 36], [98, 52], [144, 16], [188, 34], [228, 8]],
-  },
-  {
-    name: "south",
-    points: [[14, 18], [58, 44], [100, 20], [144, 64], [190, 42], [226, 78]],
-  },
-] as const;
-
-const PLANETS = ["distant", "atmosphere", "ice", "moon", "gas", "rocky"] as const;
+const PLANETS = getFlightBodies(1280);
 
 export function CosmicScenery() {
   return (
     <div className="cosmic-intro-scenery" aria-hidden="true">
-      {CONSTELLATIONS.map(({ name, points }) => (
-        <svg
-          key={name}
-          className={`cosmic-intro-constellation cosmic-intro-constellation--${name}`}
-          viewBox="0 0 240 90"
-          fill="none"
-        >
-          <polyline points={points.map(([x, y]) => `${x},${y}`).join(" ")} />
-          {points.map(([cx, cy], index) => (
-            <circle key={index} cx={cx} cy={cy} r={index % 2 === 0 ? 1.8 : 1.2} />
-          ))}
+      <svg className="cosmic-flight-stars" fill="none">
+        {Array.from({ length: 144 }, (_, index) => (
+          <line key={index} className="cosmic-flight-star" visibility="hidden" />
+        ))}
+      </svg>
+      {FLIGHT_CONSTELLATIONS.map(({ id, points }) => (
+        <svg key={id} className="cosmic-flight-plane" fill="none">
+          <g data-flight-constellation={id} className="cosmic-intro-constellation" visibility="hidden">
+            <polyline />
+            {points.map((_, index) => <circle key={index} />)}
+          </g>
         </svg>
       ))}
-      {PLANETS.map((planet) => (
-        <span key={planet} className={`cosmic-intro-planet cosmic-intro-planet--${planet}`}>
+      {PLANETS.map(({ id }) => (
+        <span key={id} data-flight-planet={id} className={`cosmic-intro-planet cosmic-intro-planet--${id}`}>
           <span className="cosmic-intro-planet-sphere" />
         </span>
       ))}
