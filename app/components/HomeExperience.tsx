@@ -36,6 +36,7 @@ import {
 import { getTypeRevealDelay } from "./type-reveal/typeRevealTiming";
 import { useI18n } from "../i18n/I18nProvider";
 import { apps, DEFAULT_APP_INDEX, type AppItem } from "../lib/apps";
+import "./app-carousel/planetary-showcase.css";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -253,11 +254,11 @@ const interpolateSlotValue = (absoluteSlot: number, anchors: readonly number[]) 
   return anchors[lower] + (anchors[upper] - anchors[lower]) * progress;
 };
 
-const CAROUSEL_SCALE_ANCHORS = [1.18, 0.93, 0.77, 0.63, 0.52] as const;
-const CAROUSEL_OPACITY_ANCHORS = [1, 0.9, 0.7, 0.5, 0.34] as const;
-const CAROUSEL_BRIGHTNESS_ANCHORS = [1, 0.92, 0.82, 0.74, 0.68] as const;
-const CAROUSEL_SATURATION_ANCHORS = [1, 0.9, 0.72, 0.58, 0.48] as const;
-const CAROUSEL_BLUR_ANCHORS = [0, 0, 0.35, 0.7, 1] as const;
+const CAROUSEL_SCALE_ANCHORS = [1.24, 0.7, 0.5, 0.36, 0.3] as const;
+const CAROUSEL_OPACITY_ANCHORS = [1, 0.82, 0.54, 0.3, 0.2] as const;
+const CAROUSEL_BRIGHTNESS_ANCHORS = [1, 0.88, 0.76, 0.68, 0.64] as const;
+const CAROUSEL_SATURATION_ANCHORS = [1, 0.85, 0.68, 0.54, 0.48] as const;
+const CAROUSEL_BLUR_ANCHORS = [0, 0, 0, 0.35, 0.5] as const;
 
 const sampleTensionCurve = (
   progress: number,
@@ -345,20 +346,29 @@ function AppCard({
   return (
     <button
       ref={setRef}
-      className="app-card"
+      className="app-card planetary-app"
+      data-planet={app.id}
+      style={{ "--planet-accent-rgb": app.accentRgb } as CSSProperties}
       type="button"
       aria-label={`Select ${app.name}`}
+      aria-current={index === DEFAULT_APP_INDEX ? "true" : undefined}
+      tabIndex={index === DEFAULT_APP_INDEX ? 0 : -1}
       onClick={() => onSelect(index)}
     >
-      <Image
-        className="carousel-app-icon"
-        src={app.icon}
-        alt=""
-        fill
-        sizes="(max-width: 767px) 56vw, (max-width: 1023px) 32vw, 21vw"
-        draggable={false}
-        unoptimized
-      />
+      <span className="planet-orbit planet-orbit-back" aria-hidden="true" />
+      <span className="planet-icon-frame">
+        <Image
+          className="carousel-app-icon"
+          src={app.icon}
+          alt=""
+          fill
+          sizes="(max-width: 767px) 56vw, (max-width: 1023px) 32vw, 22vw"
+          draggable={false}
+          unoptimized
+        />
+      </span>
+      <span className="planet-orbit planet-orbit-front" aria-hidden="true" />
+      <span className="planet-dust" aria-hidden="true" />
     </button>
   );
 }
@@ -1415,7 +1425,7 @@ export function HomeExperience() {
         if (!card) return;
         const slot = getCircularSlot(index, progress);
         const absolute = Math.abs(slot);
-        const visibleRadius = width < 768 ? 1.65 : width < 1024 ? 2.75 : 4.45;
+        const visibleRadius = width < 768 ? 1.65 : width < 1024 ? 2.6 : 3.1;
         const x = easeSlot(slot, width);
         const scale = interpolateSlotValue(absolute, CAROUSEL_SCALE_ANCHORS);
         const opacity = interpolateSlotValue(absolute, CAROUSEL_OPACITY_ANCHORS);
@@ -1431,11 +1441,13 @@ export function HomeExperience() {
         const rotation =
           -Math.sign(slot) *
           (absolute <= 1
-            ? absolute * 18
+            ? absolute * 10
             : absolute <= 2
-              ? 18 + (absolute - 1) * 10
-              : 28 + Math.min(absolute - 2, 1) * 10);
-        const depth = interpolateSlotValue(absolute, [100, 30, -45, -100, -125]);
+              ? 10 + (absolute - 1) * 7
+              : 17 + Math.min(absolute - 2, 1) * 5);
+        const depth = interpolateSlotValue(absolute, [140, -65, -170, -250, -280]);
+        const orbitY = interpolateSlotValue(absolute, [8, -30, 24, -12, 0])
+          + Math.sign(slot) * interpolateSlotValue(absolute, [0, 22, 28, 8, 0]);
         const pointerDepth = depthCurrentRef.current;
         const centerInfluence = 1 - smoothstep(0.15, 1.15, absolute);
         const parallaxX = pointerDepth.x * (8.5 - centerInfluence * 5.25);
@@ -1443,7 +1455,9 @@ export function HomeExperience() {
         const parallaxZ = pointerDepth.strength * (9 - centerInfluence * 3.5);
         const parallaxRotation = pointerDepth.x * (1.15 - centerInfluence * 0.5);
 
-        card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${parallaxY}px), ${depth + parallaxZ}px) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
+        const tiltX = -pointerDepth.y * centerInfluence * 2;
+        card.style.transform = `translate3d(calc(-50% + ${x + parallaxX}px), calc(-50% + ${orbitY + parallaxY}px), ${depth + parallaxZ}px) rotateX(${tiltX}deg) rotateY(${rotation + parallaxRotation}deg) scale(${scale})`;
+        card.style.setProperty("--planet-focus", centerInfluence.toFixed(3));
         card.style.opacity = String(absolute < visibleRadius ? opacity : 0);
         card.style.filter = `brightness(${brightness}) saturate(${saturation}) blur(${blur}px)`;
         card.style.zIndex = String(100 - Math.round(absolute * 10));
@@ -1944,12 +1958,16 @@ export function HomeExperience() {
           </div>
           <SectionCosmos variant="hero" />
 
-          <div className="carousel-stage" aria-live="polite">
-            <div key={activeApp.id} className="focus-halo" aria-hidden="true">
-              <span className="focus-halo-ambient" />
-              <span className="focus-halo-core" />
-              <span className="focus-halo-shadow" />
-            </div>
+          <div className="carousel-stage planetary-stage" aria-live="polite">
+            <svg className="planetary-environment" viewBox="0 0 1440 500" fill="none" aria-hidden="true">
+              <ellipse className="planetary-orbit-wide" cx="720" cy="275" rx="660" ry="142" transform="rotate(-7 720 275)" />
+              <path d="M80 325C310 470 1040 482 1360 170" />
+              <path className="planetary-orbit-distant" d="M165 112C490 10 1100 85 1295 370" />
+              <g className="planetary-beacons">
+                <circle cx="178" cy="334" r="3" /><circle cx="1222" cy="135" r="3" />
+                <circle cx="1086" cy="402" r="2" /><circle cx="365" cy="103" r="2" />
+              </g>
+            </svg>
             <div className="cards-space">
               {apps.map((app, index) => (
                 <AppCard

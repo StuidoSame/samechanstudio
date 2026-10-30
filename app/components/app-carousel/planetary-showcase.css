@@ -1,0 +1,220 @@
+/* Orbiting app identities share the existing carousel clock and pointer depth. */
+.hero .planetary-stage {
+  --planet-orbit-ink: rgba(202, 183, 240, 0.16);
+  --planet-glint: rgba(246, 238, 255, 0.76);
+  isolation: isolate;
+}
+
+.planetary-environment {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  stroke: var(--planet-orbit-ink);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+  mask-image: radial-gradient(ellipse, #000 30%, transparent 75%);
+}
+
+.planetary-environment .planetary-orbit-wide { stroke-dasharray: 2 11; }
+.planetary-orbit-distant { opacity: 0.48; }
+.planetary-beacons { fill: var(--planet-glint); stroke: none; }
+
+.hero .app-card.planetary-app {
+  --planet-focus: 0;
+  --planet-orbit-angle: -24deg;
+  width: clamp(278px, 21.5vw, 320px);
+  overflow: visible;
+  border-radius: 24%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.planetary-app::before,
+.planetary-app::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.planetary-app::before {
+  z-index: -1;
+  inset: -14%;
+  background:
+    radial-gradient(circle at 33% 24%, rgba(255, 255, 255, 0.13), transparent 42%),
+    radial-gradient(circle at 48% 46%, rgba(var(--planet-accent-rgb), 0.14), rgba(var(--planet-accent-rgb), 0.07) 57%, transparent 72%);
+  border: 1px solid rgba(var(--planet-accent-rgb), 0.13);
+  box-shadow:
+    inset 8px 10px 30px rgba(var(--planet-accent-rgb), 0.05),
+    0 0 60px rgba(var(--planet-accent-rgb), 0.12);
+  opacity: calc(0.3 + var(--planet-focus) * 0.7);
+  transform: scale(calc(0.94 + var(--planet-focus) * 0.06));
+}
+
+.planetary-app::after {
+  z-index: -2;
+  left: 5%;
+  right: 5%;
+  top: 116%;
+  height: 10%;
+  background: radial-gradient(ellipse, rgba(var(--planet-accent-rgb), 0.18), transparent 70%);
+  opacity: calc(0.2 + var(--planet-focus) * 0.8);
+}
+
+.planet-icon-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: 24%;
+  background: rgba(var(--planet-accent-rgb), 0.06);
+  box-shadow:
+    0 24px 42px rgba(9, 5, 20, 0.28),
+    0 0 30px rgba(var(--planet-accent-rgb), 0.1);
+}
+
+.planet-icon-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.32), inset 0 -1px 1px rgba(29, 16, 55, 0.18);
+}
+
+.planet-orbit {
+  position: absolute;
+  z-index: 1;
+  left: -29%;
+  top: 28%;
+  width: 158%;
+  height: 44%;
+  border: 1px solid rgba(var(--planet-accent-rgb), 0.52);
+  border-top-color: rgba(238, 224, 255, 0.34);
+  border-radius: 50%;
+  transform: rotate(var(--planet-orbit-angle));
+  pointer-events: none;
+  opacity: calc(0.18 + var(--planet-focus) * 0.64);
+}
+
+.planet-orbit-back::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: 20%;
+  right: 9%;
+  border-radius: 50%;
+  background: var(--planet-glint);
+  box-shadow: 0 0 8px rgba(var(--planet-accent-rgb), 0.8);
+}
+
+.planet-orbit-front {
+  z-index: 3;
+  clip-path: inset(52% 0 0);
+  border-bottom-color: rgba(var(--planet-accent-rgb), 0.72);
+}
+
+.planet-dust {
+  position: absolute;
+  z-index: 4;
+  inset: -22%;
+  pointer-events: none;
+  opacity: calc(var(--planet-focus) * 0.8);
+  background:
+    radial-gradient(circle at 13% 34%, var(--planet-glint) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 70%, rgba(var(--planet-accent-rgb), 0.85) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 65% 8%, var(--planet-glint) 0 1px, transparent 2px);
+}
+
+/* Distinct environments, without changing a pixel of any app icon. */
+.planetary-app[data-planet="mapary"] { --planet-orbit-angle: -30deg; }
+.planetary-app[data-planet="mapary"]::before {
+  background:
+    repeating-radial-gradient(ellipse at 70% 32%, transparent 0 19px, rgba(var(--planet-accent-rgb), 0.12) 20px 21px, transparent 22px 35px),
+    radial-gradient(circle, rgba(var(--planet-accent-rgb), 0.12), transparent 72%);
+}
+.planetary-app[data-planet="runtronome"] { --planet-orbit-angle: -14deg; }
+.planetary-app[data-planet="runtronome"]::before {
+  background: repeating-radial-gradient(circle, rgba(var(--planet-accent-rgb), 0.12) 0 1px, transparent 2px 18px);
+  mask-image: radial-gradient(circle, transparent 28%, #000 48%, transparent 73%);
+}
+.planetary-app[data-planet="evrune"] { --planet-orbit-angle: 27deg; }
+.planetary-app[data-planet="evrune"]::before {
+  border-color: rgba(207, 210, 250, 0.2);
+  box-shadow: inset 16px 3px 18px rgba(209, 213, 255, 0.13), 0 0 55px rgba(160, 165, 234, 0.13);
+}
+.planetary-app[data-planet="tocklist"] { --planet-orbit-angle: -8deg; }
+.planetary-app[data-planet="tocklist"] .planet-orbit-back { border-style: dashed; }
+.planetary-app[data-planet="skkoo"] { --planet-orbit-angle: 15deg; }
+.planetary-app[data-planet="skkoo"]::before {
+  background: radial-gradient(circle at 32% 25%, rgba(255, 232, 207, 0.19), rgba(var(--planet-accent-rgb), 0.08) 60%, transparent 74%);
+  border-style: dotted;
+}
+.planetary-app[data-planet="terubozu"] { --planet-orbit-angle: -34deg; }
+.planetary-app[data-planet="terubozu"]::before {
+  background: radial-gradient(circle at 26% 20%, rgba(255, 220, 143, 0.25), rgba(var(--planet-accent-rgb), 0.11) 48%, transparent 73%);
+}
+.planetary-app[data-planet="waesseum"] { --planet-orbit-angle: 9deg; }
+.planetary-app[data-planet="waesseum"]::before { border-color: rgba(190, 219, 221, 0.2); }
+.planetary-app[data-planet="waesseum"] .planet-orbit { width: 142%; left: -21%; height: 30%; top: 35%; }
+
+.hero .planetary-app:focus-visible { outline: none; }
+.hero .planetary-app:focus-visible .planet-icon-frame {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 6px;
+}
+
+html[data-theme="light"] .planetary-stage {
+  --planet-orbit-ink: rgba(104, 76, 156, 0.17);
+  --planet-glint: rgba(104, 76, 156, 0.65);
+}
+html[data-theme="light"] .planet-icon-frame { box-shadow: 0 24px 42px rgba(70, 46, 112, 0.18); }
+
+/* Keep carousel arrows clear of the fixed section navigation hit targets. */
+@media (min-width: 769px) {
+  .hero .planetary-stage ~ .arrow-left { left: clamp(76px, 6vw, 104px); }
+  .hero .planetary-stage ~ .arrow-right { right: clamp(76px, 6vw, 104px); }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero .app-card.planetary-app { width: clamp(230px, 32vw, 275px); }
+}
+
+@media (min-width: 768px) and (min-height: 721px) and (max-height: 800px) {
+  .hero .app-card.planetary-app { width: clamp(250px, 27vw, 280px); }
+  .hero .planetary-stage + .app-info { top: max(min(67svh, 604px), 540px); }
+}
+
+@media (max-width: 767px) {
+  .hero .app-card.planetary-app { width: clamp(176px, 51vw, 208px); }
+  .hero .planetary-stage + .app-info { top: clamp(436px, calc(26svh + 256px), 476px); }
+  .planetary-environment { opacity: 0.55; }
+  .planetary-orbit-distant, .planetary-beacons { display: none; }
+  .planetary-app::before { inset: -10%; box-shadow: none; }
+  .planet-orbit { left: -21%; width: 142%; height: 38%; top: 31%; }
+  .planet-dust { background: radial-gradient(circle at 84% 70%, var(--planet-glint) 0 1px, transparent 2px); }
+}
+
+@media (max-width: 359px) and (min-height: 681px) {
+  .hero .planetary-stage + .app-info { top: calc(clamp(318px, 56svh, 440px) + 8px); }
+}
+
+@media (max-height: 720px) and (min-width: 768px) {
+  .hero .app-card.planetary-app { width: 244px; }
+  .site-shell > .hero { min-height: 720px; }
+}
+
+@media (max-height: 680px) and (max-width: 767px) {
+  .hero .app-card.planetary-app { width: clamp(160px, 49vw, 184px); }
+  .hero .planetary-stage + .app-info { top: 369px; }
+  .site-shell > .hero { min-height: 600px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planetary-app, .planet-icon-frame { transition: none; }
+}
