@@ -86,16 +86,19 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
   }
 
   .device-showcase-tablet .exhibit-tilt {
-    transform: perspective(1450px) rotateX(calc(var(--exhibit-tilt-x, 0deg) * 0.45)) rotateY(calc(var(--exhibit-tilt-y, 0deg) * 0.45));
+    transform: perspective(1450px) rotateX(calc(var(--exhibit-tilt-x, 0deg) * 0.25)) rotateY(calc(var(--exhibit-tilt-y, 0deg) * 0.25));
   }
 
-  .exhibit-tilt:focus-within,
-  .exhibit-tilt:active,
-  .device-showcase-tablet .exhibit-tilt:focus-within,
-  .device-showcase-tablet .exhibit-tilt:active {
+  .device-showcase-phone .exhibit-tilt {
+    transform: perspective(1450px) rotateX(calc(var(--exhibit-tilt-x, 0deg) * 0.35)) rotateY(calc(var(--exhibit-tilt-y, 0deg) * 0.35));
+  }
+
+  .exhibit-tilt:is(:focus-within, :active),
+  :is(.device-showcase-phone, .device-showcase-tablet) .exhibit-tilt:is(:focus-within, :active) {
     transform: none;
   }
 
+  .device-showcase-phone .cosmic-exhibit:hover .device-phone-stage,
   .device-showcase-tablet .cosmic-exhibit:hover .device-tablet-stage {
     animation-play-state: paused;
   }
@@ -141,18 +144,32 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
   background: radial-gradient(ellipse, rgba(14, 8, 24, 0.48), transparent 69%);
 }
 
+.device-showcase-phone .cosmic-exhibit {
+  --moment-frame-width: clamp(248px, 21vw, 290px);
+}
+
+.cosmic-exhibits .device-phone-frame {
+  width: var(--moment-frame-width);
+}
+
+.device-showcase-phone .section-cosmos-constellation--one {
+  opacity: 0.23;
+  filter: none;
+}
+
 .exhibit-memory {
   position: absolute;
   display: grid;
   align-content: start;
   gap: 8px;
-  width: min(41%, 202px);
+  width: clamp(52px, 15%, 96px);
+  max-width: calc((100% - var(--moment-frame-width)) / 2 - 20px);
   aspect-ratio: 0.8;
-  padding: clamp(12px, 2vw, 24px);
-  border: 1px solid rgb(var(--exhibit-rim) / 0.43);
-  border-radius: 22px;
-  background: linear-gradient(150deg, rgb(var(--exhibit-rim) / 0.19), rgb(var(--exhibit-light) / 0.035) 74%);
-  box-shadow: inset 0 1px 0 rgb(var(--exhibit-rim) / 0.25), 0 14px 45px rgba(16, 6, 34, 0.14);
+  padding: clamp(8px, 1.2vw, 14px);
+  border: 1px solid rgb(var(--exhibit-rim) / 0.33);
+  border-radius: 14px;
+  background: linear-gradient(150deg, rgb(var(--exhibit-rim) / 0.13), rgb(var(--exhibit-light) / 0.03) 74%);
+  box-shadow: inset 0 1px rgb(var(--exhibit-rim) / 0.14);
 }
 
 .exhibit-memory::before,
@@ -160,7 +177,7 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
   width: 57%;
   height: 2px;
   border-radius: 999px;
-  background: rgb(var(--exhibit-rim) / 0.42);
+  background: rgb(var(--exhibit-rim) / 0.28);
   content: "";
 }
 
@@ -170,37 +187,36 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 }
 
 .exhibit-memory--back {
-  top: 13%;
-  left: 3%;
-  transform: translate3d(0, var(--parallax-y, 0px), 0) perspective(700px) rotateY(27deg) rotateZ(-16deg);
+  top: 23%;
+  right: calc(50% + var(--moment-frame-width) / 2 + 20px);
+  transform: translate3d(0, var(--parallax-y, 0px), 0) perspective(700px) rotateY(20deg) rotateZ(-10deg);
 }
 
 .exhibit-memory--note {
-  top: 34%;
-  right: 2%;
+  top: 48%;
+  left: calc(50% + var(--moment-frame-width) / 2 + 20px);
   aspect-ratio: 1;
-  transform: translate3d(0, var(--parallax-y, 0px), 0) perspective(700px) rotateY(-24deg) rotateZ(14deg);
+  transform: translate3d(0, var(--parallax-y, 0px), 0) perspective(700px) rotateY(-18deg) rotateZ(10deg);
 }
 
 .exhibit-memory svg {
   grid-row: 1;
-  width: clamp(18px, 3.8vw, 46px);
+  width: min(75%, 29px);
   justify-self: end;
-  color: rgb(var(--exhibit-rim) / 0.84);
+  color: rgb(var(--exhibit-rim) / 0.62);
   stroke: currentColor;
   stroke-width: 1.3;
-  filter: drop-shadow(0 0 8px rgb(var(--exhibit-light) / 0.65));
 }
 
 .exhibit-grid {
   position: absolute;
-  inset: 3% 0 12%;
+  inset: 9% 0 17%;
   background:
-    linear-gradient(rgb(var(--exhibit-rim) / 0.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--exhibit-rim) / 0.18) 1px, transparent 1px);
+    linear-gradient(rgb(var(--exhibit-rim) / 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--exhibit-rim) / 0.12) 1px, transparent 1px);
   background-size: 30px 30px;
   mask-image: radial-gradient(ellipse, black 28%, transparent 73%);
-  transform: perspective(780px) rotateX(33deg) rotateZ(-9deg) scale(1.12);
+  transform: perspective(850px) rotateX(30deg) rotateZ(-7deg);
 }
 
 .exhibit-tablet-accents {
@@ -221,13 +237,13 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 
 .exhibit-cube--near {
   top: 11px;
-  left: 14%;
+  left: 17%;
 }
 
 .exhibit-cube--far {
   --cube-side: clamp(15px, 2vw, 27px);
   top: 17px;
-  right: 18%;
+  right: 20%;
   transform: rotateX(-23deg) rotateY(-31deg);
 }
 
@@ -269,20 +285,30 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 
 .device-showcase-tablet .cosmic-exhibit {
   --tablet-width: min(94%, 590px);
-  padding-block: clamp(64px, 7vw, 92px) clamp(74px, 8vw, 110px);
+  padding-block: clamp(64px, 7vw, 92px) clamp(64px, 8vw, 108px);
+}
+
+.device-showcase-tablet .exhibit-depth {
+  inset-inline: 0;
+  overflow: clip;
 }
 
 .device-showcase-tablet .exhibit-depth::before {
-  background: radial-gradient(ellipse at 50% 53%, rgb(var(--exhibit-light) / 0.19), transparent 67%);
+  background: radial-gradient(ellipse at 50% 52%, rgb(var(--exhibit-light) / 0.15), transparent 67%);
+}
+
+.device-showcase-tablet .section-cosmos-orbit--one {
+  display: none;
 }
 
 .device-showcase-tablet .exhibit-orbits {
   inset-inline: 0;
-  bottom: 6px;
-  width: var(--tablet-width);
+  top: calc(100% + clamp(12px, 1.4vw, 20px));
+  bottom: auto;
+  width: calc(var(--tablet-width) * 0.92);
   margin-inline: auto;
-  aspect-ratio: 6.5;
-  background: radial-gradient(ellipse at center, rgb(var(--exhibit-light) / 0.25), transparent 69%);
+  aspect-ratio: 7.5;
+  background: radial-gradient(ellipse at center, rgb(var(--exhibit-light) / 0.2), transparent 69%);
 }
 
 .device-showcase-tablet .exhibit-orbits::before {
@@ -330,7 +356,7 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
   margin-top: 8px;
 }
 
-.cosmic-exhibits :is(.device-phone-frame, .device-watch-body) {
+.cosmic-exhibits .device-watch-body {
   border-color: rgb(var(--exhibit-rim) / 0.48);
   box-shadow: 0 24px 52px rgba(12, 6, 24, 0.37), 0 0 18px rgb(var(--exhibit-light) / 0.23), inset 0 1px 1px rgba(255, 246, 255, 0.34);
 }
@@ -410,10 +436,6 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 }
 
 @media (min-width: 901px) {
-  .cosmic-exhibits .device-phone-frame {
-    width: clamp(248px, 21vw, 290px);
-  }
-
   .cosmic-exhibits .device-showcase-watch {
     grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
     column-gap: clamp(54px, 6vw, 92px);
@@ -436,6 +458,10 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 
   .cosmic-exhibit {
     padding-block: 16px 40px;
+  }
+
+  .device-showcase-phone .cosmic-exhibit {
+    --moment-frame-width: clamp(210px, 58vw, 240px);
   }
 
   .device-showcase-tablet .cosmic-exhibit {
@@ -465,8 +491,7 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
     width: min(35%, 126px);
   }
 
-  .exhibit-memory--back { left: 0; }
-  .exhibit-memory--note { right: 0; }
+  .exhibit-memory { display: none; }
   .exhibit-cube--far { display: none; }
 }
 

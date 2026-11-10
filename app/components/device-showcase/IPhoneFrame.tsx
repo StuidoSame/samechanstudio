@@ -489,7 +489,6 @@ export function IPhoneFrame({ children }: IPhoneFrameProps) {
           )}
         </div>
         <span className="device-phone-island" aria-hidden="true" />
-        <span className="device-frame-highlight" aria-hidden="true" />
       </div>
     </div>
   );

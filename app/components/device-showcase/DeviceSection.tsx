@@ -38,6 +38,11 @@ export function DeviceSection({
   const titleId = `device-showcase-title-${index}`;
   const descriptionDelay =
     TITLE_REVEAL_DELAY + titleLines.length * TITLE_LINE_STAGGER + 180;
+  const orbit = (
+    <div className="exhibit-orbits" aria-hidden="true">
+      <span />
+    </div>
+  );
 
   return (
     <TypeRevealGroup
@@ -94,9 +99,7 @@ export function DeviceSection({
               <span className="exhibit-cube exhibit-cube--far"><i /><i /><i /></span>
             </div>
           )}
-          <div className="exhibit-orbits" aria-hidden="true">
-            <span />
-          </div>
+          {journeyId !== "tablet" && orbit}
           <div
             className="exhibit-object"
             data-parallax-item=""
@@ -105,6 +108,7 @@ export function DeviceSection({
             data-parallax-direction="-1"
           >
             <div className="exhibit-tilt">{device}</div>
+            {journeyId === "tablet" && orbit}
           </div>
         </div>
       </div>
