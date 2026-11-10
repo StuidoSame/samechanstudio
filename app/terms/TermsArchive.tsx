@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { CosmicInteractionLayer } from "../components/CosmicInteractionLayer";
+import { ArchiveHeroScene } from "../components/archive/ArchiveHeroScene";
+import { useActiveArchiveSection } from "../components/archive/useActiveArchiveSection";
 import { SectionCosmos } from "../components/SectionCosmos";
 import { useI18n } from "../i18n/I18nProvider";
 import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
@@ -33,7 +35,7 @@ function ArchiveQuote({ eyebrow, children }: { eyebrow: string; children: string
 export function TermsArchive() {
   const { locale } = useI18n();
   const messages = TERMS_MESSAGES[locale];
-  const [activeSection, setActiveSection] = useState("using-service");
+  const [activeSection, setActiveSection] = useActiveArchiveSection("[data-terms-section]", "using-service");
   const [revealedSections, setRevealedSections] = useState<Set<string>>(
     () => new Set(),
   );
@@ -48,6 +50,7 @@ export function TermsArchive() {
   }, []);
 
   useEffect(() => {
+    if (reducedMotion) return;
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>("[data-terms-section]"),
     );
@@ -62,29 +65,15 @@ export function TermsArchive() {
           newlyVisible.forEach((id) => next.add(id));
           return next;
         });
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) revealObserver.unobserve(entry.target);
+        });
       },
       { rootMargin: "0px 0px -12%", threshold: 0.16 },
     );
 
-    const navigationObserver = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActiveSection(visible[0].target.id);
-      },
-      { rootMargin: "-24% 0px -62%", threshold: 0 },
-    );
-
-    sections.forEach((section) => {
-      revealObserver.observe(section);
-      navigationObserver.observe(section);
-    });
-
-    return () => {
-      revealObserver.disconnect();
-      navigationObserver.disconnect();
-    };
+    sections.forEach((section) => revealObserver.observe(section));
+    return () => revealObserver.disconnect();
   }, [reducedMotion]);
 
   const scrollToSection = (id: string) => {
@@ -105,11 +94,11 @@ export function TermsArchive() {
       className="archive-document legal-archive-document terms-document"
       aria-labelledby="terms-title"
     >
-      <CosmicInteractionLayer reducedMotion={reducedMotion} />
+      <CosmicInteractionLayer enablePointerTrail={false} reducedMotion={reducedMotion} />
 
-      <header className="terms-hero">
-        <SectionCosmos variant="hero" />
-        <div className="terms-hero-content">
+      <header className="terms-hero cosmic-archive-hero">
+        <ArchiveHeroScene />
+        <div className="terms-hero-content archive-hero-copy">
           <div className="terms-kicker" aria-label={messages.hero.archiveAriaLabel}>
             <span>02</span>
             <span>{messages.hero.label}</span>
@@ -163,6 +152,7 @@ export function TermsArchive() {
                   id={section.id}
                   className={`terms-section${isRevealed ? " is-revealed" : ""}`}
                   data-terms-section=""
+                  data-current={activeSection === section.id || undefined}
                   aria-labelledby={`${section.id}-title`}
                 >
                   <span className="terms-route-node" aria-hidden="true" />

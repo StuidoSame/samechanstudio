@@ -1,1 +1,328 @@
 @import url("/assets/archive/archive.css");
+
+/* The shared archive scene is limited to Support, Terms and Privacy. */
+[data-cosmic-archive] {
+  --archive-scene-light: 175 126 244;
+  --archive-scene-rim: 220 189 255;
+  --archive-scene-sky: #140e23;
+  --archive-scene-horizon: #241836;
+  --archive-scene-star: rgba(235, 212, 255, 0.56);
+  --archive-glass: linear-gradient(150deg, rgba(49, 34, 68, 0.94), rgba(31, 23, 47, 0.86));
+  --archive-glass-line: rgb(var(--archive-scene-rim) / 0.24);
+  --archive-glass-shadow: inset 0 1px var(--theme-highlight), 0 16px 46px var(--theme-shadow);
+}
+
+:root[data-theme="light"] [data-cosmic-archive] {
+  --archive-scene-light: 145 93 205;
+  --archive-scene-rim: 126 74 185;
+  --archive-scene-sky: #f8f2ff;
+  --archive-scene-horizon: #ece0f9;
+  --archive-scene-star: rgba(130, 83, 190, 0.35);
+  --archive-glass: linear-gradient(150deg, rgba(253, 250, 255, 0.96), rgba(243, 233, 253, 0.89));
+}
+
+.archive-space[data-cosmic-archive] {
+  background:
+    radial-gradient(ellipse at 78% 34%, rgb(var(--archive-scene-light) / 0.16), transparent 50%),
+    radial-gradient(ellipse at 6% 78%, rgb(var(--archive-scene-light) / 0.11), transparent 39%),
+    linear-gradient(160deg, var(--archive-scene-sky) 18%, var(--archive-scene-horizon) 75%, var(--archive-scene-sky));
+}
+
+.archive-space[data-cosmic-archive]::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 17% 29%, var(--archive-scene-star) 0 1px, transparent 1.7px) 0 0 / 149px 163px,
+    radial-gradient(circle at 42% 73%, var(--archive-scene-star) 0 0.65px, transparent 1.45px) 22px 37px / 219px 193px;
+  filter: none;
+  opacity: 0.48;
+  transform: none;
+  mask-image: linear-gradient(100deg, black, transparent 44%, transparent 57%, black);
+}
+
+.archive-space[data-cosmic-archive] :is(.archive-star, .archive-orb),
+.policy-page-layout[data-cosmic-archive] :is(.terms-card, .privacy-card, .support-cosmos-backdrop)
+  :is(.section-cosmos-constellation, .section-cosmos-orbit, .section-cosmos-star, .support-cosmos-planet) {
+  animation: none;
+}
+
+.archive-space[data-cosmic-archive] .archive-star {
+  background: var(--archive-scene-star);
+}
+
+.archive-space[data-cosmic-archive] .archive-constellation {
+  opacity: 0.31;
+}
+
+.policy-page-layout[data-cosmic-archive] .policy-page-content {
+  padding-top: calc(var(--site-header-height) + clamp(22px, 3.4vw, 52px));
+}
+
+.cosmic-archive-hero {
+  --archive-planet: url("/assets/cosmic-planets/gas.svg");
+  --archive-planet-tint: 0.36;
+  --archive-planet-width: 61%;
+  --archive-orbit-angle: -19deg;
+  --archive-art-glow: 0.28;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: clamp(365px, 37vw, 520px);
+  padding: clamp(30px, 5vw, 76px);
+  overflow: clip;
+  border: 1px solid var(--archive-glass-line);
+  border-radius: clamp(24px, 4vw, 48px);
+  background:
+    radial-gradient(ellipse at 77% 52%, rgb(var(--archive-scene-light) / var(--archive-art-glow)), transparent 57%),
+    linear-gradient(145deg, var(--archive-scene-sky), var(--archive-scene-horizon));
+  box-shadow: var(--archive-glass-shadow);
+  backdrop-filter: none;
+}
+
+.terms-hero.cosmic-archive-hero {
+  --archive-planet: url("/assets/cosmic-planets/moon.svg");
+  --archive-planet-width: 45%;
+  --archive-planet-tint: 0.14;
+  --archive-orbit-angle: -12deg;
+  --archive-art-glow: 0.16;
+}
+
+.privacy-hero.cosmic-archive-hero {
+  --archive-planet: url("/assets/cosmic-planets/ice.svg");
+  --archive-planet-width: 52%;
+  --archive-planet-tint: 0.23;
+  --archive-orbit-angle: 21deg;
+  --archive-art-glow: 0.23;
+}
+
+.archive-hero-copy {
+  position: relative;
+  z-index: 2;
+  width: min(56%, 590px);
+  min-width: 0;
+}
+
+[data-cosmic-archive] .cosmic-archive-hero .archive-hero-copy h1 {
+  margin-top: clamp(16px, 2.25vw, 32px);
+  color: color-mix(in srgb, var(--theme-accent) 46%, var(--theme-text));
+  font-size: calc(clamp(48px, 7.5vw, 108px) * var(--display-font-scale));
+  line-height: 0.98;
+  overflow-wrap: normal;
+  text-shadow: 0 0 28px rgb(var(--archive-scene-light) / 0.22);
+}
+
+.cosmic-archive-hero .archive-hero-copy :is(.support-hero-description, .terms-hero-description, .privacy-hero-description) {
+  margin-top: clamp(14px, 2vw, 25px);
+  color: var(--theme-text-soft);
+  font-size: calc(clamp(14px, 1.25vw, 17px) * var(--font-scale));
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.cosmic-archive-hero .archive-hero-copy :is(.terms-updated, .privacy-updated) {
+  margin-top: 19px;
+  font-size: calc(10px * var(--font-scale));
+}
+
+.cosmic-archive-hero :is(.support-hero-label, .terms-kicker, .privacy-kicker) {
+  color: var(--theme-accent);
+  text-transform: uppercase;
+}
+
+.cosmic-archive-hero :is(.support-hero-index, .terms-kicker > span:first-child, .privacy-kicker > span:first-child) {
+  color: var(--theme-text-soft);
+}
+
+.archive-hero-scene {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cosmic-archive-hero .archive-hero-scene > .section-cosmos {
+  opacity: 0.59;
+}
+
+.archive-hero-scene > .section-cosmos .section-cosmos-orbit {
+  display: none;
+}
+
+.archive-hero-system {
+  position: absolute;
+  top: 50%;
+  right: 4%;
+  width: min(43%, 488px);
+  aspect-ratio: 1.22;
+  translate: 0 -50%;
+}
+
+.archive-hero-float {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.archive-hero-planet {
+  position: relative;
+  width: var(--archive-planet-width);
+  aspect-ratio: 1;
+  border: 1px solid rgb(var(--archive-scene-rim) / 0.54);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 29% 23%, rgb(var(--archive-scene-rim) / 0.38), transparent 49%),
+    linear-gradient(146deg, transparent 38%, rgba(25, 13, 45, 0.69)),
+    linear-gradient(rgb(149 105 220 / var(--archive-planet-tint)), rgb(117 78 184 / var(--archive-planet-tint))),
+    var(--archive-planet) center / 104% no-repeat,
+    #483260;
+  box-shadow:
+    inset 7px 9px 27px rgb(var(--archive-scene-rim) / 0.24),
+    inset -13px -16px 34px rgba(17, 9, 32, 0.56),
+    0 0 45px rgb(var(--archive-scene-light) / 0.34);
+}
+
+.archive-hero-orbit {
+  position: absolute;
+  width: 96%;
+  height: 37%;
+  border: 1px solid rgb(var(--archive-scene-rim) / 0.46);
+  border-radius: 50%;
+  rotate: var(--archive-orbit-angle);
+}
+
+.archive-hero-orbit--back::before,
+.archive-hero-orbit--back::after {
+  position: absolute;
+  content: "";
+}
+
+.archive-hero-orbit--back::before {
+  inset: -14% 4%;
+  border: 1px dashed rgb(var(--archive-scene-rim) / 0.27);
+  border-radius: 50%;
+}
+
+.archive-hero-orbit--back::after {
+  top: 17%;
+  right: 8%;
+  width: 5px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--theme-accent);
+  box-shadow: 0 0 12px rgb(var(--archive-scene-light) / 0.8);
+}
+
+.archive-hero-orbit--front {
+  border-color: rgb(var(--archive-scene-rim) / 0.63);
+  clip-path: inset(50% 0 0);
+}
+
+.archive-hero-companion {
+  position: absolute;
+  top: 16%;
+  right: 13%;
+  width: 8%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(var(--archive-scene-rim) / 0.3);
+  border-radius: 50%;
+  background: radial-gradient(circle at 33% 27%, rgb(var(--archive-scene-rim) / 0.69), rgb(var(--archive-scene-light) / 0.14) 73%);
+  box-shadow: 0 0 18px rgb(var(--archive-scene-light) / 0.24);
+}
+
+.terms-hero .archive-hero-companion,
+.terms-hero .archive-hero-companion::after {
+  border-radius: 12%;
+  background:
+    linear-gradient(rgb(var(--archive-scene-rim) / 0.32) 1px, transparent 1px) 26% 33% / 57% 13% repeat-y,
+    linear-gradient(145deg, rgb(var(--archive-scene-rim) / 0.21), rgb(var(--archive-scene-light) / 0.04));
+}
+
+.terms-hero .archive-hero-companion {
+  top: 20%;
+  right: 16%;
+  width: 25%;
+  aspect-ratio: 0.78;
+  rotate: 13deg;
+}
+
+.terms-hero .archive-hero-companion::after {
+  position: absolute;
+  inset: -13% -18% 13% 18%;
+  border: 1px solid rgb(var(--archive-scene-rim) / 0.23);
+  content: "";
+}
+
+.privacy-hero .archive-hero-planet::after {
+  position: absolute;
+  inset: -12%;
+  border: 1px solid rgb(var(--archive-scene-rim) / 0.39);
+  border-radius: inherit;
+  box-shadow: 0 0 0 11px rgb(var(--archive-scene-rim) / 0.09), inset 0 0 21px rgb(var(--archive-scene-light) / 0.22);
+  content: "";
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .archive-hero-float {
+    animation: archive-hero-drift 22s ease-in-out infinite;
+  }
+
+  .archive-hero-scene:not([data-in-view])
+    :is(.archive-hero-float, .section-cosmos-constellation, .section-cosmos-star) {
+    animation-play-state: paused;
+  }
+
+  @supports (animation-timeline: view()) {
+    .archive-hero-system {
+      animation: archive-hero-parallax linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes archive-hero-drift {
+  0%, 100% { transform: translate(0, 0) rotate(-1deg); }
+  50% { transform: translate(2px, -7px) rotate(1deg); }
+}
+
+@keyframes archive-hero-parallax {
+  from { transform: translateY(0); }
+  to { transform: translateY(18px); }
+}
+
+@media (max-width: 680px) {
+  .policy-page-layout[data-cosmic-archive] .policy-page-content {
+    padding-top: calc(var(--site-header-height) + 20px);
+  }
+
+  .cosmic-archive-hero {
+    min-height: 0;
+    padding: 28px 20px calc(clamp(148px, 46vw, 215px) + 12px);
+  }
+
+  .archive-hero-copy {
+    width: 100%;
+  }
+
+  [data-cosmic-archive] .cosmic-archive-hero .archive-hero-copy h1 {
+    font-size: calc(clamp(38px, 13.7vw, 69px) * var(--display-font-scale));
+  }
+
+  .archive-hero-system {
+    inset: auto 0 4px;
+    width: clamp(174px, 56vw, 260px);
+    margin-inline: auto;
+    translate: none;
+  }
+
+  .archive-hero-companion,
+  .archive-hero-orbit--back::before,
+  .archive-space[data-cosmic-archive] .archive-orb-two {
+    display: none;
+  }
+
+  .cosmic-archive-hero .archive-hero-scene > .section-cosmos {
+    opacity: 0.34;
+  }
+}

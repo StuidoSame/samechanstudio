@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { CosmicInteractionLayer } from "../components/CosmicInteractionLayer";
+import { ArchiveHeroScene } from "../components/archive/ArchiveHeroScene";
+import { useActiveArchiveSection } from "../components/archive/useActiveArchiveSection";
 import { SectionCosmos } from "../components/SectionCosmos";
 import { useI18n } from "../i18n/I18nProvider";
 import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
@@ -25,7 +27,7 @@ function createMailto(subject: string, body: string) {
 export function PrivacyArchive() {
   const { locale } = useI18n();
   const messages = PRIVACY_MESSAGES[locale];
-  const [activeSection, setActiveSection] = useState("information");
+  const [activeSection, setActiveSection] = useActiveArchiveSection("[data-privacy-section]", "information");
   const [revealedSections, setRevealedSections] = useState<Set<string>>(
     () => new Set(),
   );
@@ -40,6 +42,7 @@ export function PrivacyArchive() {
   }, []);
 
   useEffect(() => {
+    if (reducedMotion) return;
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>("[data-privacy-section]"),
     );
@@ -62,36 +65,8 @@ export function PrivacyArchive() {
       { rootMargin: "0px 0px -10%", threshold: 0.12 },
     );
 
-    let scrollFrame = 0;
-    const updateActiveSection = () => {
-      if (scrollFrame) return;
-      scrollFrame = window.requestAnimationFrame(() => {
-        scrollFrame = 0;
-        const activationLine = Math.max(124, window.innerHeight * 0.24);
-        const currentSection = [...sections]
-          .reverse()
-          .find((section) => section.getBoundingClientRect().top <= activationLine);
-        setActiveSection((current) =>
-          currentSection && currentSection.id !== current
-            ? currentSection.id
-            : current,
-        );
-      });
-    };
-
-    sections.forEach((section) => {
-      if (!reducedMotion) revealObserver.observe(section);
-    });
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("resize", updateActiveSection);
-
-    return () => {
-      revealObserver.disconnect();
-      window.removeEventListener("scroll", updateActiveSection);
-      window.removeEventListener("resize", updateActiveSection);
-      if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
-    };
+    sections.forEach((section) => revealObserver.observe(section));
+    return () => revealObserver.disconnect();
   }, [reducedMotion]);
 
   const scrollToSection = (id: string) => {
@@ -109,12 +84,11 @@ export function PrivacyArchive() {
       className="archive-document legal-archive-document privacy-document"
       aria-labelledby="privacy-title"
     >
-      <CosmicInteractionLayer reducedMotion={reducedMotion} />
+      <CosmicInteractionLayer enablePointerTrail={false} reducedMotion={reducedMotion} />
 
-      <header className="privacy-hero">
-        <SectionCosmos variant="hero" />
-        <div className="privacy-hero-glow" aria-hidden="true" />
-        <div className="privacy-hero-content">
+      <header className="privacy-hero cosmic-archive-hero">
+        <ArchiveHeroScene />
+        <div className="privacy-hero-content archive-hero-copy">
           <div className="privacy-kicker" aria-label={messages.hero.archiveAriaLabel}>
             <span>03</span>
             <span>{messages.hero.label}</span>
@@ -184,6 +158,7 @@ export function PrivacyArchive() {
                   id={section.id}
                   className={`privacy-section${isRevealed ? " is-revealed" : ""}`}
                   data-privacy-section=""
+                  data-current={activeSection === section.id || undefined}
                   aria-labelledby={`${section.id}-title`}
                 >
                   <span className="privacy-route-node" aria-hidden="true" />

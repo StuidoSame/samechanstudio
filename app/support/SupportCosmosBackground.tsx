@@ -27,9 +27,6 @@ export function SupportCosmosBackground() {
         data-support-cosmos=""
         aria-hidden="true"
       >
-        <div className="support-cosmos-layer support-cosmos-layer--hero">
-          <SectionCosmos variant="hero" />
-        </div>
         <div className="support-cosmos-layer support-cosmos-layer--middle">
           <SectionCosmos variant="contact" />
         </div>
@@ -37,7 +34,6 @@ export function SupportCosmosBackground() {
           <SectionCosmos variant="about" />
         </div>
 
-        <span className="support-cosmos-planet support-cosmos-planet--hero" />
         <span className="support-cosmos-planet support-cosmos-planet--middle" />
         <span className="support-cosmos-planet support-cosmos-planet--lower" />
         <span className="support-cosmos-dust support-cosmos-dust--one" />
