@@ -27,7 +27,7 @@ Support에는 마지막 ETC 카테고리에서 PINI·PEPESNAP·Other 문의를 �
 - `app/layout.tsx:91` RootLayout: 배경 오디오 → 페이지 전환 → 테마 → 글자 크기 → 다국어 Provider를 구성한다. hydration 전 테마·글자 크기 초기화 script와 `SeoLocaleSync`도 담당한다.
 - `app/page.tsx:8` Home: JSON-LD `HomeStructuredData`와 `HomeExperience`를 렌더링한다.
 - `app/components/HomeExperience.tsx:550`은 캐러셀·로더·스크롤·자동 재생·상세 overlay와 HOME의 여러 section을 조정한다. 약 2,578줄의 결합도가 높은 중심 모듈이다. 분해는 이번 작업 범위가 아니다.
-- `app/lib/apps.ts:18`의 10개 앱 데이터가 캐러셀과 support 목록의 원천이다. `appScreenshots.ts:83,302,338`은 파일 manifest·로케일 fallback을, `appDetailCapabilities.ts`는 Phone/Pad/Watch/TV/Web 화면과 스토어 노출을 결정한다.
+- `app/lib/apps.ts`의 앱 데이터가 캐러셀과 support 목록의 원천이다. `appScreenshots.ts`는 생성된 파일 목록에서 Phone·Pad 지원 범위와 로케일 fallback을 결정한다. `appDetailCapabilities.ts`는 플랫폼 배지와 스토어 링크를 결정한다.
 - `app/components/app-detail/`은 상세 dialog, 화면 종류별 갤러리, 이미지 실패 처리와 lightbox를 담당한다. 별도 앱 slug route는 없다.
 - `app/components/device-showcase/`는 Phone 하루 질문, Pad 하루 퍼즐, Watch 3개 드럼을 담당한다. 질문·퍼즐은 로컬 저장, Watch는 Web Audio와 키보드를 사용한다.
 - `app/navigation/`은 내부 링크의 화면 전환·스크롤·도착 focus 처리를, `PageSectionNavigation`은 section 간 탐색과 활성 상태를 담당한다.
@@ -70,7 +70,7 @@ Support에는 마지막 ETC 카테고리에서 PINI·PEPESNAP·Other 문의를 �
 
 ## 자산과 상태
 
-`public/assets/`는 앱 icons, 로케일·기기별 screenshot, BMJUA 폰트, 배경음악 및 archive 자산을 보존한다. `appScreenshots.ts`는 실제 파일 경로를 manifest로 연결한다. `public/assets/archive/archive.js` 등은 정적 legacy 자산이며 활성 React route와 혼동하지 않는다. 이미지 경로·대소문자·기존 제품 ID(`runtronome`의 표시명 Pulto 등)는 단순 rename하지 않는다.
+`public/assets/`는 앱 icons, 로케일·기기별 screenshot, BMJUA 폰트, 배경음악 및 archive 자산을 보존한다. 스크린샷의 현재 경로·생성 매니페스트·fallback은 [스크린샷 자산 가이드](SCREENSHOTS.md)를 따른다. 기존 제품 ID(`runtronome`의 표시명 Pulto 등)는 보존한다. `public/assets/archive/archive.js` 등은 정적 legacy 자산이다.
 
 저장 키는 `same-studio-locale-v1`, `same-studio-theme-v1`, `same-studio-font-size`와 device demo의 `same-studio-daily-question-v1`, `same-studio-daily-puzzle-v1`이다. 메모리 state와 refs로 animation을 관리하며 저장 형식·사용자 답변을 지우지 않는다. 배경음악 preference도 별도 provider가 보존한다.
 

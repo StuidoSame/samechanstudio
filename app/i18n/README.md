@@ -24,3 +24,4 @@ translation provider.
 - Korean is the source and fallback locale.
 - Locale persistence key: `same-studio-locale-v1`
 - Translation keys are checked through the `TranslationMessages` type.
+- App detail screenshots follow the same site locale. Asset folder names and screenshot fallback are documented in the [screenshot asset guide](../../docs/agent/SCREENSHOTS.md).
