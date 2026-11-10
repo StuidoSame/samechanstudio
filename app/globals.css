@@ -2333,23 +2333,12 @@ button {
   overscroll-behavior: contain;
 }
 
-.app-detail-preview-toolbar,
-.app-detail-preview-options {
+.app-detail-preview-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px 12px;
-}
-
-.app-detail-preview-options select {
-  min-height: 36px;
-  padding-inline: 8px;
-  border: 1px solid currentColor;
-  border-radius: 12px;
-  color: var(--ink);
-  background: var(--theme-page);
-  font-size: calc(12px * var(--font-scale));
+  gap: 8px;
 }
 
 .app-detail-preview-fallback {

@@ -164,7 +164,6 @@ export const ko = {
     previewAlt: "{app} {device} {language} 미리보기 {current}/{total}",
     previewLoadingLabel: "미리보기를 불러오는 중...",
     previewUnavailableLabel: "이 조합의 미리보기가 없습니다.",
-    previewPlatformLabel: "미리보기 플랫폼",
     previewFallbackLabel: "{language} 스크린샷을 표시하고 있습니다.",
     previousScreenshotLabel: "{app} 이전 미리보기",
     nextScreenshotLabel: "{app} 다음 미리보기",

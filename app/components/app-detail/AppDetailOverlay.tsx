@@ -134,27 +134,24 @@ export function AppDetailOverlay({
   const lightboxTriggerRef = useRef<HTMLButtonElement | null>(null);
   const appId = app.screenshotId ?? app.id;
   const platforms = getAppDetailPlatforms(app);
-  const [platform, setPlatform] = useState<AppPlatform>(platforms[0]?.platform ?? "apple");
   const [preferredScreen, setPreferredScreen] = useState<DetailScreen>("phone");
   const { availableScreens, selectedScreen, screenshotSet } = useMemo(() => {
-    const availableScreens = getAvailableDetailScreens(appId, platform);
+    const availableScreens = getAvailableDetailScreens(appId);
     const selectedScreen = availableScreens.includes(preferredScreen)
       ? preferredScreen
       : availableScreens[0] ?? "phone";
-    const screenshotSet = getAppScreenshotSet({ appId, platform, screen: selectedScreen, locale });
+    const screenshotSet = getAppScreenshotSet({ appId, screen: selectedScreen, locale });
     return { availableScreens, selectedScreen, screenshotSet };
-  }, [appId, locale, platform, preferredScreen]);
+  }, [appId, locale, preferredScreen]);
   const appDetailContent =
     messages.appDetail.apps[app.id as AppTranslationId];
-  const phoneContent = platform === "android"
-    ? appDetailContent?.android ?? appDetailContent?.iphone
-    : appDetailContent?.iphone ?? appDetailContent?.android;
+  const phoneContent = appDetailContent?.iphone ?? appDetailContent?.android;
   const selectedContent =
     (selectedScreen === "ipad" ? appDetailContent?.ipad : undefined)
     ?? phoneContent ?? messages.appDetail.fallback;
   const screenshots = screenshotSet.screenshots;
   const screenshotLanguage = messages.header.languageNames[screenshotSet.locale ?? locale];
-  const previewKey = `${appId}:${platform}:${selectedScreen}:${locale}`;
+  const previewKey = `${appId}:${selectedScreen}:${locale}`;
   const [galleryState, setGalleryState] = useState<GalleryState>(
     INITIAL_GALLERY_STATE,
   );
@@ -328,7 +325,7 @@ export function AppDetailOverlay({
       if (event.key !== "Tab") return;
 
       const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
-        'button:not(:disabled), select:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
+        'button:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
       );
       if (!focusable?.length) return;
 
@@ -430,22 +427,6 @@ export function AppDetailOverlay({
                   </a>
                 );
               })}
-            </div>
-            <div className="app-detail-preview-options">
-              {platforms.length > 1 && (
-                <select
-                  aria-label={messages.appDetail.previewPlatformLabel}
-                  value={platform}
-                  onChange={(event) => {
-                    const selected = platforms.find(({ platform }) => platform === event.target.value);
-                    if (selected) setPlatform(selected.platform);
-                  }}
-                >
-                  {platforms.map(({ platform }) => (
-                    <option key={platform} value={platform}>{PLATFORM_LABELS[platform]}</option>
-                  ))}
-                </select>
-              )}
             </div>
             {screenshotSet.locale && screenshotSet.locale !== locale && (
               <p className="app-detail-preview-fallback" role="status">

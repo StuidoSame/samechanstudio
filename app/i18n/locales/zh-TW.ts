@@ -164,7 +164,6 @@ export const zhTW = {
     previewAlt: "{app} {device} {language}預覽 {current}/{total}",
     previewLoadingLabel: "正在載入預覽...",
     previewUnavailableLabel: "目前沒有可用的預覽。",
-    previewPlatformLabel: "預覽平台",
     previewFallbackLabel: "目前顯示{language}截圖。",
     previousScreenshotLabel: "{app}上一張預覽",
     nextScreenshotLabel: "{app}下一張預覽",

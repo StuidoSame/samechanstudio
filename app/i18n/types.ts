@@ -113,7 +113,6 @@ export type TranslationMessages = {
     storeSelectorLabel: string;
     storeLinkLabel: string;
     previewRegionLabel: string;
-    previewPlatformLabel: string;
     previewFallbackLabel: string;
     previewAlt: string;
     previewLoadingLabel: string;

@@ -164,7 +164,6 @@ export const en = {
     previewAlt: "{app} {device} {language} preview {current} of {total}",
     previewLoadingLabel: "Loading preview...",
     previewUnavailableLabel: "No preview available.",
-    previewPlatformLabel: "Preview platform",
     previewFallbackLabel: "Showing screenshots in {language}.",
     previousScreenshotLabel: "Previous {app} preview",
     nextScreenshotLabel: "Next {app} preview",
