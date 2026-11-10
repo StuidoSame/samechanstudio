@@ -9,16 +9,18 @@ import {
   useState,
 } from "react";
 import { useI18n } from "../../i18n/I18nProvider";
-import type { AppTranslationId, TranslationDevice } from "../../i18n/types";
-import type { AppItem } from "../../lib/apps";
+import { SUPPORTED_LOCALES, isLocale, type AppTranslationId } from "../../i18n/types";
+import type { AppItem, AppPlatform } from "../../lib/apps";
 import {
-  DETAIL_SCREEN_ORDER,
-  getAvailableDetailScreens,
   getAppDetailPlatforms,
-  type DetailScreen,
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
-import { getAppScreenshotSet } from "../../lib/appScreenshots";
+import {
+  DETAIL_SCREEN_ORDER,
+  getAppScreenshotSet,
+  getAvailableDetailScreens,
+  type DetailScreen,
+} from "../../lib/appScreenshots";
 import { ResilientScreenshotImage } from "./ResilientScreenshotImage";
 import { ScreenshotLightbox } from "./ScreenshotLightbox";
 
@@ -62,15 +64,12 @@ const STORE_LABELS: Record<DetailStore, string> = {
 
 const SCREEN_LABELS: Record<DetailScreen, string> = {
   phone: "Phone",
-  pad: "Pad",
+  ipad: "Pad",
 };
 
-const TRANSLATION_DEVICE_CANDIDATES: Record<
-  DetailScreen,
-  readonly TranslationDevice[]
-> = {
-  phone: ["iphone", "android"],
-  pad: ["ipad"],
+const PLATFORM_LABELS: Record<AppPlatform, string> = {
+  apple: "Apple",
+  android: "Android",
 };
 
 function StoreIcon({ store }: { store: DetailStore }) {
@@ -125,7 +124,7 @@ export function AppDetailOverlay({
   onRequestClose,
   onExited,
 }: AppDetailOverlayProps) {
-  const { locale, messages, format } = useI18n();
+  const { locale, setLocale, messages, format } = useI18n();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -133,48 +132,52 @@ export function AppDetailOverlay({
   const dragRef = useRef<GalleryDrag | null>(null);
   const suppressClickRef = useRef(false);
   const lightboxTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const availableScreens = useMemo(
-    () => getAvailableDetailScreens(app.id),
-    [app.id],
-  );
-  const [selectedScreen, setSelectedScreen] =
-    useState<DetailScreen>("phone");
+  const appId = app.screenshotId ?? app.id;
+  const platforms = getAppDetailPlatforms(app);
+  const [platform, setPlatform] = useState<AppPlatform>(platforms[0]?.platform ?? "apple");
+  const [preferredScreen, setPreferredScreen] = useState<DetailScreen>("phone");
+  const { availableScreens, selectedScreen, screenshotSet } = useMemo(() => {
+    const availableScreens = getAvailableDetailScreens(appId, platform);
+    const selectedScreen = availableScreens.includes(preferredScreen)
+      ? preferredScreen
+      : availableScreens[0] ?? "phone";
+    const screenshotSet = getAppScreenshotSet({ appId, platform, screen: selectedScreen, locale });
+    return { availableScreens, selectedScreen, screenshotSet };
+  }, [appId, locale, platform, preferredScreen]);
   const appDetailContent =
     messages.appDetail.apps[app.id as AppTranslationId];
+  const phoneContent = platform === "android"
+    ? appDetailContent?.android ?? appDetailContent?.iphone
+    : appDetailContent?.iphone ?? appDetailContent?.android;
   const selectedContent =
-    TRANSLATION_DEVICE_CANDIDATES[selectedScreen]
-      .map((device) => appDetailContent?.[device])
-      .find((content) => content !== undefined) ?? messages.appDetail.fallback;
-  const screenshotSet = useMemo(
-    () =>
-      getAppScreenshotSet({
-        appId: app.screenshotId ?? app.id,
-        screen: selectedScreen,
-        locale,
-      }),
-    [app.id, app.screenshotId, locale, selectedScreen],
-  );
+    (selectedScreen === "ipad" ? appDetailContent?.ipad : undefined)
+    ?? phoneContent ?? messages.appDetail.fallback;
   const screenshots = screenshotSet.screenshots;
-  const screenshotLanguage = screenshotSet.locale ?? locale;
+  const screenshotLanguage = messages.header.languageNames[screenshotSet.locale ?? locale];
+  const previewKey = `${appId}:${platform}:${selectedScreen}:${locale}`;
   const [galleryState, setGalleryState] = useState<GalleryState>(
     INITIAL_GALLERY_STATE,
   );
   const [isDragging, setIsDragging] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const screenshotPosition = `${String(galleryState.activeIndex + 1).padStart(2, "0")} / ${String(screenshots.length).padStart(2, "0")}`;
+  const [lightbox, setLightbox] = useState<{ previewKey: string; index: number } | null>(null);
+  const lightboxIndex = lightbox?.previewKey === previewKey && screenshots.length
+    ? Math.min(lightbox.index, screenshots.length - 1)
+    : null;
+  const galleryIndex = Math.max(0, Math.min(galleryState.activeIndex, screenshots.length - 1));
+  const screenshotPosition = `${String(galleryIndex + 1).padStart(2, "0")} / ${String(screenshots.length).padStart(2, "0")}`;
 
   const closeLightbox = useCallback(() => {
-    setLightboxIndex(null);
+    setLightbox(null);
     const trigger = lightboxTriggerRef.current;
     window.requestAnimationFrame(() => {
       if (trigger?.isConnected) trigger.focus({ preventScroll: true });
     });
-  }, []);
+  }, [setLightbox]);
 
   const closeAppDetail = useCallback(() => {
-    setLightboxIndex(null);
+    setLightbox(null);
     onRequestClose();
-  }, [onRequestClose]);
+  }, [onRequestClose, setLightbox]);
 
   const updateGalleryState = useCallback(() => {
     const gallery = galleryRef.current;
@@ -185,14 +188,17 @@ export function AppDetailOverlay({
     const items = Array.from(
       gallery.querySelectorAll<HTMLElement>("[data-screenshot-index]"),
     );
-    let activeIndex = 0;
+    const canScrollLeft = hasOverflow && gallery.scrollLeft > GALLERY_EDGE_TOLERANCE;
+    const canScrollRight = hasOverflow && gallery.scrollLeft < maximumScroll - GALLERY_EDGE_TOLERANCE;
+    let activeIndex = hasOverflow && !canScrollRight ? items.length - 1 : 0;
 
-    if (items.length > 0) {
+    if (canScrollLeft && canScrollRight && items.length > 0) {
       const galleryStart = gallery.scrollLeft;
+      const firstItemOffset = items[0].offsetLeft;
       let nearestDistance = Number.POSITIVE_INFINITY;
 
       items.forEach((item, index) => {
-        const distance = Math.abs(item.offsetLeft - galleryStart);
+        const distance = Math.abs(item.offsetLeft - firstItemOffset - galleryStart);
         if (distance < nearestDistance) {
           nearestDistance = distance;
           activeIndex = index;
@@ -203,11 +209,8 @@ export function AppDetailOverlay({
     const nextState = {
       activeIndex,
       hasOverflow,
-      canScrollLeft:
-        hasOverflow && gallery.scrollLeft > GALLERY_EDGE_TOLERANCE,
-      canScrollRight:
-        hasOverflow &&
-        gallery.scrollLeft < maximumScroll - GALLERY_EDGE_TOLERANCE,
+      canScrollLeft,
+      canScrollRight,
     };
 
     setGalleryState((current) =>
@@ -246,35 +249,16 @@ export function AppDetailOverlay({
   );
 
   useEffect(() => {
-    const screenResetFrame = window.requestAnimationFrame(() => {
-      setSelectedScreen("phone");
-    });
-    return () => window.cancelAnimationFrame(screenResetFrame);
-  }, [app.id]);
-
-  useEffect(() => {
     const galleryResetFrame = window.requestAnimationFrame(() => {
       setGalleryState(INITIAL_GALLERY_STATE);
-      setLightboxIndex(null);
-      galleryRef.current?.scrollTo({ left: 0, behavior: "auto" });
+      setLightbox((current) => current?.previewKey === previewKey ? current : null);
+      dragRef.current = null;
+      suppressClickRef.current = false;
+      setIsDragging(false);
       updateGalleryState();
     });
     return () => window.cancelAnimationFrame(galleryResetFrame);
-  }, [app.id, locale, screenshots, selectedScreen, updateGalleryState]);
-
-  useEffect(() => {
-    if (!open || screenshots.length === 0) return;
-    const preloadPaths = screenshots.slice(0, Math.min(3, screenshots.length));
-    const preload = (src: string) =>
-      new Promise<void>((resolve, reject) => {
-        const image = new window.Image();
-        image.onload = () => resolve();
-        image.onerror = () => reject(new Error(`Unable to preload ${src}`));
-        image.src = src;
-      });
-
-    void Promise.allSettled(preloadPaths.map(preload));
-  }, [open, screenshots]);
+  }, [previewKey, updateGalleryState]);
 
   useEffect(() => {
     const gallery = galleryRef.current;
@@ -297,7 +281,7 @@ export function AppDetailOverlay({
         galleryFrameRef.current = null;
       }
     };
-  }, [scheduleGalleryUpdate, screenshots]);
+  }, [previewKey, scheduleGalleryUpdate]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -344,7 +328,7 @@ export function AppDetailOverlay({
       if (event.key !== "Tab") return;
 
       const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
-        'button:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
+        'button:not(:disabled), select:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
       );
       if (!focusable?.length) return;
 
@@ -404,46 +388,81 @@ export function AppDetailOverlay({
         </header>
 
         <div className="app-detail-content" data-app-id={app.id}>
-          <div
-            className="app-detail-store-selector"
-            aria-label={messages.appDetail.storeSelectorLabel}
-          >
-            {getAppDetailPlatforms(app).map(({ platform, store, url }) => {
-              const icon = (
-                <span className="app-detail-store-icon-slot">
-                  <StoreIcon store={store} />
-                </span>
-              );
-
-              if (!url) {
-                return (
-                  <span
-                    className="app-detail-store-button app-detail-platform-badge"
-                    role="img"
-                    aria-label={`${app.name}: ${platform === "apple" ? "Apple" : "Android"}`}
-                    key={store}
-                  >
-                    {icon}
+          <div className="app-detail-preview-toolbar">
+            <div
+              className="app-detail-store-selector"
+              role="group"
+              aria-label={messages.appDetail.storeSelectorLabel}
+            >
+              {platforms.map(({ platform, store, url }) => {
+                const icon = (
+                  <span className="app-detail-store-icon-slot">
+                    <StoreIcon store={store} />
                   </span>
                 );
-              }
 
-              return (
-                <a
-                  className="app-detail-store-button"
-                  href={url}
-                  key={store}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={format(messages.appDetail.storeLinkLabel, {
-                    store: STORE_LABELS[store],
-                    app: app.name,
-                  })}
+                if (!url) {
+                  return (
+                    <span
+                      className="app-detail-store-button app-detail-platform-badge"
+                      role="img"
+                      aria-label={`${app.name}: ${PLATFORM_LABELS[platform]}`}
+                      key={store}
+                  >
+                      {icon}
+                    </span>
+                  );
+                }
+
+                return (
+                  <a
+                    className="app-detail-store-button"
+                    href={url}
+                    key={store}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={format(messages.appDetail.storeLinkLabel, {
+                      store: STORE_LABELS[store],
+                      app: app.name,
+                    })}
                 >
-                  {icon}
-                </a>
-              );
-            })}
+                    {icon}
+                  </a>
+                );
+              })}
+            </div>
+            <div className="app-detail-preview-options">
+              {platforms.length > 1 && (
+                <select
+                  aria-label={messages.appDetail.previewPlatformLabel}
+                  value={platform}
+                  onChange={(event) => {
+                    const selected = platforms.find(({ platform }) => platform === event.target.value);
+                    if (selected) setPlatform(selected.platform);
+                  }}
+                >
+                  {platforms.map(({ platform }) => (
+                    <option key={platform} value={platform}>{PLATFORM_LABELS[platform]}</option>
+                  ))}
+                </select>
+              )}
+              <select
+                aria-label={messages.header.languageButtonLabel}
+                value={locale}
+                onChange={(event) => {
+                  if (isLocale(event.target.value)) setLocale(event.target.value);
+                }}
+              >
+                {SUPPORTED_LOCALES.map((code) => (
+                  <option key={code} value={code} lang={code}>{messages.header.languageNames[code]}</option>
+                ))}
+              </select>
+            </div>
+            {screenshotSet.locale && screenshotSet.locale !== locale && (
+              <p className="app-detail-preview-fallback" role="status">
+                {format(messages.appDetail.previewFallbackLabel, { language: screenshotLanguage })}
+              </p>
+            )}
           </div>
           <div
             className={`app-detail-preview is-${selectedScreen}`}
@@ -452,10 +471,11 @@ export function AppDetailOverlay({
               app: app.name,
               device: SCREEN_LABELS[selectedScreen],
             })}
-            data-preview-key={`${app.id}:${selectedScreen}:${screenshotLanguage}`}
+            data-preview-key={previewKey}
           >
             {screenshots.length > 0 ? (
               <div
+                key={previewKey}
                 className={`app-detail-gallery${isDragging ? " is-dragging" : ""}`}
                 ref={galleryRef}
                 tabIndex={0}
@@ -504,7 +524,9 @@ export function AppDetailOverlay({
                     startScrollLeft: event.currentTarget.scrollLeft,
                     moved: false,
                   };
-                  event.currentTarget.setPointerCapture(event.pointerId);
+                }}
+                onPointerLeave={() => {
+                  if (!dragRef.current?.moved) dragRef.current = null;
                 }}
                 onPointerMove={(event) => {
                   const drag = dragRef.current;
@@ -517,6 +539,7 @@ export function AppDetailOverlay({
 
                   if (!drag.moved) {
                     drag.moved = true;
+                    event.currentTarget.setPointerCapture(event.pointerId);
                     setIsDragging(true);
                   }
                   event.preventDefault();
@@ -550,25 +573,25 @@ export function AppDetailOverlay({
                 }}
               >
                 <div className="app-detail-gallery-track">
-                  {screenshots.map((screenshot, index) => (
+                  {screenshots.map(({ src, width, height }, index) => (
                     <button
                       className="app-detail-gallery-item"
                       type="button"
                       data-screenshot-index={index}
-                      key={`${app.id}:${selectedScreen}:${screenshotLanguage}:${screenshot}`}
+                      key={src}
+                      style={{ aspectRatio: `${width} / ${height}` }}
                       aria-label={format(
                         messages.appDetail.enlargeScreenshotLabel,
                         { app: app.name, current: index + 1 },
                       )}
                       onClick={(event) => {
                         lightboxTriggerRef.current = event.currentTarget;
-                        setLightboxIndex(index);
+                        setLightbox({ previewKey, index });
                       }}
                     >
                       <ResilientScreenshotImage
-                        key={screenshot}
                         className="app-detail-preview-image"
-                        src={screenshot}
+                        src={src}
                         errorLabel={messages.appDetail.previewUnavailableLabel}
                         alt={format(messages.appDetail.previewAlt, {
                           app: app.name,
@@ -620,7 +643,7 @@ export function AppDetailOverlay({
                     messages.appDetail.screenshotPositionLabel,
                     {
                       app: app.name,
-                      current: galleryState.activeIndex + 1,
+                      current: galleryIndex + 1,
                       total: screenshots.length,
                     },
                   )}
@@ -666,7 +689,7 @@ export function AppDetailOverlay({
                 aria-label={SCREEN_LABELS[screen]}
                 aria-pressed={selectedScreen === screen}
                 disabled={!availableScreens.includes(screen)}
-                onClick={() => setSelectedScreen(screen)}
+                onClick={() => setPreferredScreen(screen)}
               >
                 <ScreenFormIcon screen={screen} />
                 <span className="app-detail-screen-label">
@@ -682,7 +705,7 @@ export function AppDetailOverlay({
       </div>
       {lightboxIndex !== null ? (
         <ScreenshotLightbox
-          activeIndex={Math.min(lightboxIndex, screenshots.length - 1)}
+          activeIndex={lightboxIndex}
           closeLabel={messages.appDetail.closeLightboxLabel}
           dialogLabel={format(messages.appDetail.lightboxLabel, {
             app: app.name,
@@ -692,12 +715,12 @@ export function AppDetailOverlay({
             app: app.name,
             device: SCREEN_LABELS[selectedScreen],
             language: screenshotLanguage,
-            current: Math.min(lightboxIndex, screenshots.length - 1) + 1,
+            current: lightboxIndex + 1,
             total: screenshots.length,
           })}
           nextLabel={messages.appDetail.nextImageLabel}
           onClose={closeLightbox}
-          onIndexChange={setLightboxIndex}
+          onIndexChange={(index) => setLightbox({ previewKey, index })}
           previousLabel={messages.appDetail.previousImageLabel}
           screenshots={screenshots}
         />

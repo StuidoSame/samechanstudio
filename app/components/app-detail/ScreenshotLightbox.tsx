@@ -2,6 +2,7 @@
 
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { Screenshot } from "../../lib/appScreenshots";
 import { ResilientScreenshotImage } from "./ResilientScreenshotImage";
 
 const SWIPE_THRESHOLD = 48;
@@ -22,7 +23,7 @@ type ScreenshotLightboxProps = {
   onClose: () => void;
   onIndexChange: (index: number) => void;
   previousLabel: string;
-  screenshots: string[];
+  screenshots: Screenshot[];
 };
 
 function preloadImage(src: string): Promise<void> {
@@ -50,7 +51,7 @@ export function ScreenshotLightbox({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const swipeRef = useRef<SwipeStart | null>(null);
   const [direction, setDirection] = useState<"previous" | "next">("next");
-  const currentScreenshot = screenshots[activeIndex];
+  const currentScreenshot = screenshots[activeIndex]?.src;
   const canGoPrevious = activeIndex > 0;
   const canGoNext = activeIndex < screenshots.length - 1;
 
@@ -65,9 +66,8 @@ export function ScreenshotLightbox({
 
   useEffect(() => {
     const adjacentPaths = [
-      screenshots[activeIndex],
-      screenshots[activeIndex - 1],
-      screenshots[activeIndex + 1],
+      screenshots[activeIndex - 1]?.src,
+      screenshots[activeIndex + 1]?.src,
     ].filter((path): path is string => Boolean(path));
 
     void Promise.allSettled(adjacentPaths.map(preloadImage));

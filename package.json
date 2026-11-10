@@ -7,6 +7,8 @@
   },
   "scripts": {
     "dev": "node scripts/with-wrangler.mjs vinext dev",
+    "screenshots:manifest": "node scripts/screenshot-manifest.mjs",
+    "prebuild": "node scripts/screenshot-manifest.mjs --check",
     "build": "node scripts/with-wrangler.mjs vinext build",
     "start": "node scripts/with-wrangler.mjs vinext start",
     "preview": "npm run build && node scripts/with-wrangler.mjs vite preview",

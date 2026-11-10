@@ -2326,11 +2326,38 @@ button {
   padding: clamp(26px, 4vw, 56px);
   display: grid;
   grid-template-rows: auto auto auto auto;
-  align-content: center;
+  align-content: safe center;
   gap: clamp(16px, 1.8vw, 24px);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
+}
+
+.app-detail-preview-toolbar,
+.app-detail-preview-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+}
+
+.app-detail-preview-options select {
+  min-height: 36px;
+  padding-inline: 8px;
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  color: var(--ink);
+  background: var(--theme-page);
+  font-size: calc(12px * var(--font-scale));
+}
+
+.app-detail-preview-fallback {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ink);
+  font-size: calc(12px * var(--font-scale));
+  text-align: center;
 }
 
 .app-detail-store-selector {
@@ -2399,10 +2426,12 @@ a.app-detail-store-button:focus-visible {
 }
 
 .app-detail-preview {
+  --gallery-min-height: 220px;
+  --preview-padding-top: clamp(24px, 3vw, 38px);
+  --preview-padding-bottom: clamp(66px, 6vw, 76px);
   position: relative;
-  min-height: 280px;
-  padding: clamp(24px, 3vw, 38px) clamp(20px, 2.8vw, 34px)
-    clamp(66px, 6vw, 76px);
+  min-height: calc(var(--gallery-min-height) + var(--preview-padding-top) + var(--preview-padding-bottom) + 2px);
+  padding: var(--preview-padding-top) clamp(20px, 2.8vw, 34px) var(--preview-padding-bottom);
   display: block;
   overflow: hidden;
   border: 1px solid rgba(116, 78, 182, 0.12);
@@ -2420,7 +2449,7 @@ a.app-detail-store-button:focus-visible {
 .app-detail-gallery {
   width: 100%;
   height: 100%;
-  min-height: 220px;
+  min-height: var(--gallery-min-height);
   overflow-x: auto;
   overflow-y: hidden;
   border-radius: clamp(14px, 1.8vw, 22px);
@@ -2476,14 +2505,6 @@ a.app-detail-store-button:focus-visible {
 .app-detail-gallery-item:focus-visible {
   outline: 2px solid rgba(112, 69, 214, 0.62);
   outline-offset: -3px;
-}
-
-.app-detail-preview.is-phone .app-detail-gallery-item {
-  aspect-ratio: 370 / 800;
-}
-
-.app-detail-preview.is-pad .app-detail-gallery-item {
-  aspect-ratio: 3 / 4;
 }
 
 .app-detail-preview-image {
@@ -3061,13 +3082,15 @@ a.app-detail-store-button:focus-visible {
   }
 
   .app-detail-preview {
-    min-height: clamp(390px, 68vh, 580px);
-    padding: 14px 14px 62px;
+    --gallery-min-height: 314px;
+    --preview-padding-top: 14px;
+    --preview-padding-bottom: 62px;
+    min-height: clamp(392px, 68vh, 580px);
+    padding-inline: 14px;
     border-radius: 24px;
   }
 
   .app-detail-gallery {
-    min-height: 314px;
     border-radius: 16px;
   }
 
@@ -3139,21 +3162,13 @@ a.app-detail-store-button:focus-visible {
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .app-detail-preview {
-    min-height: 520px;
-  }
-
-  .app-detail-gallery {
-    min-height: 446px;
+    --gallery-min-height: 446px;
   }
 }
 
 @media (max-width: 400px) {
   .app-detail-content {
     padding-inline: 16px;
-  }
-
-  .app-detail-store-selector {
-    width: 100%;
   }
 
   .app-detail-store-button {

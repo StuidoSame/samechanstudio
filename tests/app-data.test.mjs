@@ -1,21 +1,18 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { access, readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import test from "node:test";
 import { apps } from "../app/lib/apps.ts";
+import { getAppDetailPlatforms } from "../app/lib/appDetailCapabilities.ts";
 import {
-  APP_DETAIL_CAPABILITIES,
   DETAIL_SCREEN_ORDER,
-  getAvailableDetailScreens,
-  getAppDetailPlatforms,
-} from "../app/lib/appDetailCapabilities.ts";
-import {
-  createLocalizedScreenshotManifest,
   getAppScreenshotSet,
-  getAppScreenshots,
-  resolveLocalizedScreenshotSet,
-  SCREENSHOT_MANIFEST,
+  getAvailableDetailScreens,
+  resolveScreenshotLocale,
 } from "../app/lib/appScreenshots.ts";
+import screenshotFiles from "../app/lib/screenshotFiles.json" with { type: "json" };
 import { APP_TRANSLATION_IDS } from "../app/i18n/types.ts";
 import { SEO_CONTENT } from "../app/lib/seo.ts";
 import { ko } from "../app/i18n/locales/ko.ts";
@@ -24,31 +21,18 @@ import { ja } from "../app/i18n/locales/ja.ts";
 import { zhCN } from "../app/i18n/locales/zh-CN.ts";
 import { zhTW } from "../app/i18n/locales/zh-TW.ts";
 
-test("builds explicit localized manifests in natural filename order", () => {
-  const manifest = createLocalizedScreenshotManifest("sample", "phone", {
-    en: ["10.png", "2.png", "1.png"],
-  });
-
-  assert.deepEqual(manifest.en, [
-    "/assets/screenshot/sample/phone/en/1.png",
-    "/assets/screenshot/sample/phone/en/2.png",
-    "/assets/screenshot/sample/phone/en/10.png",
+test("keeps the screenshot manifest in sync with the actual numbered PNGs", () => {
+  execFileSync(process.execPath, [
+    fileURLToPath(new URL("../scripts/screenshot-manifest.mjs", import.meta.url)),
+    "--check",
   ]);
-  assert.equal(manifest.ko, undefined);
 });
 
-test("falls back from the requested locale to English, then the first available locale", () => {
-  assert.deepEqual(
-    resolveLocalizedScreenshotSet(
-      { en: ["/en.png"], ja: ["/ja.png"] },
-      "ko",
-    ),
-    { locale: "en", screenshots: ["/en.png"] },
-  );
-  assert.deepEqual(
-    resolveLocalizedScreenshotSet({ ja: ["/ja.png"] }, "zh-CN"),
-    { locale: "ja", screenshots: ["/ja.png"] },
-  );
+test("prefers the requested screenshot locale, then English, then the first available locale", () => {
+  assert.equal(resolveScreenshotLocale("ja", (locale) => ["en", "ja"].includes(locale)), "ja");
+  assert.equal(resolveScreenshotLocale("ko", (locale) => ["en", "ja"].includes(locale)), "en");
+  assert.equal(resolveScreenshotLocale("zh-CN", (locale) => locale === "ja"), "ja");
+  assert.equal(resolveScreenshotLocale("ko", () => false), null);
 });
 
 test("uses the current official app names and icon files", async () => {
@@ -116,114 +100,50 @@ test("Pulto keeps its original PNG with a content version that refreshes cached 
   assert.equal(app.name, "Pulto");
 });
 
-test("connects WAESSEUM detail screens and localized screenshots", () => {
-  assert.deepEqual(getAvailableDetailScreens("waesseum"), ["phone", "pad"]);
-  const localeFolders = {
-    ko: "ko",
-    en: "en",
-    ja: "ja",
-    "zh-CN": "zhg",
-    "zh-TW": "zhb",
+test("resolves the exact assets for every app, locale and device", () => {
+  const counts = {
+    evrune: { phone: 5, ipad: 5, watch: 0 },
+    mapary: { phone: 6, ipad: 6, watch: 5 },
+    runtronome: { phone: 6, ipad: 0, watch: 4 },
+    skkoo: { phone: 6, ipad: 5, watch: 0 },
+    terubozu: { phone: 6, ipad: 6, watch: 0 },
+    tocklist: { phone: 5, ipad: 5, watch: 0 },
+    waesseum: { phone: 6, ipad: 5, watch: 0 },
   };
+  const localeFolders = { ko: "ko", en: "en", ja: "ja", "zh-CN": "zhg", "zh-TW": "zhb" };
 
-  for (const [locale, folder] of Object.entries(localeFolders)) {
-    const phone = getAppScreenshotSet({
-      appId: "waesseum",
-      screen: "phone",
-      locale,
-    });
-    assert.equal(phone.locale, folder);
-    assert.equal(phone.screenshots.length, 6);
-    assert.ok(
-      phone.screenshots.every((path) =>
-        path.includes(`/screenshot/waesseum/phone/${folder}/`),
-      ),
-    );
+  assert.deepEqual(DETAIL_SCREEN_ORDER, ["phone", "ipad"]);
 
-    const pad = getAppScreenshotSet({
-      appId: "waesseum",
-      screen: "pad",
-      locale,
-    });
-    assert.equal(pad.locale, folder);
-    assert.equal(pad.screenshots.length, 5);
-    assert.ok(
-      pad.screenshots.every((path) =>
-        path.includes(`/screenshot/waesseum/ipad/${folder}/`),
-      ),
-    );
-  }
-});
-
-test("connects EVRUNE to its actual localized Phone and Pad assets", () => {
-  const localeFolders = {
-    ko: "ko",
-    en: "en",
-    ja: "ja",
-    "zh-CN": "zhg",
-    "zh-TW": "zhb",
-  };
-
-  for (const [locale, folder] of Object.entries(localeFolders)) {
-    const phone = getAppScreenshotSet({
-      appId: "evrune",
-      screen: "phone",
-      locale,
-    });
-    assert.equal(phone.locale, folder);
-    assert.equal(phone.screenshots.length, 5);
-    assert.ok(
-      phone.screenshots.every((path) =>
-        path.includes(`/screenshot/evrune/phone/${folder}/`),
-      ),
-    );
-
-    const pad = getAppScreenshotSet({
-      appId: "evrune",
-      screen: "pad",
-      locale,
-    });
-    const expectedPadFolder = locale === "ko" ? "en" : folder;
-    assert.equal(pad.locale, expectedPadFolder);
-    assert.equal(pad.screenshots.length, 4);
-    assert.ok(
-      pad.screenshots.every((path) =>
-        path.includes(`/screenshot/evrune/pad/${expectedPadFolder}/`),
-      ),
-    );
-    assert.ok(pad.screenshots.every((path) => !path.includes("/ipad/")));
-  }
-});
-
-test("connects Teru Bozu to its canonical localized Phone assets without inventing Pad captures", () => {
-  const localeFolders = {
-    ko: "ko",
-    en: "en",
-    ja: "ja",
-    "zh-CN": "zhg",
-    "zh-TW": "zhb",
-  };
-
-  assert.deepEqual(getAvailableDetailScreens("terubozu"), ["phone"]);
-
-  for (const [locale, folder] of Object.entries(localeFolders)) {
-    const phone = getAppScreenshotSet({
-      appId: "terubozu",
-      screen: "phone",
-      locale,
-    });
-    assert.equal(phone.locale, folder);
-    assert.equal(phone.screenshots.length, 5);
-    assert.ok(
-      phone.screenshots.every((path) =>
-        path.includes(`/screenshot/terubozu/phone/${folder}/`),
-      ),
-    );
-
+  for (const { id, screenshotId = id } of apps) {
     assert.deepEqual(
-      getAppScreenshotSet({ appId: "terubozu", screen: "pad", locale }),
-      { locale: null, screenshots: [] },
+      getAvailableDetailScreens(screenshotId, "apple"),
+      DETAIL_SCREEN_ORDER.filter((screen) => counts[id][screen] > 0),
+      id,
     );
+    assert.deepEqual(getAvailableDetailScreens(screenshotId, "android"), [], id);
+
+    for (const [locale, folder] of Object.entries(localeFolders)) {
+      for (const screen of DETAIL_SCREEN_ORDER) {
+        const label = `${id}/${folder}/${screen}`;
+        const count = counts[id][screen];
+        const apple = getAppScreenshotSet({ appId: screenshotId, platform: "apple", screen, locale });
+        assert.equal(apple.locale, count ? locale : null, label);
+        assert.deepEqual(
+          apple.screenshots.map(({ src }) => src),
+          Array.from({ length: count }, (_, index) => `/assets/screenshot/${label}/${index + 1}.png`),
+          label,
+        );
+        assert.deepEqual(
+          getAppScreenshotSet({ appId: screenshotId, platform: "android", screen, locale }),
+          { locale: null, screenshots: [] },
+          label,
+        );
+        if (id === "terubozu") {
+          assert.ok(apple.screenshots.every(({ width, height }) => width > height), label);
+        }
+      }
+      assert.equal(screenshotFiles[`${screenshotId}/${folder}/watch`]?.length ?? 0, counts[id].watch);
+    }
   }
 });
 
@@ -257,77 +177,22 @@ test("detail platform badges follow catalog support without inventing store link
   assert.ok(getAppDetailPlatforms({ ...sample, id: "unknown" }).every(({ url }) => url === undefined));
 });
 
-test("keeps every app icon and screenshot manifest path loadable", async () => {
-  const assetPaths = apps.map((app) => app.icon);
-
-  for (const manifest of Object.values(SCREENSHOT_MANIFEST)) {
-    for (const screen of [manifest.phone, manifest.pad]) {
-      for (const screenshots of Object.values(screen ?? {})) {
-        assetPaths.push(...screenshots);
-      }
-    }
-    assetPaths.push(...(manifest.watch ?? []));
-  }
-
-  await Promise.all(
-    assetPaths.map((assetPath) =>
-      access(new URL(`../public${assetPath}`, import.meta.url)),
-    ),
-  );
-});
-
-test("exposes detail screenshots by screen form with Phone first", () => {
-  assert.deepEqual(DETAIL_SCREEN_ORDER, ["phone", "pad"]);
-  assert.equal(SCREENSHOT_MANIFEST.runtronome.watch?.length, 4);
-
-  const padApps = new Set([
-    "mapary",
-    "evrune",
-    "tocklist",
-    "skkoo",
-    "waesseum",
-  ]);
-
-  for (const app of apps) {
-    assert.deepEqual(
-      getAvailableDetailScreens(app.id),
-      padApps.has(app.id) ? ["phone", "pad"] : ["phone"],
-      app.id,
-    );
-
-    for (const screen of ["phone", "pad"]) {
-      const screenshots = getAppScreenshots({
-        appId: app.screenshotId ?? app.id,
-        screen,
-        locale: "ko",
-      });
-      assert.equal(screenshots.length, new Set(screenshots).size, app.id);
-      assert.ok(
-        screenshots.every((path) =>
-          path.includes(`/${app.screenshotId ?? app.id}/`),
-        ),
-        `${app.id}:${screen}`,
-      );
-    }
-  }
+test("keeps every app icon loadable", async () => {
+  await Promise.all(apps.map(({ icon }) => access(new URL(`../public${icon}`, import.meta.url))));
 });
 
 const REMOVED_APP_IDS = ["pini", "pepesnap", "feeloo"];
-test("removed apps have no catalog records, detail capability, screenshots or icons", async () => {
+test("removed apps have no catalog records, screenshots or icons", async () => {
   const icons = { pini: "pini_icon.png", pepesnap: "pepsnap.png", feeloo: "feeloo_icon.png" };
   for (const id of REMOVED_APP_IDS) {
     assert.equal(apps.some((app) => app.id === id), false, id);
-    assert.equal(Object.hasOwn(SCREENSHOT_MANIFEST, id), false, id);
-    assert.equal(Object.hasOwn(APP_DETAIL_CAPABILITIES, id), false, id);
+    assert.equal(Object.keys(screenshotFiles).some((key) => key.startsWith(`${id}/`)), false, id);
     assert.deepEqual(getAvailableDetailScreens(id), [], id);
-    for (const screen of ["phone", "pad"]) {
-      assert.deepEqual(getAppScreenshots({ appId: id, screen, locale: "ko" }), [], id);
-    }
     await assert.rejects(access(new URL(`../public/assets/icons/${icons[id]}`, import.meta.url)));
   }
 });
 
-test("TOCOBI preserves its identity, icon, store URL and localized Phone/Pad captures", () => {
+test("TOCOBI preserves its identity, icon and store URL", () => {
   const app = apps.find((candidate) => candidate.id === "tocklist");
   assert.equal(app.name, "TOCOBI");
   assert.equal(app.icon, "/assets/icons/tocklist_icon.png");
@@ -335,10 +200,6 @@ test("TOCOBI preserves its identity, icon, store URL and localized Phone/Pad cap
   assert.equal(app.screen, "tocklist");
   assert.equal(app.appStoreUrl, "https://apps.apple.com/kr/app/tocklist/id6782831874");
   assert.equal(app.googlePlayUrl, undefined);
-  for (const locale of ["ko", "en", "ja", "zh-CN", "zh-TW"]) {
-    assert.equal(getAppScreenshots({ appId: app.id, screen: "phone", locale }).length, 6);
-    assert.equal(getAppScreenshots({ appId: app.id, screen: "pad", locale }).length, 5);
-  }
 });
 
 test("all five locale detail and SEO catalogs match the remaining apps", () => {

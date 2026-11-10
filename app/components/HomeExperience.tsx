@@ -1620,6 +1620,8 @@ export function HomeExperience() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       if (
+        detailApp ||
+        event.defaultPrevented ||
         event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement
       ) return;
@@ -1630,7 +1632,7 @@ export function HomeExperience() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [moveBy, pauseAutoplay, resumeAutoplay]);
+  }, [detailApp, moveBy, pauseAutoplay, resumeAutoplay]);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.pointerType === "mouse") return;
@@ -2300,6 +2302,7 @@ export function HomeExperience() {
       <SiteFooter currentPage="home" />
       {detailApp && (
         <AppDetailOverlay
+          key={detailApp.id}
           app={detailApp}
           open={detailOverlayOpen}
           onRequestClose={requestAppDetailClose}

@@ -1,9 +1,6 @@
 import type { Locale } from "../i18n/types";
-import type { DetailScreen } from "./appDetailCapabilities";
-
-export const SCREENSHOT_LOCALES = ["ko", "en", "ja", "zhg", "zhb"] as const;
-
-export type ScreenshotLocale = (typeof SCREENSHOT_LOCALES)[number];
+import type { AppPlatform } from "./apps";
+import filesByDirectory from "./screenshotFiles.json" with { type: "json" };
 
 export const SCREENSHOT_LOCALE_MAP = {
   ko: "ko",
@@ -11,329 +8,73 @@ export const SCREENSHOT_LOCALE_MAP = {
   ja: "ja",
   "zh-CN": "zhg",
   "zh-TW": "zhb",
-} as const satisfies Record<Locale, ScreenshotLocale>;
+} as const satisfies Record<Locale, string>;
 
-export type LocalizedScreenshotManifest = Partial<
-  Record<ScreenshotLocale, string[]>
->;
+export const DETAIL_SCREEN_ORDER = ["phone", "ipad"] as const;
 
-export type ScreenshotFilenameManifest = Partial<
-  Record<ScreenshotLocale, readonly string[]>
->;
+export type DetailScreen = (typeof DETAIL_SCREEN_ORDER)[number];
 
-export type ResolvedScreenshotSet = {
-  locale: ScreenshotLocale | null;
-  screenshots: string[];
+export type Screenshot = {
+  src: string;
+  width: number;
+  height: number;
 };
 
-export type AppScreenshotManifest = {
-  screenshotId: string;
-  phone?: LocalizedScreenshotManifest;
-  pad?: LocalizedScreenshotManifest;
-  // Watch captures are retained as source assets even though the public
-  // screenshot selector is intentionally limited to Phone and Pad.
-  watch?: string[];
+type ScreenshotFile = Omit<Screenshot, "src"> & { filename: string };
+const screenshotFiles: Readonly<Record<string, readonly ScreenshotFile[] | undefined>> = filesByDirectory;
+
+type ResolvedScreenshotSet = {
+  locale: Locale | null;
+  screenshots: Screenshot[];
 };
 
-export type ScreenshotManifest = Record<string, AppScreenshotManifest>;
+const FALLBACK_LOCALES = ["en", "ko", "ja", "zh-CN", "zh-TW"] as const satisfies readonly Locale[];
+const EMPTY_SET: ResolvedScreenshotSet = { locale: null, screenshots: [] };
 
-const screenshotPathCollator = new Intl.Collator("en", {
-  numeric: true,
-  sensitivity: "base",
-});
-
-function naturallySortedScreenshots(screenshots: string[]): string[] {
-  return [...screenshots].sort((left, right) =>
-    screenshotPathCollator.compare(left, right),
-  );
-}
-
-function numberedScreenshots(directory: string, count: number): string[] {
-  return naturallySortedScreenshots(
-    Array.from(
-      { length: count },
-      (_, index) => `/assets/screenshot/${directory}/${index + 1}.png`,
-    ),
-  );
-}
-
-function screenshotFiles(
-  directory: string,
-  filenames: readonly string[],
-): string[] {
-  return naturallySortedScreenshots(
-    filenames.map((filename) => `/assets/screenshot/${directory}/${filename}`),
-  );
-}
-
-function localizedScreenshots(
-  appDirectory: string,
-  deviceDirectory: string,
-  count: number,
-): Record<ScreenshotLocale, string[]> {
-  return {
-    ko: numberedScreenshots(`${appDirectory}/${deviceDirectory}/ko`, count),
-    en: numberedScreenshots(`${appDirectory}/${deviceDirectory}/en`, count),
-    ja: numberedScreenshots(`${appDirectory}/${deviceDirectory}/ja`, count),
-    zhg: numberedScreenshots(`${appDirectory}/${deviceDirectory}/zhg`, count),
-    zhb: numberedScreenshots(`${appDirectory}/${deviceDirectory}/zhb`, count),
-  };
-}
-
-export function createLocalizedScreenshotManifest(
-  appDirectory: string,
-  deviceDirectory: string,
-  filenamesByLocale: ScreenshotFilenameManifest,
-): LocalizedScreenshotManifest {
-  return Object.fromEntries(
-    SCREENSHOT_LOCALES.flatMap((locale) => {
-      const filenames = filenamesByLocale[locale];
-      if (!filenames || filenames.length === 0) return [];
-
-      const screenshots = naturallySortedScreenshots(
-        filenames.map(
-          (filename) =>
-            `/assets/screenshot/${appDirectory}/${deviceDirectory}/${locale}/${filename}`,
-        ),
-      );
-
-      return [[locale, screenshots]];
-    }),
-  ) as LocalizedScreenshotManifest;
-}
-
-function localizedScreenshotFiles(
-  appDirectory: string,
-  deviceDirectory: string,
-  filenames: readonly string[],
-): Record<ScreenshotLocale, string[]> {
-  const filenamesByLocale = Object.fromEntries(
-    SCREENSHOT_LOCALES.map((locale) => [locale, filenames]),
-  ) as Record<ScreenshotLocale, readonly string[]>;
-
-  return createLocalizedScreenshotManifest(
-    appDirectory,
-    deviceDirectory,
-    filenamesByLocale,
-  ) as Record<ScreenshotLocale, string[]>;
-}
-
-const MAPARY_PHONE_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-] as const;
-
-const PULTO_PHONE_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-] as const;
-
-const PULTO_WATCH_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-] as const;
-
-const EVRUNE_PHONE_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-] as const;
-
-const EVRUNE_PAD_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-] as const;
-
-const WAESSEUM_PHONE_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-  "6.png",
-] as const;
-
-const WAESSEUM_PAD_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-] as const;
-
-const TERUBOZU_PHONE_SCREENSHOT_FILES = [
-  "1.png",
-  "2.png",
-  "3.png",
-  "4.png",
-  "5.png",
-] as const;
-
-export const SCREENSHOT_MANIFEST = {
-  mapary: {
-    screenshotId: "mapary",
-    phone: localizedScreenshotFiles(
-      "mapary",
-      "phone",
-      MAPARY_PHONE_SCREENSHOT_FILES,
-    ),
-    pad: {
-      ko: numberedScreenshots("mapary/ipad/ko", 5),
-      ja: numberedScreenshots("mapary/ipad/ja", 5),
-      zhg: numberedScreenshots("mapary/ipad/zhg", 5),
-      zhb: numberedScreenshots("mapary/ipad/zhb", 5),
-    },
-  },
-  runtronome: {
-    screenshotId: "runtronome",
-    phone: localizedScreenshotFiles(
-      "runtronome",
-      "phone",
-      PULTO_PHONE_SCREENSHOT_FILES,
-    ),
-    watch: screenshotFiles(
-      "runtronome/watch",
-      PULTO_WATCH_SCREENSHOT_FILES,
-    ),
-  },
-  evrune: {
-    screenshotId: "evrune",
-    phone: localizedScreenshotFiles(
-      "evrune",
-      "phone",
-      EVRUNE_PHONE_SCREENSHOT_FILES,
-    ),
-    pad: createLocalizedScreenshotManifest("evrune", "pad", {
-      en: EVRUNE_PAD_SCREENSHOT_FILES,
-      ja: EVRUNE_PAD_SCREENSHOT_FILES,
-      zhg: EVRUNE_PAD_SCREENSHOT_FILES,
-      zhb: EVRUNE_PAD_SCREENSHOT_FILES,
-    }),
-  },
-  tocklist: {
-    screenshotId: "tocklist",
-    phone: localizedScreenshots("tocklist", "phone", 6),
-    pad: localizedScreenshots("tocklist", "ipad", 5),
-  },
-  skkoo: {
-    screenshotId: "skkoo",
-    phone: localizedScreenshots("skkoo", "phone", 6),
-    pad: localizedScreenshots("skkoo", "ipad", 5),
-  },
-  terubozu: {
-    screenshotId: "terubozu",
-    phone: localizedScreenshotFiles(
-      "terubozu",
-      "phone",
-      TERUBOZU_PHONE_SCREENSHOT_FILES,
-    ),
-  },
-  waesseum: {
-    screenshotId: "waesseum",
-    phone: localizedScreenshotFiles(
-      "waesseum",
-      "phone",
-      WAESSEUM_PHONE_SCREENSHOT_FILES,
-    ),
-    // The checked-in Pad assets still use the legacy directory name. Keep
-    // serving the real files until replacement captures exist in /pad.
-    pad: localizedScreenshotFiles(
-      "waesseum",
-      "ipad",
-      WAESSEUM_PAD_SCREENSHOT_FILES,
-    ),
-  },
-} satisfies ScreenshotManifest;
-
-function nonEmptyScreenshots(
-  screenshots: string[] | undefined,
-): string[] | null {
-  return screenshots && screenshots.length > 0 ? screenshots : null;
-}
-
-export function resolveLocalizedScreenshotSet(
-  localizedScreenshots: LocalizedScreenshotManifest | undefined,
+function screenshotDirectory(
+  appId: string,
+  platform: AppPlatform,
   locale: Locale,
-): ResolvedScreenshotSet {
-  if (!localizedScreenshots) return { locale: null, screenshots: [] };
-
-  const screenshotLocale = SCREENSHOT_LOCALE_MAP[locale];
-  const localizedMatch = nonEmptyScreenshots(
-    localizedScreenshots[screenshotLocale],
-  );
-  if (localizedMatch) {
-    return { locale: screenshotLocale, screenshots: localizedMatch };
-  }
-
-  const englishFallback = nonEmptyScreenshots(localizedScreenshots.en);
-  if (englishFallback) return { locale: "en", screenshots: englishFallback };
-
-  for (const fallbackLocale of SCREENSHOT_LOCALES) {
-    const firstAvailable = nonEmptyScreenshots(
-      localizedScreenshots[fallbackLocale],
-    );
-    if (firstAvailable) {
-      return { locale: fallbackLocale, screenshots: firstAvailable };
-    }
-  }
-
-  return { locale: null, screenshots: [] };
+  screen: DetailScreen,
+) {
+  const appDirectory = platform === "android" ? `${appId}/android` : appId;
+  return `${appDirectory}/${SCREENSHOT_LOCALE_MAP[locale]}/${screen}`;
 }
 
-export function resolveLocalizedScreenshots(
-  localizedScreenshots: LocalizedScreenshotManifest | undefined,
-  locale: Locale,
-): string[] {
-  return resolveLocalizedScreenshotSet(localizedScreenshots, locale).screenshots;
+export function getAvailableDetailScreens(appId: string, platform: AppPlatform = "apple") {
+  return DETAIL_SCREEN_ORDER.filter((screen) =>
+    FALLBACK_LOCALES.some((locale) => screenshotFiles[screenshotDirectory(appId, platform, locale, screen)]),
+  );
+}
+
+export function resolveScreenshotLocale(locale: Locale, hasScreenshots: (locale: Locale) => boolean) {
+  // Keep the existing English-first fallback within the same platform and device.
+  return hasScreenshots(locale) ? locale : FALLBACK_LOCALES.find(hasScreenshots) ?? null;
 }
 
 export function getAppScreenshotSet({
   appId,
+  platform = "apple",
   screen,
   locale,
 }: {
   appId: string;
+  platform?: AppPlatform;
   screen: DetailScreen;
   locale: Locale;
 }): ResolvedScreenshotSet {
-  const appScreenshots: AppScreenshotManifest | undefined =
-    SCREENSHOT_MANIFEST[appId as keyof typeof SCREENSHOT_MANIFEST];
-
-  if (!appScreenshots) return { locale: null, screenshots: [] };
-
-  const resolved = resolveLocalizedScreenshotSet(
-    appScreenshots[screen],
-    locale,
+  const resolvedLocale = resolveScreenshotLocale(locale, (candidate) =>
+    Boolean(screenshotFiles[screenshotDirectory(appId, platform, candidate, screen)]),
   );
+  if (!resolvedLocale) return EMPTY_SET;
 
+  const directory = screenshotDirectory(appId, platform, resolvedLocale, screen);
   return {
-    locale: resolved.locale,
-    screenshots: [
-      ...new Set(naturallySortedScreenshots(resolved.screenshots)),
-    ],
+    locale: resolvedLocale,
+    screenshots: (screenshotFiles[directory] ?? []).map(({ filename, width, height }) => ({
+      src: `/assets/screenshot/${directory}/${filename}`,
+      width,
+      height,
+    })),
   };
-}
-
-export function getAppScreenshots({
-  appId,
-  screen,
-  locale,
-}: {
-  appId: string;
-  screen: DetailScreen;
-  locale: Locale;
-}): string[] {
-  return getAppScreenshotSet({ appId, screen, locale }).screenshots;
 }

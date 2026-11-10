@@ -1,63 +1,16 @@
 import type { AppItem, AppPlatform } from "./apps";
 
 export type DetailStore = "apple" | "google";
-export type DetailScreen = "phone" | "pad";
 
-export type AppDetailCapability = {
-  screens: Record<DetailScreen, boolean>;
-  stores: Record<DetailStore, boolean>;
+const DETAIL_STORES: Record<string, Record<DetailStore, boolean>> = {
+  mapary: { apple: true, google: true },
+  runtronome: { apple: true, google: true },
+  evrune: { apple: true, google: true },
+  tocklist: { apple: true, google: true },
+  skkoo: { apple: true, google: true },
+  terubozu: { apple: true, google: true },
+  waesseum: { apple: true, google: true },
 };
-
-const screens = (phone: boolean, pad: boolean): Record<DetailScreen, boolean> =>
-  ({ phone, pad });
-
-const stores = (
-  apple: boolean,
-  google: boolean,
-): Record<DetailStore, boolean> => ({ apple, google });
-
-const phoneOnly = (): Record<DetailScreen, boolean> => screens(true, false);
-
-export const APP_DETAIL_CAPABILITIES: Record<string, AppDetailCapability> = {
-  mapary: {
-    screens: screens(true, true),
-    stores: stores(true, true),
-  },
-  runtronome: {
-    screens: phoneOnly(),
-    stores: stores(true, true),
-  },
-  evrune: {
-    screens: screens(true, true),
-    stores: stores(true, true),
-  },
-  tocklist: {
-    screens: screens(true, true),
-    stores: stores(true, true),
-  },
-  skkoo: {
-    screens: screens(true, true),
-    stores: stores(true, true),
-  },
-  terubozu: {
-    screens: phoneOnly(),
-    stores: stores(true, true),
-  },
-  waesseum: {
-    screens: screens(true, true),
-    stores: stores(true, true),
-  },
-};
-
-export const DETAIL_SCREEN_ORDER = ["phone", "pad"] as const;
-
-export function isDetailStoreAvailable(
-  appId: string,
-  store: DetailStore,
-): boolean {
-  const capability = APP_DETAIL_CAPABILITIES[appId];
-  return capability?.stores[store] ?? false;
-}
 
 // Platform support comes from the catalog; a store link is optional.
 export function getAppDetailPlatforms(app: AppItem) {
@@ -70,17 +23,8 @@ export function getAppDetailPlatforms(app: AppItem) {
     .map(([platform, store]) => ({
       platform,
       store,
-      url: isDetailStoreAvailable(app.id, store)
+      url: DETAIL_STORES[app.id]?.[store]
         ? store === "apple" ? app.appStoreUrl : app.googlePlayUrl
         : undefined,
     }));
-}
-
-export function getAvailableDetailScreens(
-  appId: string,
-): DetailScreen[] {
-  const capability = APP_DETAIL_CAPABILITIES[appId];
-  if (!capability) return [];
-
-  return DETAIL_SCREEN_ORDER.filter((screen) => capability.screens[screen]);
 }
