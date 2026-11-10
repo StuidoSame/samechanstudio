@@ -344,7 +344,6 @@ export function IPadFrame({ children }: IPadFrameProps) {
         </div>
         <span className="device-tablet-camera" aria-hidden="true" />
         <span className="device-tablet-button" aria-hidden="true" />
-        <span className="device-frame-highlight" aria-hidden="true" />
       </div>
     </div>
   );

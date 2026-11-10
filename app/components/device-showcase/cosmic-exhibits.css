@@ -85,8 +85,14 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
     transition: transform 230ms ease-out;
   }
 
+  .device-showcase-tablet .exhibit-tilt {
+    transform: perspective(1450px) rotateX(calc(var(--exhibit-tilt-x, 0deg) * 0.45)) rotateY(calc(var(--exhibit-tilt-y, 0deg) * 0.45));
+  }
+
   .exhibit-tilt:focus-within,
-  .exhibit-tilt:active {
+  .exhibit-tilt:active,
+  .device-showcase-tablet .exhibit-tilt:focus-within,
+  .device-showcase-tablet .exhibit-tilt:active {
     transform: none;
   }
 
@@ -188,19 +194,25 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 
 .exhibit-grid {
   position: absolute;
-  inset: 0 0 10%;
+  inset: 3% 0 12%;
   background:
-    linear-gradient(rgb(var(--exhibit-rim) / 0.23) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--exhibit-rim) / 0.23) 1px, transparent 1px);
+    linear-gradient(rgb(var(--exhibit-rim) / 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--exhibit-rim) / 0.18) 1px, transparent 1px);
   background-size: 30px 30px;
   mask-image: radial-gradient(ellipse, black 28%, transparent 73%);
-  transform: perspective(700px) rotateX(28deg) rotateZ(-12deg) scale(1.17);
+  transform: perspective(780px) rotateX(33deg) rotateZ(-9deg) scale(1.12);
+}
+
+.exhibit-tablet-accents {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  pointer-events: none;
 }
 
 .exhibit-cube {
-  --cube-side: clamp(24px, 4.8vw, 59px);
+  --cube-side: clamp(18px, 2.5vw, 36px);
   position: absolute;
-  z-index: 1;
   width: var(--cube-side);
   aspect-ratio: 1;
   transform: rotateX(-27deg) rotateY(35deg);
@@ -208,15 +220,14 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 }
 
 .exhibit-cube--near {
-  top: 1%;
-  left: 2%;
+  top: 11px;
+  left: 14%;
 }
 
 .exhibit-cube--far {
-  --cube-side: clamp(18px, 3.4vw, 42px);
-  right: 4%;
-  bottom: 5%;
-  opacity: 0.76;
+  --cube-side: clamp(15px, 2vw, 27px);
+  top: 17px;
+  right: 18%;
   transform: rotateX(-23deg) rotateY(-31deg);
 }
 
@@ -230,6 +241,8 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 .exhibit-cube i:first-child { transform: translateZ(calc(var(--cube-side) / 2)); }
 .exhibit-cube i:nth-child(2) { transform: rotateY(-90deg) translateZ(calc(var(--cube-side) / 2)); }
 .exhibit-cube i:last-child { transform: rotateX(90deg) translateZ(calc(var(--cube-side) / 2)); }
+.exhibit-cube--far i { opacity: 0.76; }
+.exhibit-cube--far i:nth-child(2) { transform: rotateY(90deg) translateZ(calc(var(--cube-side) / 2)); }
 
 .exhibit-wave {
   position: absolute;
@@ -254,12 +267,32 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.cosmic-exhibits .device-tablet-frame {
-  max-width: 94%;
+.device-showcase-tablet .cosmic-exhibit {
+  --tablet-width: min(94%, 590px);
+  padding-block: clamp(64px, 7vw, 92px) clamp(74px, 8vw, 110px);
 }
 
-.device-showcase-tablet .cosmic-exhibit {
-  padding-top: 34px;
+.device-showcase-tablet .exhibit-depth::before {
+  background: radial-gradient(ellipse at 50% 53%, rgb(var(--exhibit-light) / 0.19), transparent 67%);
+}
+
+.device-showcase-tablet .exhibit-orbits {
+  inset-inline: 0;
+  bottom: 6px;
+  width: var(--tablet-width);
+  margin-inline: auto;
+  aspect-ratio: 6.5;
+  background: radial-gradient(ellipse at center, rgb(var(--exhibit-light) / 0.25), transparent 69%);
+}
+
+.device-showcase-tablet .exhibit-orbits::before {
+  border-color: rgb(var(--exhibit-rim) / 0.34);
+  box-shadow: 0 3px 16px rgb(var(--exhibit-light) / 0.23);
+}
+
+.device-showcase-tablet .exhibit-orbits span {
+  border: 0;
+  background: radial-gradient(ellipse, rgba(14, 8, 24, 0.5), transparent 72%);
 }
 
 .cosmic-exhibits .device-watch-stage {
@@ -297,7 +330,7 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
   margin-top: 8px;
 }
 
-.cosmic-exhibits :is(.device-phone-frame, .device-tablet-frame, .device-watch-body) {
+.cosmic-exhibits :is(.device-phone-frame, .device-watch-body) {
   border-color: rgb(var(--exhibit-rim) / 0.48);
   box-shadow: 0 24px 52px rgba(12, 6, 24, 0.37), 0 0 18px rgb(var(--exhibit-light) / 0.23), inset 0 1px 1px rgba(255, 246, 255, 0.34);
 }
@@ -403,6 +436,10 @@ html[data-theme="dark"] .device-showcase.cosmic-exhibits {
 
   .cosmic-exhibit {
     padding-block: 16px 40px;
+  }
+
+  .device-showcase-tablet .cosmic-exhibit {
+    --tablet-width: min(98%, 360px);
   }
 
   .exhibit-orbits {

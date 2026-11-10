@@ -80,13 +80,7 @@ export function DeviceSection({
                 </span>
               </>
             )}
-            {journeyId === "tablet" && (
-              <>
-                <span className="exhibit-grid" />
-                <span className="exhibit-cube exhibit-cube--near"><i /><i /><i /></span>
-                <span className="exhibit-cube exhibit-cube--far"><i /><i /><i /></span>
-              </>
-            )}
+            {journeyId === "tablet" && <span className="exhibit-grid" />}
             {journeyId === "watch" && (
               <svg className="exhibit-wave" viewBox="0 0 520 140" fill="none" focusable="false">
                 <path d="M0 71h40l15-17 22 34 19-29 14 12h36l18-43 21 85 24-69 17 27h32l19-56 28 116 23-87 19 27h33l18-36 22 59 17-23h34l13-16 19 27 14-11h31" />
@@ -94,6 +88,12 @@ export function DeviceSection({
               </svg>
             )}
           </div>
+          {journeyId === "tablet" && (
+            <div className="exhibit-tablet-accents" aria-hidden="true">
+              <span className="exhibit-cube exhibit-cube--near"><i /><i /><i /></span>
+              <span className="exhibit-cube exhibit-cube--far"><i /><i /><i /></span>
+            </div>
+          )}
           <div className="exhibit-orbits" aria-hidden="true">
             <span />
           </div>
