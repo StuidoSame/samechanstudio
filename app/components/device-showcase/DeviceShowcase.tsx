@@ -6,6 +6,7 @@ import { DeviceSection } from "./DeviceSection";
 import { IPhoneFrame } from "./IPhoneFrame";
 import { IPadFrame } from "./IPadFrame";
 import { WatchGroup } from "./WatchGroup";
+import "./cosmic-exhibits.css";
 
 type DeviceJourneyId = "phone" | "tablet" | "watch";
 
@@ -64,6 +65,12 @@ export function DeviceShowcase() {
     if (!showcase || !decoration) return;
 
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const watchSection = showcase.querySelector<HTMLElement>(
+      '[data-device-journey-section="watch"]',
+    );
+    if (!watchSection) return;
+
+    let inView = !("IntersectionObserver" in window);
     let frameId: number | null = null;
 
     const updateJourneyProgress = () => {
@@ -72,11 +79,6 @@ export function DeviceShowcase() {
         decoration.style.setProperty("--device-journey-progress", "1");
         return;
       }
-
-      const watchSection = showcase.querySelector<HTMLElement>(
-        '[data-device-journey-section="watch"]',
-      );
-      if (!watchSection) return;
 
       const scrollTop = window.scrollY;
       const showcaseRect = showcase.getBoundingClientRect();
@@ -92,16 +94,25 @@ export function DeviceShowcase() {
     };
 
     const requestProgressUpdate = () => {
-      if (frameId !== null) return;
+      if (!inView || frameId !== null) return;
       frameId = window.requestAnimationFrame(updateJourneyProgress);
     };
 
-    updateJourneyProgress();
+    const observer = "IntersectionObserver" in window
+      ? new IntersectionObserver(([entry]) => {
+          inView = entry.isIntersecting;
+          decoration.toggleAttribute("data-journey-in-view", inView);
+          requestProgressUpdate();
+        })
+      : null;
+    observer?.observe(showcase);
+    requestProgressUpdate();
     window.addEventListener("scroll", requestProgressUpdate, { passive: true });
     window.addEventListener("resize", requestProgressUpdate);
     reducedMotionQuery.addEventListener("change", requestProgressUpdate);
 
     return () => {
+      observer?.disconnect();
       window.removeEventListener("scroll", requestProgressUpdate);
       window.removeEventListener("resize", requestProgressUpdate);
       reducedMotionQuery.removeEventListener("change", requestProgressUpdate);
@@ -109,10 +120,58 @@ export function DeviceShowcase() {
     };
   }, []);
 
+  useEffect(() => {
+    const showcase = showcaseRef.current;
+    if (!showcase) return;
+
+    const pointerMotion = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const cleanups = Array.from(showcase.querySelectorAll<HTMLElement>(".cosmic-exhibit"), (scene) => {
+      let frame: number | null = null;
+      let pointerX = 0;
+      let pointerY = 0;
+
+      const resetTilt = () => {
+        if (frame !== null) window.cancelAnimationFrame(frame);
+        frame = null;
+        scene.style.removeProperty("--exhibit-tilt-x");
+        scene.style.removeProperty("--exhibit-tilt-y");
+        scene.style.removeProperty("--exhibit-shift");
+      };
+      const move = (event: PointerEvent) => {
+        if (!pointerMotion.matches || event.pointerType !== "mouse") return;
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+        if (frame !== null) return;
+
+        frame = window.requestAnimationFrame(() => {
+          frame = null;
+          const bounds = scene.getBoundingClientRect();
+          const x = Math.min(1, Math.max(0, (pointerX - bounds.left) / bounds.width)) - 0.5;
+          const y = Math.min(1, Math.max(0, (pointerY - bounds.top) / bounds.height)) - 0.5;
+          scene.style.setProperty("--exhibit-tilt-x", `${-y * 5}deg`);
+          scene.style.setProperty("--exhibit-tilt-y", `${x * 6}deg`);
+          scene.style.setProperty("--exhibit-shift", `${x * 6}px`);
+        });
+      };
+
+      scene.addEventListener("pointermove", move, { passive: true });
+      scene.addEventListener("pointerleave", resetTilt);
+      pointerMotion.addEventListener("change", resetTilt);
+      return () => {
+        scene.removeEventListener("pointermove", move);
+        scene.removeEventListener("pointerleave", resetTilt);
+        pointerMotion.removeEventListener("change", resetTilt);
+        resetTilt();
+      };
+    });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, []);
+
   return (
     <section
       ref={showcaseRef}
-      className="device-showcase"
+      className="device-showcase cosmic-exhibits"
       id="devices"
       aria-label="SAME STUDIO device showcase"
     >
@@ -178,6 +237,7 @@ export function DeviceShowcase() {
           journeyId="phone"
           className="device-showcase-phone"
           cosmosVariant="phone"
+          current={activeJourneyId === "phone"}
           device={<IPhoneFrame />}
         />
         <DeviceSection
@@ -185,6 +245,7 @@ export function DeviceShowcase() {
           journeyId="tablet"
           className="device-showcase-tablet"
           cosmosVariant="tablet"
+          current={activeJourneyId === "tablet"}
           device={<IPadFrame />}
           reversed
         />
@@ -193,6 +254,7 @@ export function DeviceShowcase() {
           journeyId="watch"
           className="device-showcase-watch"
           cosmosVariant="watch"
+          current={activeJourneyId === "watch"}
           device={<WatchGroup />}
         />
       </div>

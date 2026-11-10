@@ -1,0 +1,444 @@
+/* The lower homepage reuses the live device frames. All scenery is decorative. */
+.device-showcase.cosmic-exhibits {
+  --exhibit-light: 124 76 206;
+  --exhibit-rim: 126 77 204;
+  background:
+    radial-gradient(ellipse at 18% 18%, #e8d8fc 0%, transparent 38%),
+    radial-gradient(ellipse at 84% 50%, #f0ddfb 0%, transparent 34%),
+    radial-gradient(ellipse at 22% 84%, #dfcdfb 0%, transparent 40%),
+    linear-gradient(#f3ebff, #faf6ff 48%, #ede4fb);
+}
+
+html[data-theme="dark"] .device-showcase.cosmic-exhibits {
+  --exhibit-light: 166 103 246;
+  --exhibit-rim: 219 187 255;
+  background:
+    radial-gradient(ellipse at 20% 18%, #30204d 0%, transparent 32%),
+    radial-gradient(ellipse at 78% 48%, #281b42 0%, transparent 35%),
+    radial-gradient(ellipse at 26% 84%, #322153 0%, transparent 34%),
+    linear-gradient(#161124, #100d1c 42%, #171027);
+}
+
+.cosmic-exhibits .device-showcase-inner {
+  row-gap: clamp(96px, 10vw, 158px);
+}
+
+.cosmic-exhibits .device-showcase-row[aria-current="step"] .exhibit-orbits {
+  opacity: 1;
+}
+
+.cosmic-exhibits .device-showcase-eyebrow {
+  display: inline-block;
+  width: fit-content;
+  padding: 7px 12px 6px;
+  border: 1px solid rgb(var(--exhibit-rim) / 0.28);
+  border-radius: 999px;
+  background: rgb(var(--exhibit-light) / 0.08);
+}
+
+.cosmic-exhibits .device-showcase-body {
+  border-inline-start: 1px solid rgb(var(--exhibit-rim) / 0.35);
+  padding-inline-start: clamp(14px, 1.7vw, 22px);
+}
+
+.cosmic-exhibit {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding-block: 18px 58px;
+}
+
+.exhibit-depth {
+  position: absolute;
+  z-index: 0;
+  inset: 1% -3% 8%;
+  pointer-events: none;
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+}
+
+.exhibit-depth::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 55%, rgb(var(--exhibit-light) / 0.27), transparent 67%);
+  content: "";
+}
+
+.exhibit-object {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+}
+
+.exhibit-tilt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  width: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .exhibit-tilt {
+    transform: perspective(1250px) rotateX(var(--exhibit-tilt-x, 0deg)) rotateY(var(--exhibit-tilt-y, 0deg));
+    transition: transform 230ms ease-out;
+  }
+
+  .exhibit-tilt:focus-within,
+  .exhibit-tilt:active {
+    transform: none;
+  }
+
+  .device-showcase-tablet .cosmic-exhibit:hover .device-tablet-stage {
+    animation-play-state: paused;
+  }
+}
+
+.exhibit-orbits {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 2%;
+  bottom: 0;
+  aspect-ratio: 4.2;
+  border-radius: 50%;
+  opacity: 0.66;
+  background:
+    radial-gradient(ellipse at 50% 43%, rgb(var(--exhibit-light) / 0.36), transparent 64%),
+    radial-gradient(ellipse at 50% 48%, rgba(18, 9, 33, 0.24) 0%, transparent 43%);
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
+.exhibit-orbits::before,
+.exhibit-orbits::after,
+.exhibit-orbits span {
+  position: absolute;
+  border-radius: 50%;
+  content: "";
+}
+
+.exhibit-orbits::before {
+  inset: 11% 4%;
+  border: 1px solid rgb(var(--exhibit-rim) / 0.45);
+  box-shadow: 0 3px 17px rgb(var(--exhibit-light) / 0.36), inset 0 2px 18px rgb(var(--exhibit-light) / 0.2);
+}
+
+.exhibit-orbits::after {
+  inset: 24% 14%;
+  border: 1px dashed rgb(var(--exhibit-rim) / 0.42);
+}
+
+.exhibit-orbits span {
+  inset: 35% 25%;
+  border: 1px solid rgb(var(--exhibit-rim) / 0.7);
+  background: radial-gradient(ellipse, rgba(14, 8, 24, 0.48), transparent 69%);
+}
+
+.exhibit-memory {
+  position: absolute;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  width: min(41%, 202px);
+  aspect-ratio: 0.8;
+  padding: clamp(12px, 2vw, 24px);
+  border: 1px solid rgb(var(--exhibit-rim) / 0.43);
+  border-radius: 22px;
+  background: linear-gradient(150deg, rgb(var(--exhibit-rim) / 0.19), rgb(var(--exhibit-light) / 0.035) 74%);
+  box-shadow: inset 0 1px 0 rgb(var(--exhibit-rim) / 0.25), 0 14px 45px rgba(16, 6, 34, 0.14);
+}
+
+.exhibit-memory::before,
+.exhibit-memory::after {
+  width: 57%;
+  height: 2px;
+  border-radius: 999px;
+  background: rgb(var(--exhibit-rim) / 0.42);
+  content: "";
+}
+
+.exhibit-memory::after {
+  width: 35%;
+  opacity: 0.65;
+}
+
+.exhibit-memory--back {
+  top: 13%;
+  left: 3%;
+  transform: translate3d(0, var(--parallax-y, 0px), 0) perspective(700px) rotateY(27deg) rotateZ(-16deg);
+}
+
+.exhibit-memory--note {
+  top: 34%;
+  right: 2%;
+  aspect-ratio: 1;
+  transform: translate3d(0, var(--parallax-y, 0px), 0) perspective(700px) rotateY(-24deg) rotateZ(14deg);
+}
+
+.exhibit-memory svg {
+  grid-row: 1;
+  width: clamp(18px, 3.8vw, 46px);
+  justify-self: end;
+  color: rgb(var(--exhibit-rim) / 0.84);
+  stroke: currentColor;
+  stroke-width: 1.3;
+  filter: drop-shadow(0 0 8px rgb(var(--exhibit-light) / 0.65));
+}
+
+.exhibit-grid {
+  position: absolute;
+  inset: 0 0 10%;
+  background:
+    linear-gradient(rgb(var(--exhibit-rim) / 0.23) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--exhibit-rim) / 0.23) 1px, transparent 1px);
+  background-size: 30px 30px;
+  mask-image: radial-gradient(ellipse, black 28%, transparent 73%);
+  transform: perspective(700px) rotateX(28deg) rotateZ(-12deg) scale(1.17);
+}
+
+.exhibit-cube {
+  --cube-side: clamp(24px, 4.8vw, 59px);
+  position: absolute;
+  z-index: 1;
+  width: var(--cube-side);
+  aspect-ratio: 1;
+  transform: rotateX(-27deg) rotateY(35deg);
+  transform-style: preserve-3d;
+}
+
+.exhibit-cube--near {
+  top: 1%;
+  left: 2%;
+}
+
+.exhibit-cube--far {
+  --cube-side: clamp(18px, 3.4vw, 42px);
+  right: 4%;
+  bottom: 5%;
+  opacity: 0.76;
+  transform: rotateX(-23deg) rotateY(-31deg);
+}
+
+.exhibit-cube i {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(var(--exhibit-rim) / 0.54);
+  background: linear-gradient(145deg, rgb(var(--exhibit-light) / 0.4), rgb(var(--exhibit-light) / 0.08));
+}
+
+.exhibit-cube i:first-child { transform: translateZ(calc(var(--cube-side) / 2)); }
+.exhibit-cube i:nth-child(2) { transform: rotateY(-90deg) translateZ(calc(var(--cube-side) / 2)); }
+.exhibit-cube i:last-child { transform: rotateX(90deg) translateZ(calc(var(--cube-side) / 2)); }
+
+.exhibit-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 62%;
+  color: rgb(var(--exhibit-rim) / 0.65);
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px rgb(var(--exhibit-light) / 0.68));
+}
+
+.exhibit-wave path + path {
+  opacity: 0.45;
+}
+
+.cosmic-exhibits .device-tablet-stage {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.cosmic-exhibits .device-tablet-frame {
+  max-width: 94%;
+}
+
+.device-showcase-tablet .cosmic-exhibit {
+  padding-top: 34px;
+}
+
+.cosmic-exhibits .device-watch-stage {
+  --device-float-y-mid: 8px;
+  animation-duration: 8.4s;
+}
+
+.cosmic-exhibits .device-watch-group {
+  width: min(100%, 530px);
+  height: clamp(310px, 30vw, 378px);
+}
+
+.cosmic-exhibits .device-watch {
+  top: 45%;
+  width: 27%;
+}
+
+.cosmic-exhibits .device-watch--left {
+  left: 16%;
+  transform: translate(-50%, -50%) translateX(var(--exhibit-shift, 0px)) perspective(650px) rotateY(12deg) rotateZ(-9deg);
+}
+
+.cosmic-exhibits .device-watch--right {
+  left: 84%;
+  transform: translate(-50%, -50%) translateX(calc(var(--exhibit-shift, 0px) * -0.5)) perspective(650px) rotateY(-12deg) rotateZ(9deg);
+}
+
+.cosmic-exhibits .device-watch--center {
+  top: 55%;
+  width: 32%;
+  transform: translate(-50%, -50%) translateX(calc(var(--exhibit-shift, 0px) * 1.4));
+}
+
+.cosmic-exhibits .watch-hit-counter {
+  margin-top: 8px;
+}
+
+.cosmic-exhibits :is(.device-phone-frame, .device-tablet-frame, .device-watch-body) {
+  border-color: rgb(var(--exhibit-rim) / 0.48);
+  box-shadow: 0 24px 52px rgba(12, 6, 24, 0.37), 0 0 18px rgb(var(--exhibit-light) / 0.23), inset 0 1px 1px rgba(255, 246, 255, 0.34);
+}
+
+.cosmic-exhibits :is(.device-phone-stage, .device-tablet-stage, .device-watch-stage) {
+  will-change: auto;
+}
+
+.cosmic-exhibit:not(.is-parallax-active) :is(.device-phone-stage, .device-tablet-stage, .device-watch-stage),
+.cosmic-exhibit:focus-within :is(.device-phone-stage, .device-tablet-stage, .device-watch-stage),
+.cosmic-exhibit:active :is(.device-phone-stage, .device-tablet-stage, .device-watch-stage) {
+  animation-play-state: paused;
+}
+
+.cosmic-exhibits .device-journey-line--base {
+  stroke: rgb(var(--exhibit-rim) / 0.24);
+}
+
+.cosmic-exhibits .device-journey-line--progress {
+  stroke: rgb(var(--exhibit-rim) / 0.82);
+  filter: drop-shadow(0 0 5px rgb(var(--exhibit-light) / 0.76));
+}
+
+.cosmic-exhibits .device-journey-node.is-active {
+  border-color: rgb(var(--exhibit-rim) / 0.92);
+  box-shadow: 0 0 0 7px rgb(var(--exhibit-light) / 0.14), 0 0 18px rgb(var(--exhibit-light) / 0.55);
+}
+
+.cosmic-exhibits .device-journey-node.is-active::after {
+  border: 1px solid rgb(var(--exhibit-rim) / 0.65);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .device-showcase-row[data-type-reveal-group="revealed"] .cosmic-exhibit {
+    animation: exhibit-arrive var(--exhibit-entrance, 800ms) ease-out both;
+  }
+
+  .device-showcase-tablet { --exhibit-entrance: 640ms; }
+  .device-showcase-watch { --exhibit-entrance: 950ms; }
+
+  .device-showcase-watch .is-parallax-active .exhibit-wave,
+  .device-showcase-watch .is-parallax-active .exhibit-orbits span {
+    animation: exhibit-radiance 8s ease-in-out infinite alternate;
+  }
+
+  .is-parallax-active .exhibit-cube--near {
+    animation: exhibit-cube-drift 7s ease-in-out -2s infinite;
+  }
+
+  .is-parallax-active .exhibit-cube--far {
+    animation: exhibit-cube-drift 9s ease-in-out -5s infinite reverse;
+  }
+
+  .cosmic-exhibits [data-journey-in-view] .device-journey-node.is-active::after {
+    animation: exhibit-signal 3.6s ease-out infinite;
+  }
+}
+
+@keyframes exhibit-arrive {
+  from { opacity: 0.55; translate: 0 22px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes exhibit-radiance {
+  from { opacity: 0.58; }
+  to { opacity: 1; }
+}
+
+@keyframes exhibit-cube-drift {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+
+@keyframes exhibit-signal {
+  from { opacity: 0.62; transform: scale(0.74); }
+  to { opacity: 0; transform: scale(1.38); }
+}
+
+@media (min-width: 901px) {
+  .cosmic-exhibits .device-phone-frame {
+    width: clamp(248px, 21vw, 290px);
+  }
+
+  .cosmic-exhibits .device-showcase-watch {
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+    column-gap: clamp(54px, 6vw, 92px);
+  }
+
+  .cosmic-exhibits .device-showcase-watch .device-showcase-copy {
+    padding-inline-start: clamp(20px, 3.3vw, 48px);
+  }
+}
+
+@media (max-width: 900px) {
+  .cosmic-exhibits .device-showcase-inner {
+    row-gap: clamp(74px, 12vw, 108px);
+  }
+
+  .cosmic-exhibits .device-showcase-body {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+
+  .cosmic-exhibit {
+    padding-block: 16px 40px;
+  }
+
+  .exhibit-orbits {
+    inset-inline: max(3%, calc((100% - 500px) / 2));
+  }
+}
+
+@media (max-width: 600px) {
+  .cosmic-exhibits .device-watch-group {
+    width: min(100%, 370px);
+    height: clamp(330px, 90vw, 365px);
+  }
+
+  .cosmic-exhibits .device-watch {
+    top: 25%;
+    width: min(29%, 106px);
+  }
+
+  .cosmic-exhibits .device-watch--left { left: 24%; }
+  .cosmic-exhibits .device-watch--right { left: 76%; }
+  .cosmic-exhibits .device-watch--center {
+    top: 68%;
+    width: min(35%, 126px);
+  }
+
+  .exhibit-memory--back { left: 0; }
+  .exhibit-memory--note { right: 0; }
+  .exhibit-cube--far { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-exhibit :is(.device-phone-stage, .device-tablet-stage, .device-watch-stage) {
+    animation: none;
+  }
+
+  .exhibit-orbits {
+    transition: none;
+  }
+}
