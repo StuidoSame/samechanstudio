@@ -26,6 +26,7 @@ import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { CosmicIntro } from "./cosmic-intro/CosmicIntro";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
 import "./cosmic-story.css";
+import "./cosmic-ending.css";
 import { PageSectionNavigation } from "./PageSectionNavigation";
 import { SectionCosmos } from "./SectionCosmos";
 import { SiteFooter } from "./SiteFooter";
@@ -2189,11 +2190,20 @@ export function HomeExperience() {
 
         <TypeRevealGroup
           as="section"
-          className="contact-section"
+          className="contact-section cosmic-ending"
           id="contact"
           aria-labelledby="contact-title"
         >
           <SectionCosmos variant="contact" />
+          <div className="contact-horizon" aria-hidden="true" data-parallax-section="">
+            <span
+              className="contact-horizon-planet"
+              data-parallax-item=""
+              data-parallax-kind="planet"
+              data-parallax-speed="0.07"
+              data-parallax-max="36"
+            />
+          </div>
           <div className="contact-stage">
             <div className="contact-layout">
               <div className="contact-inner">
@@ -2210,6 +2220,10 @@ export function HomeExperience() {
                     href="mailto:contact@samestudio.kr"
                     aria-label="contact@samestudio.kr"
                   >
+                    <svg className="contact-mail-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true" focusable="false">
+                      <rect x="3" y="6" width="22" height="16" rx="4" />
+                      <path d="m5 9 9 6 9-6" />
+                    </svg>
                     <TypeReveal
                       as="span"
                       text={contactRevealSteps[1].text}
@@ -2313,12 +2327,13 @@ export function HomeExperience() {
                       fill="none"
                       focusable="false"
                     >
-                      <path d="M5 78C42 72 52 38 91 43c28 4 41 27 76 6" />
+                      <path d="M5 82C46 80 40 36 89 43s58 5 96-35" />
                     </svg>
                     <div className="contact-paper-plane-decoration">
                       <svg viewBox="0 0 68 56" fill="none" focusable="false">
-                        <path d="M62 8 7 27l23 7 9 16L62 8Z" />
-                        <path d="m30 34 32-26-23 31" />
+                        <path className="contact-plane-wing" d="M62 8 7 27l23 7L62 8Z" />
+                        <path className="contact-plane-fold" d="M62 8 30 34l9 16L62 8Z" />
+                        <path className="contact-plane-spine" d="m30 34 32-26-23 31v11Z" />
                       </svg>
                     </div>
                   </div>

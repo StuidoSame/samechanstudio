@@ -1,0 +1,184 @@
+.contact-section.cosmic-ending {
+  isolation: isolate;
+  --ending-glow: 147 83 222;
+  --ending-line: 130 73 188;
+  background:
+    radial-gradient(ellipse at 74% 64%, #dbc6f6, transparent 51%),
+    linear-gradient(180deg, #ede4fb, #f7f0ff 94%);
+}
+
+html[data-theme="dark"] .contact-section.cosmic-ending {
+  --ending-glow: 165 99 244;
+  --ending-line: 217 184 255;
+  background:
+    radial-gradient(ellipse at 76% 59%, #382554, transparent 50%),
+    linear-gradient(180deg, #171027, #130e21 74%, var(--theme-page-flow));
+}
+
+.contact-horizon {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.contact-horizon-planet {
+  position: absolute;
+  top: 26%;
+  right: clamp(-300px, -19vw, -140px);
+  width: clamp(450px, 55vw, 820px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--ending-line) / 0.48);
+  opacity: 0.78;
+  background:
+    radial-gradient(ellipse at 28% 21%, rgb(var(--ending-glow) / 0.34), transparent 58%),
+    linear-gradient(144deg, rgba(54, 28, 93, 0.05), rgba(24, 13, 39, 0.78)),
+    url("/assets/cosmic-planets/gas.svg") center / 102% no-repeat,
+    #2c1b43;
+  box-shadow:
+    inset 8px 14px 36px rgb(var(--ending-line) / 0.35),
+    inset -24px -12px 62px rgba(17, 9, 32, 0.68),
+    0 0 64px rgb(var(--ending-glow) / 0.34);
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+}
+
+.cosmic-ending .contact-stage {
+  min-height: clamp(560px, 70svh, 730px);
+}
+
+.cosmic-ending .contact-email-wrap {
+  width: min(100%, 550px);
+}
+
+.cosmic-ending .contact-email-link {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.4vw, 20px);
+  padding: clamp(16px, 2vw, 28px);
+  border: 1px solid rgb(var(--ending-line) / 0.32);
+  border-radius: clamp(17px, 2vw, 26px);
+  color: #4e2a88;
+  background: linear-gradient(142deg, rgba(255, 255, 255, 0.76), rgba(239, 217, 255, 0.62));
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 32px rgba(62, 29, 109, 0.18);
+  font-size: calc(clamp(18px, 2.55vw, 36px) * var(--font-scale));
+  white-space: normal;
+  overflow-wrap: anywhere;
+  transition: transform 220ms ease-out, border-color 220ms ease-out;
+}
+
+html[data-theme="dark"] .cosmic-ending .contact-email-link {
+  color: #f1dcff;
+  background: linear-gradient(142deg, rgba(94, 62, 137, 0.55), rgba(42, 26, 65, 0.8));
+  box-shadow:
+    inset 0 1px 0 rgb(var(--ending-line) / 0.24),
+    0 17px 36px rgba(10, 5, 20, 0.58),
+    0 0 22px rgb(var(--ending-glow) / 0.2);
+}
+
+.cosmic-ending .contact-email-link:focus-visible {
+  border-color: rgb(var(--ending-line) / 0.76);
+  outline: 2px solid rgb(var(--ending-line));
+  outline-offset: 4px;
+}
+
+.contact-mail-icon {
+  flex: 0 0 auto;
+  width: clamp(24px, 2.5vw, 34px);
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cosmic-ending .contact-email-link > span {
+  min-width: 0;
+}
+
+.cosmic-ending .contact-constellation {
+  color: rgb(var(--ending-line) / 0.57);
+}
+
+.cosmic-ending .contact-orb {
+  opacity: 0.42;
+}
+
+.cosmic-ending .contact-flight {
+  top: 42%;
+  height: 150px;
+}
+
+.cosmic-ending .contact-flight-trail {
+  width: 95%;
+}
+
+.cosmic-ending .contact-flight-trail path {
+  stroke: rgb(var(--ending-line) / 0.72);
+  stroke-dasharray: 4 7;
+}
+
+.cosmic-ending .contact-paper-plane-decoration {
+  top: -3%;
+  right: -6%;
+  width: clamp(58px, 8.5vw, 120px);
+  height: auto;
+  aspect-ratio: 68 / 56;
+  color: #d6b5ff;
+  filter: drop-shadow(0 8px 12px rgba(20, 9, 34, 0.47));
+  animation: none;
+}
+
+.contact-plane-wing { fill: #a274e2; }
+.contact-plane-fold { fill: #644295; }
+.contact-plane-spine { fill: #492f72; }
+
+.cosmic-ending .contact-scene:not(.is-parallax-active) :is(.contact-orb, .contact-scene-particle) {
+  animation-play-state: paused;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cosmic-ending .contact-email-link:hover {
+    transform: translateY(-3px);
+    border-color: rgb(var(--ending-line) / 0.72);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cosmic-ending[data-type-reveal-group="revealed"] .contact-paper-plane-decoration {
+    animation: contact-orbital-flight 1050ms cubic-bezier(0.2, 0.7, 0.28, 1) both;
+  }
+}
+
+@keyframes contact-orbital-flight {
+  from { opacity: 0.32; transform: translate(-48px, 25px) rotate(-9deg); }
+  58% { opacity: 1; transform: translate(-22px, 7px) rotate(-4deg); }
+  to { opacity: 1; transform: translate(0, 0) rotate(0); }
+}
+
+@media (max-width: 700px) {
+  .cosmic-ending .contact-stage {
+    min-height: 0;
+    padding-bottom: 36px;
+  }
+
+  .cosmic-ending .contact-email-link {
+    font-size: calc(clamp(18px, 5.4vw, 28px) * var(--font-scale));
+  }
+
+  .contact-horizon-planet {
+    top: 54%;
+    right: -170px;
+    width: 430px;
+    opacity: 0.64;
+  }
+
+  .cosmic-ending .contact-flight {
+    top: 33px;
+    height: 108px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-ending .contact-email-link { transition: none; }
+}
