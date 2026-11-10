@@ -1,0 +1,155 @@
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .archive-document-space.support-glass-card {
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.support-document .support-glass-card::before,
+.support-document .support-glass-card::after {
+  display: none;
+}
+
+.support-document :is(.support-contact-section, .support-form-section) {
+  padding: clamp(20px, 4vw, 46px);
+  border: 1px solid var(--archive-glass-line);
+  border-radius: clamp(21px, 3vw, 35px);
+  background: var(--archive-glass);
+  box-shadow: var(--archive-glass-shadow);
+}
+
+:root[data-theme] .support-document .support-form-section {
+  background:
+    radial-gradient(ellipse at 96% 0%, rgb(var(--archive-scene-light) / 0.16), transparent 54%),
+    var(--archive-glass);
+}
+
+.support-document .support-section-heading h2 {
+  color: var(--theme-text);
+  font-size: calc(clamp(15px, 1.55vw, 20px) * var(--font-scale));
+  line-height: 1.4;
+  letter-spacing: 0.07em;
+}
+
+.support-document .support-eyebrow-index {
+  display: grid;
+  place-items: center;
+  min-width: 2.4em;
+  aspect-ratio: 1;
+  border: 1px solid var(--archive-glass-line);
+  border-radius: 50%;
+  color: var(--theme-accent);
+  background: var(--theme-surface-muted);
+  font-size: calc(10px * var(--font-scale));
+}
+
+.support-document .support-heading-line {
+  flex-shrink: 1;
+  min-width: 12px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .support-document .support-section-heading {
+      animation: support-heading-arrive linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+@keyframes support-heading-arrive {
+  from { transform: translateY(7px); }
+  to { transform: none; }
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document :is(
+  .support-form-example,
+  .support-response-card p,
+  .support-email-address,
+  .support-app-icon-button
+) {
+  color: var(--theme-text-soft);
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-app-icon-button[aria-pressed="true"] {
+  color: var(--theme-text);
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-app-icon-button[aria-pressed="false"] img {
+  filter: brightness(0.89) saturate(0.84);
+  opacity: 1;
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-app-icon-frame::before {
+  background: transparent;
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-form-field {
+  border-color: var(--archive-glass-line);
+  background: var(--theme-input);
+}
+
+.support-document .support-form-example {
+  font-size: calc(clamp(12px, 1.1vw, 15px) * var(--font-scale));
+  overflow-wrap: anywhere;
+}
+
+.support-document .support-faq-section {
+  padding: 0;
+  border: 0;
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-faq-item {
+  border-color: var(--archive-glass-line);
+  background: var(--archive-glass);
+  box-shadow: var(--archive-glass-shadow);
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-faq-item:has(button[aria-expanded="true"]) {
+  border-color: var(--theme-accent-soft);
+  background: var(--theme-surface-strong);
+  box-shadow: inset 0 1px var(--theme-highlight), 0 10px 30px var(--theme-shadow);
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-faq-item button {
+  justify-content: start;
+  gap: clamp(9px, 1.3vw, 15px);
+  padding-block: 12px;
+  color: var(--theme-text);
+  font-size: calc(clamp(13px, 1.15vw, 16px) * var(--font-scale));
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.support-document .support-faq-item button:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--theme-accent);
+}
+
+.support-document .support-faq-item button::before {
+  flex: 0 0 7px;
+  height: 7px;
+  border: 1px solid var(--theme-accent);
+  border-radius: 50%;
+  background: var(--theme-page-soft);
+  content: "";
+}
+
+.support-document .support-faq-item button[aria-expanded="true"]::before {
+  background: var(--theme-accent);
+  box-shadow: 0 0 0 4px var(--theme-glow);
+}
+
+.support-document .support-faq-symbol {
+  margin-inline-start: auto;
+  color: var(--theme-accent);
+}
+
+:root[data-theme] .policy-page-layout[data-cosmic-archive="support"] .support-document .support-faq-answer p {
+  padding-inline-start: clamp(32px, 4vw, 43px);
+  color: var(--theme-text-soft);
+  font-size: calc(clamp(13px, 1.15vw, 16px) * var(--font-scale));
+  line-height: 1.85;
+}

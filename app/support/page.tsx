@@ -5,6 +5,7 @@ import { createPageMetadata } from "../lib/seo";
 import { SupportContent } from "./SupportContent";
 import { SupportCosmosBackground } from "./SupportCosmosBackground";
 import { SupportHero } from "./SupportHero";
+import "./support-cosmic.css";
 
 export const metadata: Metadata = createPageMetadata("support");
 
