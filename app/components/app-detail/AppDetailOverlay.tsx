@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { useI18n } from "../../i18n/I18nProvider";
-import { SUPPORTED_LOCALES, isLocale, type AppTranslationId } from "../../i18n/types";
+import type { AppTranslationId } from "../../i18n/types";
 import type { AppItem, AppPlatform } from "../../lib/apps";
 import {
   getAppDetailPlatforms,
@@ -124,7 +124,7 @@ export function AppDetailOverlay({
   onRequestClose,
   onExited,
 }: AppDetailOverlayProps) {
-  const { locale, setLocale, messages, format } = useI18n();
+  const { locale, messages, format } = useI18n();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -446,17 +446,6 @@ export function AppDetailOverlay({
                   ))}
                 </select>
               )}
-              <select
-                aria-label={messages.header.languageButtonLabel}
-                value={locale}
-                onChange={(event) => {
-                  if (isLocale(event.target.value)) setLocale(event.target.value);
-                }}
-              >
-                {SUPPORTED_LOCALES.map((code) => (
-                  <option key={code} value={code} lang={code}>{messages.header.languageNames[code]}</option>
-                ))}
-              </select>
             </div>
             {screenshotSet.locale && screenshotSet.locale !== locale && (
               <p className="app-detail-preview-fallback" role="status">
