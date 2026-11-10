@@ -1,0 +1,125 @@
+.studio-about.cosmic-story {
+  min-height: clamp(580px, 72svh, 780px);
+  padding: clamp(80px, 9vw, 142px) max(6vw, calc((100vw - 1200px) / 2));
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  gap: clamp(12px, 3vw, 48px);
+  background:
+    radial-gradient(ellipse at 72% 48%, #e5cffb, transparent 43%),
+    linear-gradient(170deg, #f8f2ff, #efe2fc 68%, #f3ebff);
+}
+
+html[data-theme="dark"] .studio-about.cosmic-story {
+  background:
+    radial-gradient(ellipse at 76% 48%, #352252, transparent 47%),
+    radial-gradient(ellipse at 32% 40%, #21152f, transparent 40%),
+    linear-gradient(172deg, #211b2d, #110e1d 54%, #161124);
+}
+
+.cosmic-story .studio-about-content {
+  width: 100%;
+}
+
+.cosmic-story h2 {
+  font-size: calc(clamp(42px, 5.1vw, 76px) * var(--font-scale));
+  text-shadow: 0 0 42px rgba(164, 112, 240, 0.19);
+}
+
+.cosmic-story-scene {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 560 / 440;
+  pointer-events: none;
+}
+
+.cosmic-story-world,
+.cosmic-story-orbit {
+  position: absolute;
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+}
+
+.cosmic-story-world {
+  inset: 13% 20% auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(173, 112, 252, 0.31) 12%, transparent 70%);
+  box-shadow: 0 0 86px rgba(154, 99, 233, 0.21);
+}
+
+.cosmic-story-world span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(215, 184, 255, 0.62);
+  background:
+    radial-gradient(ellipse at 34% 22%, rgba(197, 154, 255, 0.35), transparent 65%),
+    url("/assets/cosmic-planets/ice.svg") center / 102% no-repeat,
+    #241838;
+  box-shadow:
+    inset 4px 6px 18px rgba(214, 172, 255, 0.55),
+    inset -22px -20px 48px rgba(14, 8, 28, 0.74),
+    0 0 46px rgba(179, 111, 245, 0.29);
+}
+
+.cosmic-story-orbit {
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: #8752bd;
+  stroke: currentColor;
+  stroke-width: 1.25;
+}
+
+html[data-theme="dark"] .cosmic-story-orbit {
+  color: #d9b6ff;
+}
+
+.cosmic-story-orbit ellipse {
+  opacity: 0.36;
+}
+
+.cosmic-story-orbit ellipse + ellipse {
+  stroke-dasharray: 2 7;
+  opacity: 0.48;
+}
+
+.cosmic-story-orbit path:first-of-type,
+.cosmic-story-orbit circle {
+  filter: drop-shadow(0 0 5px rgba(191, 132, 250, 0.8));
+}
+
+.cosmic-story-orbit circle {
+  fill: currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cosmic-story[data-type-reveal-group="revealed"] .studio-about-content {
+    animation: cosmic-story-arrive 780ms ease-out both;
+  }
+}
+
+@keyframes cosmic-story-arrive {
+  from { opacity: 0.4; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 767px) {
+  .studio-about.cosmic-story {
+    min-height: auto;
+    padding: clamp(98px, 21vw, 148px) clamp(24px, 7vw, 48px) clamp(52px, 12vw, 80px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .cosmic-story h2 {
+    font-size: calc(clamp(37px, 10.4vw, 62px) * var(--font-scale));
+  }
+
+  .cosmic-story-scene {
+    justify-self: center;
+    width: min(100%, 420px);
+  }
+}

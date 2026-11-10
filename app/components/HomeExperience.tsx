@@ -25,6 +25,7 @@ import {
 import { CosmicInteractionLayer } from "./CosmicInteractionLayer";
 import { CosmicIntro } from "./cosmic-intro/CosmicIntro";
 import { DeviceShowcase } from "./device-showcase/DeviceShowcase";
+import "./cosmic-story.css";
 import { PageSectionNavigation } from "./PageSectionNavigation";
 import { SectionCosmos } from "./SectionCosmos";
 import { SiteFooter } from "./SiteFooter";
@@ -2135,7 +2136,7 @@ export function HomeExperience() {
 
         </section>
 
-        <TypeRevealGroup as="section" className="studio-about" id="about">
+        <TypeRevealGroup as="section" className="studio-about cosmic-story" id="about">
           <SectionCosmos variant="about" />
           <div className="studio-about-content">
             <TypeReveal
@@ -2152,6 +2153,35 @@ export function HomeExperience() {
               delay={getTypeRevealDelay(ABOUT_REVEAL_STEPS, 1)}
               preserveLineBreaks
             />
+          </div>
+          <div className="cosmic-story-scene" aria-hidden="true" data-parallax-section="">
+            <div
+              className="cosmic-story-world"
+              data-parallax-item=""
+              data-parallax-kind="planet"
+              data-parallax-speed="0.07"
+              data-parallax-max="42"
+            >
+              <span />
+            </div>
+            <svg
+              className="cosmic-story-orbit"
+              viewBox="0 0 560 440"
+              fill="none"
+              focusable="false"
+              data-parallax-item=""
+              data-parallax-kind="orbit"
+              data-parallax-speed="0.13"
+              data-parallax-max="24"
+              data-parallax-direction="-1"
+            >
+              <ellipse cx="280" cy="220" rx="254" ry="86" transform="rotate(-23 280 220)" />
+              <ellipse cx="280" cy="220" rx="272" ry="111" transform="rotate(-23 280 220)" />
+              <path d="M52 319c68 42 234 7 364-64 55-30 94-60 106-87" />
+              <circle cx="443" cy="111" r="3.5" />
+              <circle cx="104" cy="326" r="4" />
+              <path d="M463 302h22m-11-11v22M112 91h12m-6-6v12" />
+            </svg>
           </div>
         </TypeRevealGroup>
 
