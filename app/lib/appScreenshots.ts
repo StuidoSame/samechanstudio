@@ -10,7 +10,7 @@ export const SCREENSHOT_LOCALE_MAP = {
   "zh-TW": "zhb",
 } as const satisfies Record<Locale, string>;
 
-export const DETAIL_SCREEN_ORDER = ["phone", "ipad"] as const;
+export const DETAIL_SCREEN_ORDER = ["phone", "ipad", "watch"] as const;
 
 export type DetailScreen = (typeof DETAIL_SCREEN_ORDER)[number];
 

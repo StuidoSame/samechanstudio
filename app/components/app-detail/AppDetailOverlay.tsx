@@ -16,7 +16,6 @@ import {
   type DetailStore,
 } from "../../lib/appDetailCapabilities";
 import {
-  DETAIL_SCREEN_ORDER,
   getAppScreenshotSet,
   getAvailableDetailScreens,
   type DetailScreen,
@@ -65,6 +64,7 @@ const STORE_LABELS: Record<DetailStore, string> = {
 const SCREEN_LABELS: Record<DetailScreen, string> = {
   phone: "Phone",
   ipad: "Pad",
+  watch: "Watch",
 };
 
 const PLATFORM_LABELS: Record<AppPlatform, string> = {
@@ -103,15 +103,22 @@ function ScreenFormIcon({ screen }: { screen: DetailScreen }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {screen === "phone" ? (
+      {screen === "phone" && (
         <>
           <rect x="9" y="3" width="14" height="26" rx="2.5" />
           <path d="M13 6h6M14.5 26h3" />
         </>
-      ) : (
+      )}
+      {screen === "ipad" && (
         <>
           <rect x="3" y="6" width="26" height="20" rx="2.5" />
           <path d="M6 10v12M26 15.5v1" />
+        </>
+      )}
+      {screen === "watch" && (
+        <>
+          <rect x="8" y="7" width="16" height="18" rx="4" />
+          <path d="M11 7V3h10v4M11 25v4h10v-4M24 13h2v4h-2" />
         </>
       )}
     </svg>
@@ -147,7 +154,7 @@ export function AppDetailOverlay({
     messages.appDetail.apps[app.id as AppTranslationId];
   const phoneContent = appDetailContent?.iphone ?? appDetailContent?.android;
   const selectedContent =
-    (selectedScreen === "ipad" ? appDetailContent?.ipad : undefined)
+    (selectedScreen === "phone" ? undefined : appDetailContent?.[selectedScreen])
     ?? phoneContent ?? messages.appDetail.fallback;
   const screenshots = screenshotSet.screenshots;
   const screenshotLanguage = messages.header.languageNames[screenshotSet.locale ?? locale];
@@ -651,14 +658,13 @@ export function AppDetailOverlay({
             role="group"
             aria-label={messages.appDetail.screenSelectorLabel}
           >
-            {DETAIL_SCREEN_ORDER.map((screen) => (
+            {availableScreens.map((screen) => (
               <button
                 className="app-detail-screen-button"
                 type="button"
                 key={screen}
                 aria-label={SCREEN_LABELS[screen]}
                 aria-pressed={selectedScreen === screen}
-                disabled={!availableScreens.includes(screen)}
                 onClick={() => setPreferredScreen(screen)}
               >
                 <ScreenFormIcon screen={screen} />

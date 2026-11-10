@@ -27,7 +27,7 @@ Support에는 마지막 ETC 카테고리에서 PINI·PEPESNAP·Other 문의를 �
 - `app/layout.tsx:91` RootLayout: 배경 오디오 → 페이지 전환 → 테마 → 글자 크기 → 다국어 Provider를 구성한다. hydration 전 테마·글자 크기 초기화 script와 `SeoLocaleSync`도 담당한다.
 - `app/page.tsx:8` Home: JSON-LD `HomeStructuredData`와 `HomeExperience`를 렌더링한다.
 - `app/components/HomeExperience.tsx:550`은 캐러셀·로더·스크롤·자동 재생·상세 overlay와 HOME의 여러 section을 조정한다. 약 2,578줄의 결합도가 높은 중심 모듈이다. 분해는 이번 작업 범위가 아니다.
-- `app/lib/apps.ts`의 앱 데이터가 캐러셀과 support 목록의 원천이다. `appScreenshots.ts`는 생성된 파일 목록에서 Phone·Pad 지원 범위와 로케일 fallback을 결정한다. `appDetailCapabilities.ts`는 플랫폼 배지와 스토어 링크를 결정한다.
+- `app/lib/apps.ts`의 앱 데이터가 캐러셀과 support 목록의 원천이다. `appScreenshots.ts`는 생성된 파일 목록에서 Phone·Pad·Watch 지원 범위와 로케일 fallback을 결정한다. `appDetailCapabilities.ts`는 플랫폼 배지와 스토어 링크를 결정한다.
 - `app/components/app-detail/`은 상세 dialog, 화면 종류별 갤러리, 이미지 실패 처리와 lightbox를 담당한다. 별도 앱 slug route는 없다.
 - `app/components/device-showcase/`는 Phone 하루 질문, Pad 하루 퍼즐, Watch 3개 드럼을 담당한다. 질문·퍼즐은 로컬 저장, Watch는 Web Audio와 키보드를 사용한다.
 - `app/navigation/`은 내부 링크의 화면 전환·스크롤·도착 focus 처리를, `PageSectionNavigation`은 section 간 탐색과 활성 상태를 담당한다.

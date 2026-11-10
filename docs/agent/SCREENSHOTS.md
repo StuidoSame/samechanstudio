@@ -4,7 +4,7 @@
 
 - Apple 캡처는 `public/assets/screenshot/{app}/{locale}/{device}/{number}.png`에 둔다. Android 전용 캡처가 생기면 `{app}/android/{locale}/{device}/{number}.png`를 사용한다. 플랫폼 구분은 별도 캡처가 있을 때만 경로에 추가한다.
 - 앱 ID는 `app/lib/apps.ts`의 `screenshotId` 또는 `id`를 사용한다. Pulto는 `runtronome`, TOCOBI는 `tocklist`, Teru Bozu는 `terubozu`다.
-- 디렉터리는 `ko/en/ja/zhg/zhb`와 `phone/ipad/watch`를 사용한다. 사이트 로케일 `zh-CN/zh-TW`는 각각 `zhg/zhb`에 대응한다. Watch는 원본으로 보관한다. 공개 갤러리의 기기 선택은 Phone과 Pad다.
+- 디렉터리는 `ko/en/ja/zhg/zhb`와 `phone/ipad/watch`를 사용한다. 사이트 로케일 `zh-CN/zh-TW`는 각각 `zhg/zhb`에 대응한다.
 - 파일명은 `1.png`처럼 0으로 시작하지 않는 양의 정수다. 실제 파일만 숫자 순서로 표시한다. 누락 번호의 경로를 추정하지 않는다.
 - 자산 추가·변경 후 `npm run screenshots:manifest`를 실행하고 생성된 `app/lib/screenshotFiles.json`을 함께 커밋한다. 생성기는 정적 파일 목록과 PNG 헤더의 폭·높이를 읽는다. 빌드 전 검사와 앱 데이터 테스트는 체크인된 매니페스트를 파일 목록과 비교한다.
 
@@ -12,7 +12,7 @@
 
 사이트 언어는 메인 헤더의 LANG에서 선택한다. 상세 설명과 갤러리는 전역 `I18nProvider`의 현재 locale을 읽는다. 앱·플랫폼·기기·언어에 맞는 실제 캡처를 찾아 해당 언어를 먼저 사용한다. 해당 언어가 없으면 같은 앱·플랫폼·기기에서 영어, 그다음 한국어·일본어·간체·번체 순으로 찾고 화면에 실제 캡처 언어를 알린다. 텍스트 번역의 한국어 fallback은 별도 규칙이다.
 
-상세 갤러리는 Apple 캡처를 사용한다. 캡처가 없는 기기 버튼은 비활성화한다. Apple·Android 아이콘은 앱 카탈로그에 따라 스토어 링크 또는 지원 배지로 표시한다. 갤러리는 선택 조합이 바뀔 때 첫 장으로 돌아가고 실제 길이로 카운터를 계산한다. 원본 종횡비를 카드에 적용하며 첫 세 장은 eager, 나머지는 lazy로 로드한다. 확대 보기에서는 인접 이미지만 별도로 준비한다.
+상세 갤러리는 Apple 캡처를 사용하며, 매니페스트에 파일이 있는 기기만 Phone, Pad, Watch 순으로 표시한다. Mapary와 Pulto의 Watch 원본도 같은 갤러리에서 볼 수 있다. Apple·Android 아이콘은 앱 카탈로그에 따라 스토어 링크 또는 지원 배지로 표시한다. 갤러리는 선택 조합이 바뀔 때 첫 장으로 돌아가고 실제 길이로 카운터를 계산한다. 원본 종횡비를 카드에 적용하며 첫 세 장은 eager, 나머지는 lazy로 로드한다. 확대 보기에서는 인접 이미지만 별도로 준비한다.
 
 ## 정리 전 인벤토리
 

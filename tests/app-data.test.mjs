@@ -112,7 +112,7 @@ test("resolves the exact assets for every app, locale and device", () => {
   };
   const localeFolders = { ko: "ko", en: "en", ja: "ja", "zh-CN": "zhg", "zh-TW": "zhb" };
 
-  assert.deepEqual(DETAIL_SCREEN_ORDER, ["phone", "ipad"]);
+  assert.deepEqual(DETAIL_SCREEN_ORDER, ["phone", "ipad", "watch"]);
 
   for (const { id, screenshotId = id } of apps) {
     assert.deepEqual(
@@ -142,7 +142,6 @@ test("resolves the exact assets for every app, locale and device", () => {
           assert.ok(apple.screenshots.every(({ width, height }) => width > height), label);
         }
       }
-      assert.equal(screenshotFiles[`${screenshotId}/${folder}/watch`]?.length ?? 0, counts[id].watch);
     }
   }
 });

@@ -2451,6 +2451,15 @@ a.app-detail-store-button:focus-visible {
   touch-action: pan-x pan-y;
 }
 
+.app-detail-preview.is-watch {
+  --gallery-min-height: 220px;
+  min-height: 0;
+}
+
+.app-detail-preview.is-watch .app-detail-gallery {
+  height: var(--gallery-min-height);
+}
+
 .app-detail-gallery::-webkit-scrollbar {
   display: none;
 }
@@ -2915,16 +2924,16 @@ a.app-detail-store-button:focus-visible {
 }
 
 .app-detail-screen-selector {
-  width: min(100%, 280px);
+  width: min(100%, 404px);
   margin-inline: auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(104px, 124px));
+  display: flex;
   justify-content: center;
   gap: clamp(10px, 1.5vw, 16px);
 }
 
 .app-detail-screen-button {
-  width: 100%;
+  flex: 0 1 124px;
+  min-width: 0;
   min-height: 84px;
   margin: 0;
   padding: 9px 6px 8px;
@@ -2948,7 +2957,7 @@ a.app-detail-store-button:focus-visible {
     transform 0.2s ease;
 }
 
-.app-detail-screen-button:hover:not(:disabled),
+.app-detail-screen-button:hover,
 .app-detail-screen-button:focus-visible {
   opacity: 0.9;
   border-color: rgba(109, 73, 171, 0.24);
@@ -2968,11 +2977,6 @@ a.app-detail-store-button:focus-visible {
     0 10px 24px rgba(103, 65, 174, 0.14),
     0 0 20px rgba(144, 94, 225, 0.12);
   transform: translateY(-1px);
-}
-
-.app-detail-screen-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.36;
 }
 
 .app-detail-screen-icon {
@@ -3112,8 +3116,6 @@ a.app-detail-store-button:focus-visible {
   }
 
   .app-detail-screen-selector {
-    width: min(100%, 260px);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
