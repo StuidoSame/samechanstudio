@@ -8,6 +8,7 @@ import { SectionCosmos } from "../components/SectionCosmos";
 import { useI18n } from "../i18n/I18nProvider";
 import { InternalTransitionLink } from "../navigation/InternalTransitionLink";
 import { PRIVACY_MESSAGES } from "./privacyMessages";
+import { PULTO_PRIVACY_MESSAGES } from "./pultoPrivacyMessages";
 
 const COSMOS_VARIANTS = [
   "about",
@@ -18,6 +19,7 @@ const COSMOS_VARIANTS = [
   "phone",
   "about",
   "contact",
+  "watch",
 ] as const;
 
 function createMailto(subject: string, body: string) {
@@ -26,7 +28,13 @@ function createMailto(subject: string, body: string) {
 
 export function PrivacyArchive() {
   const { locale } = useI18n();
-  const messages = PRIVACY_MESSAGES[locale];
+  const sharedMessages = PRIVACY_MESSAGES[locale];
+  const pultoMessages = PULTO_PRIVACY_MESSAGES[locale];
+  const messages = {
+    ...sharedMessages,
+    hero: { ...sharedMessages.hero, updated: pultoMessages.updated },
+    sections: [...sharedMessages.sections, pultoMessages.section],
+  };
   const [activeSection, setActiveSection] = useActiveArchiveSection("[data-privacy-section]", "information");
   const [revealedSections, setRevealedSections] = useState<Set<string>>(
     () => new Set(),

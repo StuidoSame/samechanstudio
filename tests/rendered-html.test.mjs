@@ -6,6 +6,8 @@ import { DELETE_ACCOUNT_MESSAGES } from "../app/delete-account/deleteAccountMess
 import { COSMIC_INTRO_TIMELINE_CSS } from "../app/components/cosmic-intro/introTiming.mjs";
 import { ko } from "../app/i18n/locales/ko.ts";
 import { apps } from "../app/lib/apps.ts";
+import { PRIVACY_MESSAGES } from "../app/privacy/privacyMessages.ts";
+import { PULTO_PRIVACY_MESSAGES } from "../app/privacy/pultoPrivacyMessages.ts";
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -291,6 +293,34 @@ test("renders policy pages with the shared header, footer, and navigation", asyn
     assert.match(html, />TERMS</i);
     assert.doesNotMatch(html, /RETURN TO SAME STUDIO|SAME STUDIO ARCHIVE/);
     assert.doesNotMatch(html, /class="cosmic-intro"|class="cosmic-intro-scenery"|\/assets\/cosmic-planets\//);
+  }
+});
+
+test("adds PULTO privacy as a separate accessible ninth section with both contents controls", async () => {
+  const commonIds = ["information", "purpose", "permissions", "services", "storage", "rights", "children", "contact"];
+  for (const [locale, messages] of Object.entries(PRIVACY_MESSAGES)) {
+    assert.deepEqual(messages.sections.map(({ id }) => id), commonIds, locale);
+    const { section } = PULTO_PRIVACY_MESSAGES[locale];
+    assert.equal(section.id, "pulto", locale);
+    assert.equal(section.number, "09", locale);
+    assert.equal(section.items.length, 7, locale);
+    assert.ok(section.items.every(({ title, text }) => title.trim() && text.trim()), locale);
+    assert.ok(section.items.some(({ text }) => text.includes("contact@samestudio.kr")), locale);
+  }
+
+  const response = await render("/privacy/");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.deepEqual([...html.matchAll(/<section id="([^"]+)"[^>]*data-privacy-section=""/g)].map(([, id]) => id),
+    [...commonIds, "pulto"]);
+  assert.match(html, /<option value="pulto">09<!-- --> · <!-- -->PULTO/);
+  assert.match(html, /<button[^>]*><span>09<\/span>PULTO/);
+  const pulto = html.match(/<section id="pulto"[^>]*aria-labelledby="pulto-title"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  assert.ok(pulto, "PULTO has its own labelled section and fragment target");
+  assert.match(pulto, /<h2 id="pulto-title">PULTO — 운동 및 건강 데이터 처리 안내<\/h2>/);
+  assert.equal((pulto.match(/<h3>/g) ?? []).length, 7);
+  for (const term of ["Health Connect", "ACTIVITY_RECOGNITION", "READ_STEPS", "READ_EXERCISE", "Google Play", "contact@samestudio.kr"]) {
+    assert.ok(pulto.includes(term), term);
   }
 });
 
